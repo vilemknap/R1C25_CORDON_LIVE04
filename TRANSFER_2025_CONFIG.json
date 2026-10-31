@@ -1,0 +1,19 @@
+{
+ "schema": "R1_TRANSFER_2022_2025_CONFIG_V1",
+ "parameter_file": null,
+ "zone_policy": "REQUIRE_IDENTICAL_ZONE_SET",
+ "attribute_groups": {
+  "ws_coefficients": true,
+  "zahr_coefficients": true,
+  "salary": true,
+  "long_school": true,
+  "boundary_pa_volumes": false
+ },
+ "td": true,
+ "addval1": true,
+ "addval1_policy": "MATCHING_LINK_KEYS_ONLY",
+ "recompute": true,
+ "save_new_version": true,
+ "readiness_after_import": true,
+ "readiness_baseline_capture": true
+}

@@ -1,41 +1,6 @@
 {
- "release": "R1_2025_CORDON_LIVE04_1_V7_MEMORY_20261031",
+ "release": "R1_2025_CORDON_LIVE04_2_TRANSFER2025_20261031",
  "files": [
-  {
-   "path": ".ruff_cache/.gitignore",
-   "size": 35,
-   "sha256": "9e3a60f1e6ec4ae60215c11d54b171392745ec25e9dded433d5bd921363af316"
-  },
-  {
-   "path": ".ruff_cache/0.16.9/13856411003479169790",
-   "size": 172,
-   "sha256": "124305e88ae85369cef3079679ea606f7a17a9627406a53931d52cc4e0334e37"
-  },
-  {
-   "path": ".ruff_cache/0.16.9/16593285043152293333",
-   "size": 252,
-   "sha256": "43654db848786f01eb2685aa24ce45512eed81084a3814f574707c084688591e"
-  },
-  {
-   "path": ".ruff_cache/0.16.9/2209888712740564933",
-   "size": 212,
-   "sha256": "1771f7e20ca33a6c440c0035ebc16803ee17a41e2294bf934afd89b31fd0e64f"
-  },
-  {
-   "path": ".ruff_cache/0.16.9/2896298707912897945",
-   "size": 708,
-   "sha256": "d7c44d2acc1509f485b986d9d4a827d92d789e96237a535bc60b01a2e82fc654"
-  },
-  {
-   "path": ".ruff_cache/0.16.9/9891044203038590131",
-   "size": 1060,
-   "sha256": "1703c8eb656333c298c210d955ff91c915974a7f6f5a3cfe08797df8f4552c4d"
-  },
-  {
-   "path": ".ruff_cache/CACHEDIR.TAG",
-   "size": 43,
-   "sha256": "5953156d7e0c564a427251316eaf26f8870e6483ae2197f916b630e4f93e31ae"
-  },
   {
    "path": "00_START_HERE_LIVE01_CZ.txt",
    "size": 285,
@@ -53,8 +18,8 @@
   },
   {
    "path": "00_START_HERE_LIVE04_CZ.txt",
-   "size": 1471,
-   "sha256": "a49fa2e15dca5946a6b991d519eb123f70e8e77eb60ca413604d2dee62778748"
+   "size": 1998,
+   "sha256": "35fc3a39b91de00a05dddfb3e3f7f20a714b1a2705f626c1212124888786c72e"
   },
   {
    "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -483,8 +448,8 @@
   },
   {
    "path": "LIVE04_TEST_RESULTS.txt",
-   "size": 1494,
-   "sha256": "5a2ae05fdd9286908bdbd05fd39187bed273adb43ce607296315a6af4c1df056"
+   "size": 1534,
+   "sha256": "76c7a0410bfdcef3cec254d4a5ee77c621fd56969603ea9c57a62ee3f73c887b"
   },
   {
    "path": "LIVE_MODEL_PREFLIGHT_CONTRACT.json",
@@ -587,6 +552,11 @@
    "sha256": "d2eb0e9894463d7477434def5e99d4e16e79c983b528c99485740278bc7f9b3f"
   },
   {
+   "path": "RUN_R1_2022_EXPORT_CALIBRATED_PARAMETERS.py",
+   "size": 783,
+   "sha256": "16d2395028d65e172fac233e7165758cd1cedf0f2452928ce357e0cb4d110e81"
+  },
+  {
    "path": "RUN_R1_2025_CORDON_LIVE02_TG_CYCLE.py",
    "size": 891,
    "sha256": "580c70029b2790e4f5b919407af113949b09c51efa4590ea0d0c0911913af57d"
@@ -605,6 +575,16 @@
    "path": "RUN_R1_2025_CORDON_LIVE_BASELINE.py",
    "size": 511,
    "sha256": "56dbc4cf54f1e1dc2404edae0b835b4cc8af04c1facf3cc01c47cb489e52c021"
+  },
+  {
+   "path": "RUN_R1_2025_IMPORT_AND_RECOMPUTE.py",
+   "size": 986,
+   "sha256": "b85205631a15e2608fd8384477575b2109eb96d4a58488a2032ca9d142138a37"
+  },
+  {
+   "path": "RUN_R1_2025_LIVE04_READINESS.py",
+   "size": 798,
+   "sha256": "29661f0f65a43cca0f981d33ef07db40dd65c56ae852e55a596a6babc6ec96fb"
   },
   {
    "path": "SOURCE_PINS_AND_MERGE_DECISIONS.csv",
@@ -1192,6 +1172,11 @@
    "sha256": "af7723618a97d57d17ed26bd3f628465c1f4b5bfb9861a883c146427f24ea06e"
   },
   {
+   "path": "TRANSFER_2025_CONFIG.json",
+   "size": 469,
+   "sha256": "2734fbe75614654767f5ed1e04f6bead63f91bb0cd68dd4e46c1e91b01e91a5e"
+  },
+  {
    "path": "WHOLE_MATRIX_AUTHORITY_AUDIT.json",
    "size": 38382,
    "sha256": "b3bdb72fd0fa46b557403cdb2040ba220c743b13bc0377a6efb77b731bbc5589"
@@ -1468,8 +1453,8 @@
   },
   {
    "path": "cordon2025/live04_guard.py",
-   "size": 5054,
-   "sha256": "f16ab65ea744cc30c4d9136f476b6c2e9d069ceb18e18109c229f4ae33141439"
+   "size": 5181,
+   "sha256": "09d556dce1d3e06fbe3ebb1c69c1d2c5fd365d8593d1b84aee7790e1d1de2cd2"
   },
   {
    "path": "cordon2025/live04_long_mask.py",
@@ -1532,6 +1517,11 @@
    "sha256": "d317ec9b7e5762c28d621afe9f7535ed6ed54d694d2f9dc36c7b578cc44030f7"
   },
   {
+   "path": "cordon2025/transfer2025.py",
+   "size": 34244,
+   "sha256": "2fd44ea9bb5639edeac00f46d315020f6e454dbc03aa35cf0e414c5cd9fb0e3b"
+  },
+  {
    "path": "cordon2025/visum_startup.py",
    "size": 26599,
    "sha256": "37d6c2b7ccfd1b4cd9f0318893d09f91e54b9ccdb0d9597b74b54c3ac7b43074"
@@ -1560,6 +1550,11 @@
    "path": "cordon_live04_bootstrap.py",
    "size": 2945,
    "sha256": "dedd3131763ac87c4c1562122c89effa9d1ce0f88b552f4d6c8edc0f576ab062"
+  },
+  {
+   "path": "cordon_transfer_bootstrap.py",
+   "size": 3772,
+   "sha256": "07ffbd5497775bf3c42e04502c927fe817d111d9839559f51a94be8132a02af7"
   },
   {
    "path": "cordon_visum_bootstrap.py",
@@ -3880,6 +3875,11 @@
    "path": "docs/startup_fix2/reproduce_numerical_parity_reference.py.txt",
    "size": 1881,
    "sha256": "81ee7b462a0d486cd39c853e3a8ffad5523caf9c9550559369f01c8e7aa180d4"
+  },
+  {
+   "path": "docs/transfer2025/TRANSFER2025_CZ.md",
+   "size": 5167,
+   "sha256": "202da3c2d67d223f165c2efd62ab2d34a9e05765a6f69a5681690484c72237fb"
   },
   {
    "path": "docs/update_v2/CP02_IO_REPORT.md",
@@ -8683,8 +8683,8 @@
   },
   {
    "path": "tests/fake_live04.py",
-   "size": 10912,
-   "sha256": "dc665ab1241e933d47c32bcb5fab2d1034078c0bf3fa4be00f28a034c396be56"
+   "size": 11698,
+   "sha256": "039cadeeeed6314c4dc8d7755af26235d675160b812928738d2282c931b4f4ce"
   },
   {
    "path": "tests/fake_visum_startup.py",
@@ -8840,6 +8840,11 @@
    "path": "tests/test_startup_hardening.py",
    "size": 3260,
    "sha256": "fb209ffb3fce57526f1b6420a40bbfff9b15c40bf0adb48cbfcd75a734a85bef"
+  },
+  {
+   "path": "tests/test_transfer2025.py",
+   "size": 9526,
+   "sha256": "d4715a929e9011602e37d1694cc0a6bd50e71d6d4e65d6b4a21856dea0cb63b4"
   },
   {
    "path": "tests/test_v2_io.py",

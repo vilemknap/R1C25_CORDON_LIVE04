@@ -61,8 +61,11 @@ def _policy(label, name, args, audit):
 
 
 class Live04GuardedCOM(GuardedCOM):
-    """GuardedCOM whose children are Live04GuardedCOM and whose matrix labels carry the key."""
+    """GuardedCOM whose children are of the same class and whose matrix labels carry the key.
+
+    Subclasses may widen the policy only by overriding POLICY (one audited function)."""
     __slots__ = ()
+    POLICY = staticmethod(_policy)
 
     def _wrap(self, value, label):
         if value is None or isinstance(value, (str, bytes, int, float, bool, complex)):
@@ -77,7 +80,7 @@ class Live04GuardedCOM(GuardedCOM):
             return tuple(self._wrap(v, '%s[%d]' % (label, i)) for i, v in enumerate(value))
         if isinstance(value, dict):
             return {k: self._wrap(v, '%s[%s]' % (label, k)) for k, v in value.items()}
-        return Live04GuardedCOM(value, label, self._audit)
+        return type(self)(value, label, self._audit)
 
     def __getattr__(self, name):
         if name == '_oleobj_':
@@ -90,7 +93,7 @@ class Live04GuardedCOM(GuardedCOM):
 
             def call(*args, **kwargs):
                 if mutating:
-                    _policy(self._label, name, args, self._audit)
+                    type(self).POLICY(self._label, name, args, self._audit)
                 out = value(*args, **kwargs)
                 if keyed and len(args) == 1:
                     try:

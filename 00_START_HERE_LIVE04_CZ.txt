@@ -7,6 +7,14 @@ R1 2025 LIVE04: kordonova kalibrace TG + TD (LIVE03) portovana na profilovy kali
 - LONG post-TD maska >= 80 km (9697) pri kazdem nativnim prepoctu vcetne sond; baseline musi byt
   uz maskovana (kopie ulozena z behu v7), jinak stop pred prvnim zapisem.
 
+0. PRIPRAVA VERZE 2025 (TRANSFER2025, kazdy krok v cerstve instanci Visumu):
+   a) otevri kalibrovanou verzi 2022 -> RUN_R1_2022_EXPORT_CALIBRATED_PARAMETERS.py (jen cte)
+   b) otevri KOPII modelu 2025      -> RUN_R1_2025_IMPORT_AND_RECOMPUTE.py
+      (prenos ADD_*/ZAHR_*/ADD_SALARY, TD b/c, ADDVAL1 -> jeden prepocet v7 s orezem LONG ->
+       nova verze <kopie>_LIVE04_BASE_<id>.ver -> kontrola READY_FOR_LIVE04)
+   c) kdykoli znovu: RUN_R1_2025_LIVE04_READINESS.py (jen cte)
+   Navod: docs/transfer2025/TRANSFER2025_CZ.md
+
 1. Otevri KOPII modelu R1 2025 s ulozenymi cestami v instanci Visumu, kde NEBEZI kalibrace v7;
    nazev obsahuje LIVE04 / KOPIE / COPY / TEST / TRIAL / CALIB.
 2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py

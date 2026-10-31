@@ -23,6 +23,7 @@ Never native PTV evidence.
 import numpy as np
 from fake_visum_startup import Matrix
 from fake_live01 import FullList
+from fake_live02 import LinkObj, LinkCollection
 from fake_live03 import Live03Visum
 from cordon2025.common import parent_core
 
@@ -73,6 +74,7 @@ class Live04Visum(Live03Visum):
     def __init__(self, folder, *, masked_start=True, long_leak=1.0e-3, route_gamma=0.0, **kwargs):
         super().__init__(folder, **kwargs)
         self.route_gamma = float(route_gamma)
+        self.Net.Links = WritableLinkCollection(self, self.Net.Links.rows, 'Links')
         self.origin = 'MOCK_LIVE04_681_ZONES_NOT_NATIVE'
         src = folder / 'R1_2025_SYNTHETIC_LIVE04_COPY.ver'; src.write_bytes(b'SYNTHETIC_NOT_A_VISUM_VERSION')
         self.source = src; self.IO.CurrentVersionFile = str(src)
@@ -226,3 +228,20 @@ class RouteList(FullList):
             rows.append([r[0], r[1], 1, r[3] * sigma[n]])
             rows.append([r[0], r[1], 2, r[3] * (1.0 - sigma[n])])
         self.rows = rows
+
+
+class WritableLinkObj(LinkObj):
+    """ADDVAL1 is the only writable link attribute (integer value type, as in R1)."""
+    def SetAttValue(self, name, value):
+        h = self.host
+        if str(name).upper() != 'ADDVAL1' or float(value) != int(value):
+            h.writes.append('Link.SetAttValue:' + str(name))
+            raise AssertionError('FORBIDDEN_LINK_WRITE:' + str(name))
+        h.allowed_writes.append(('ADDVAL1', self.row['NO'], float(value)))
+        self.row['ADDVAL1'] = float(value)
+
+
+class WritableLinkCollection(LinkCollection):
+    @property
+    def GetAll(self):
+        return [WritableLinkObj(self.host, r) for r in self.rows]
