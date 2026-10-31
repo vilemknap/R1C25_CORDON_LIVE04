@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--disable-warnings"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/release",
+  "returncode": 0,
+  "elapsed_seconds": 26.670995235443115
+}

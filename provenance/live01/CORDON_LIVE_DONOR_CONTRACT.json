@@ -1,0 +1,897 @@
+{
+  "schema": "R1_2025_CORDON_LIVE_DONOR_CONTRACT_V1",
+  "status": "EXTRACTED_AND_DONOR_OFFLINE_TESTED_NOT_A_LIVE_IMPLEMENTATION",
+  "source_archive": {
+    "name": "R1_15A2_AGGRESSIVE_FIX1_COMBUSY_TD09C16_HOTFIX2_FULL_20261023(3).zip",
+    "sha256": "c3f5a2d77a6c0b6b6512fca9fcadd9ccc7b0112c6a945da1f862c437cc490543",
+    "bytes": 11198048
+  },
+  "cordon_reference": {
+    "name": "R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_FULL_20261023.zip",
+    "sha256": "967f71326cc78f9c63e40721c8984dee87d0f9a84909e0d60abc2f8cde4f6342"
+  },
+  "user_authority": {
+    "same_2022_2025_technical_architecture": true,
+    "scope": "TG/TD schema, model mechanisms and procedure contract; current numerical values read from opened 2025 model",
+    "all_cordon_relations_used": true,
+    "holdout_enabled": false,
+    "bidirectional_roster": {
+      "rows": 120,
+      "calibration": 120,
+      "validation": 0
+    },
+    "targets": "Existing final RPDI matrix; no new re-expansion or resymmetrization",
+    "motorway_stations": [
+      1,
+      3,
+      15,
+      16
+    ],
+    "no_toll_paths_on_motorway_stations": false,
+    "C17": "Preserve existing shared-budget treatment; never full budget for every relation; no allocation-policy change in this extraction"
+  },
+  "live_model": {
+    "expected_zone_ids": {
+      "first": 1,
+      "last": 681,
+      "count": 681
+    },
+    "injected_visum_only": true,
+    "do_not_dispatch": true,
+    "numeric_source": "LIVE_2025_CURRENT_VALUES",
+    "new_user_export_required_for_design": false,
+    "preflight": "Built into first calibration launcher before writes; validates donor schema in opened model, not a separate export request"
+  },
+  "tg": {
+    "generation_attrs": [
+      "ADD_PROD_W",
+      "ADD_ATT_W",
+      "ADD_SALARY",
+      "ADD_PROD_S",
+      "ADD_ATT_S",
+      "ZAHR_PROD_WORK",
+      "ZAHR_ATR_WORK",
+      "ZAHR_PROD_SERV",
+      "ZAHR_ATR_SERV"
+    ],
+    "attribute_map": [
+      {
+        "family": "WORK",
+        "role": "PROD",
+        "branch": "DOMESTIC",
+        "attribute": "ADD_PROD_W"
+      },
+      {
+        "family": "WORK",
+        "role": "ATT",
+        "branch": "DOMESTIC",
+        "attribute": "ADD_ATT_W"
+      },
+      {
+        "family": "SERVICE",
+        "role": "PROD",
+        "branch": "DOMESTIC",
+        "attribute": "ADD_PROD_S"
+      },
+      {
+        "family": "SERVICE",
+        "role": "ATT",
+        "branch": "DOMESTIC",
+        "attribute": "ADD_ATT_S"
+      },
+      {
+        "family": "WORK",
+        "role": "PROD",
+        "branch": "ZAHR",
+        "attribute": "ZAHR_PROD_WORK"
+      },
+      {
+        "family": "WORK",
+        "role": "ATT",
+        "branch": "ZAHR",
+        "attribute": "ZAHR_ATR_WORK"
+      },
+      {
+        "family": "SERVICE",
+        "role": "PROD",
+        "branch": "ZAHR",
+        "attribute": "ZAHR_PROD_SERV"
+      },
+      {
+        "family": "SERVICE",
+        "role": "ATT",
+        "branch": "ZAHR",
+        "attribute": "ZAHR_ATR_SERV"
+      }
+    ],
+    "live_zone_scope": {
+      "domestic": "NOT_ZAHR >= 0.5",
+      "foreign": "NOT_ZAHR < 0.5 AND ZAHR_SUSED > 0 AND POP_ZP > 0",
+      "explicit_exclusions": [],
+      "od_guidance_relation_policy": "BOTH_ENDPOINTS_ACTUATABLE",
+      "zone_count_runtime_derived_not_hardcoded": true
+    },
+    "mutable_assignment_segments": [
+      "NATIVE_CW",
+      "NATIVE_CW_noT",
+      "NATIVE_CS",
+      "NATIVE_CS_noT"
+    ],
+    "proposal": "Cordon FISTA -> parent P/A projection -> donor design_generation_candidates -> donor verified zone writes",
+    "no_direct_od_matrix_writes": true,
+    "tg_dependency_contract": {
+      "contract_id": "R1_TG_PARAMETER_DEPENDENCY_CONTRACT_V2_3_6_LIVE_P09F4_A09F4_PREFEED",
+      "year": 2022,
+      "required_dstrata": [
+        "1_WORK_E_C",
+        "1_WORK_E_noC",
+        "1_WORK_noE_C",
+        "1_WORK_noE_noC",
+        "1_WORK_stud",
+        "2_SERV_E_C",
+        "2_SERV_E_noC",
+        "2_SERV_noE_C",
+        "2_SERV_noE_noC",
+        "2_SERV_stud"
+      ],
+      "required_zone_attributes": [
+        "ADD_PROD_W",
+        "ADD_ATT_W",
+        "ADD_SALARY",
+        "ADD_PROD_S",
+        "ADD_ATT_S",
+        "ZAHR_PROD_WORK",
+        "ZAHR_ATR_WORK",
+        "ZAHR_PROD_SERV",
+        "ZAHR_ATR_SERV",
+        "NOT_ZAHR",
+        "ZAHR_SUSED",
+        "POP_ZP",
+        "AV_INCOME",
+        "NUM_PM_SMEAR",
+        "FA_1_WORK",
+        "FA_2_SERVICE",
+        "FP_1_WORK_E_C",
+        "FP_1_WORK_E_noC",
+        "FP_1_WORK_noE_C",
+        "FP_1_WORK_noE_noC",
+        "FP_1_WORK_stud",
+        "FP_2_SERVICE_E_C",
+        "FP_2_SERVICE_E_noC",
+        "FP_2_SERVICE_noE_C",
+        "FP_2_SERVICE_noE_noC",
+        "FP_2_SERVICE_stud",
+        "A09F4_PER_PRE_SERV_E_C",
+        "A09F4_PER_PRE_SERV_E_NOC",
+        "A09F4_PER_PRE_SERV_NOE_C",
+        "A09F4_PER_PRE_SERV_NOE_NOC",
+        "A09F4_PER_PRE_SERV_STUD",
+        "A09F4_PER_PRE_WORK_E_C",
+        "A09F4_PER_PRE_WORK_E_NOC",
+        "A09F4_PER_PRE_WORK_NOE_C",
+        "A09F4_PER_PRE_WORK_NOE_NOC",
+        "A09F4_PER_PRE_WORK_STUD",
+        "P09F4_PER_PRE_SERV_E_C",
+        "P09F4_PER_PRE_SERV_E_NOC",
+        "P09F4_PER_PRE_SERV_NOE_C",
+        "P09F4_PER_PRE_SERV_NOE_NOC",
+        "P09F4_PER_PRE_SERV_STUD",
+        "P09F4_PER_PRE_WORK_E_C",
+        "P09F4_PER_PRE_WORK_E_NOC",
+        "P09F4_PER_PRE_WORK_NOE_C",
+        "P09F4_PER_PRE_WORK_NOE_NOC",
+        "P09F4_PER_PRE_WORK_STUD"
+      ],
+      "dstrata": {
+        "1_WORK_E_C": {
+          "production_tokens": [
+            "ADD_PROD_W",
+            "ZAHR_PROD_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_W",
+            "ADD_SALARY",
+            "ZAHR_ATR_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_1_WORK_E_C",
+          "attraction_outer_attribute": "FA_1_WORK",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_WORK_E_C",
+          "attraction_additive_attribute": "A09F4_PER_PRE_WORK_E_C"
+        },
+        "1_WORK_E_noC": {
+          "production_tokens": [
+            "ADD_PROD_W",
+            "ZAHR_PROD_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_W",
+            "ADD_SALARY",
+            "ZAHR_ATR_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_1_WORK_E_noC",
+          "attraction_outer_attribute": "FA_1_WORK",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_WORK_E_NOC",
+          "attraction_additive_attribute": "A09F4_PER_PRE_WORK_E_NOC"
+        },
+        "1_WORK_noE_C": {
+          "production_tokens": [
+            "ADD_PROD_W",
+            "ZAHR_PROD_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_W",
+            "ADD_SALARY",
+            "ZAHR_ATR_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_1_WORK_noE_C",
+          "attraction_outer_attribute": "FA_1_WORK",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_WORK_NOE_C",
+          "attraction_additive_attribute": "A09F4_PER_PRE_WORK_NOE_C"
+        },
+        "1_WORK_noE_noC": {
+          "production_tokens": [
+            "ADD_PROD_W",
+            "ZAHR_PROD_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_W",
+            "ADD_SALARY",
+            "ZAHR_ATR_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_1_WORK_noE_noC",
+          "attraction_outer_attribute": "FA_1_WORK",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_WORK_NOE_NOC",
+          "attraction_additive_attribute": "A09F4_PER_PRE_WORK_NOE_NOC"
+        },
+        "1_WORK_stud": {
+          "production_tokens": [
+            "ADD_PROD_W",
+            "ZAHR_PROD_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_W",
+            "ADD_SALARY",
+            "ZAHR_ATR_WORK",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_1_WORK_stud",
+          "attraction_outer_attribute": "FA_1_WORK",
+          "production_inline_population_required": false,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_WORK_STUD",
+          "attraction_additive_attribute": "A09F4_PER_PRE_WORK_STUD"
+        },
+        "2_SERV_E_C": {
+          "production_tokens": [
+            "ADD_PROD_S",
+            "ZAHR_PROD_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_S",
+            "ZAHR_ATR_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_2_SERVICE_E_C",
+          "attraction_outer_attribute": "FA_2_SERVICE",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_SERV_E_C",
+          "attraction_additive_attribute": "A09F4_PER_PRE_SERV_E_C"
+        },
+        "2_SERV_E_noC": {
+          "production_tokens": [
+            "ADD_PROD_S",
+            "ZAHR_PROD_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_S",
+            "ZAHR_ATR_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_2_SERVICE_E_noC",
+          "attraction_outer_attribute": "FA_2_SERVICE",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_SERV_E_NOC",
+          "attraction_additive_attribute": "A09F4_PER_PRE_SERV_E_NOC"
+        },
+        "2_SERV_noE_C": {
+          "production_tokens": [
+            "ADD_PROD_S",
+            "ZAHR_PROD_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_S",
+            "ZAHR_ATR_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_2_SERVICE_noE_C",
+          "attraction_outer_attribute": "FA_2_SERVICE",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_SERV_NOE_C",
+          "attraction_additive_attribute": "A09F4_PER_PRE_SERV_NOE_C"
+        },
+        "2_SERV_noE_noC": {
+          "production_tokens": [
+            "ADD_PROD_S",
+            "ZAHR_PROD_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_S",
+            "ZAHR_ATR_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_2_SERVICE_noE_noC",
+          "attraction_outer_attribute": "FA_2_SERVICE",
+          "production_inline_population_required": true,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_SERV_NOE_NOC",
+          "attraction_additive_attribute": "A09F4_PER_PRE_SERV_NOE_NOC"
+        },
+        "2_SERV_stud": {
+          "production_tokens": [
+            "ADD_PROD_S",
+            "ZAHR_PROD_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "attraction_tokens": [
+            "ADD_ATT_S",
+            "ZAHR_ATR_SERV",
+            "NOT_ZAHR",
+            "ZAHR_SUSED"
+          ],
+          "production_outer_attribute": "FP_2_SERVICE_stud",
+          "attraction_outer_attribute": "FA_2_SERVICE",
+          "production_inline_population_required": false,
+          "attraction_inline_population_required": true,
+          "production_additive_attribute": "P09F4_PER_PRE_SERV_STUD",
+          "attraction_additive_attribute": "A09F4_PER_PRE_SERV_STUD"
+        }
+      },
+      "live_formula_evidence_file": "authorities/R1_TG_NESTED_FORMULA_POP_ZP_LIVE_EVIDENCE_20261015.json",
+      "outer_formula_mode": "EXACT_FP_PLUS_P09F4_AND_FA_PLUS_A09F4_PER_DSTRAT",
+      "inner_formula_mode": "LIVE_FORENSIC_SNAPSHOT_WITH_POP_ZP__NO_AUTOMATIC_LIVE_REVALIDATION_OF_NESTED_EXPRESSION",
+      "pre_input_policy": "READ_ONLY_EXISTING_ZONE_VALUES; NEVER_SEED_OR_RECONVERT; NOT_A_CALIBRATION_ACTUATOR",
+      "live_tg_evidence_file": "authorities/R1_TG_OPERATION_5_ADDITIVE_LIVE_EVIDENCE_20261016.json",
+      "expected_zone_attribute_types": {
+        "A09F4_PER_PRE_SERV_E_C": 2,
+        "A09F4_PER_PRE_SERV_E_NOC": 2,
+        "A09F4_PER_PRE_SERV_NOE_C": 2,
+        "A09F4_PER_PRE_SERV_NOE_NOC": 2,
+        "A09F4_PER_PRE_SERV_STUD": 2,
+        "A09F4_PER_PRE_WORK_E_C": 2,
+        "A09F4_PER_PRE_WORK_E_NOC": 2,
+        "A09F4_PER_PRE_WORK_NOE_C": 2,
+        "A09F4_PER_PRE_WORK_NOE_NOC": 2,
+        "A09F4_PER_PRE_WORK_STUD": 2,
+        "P09F4_PER_PRE_SERV_E_C": 2,
+        "P09F4_PER_PRE_SERV_E_NOC": 2,
+        "P09F4_PER_PRE_SERV_NOE_C": 2,
+        "P09F4_PER_PRE_SERV_NOE_NOC": 2,
+        "P09F4_PER_PRE_SERV_STUD": 2,
+        "P09F4_PER_PRE_WORK_E_C": 2,
+        "P09F4_PER_PRE_WORK_E_NOC": 2,
+        "P09F4_PER_PRE_WORK_NOE_C": 2,
+        "P09F4_PER_PRE_WORK_NOE_NOC": 2,
+        "P09F4_PER_PRE_WORK_STUD": 2,
+        "POP_ZP": 2
+      }
+    },
+    "signed_refinement": {
+      "acceptance_authority": "FRESH_VISUM_ASSIGNMENT_PLUS_LIVE_12D_11D",
+      "centering_measure": "BASE_MARGIN_WEIGHTED_EXP_MULTIPLIER_EQUALS_ONE",
+      "domestic_hard_max": 2.0,
+      "domestic_hard_min": 0.5,
+      "domestic_soft_max": 1.25,
+      "domestic_soft_min": 0.8,
+      "enabled": true,
+      "existing_outside_hard_envelope_policy": "ALLOW_INWARD_ONLY_NO_FORCED_ONE_STEP_CLAMP",
+      "global_total_policy": "COMMON_CONSERVATIVE_FAMILY_TOTAL",
+      "max_family_global_log_down": 0.005,
+      "max_family_global_log_up": 0.005,
+      "mode": "FAMILY_GLOBAL_PLUS_NONLINEAR_CENTERED_ZONE_LOG_EFFECT",
+      "opposite_sign_total_policy": "ZERO_GLOBAL_KEEP_CENTERED_PATTERN",
+      "preserve_zero_policy": "UNCHANGED_EXISTING_ZERO_REMAINS_ZERO",
+      "reference_source": "RUN_START_LIVE_VISUM_ZONE_ATTRIBUTES",
+      "salary_hard_max": 2.0,
+      "salary_hard_min": 0.5,
+      "salary_soft_max": 1.25,
+      "salary_soft_min": 0.8,
+      "soft_outward_step_factor": 0.15,
+      "zahr_reference_multiplier_max": 2.0,
+      "zahr_reference_multiplier_min": 0.5,
+      "zahr_reference_soft_max": 1.3,
+      "zahr_reference_soft_min": 0.7
+    },
+    "coefficient_authority": {
+      "absolute_upper_bound": null,
+      "acceptance_authority": "FRESH_VISUM_ASSIGNMENT_PLUS_LIVE_12D_11D",
+      "allow_current_above_legacy_max": true,
+      "allow_proposed_above_legacy_max": true,
+      "current_value_source": "LIVE_VISUM_ZONE_ATTRIBUTES_AT_EACH_GENERATION_DESIGN",
+      "domestic_absolute_envelope": [
+        0.5,
+        2.0
+      ],
+      "enabled": true,
+      "legacy_absolute_bounds_role": "DISABLED_NOT_ENFORCED",
+      "mode": "LIVE_CURRENT_VALUE_SIGNED_RELATIVE_LOG_STEP_WITH_EMPIRICAL_ENVELOPES",
+      "multiplicative_minimum": 0.0,
+      "preserve_zero_policy": "EXISTING_CONFIG_SEMANTICS_ONLY",
+      "proposal_rule_multiplicative": "CURRENT_VALUE_TIMES_EXP_SIGNED_REQUESTED_LOG_STEP",
+      "proposal_rule_salary": "CURRENT_VALUE_PLUS_BOUNDED_DELTA",
+      "relative_step_authority": "SIGNED_GENERATION_STEP_SCHEDULE_AND_BACKTRACKING_SCALE",
+      "require_finite_current": true,
+      "require_finite_proposed": true,
+      "salary_absolute_envelope": [
+        0.5,
+        2.0
+      ],
+      "salary_domain_policy": "FORMULA_FACTOR_FLOOR_PLUS_PER_BLOCK_DELTA_ONLY",
+      "soft_reference_bands": {
+        "domestic": [
+          0.8,
+          1.25
+        ],
+        "salary": [
+          0.8,
+          1.25
+        ],
+        "zahr_multiplier": [
+          0.7,
+          1.3
+        ]
+      },
+      "zahr_envelope": "RUN_START_REFERENCE_TIMES_[0.5,2.0]"
+    },
+    "salary": {
+      "basis_ridge_lambda": 0.2,
+      "enabled": true,
+      "factor_floor": 0.05,
+      "formula_denominator": 2700.0,
+      "formula_offset": 1000.0,
+      "include_intercept": false,
+      "income_attr": "AV_INCOME",
+      "max_abs_delta_per_block": 0.02,
+      "min_eligible_zones": 8,
+      "salary_attr": "ADD_SALARY",
+      "salary_max": null,
+      "salary_min": null,
+      "work_attraction_attr": "ADD_ATT_W",
+      "zone_add_ridge_lambda": 1.0
+    },
+    "zahr": {
+      "domestic_mask_attr": "NOT_ZAHR",
+      "domestic_threshold": 0.5,
+      "enabled": true,
+      "explicit_excluded_zone_nos": [],
+      "max": null,
+      "min": 0.0,
+      "neighbour_attr": "ZAHR_SUSED",
+      "population_attr": "POP_ZP",
+      "preserve_zero": true,
+      "seed_floor": 0.0
+    },
+    "pre_input_policy": "P09F4/A09F4 values are existing read-only inputs, not tunable ADD parameters"
+  },
+  "td": {
+    "components": {
+      "WORK_E_C": {
+        "family": "WORK",
+        "dstrat_code": "1_WORK_E_C",
+        "matrix_no": 9101
+      },
+      "WORK_E_noC": {
+        "family": "WORK",
+        "dstrat_code": "1_WORK_E_noC",
+        "matrix_no": 9102
+      },
+      "WORK_noE_C": {
+        "family": "WORK",
+        "dstrat_code": "1_WORK_noE_C",
+        "matrix_no": 9103
+      },
+      "WORK_noE_noC": {
+        "family": "WORK",
+        "dstrat_code": "1_WORK_noE_noC",
+        "matrix_no": 9104
+      },
+      "WORK_stud": {
+        "family": "WORK",
+        "dstrat_code": "1_WORK_stud",
+        "matrix_no": 9105
+      },
+      "SERV_E_C": {
+        "family": "SERVICE",
+        "dstrat_code": "2_SERV_E_C",
+        "matrix_no": 9106
+      },
+      "SERV_E_noC": {
+        "family": "SERVICE",
+        "dstrat_code": "2_SERV_E_noC",
+        "matrix_no": 9107
+      },
+      "SERV_noE_C": {
+        "family": "SERVICE",
+        "dstrat_code": "2_SERV_noE_C",
+        "matrix_no": 9108
+      },
+      "SERV_noE_noC": {
+        "family": "SERVICE",
+        "dstrat_code": "2_SERV_noE_noC",
+        "matrix_no": 9109
+      },
+      "SERV_stud": {
+        "family": "SERVICE",
+        "dstrat_code": "2_SERV_stud",
+        "matrix_no": 9110
+      },
+      "LONG_E_C": {
+        "family": "LONG",
+        "dstrat_code": "3_LONG_E_C",
+        "matrix_no": 9111
+      },
+      "LONG_E_noC": {
+        "family": "LONG",
+        "dstrat_code": "3_LONG_E_noC",
+        "matrix_no": 9112
+      },
+      "LONG_noE_C": {
+        "family": "LONG",
+        "dstrat_code": "3_LONG_noE_C",
+        "matrix_no": 9113
+      },
+      "LONG_noE_noC": {
+        "family": "LONG",
+        "dstrat_code": "3_LONG_noE_noC",
+        "matrix_no": 9114
+      },
+      "LONG_stud": {
+        "family": "LONG",
+        "dstrat_code": "3_LONG_stud",
+        "matrix_no": 9115
+      },
+      "SCHOOL": {
+        "family": "SCHOOL",
+        "dstrat_code": "5_SCHOOL",
+        "matrix_no": 9117
+      }
+    },
+    "mutable_components": 16,
+    "foreign_frozen": {
+      "matrix_no": 9116,
+      "dstrat_code": "4_FOREIGN",
+      "read_a_b_c": true,
+      "execute_inner_td": false
+    },
+    "parameter_fields": {
+      "a": "PARA_A",
+      "b": "PARA_B",
+      "c": "PARA_C"
+    },
+    "a_frozen": true,
+    "native_api": "TripDistributionParameters.TripDistributionDStratParameters(code).GravitationParameters",
+    "source_td_scope": "Exactly one active type-46 operation with approved domestic16 or full17; inner executes domestic16, source DSTRATSET restored exactly",
+    "inner_execution": "Temporarily isolate approved TD operation, preserve groups and restore ACTIVE plus DSTRATSET",
+    "protected_input_matrices": [
+      9001,
+      9697,
+      9116
+    ],
+    "realization_scales": [
+      1.0,
+      0.5,
+      0.25,
+      0.125,
+      0.0625,
+      0.03125,
+      0.015625
+    ],
+    "realization_coordinates": "B_LINEAR_LOG_NEG_C",
+    "native_ipf_tolerances": "unchanged",
+    "important_adaptation": "Donor FineCDF optimizes IDP distance distributions, not cordon flows. Reuse native execution and guarded proposals; final adoption must evaluate whole cordon matrix.",
+    "legacy_2022_cell_gate": {
+      "source": "reference_v17/R1_BC_AUTO_DIST_ONLY_FINECDF_PATCHED_v1_7.py:1015-1074",
+      "target_cells": 3402,
+      "port_decision": "Do not impose old-year numeric cell authority on new 2025 data. Bind current 2025 protected inputs and preserve finite/dimensions/immutability checks; version explicitly."
+    }
+  },
+  "assignment": {
+    "tg_operation_position_from_donor_evidence": 5,
+    "tg_operation_type": 45,
+    "td_operation_position_from_donor_evidence": 6,
+    "td_operation_type": 46,
+    "assignment_operation_positions": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "final_assignment_position": 20,
+    "final_assignment_type": 101,
+    "passenger_dsegs": [
+      "NATIVE_CW",
+      "NATIVE_CW_noT",
+      "NATIVE_CS",
+      "NATIVE_CS_noT",
+      "NATIVE_CL",
+      "NATIVE_CF",
+      "EXOG_EE_CW",
+      "EXOG_EE_CW_noT",
+      "EXOG_EE_CS",
+      "EXOG_EE_CS_noT",
+      "EXOG_EE_CL",
+      "EXOG_EE_CF"
+    ],
+    "fixed_freight_dsegs": [
+      "LNV",
+      "NV"
+    ],
+    "complete_assignment_dseg_count": 14,
+    "gap_readback": {
+      "maximum_gap": 0.005,
+      "operation_no": 20,
+      "source": "PRT_ASS_QUALITY_LIST"
+    },
+    "generation_recompute": "Original active prefix through op20 with guarded phase-specific exclusions; otherwise original full sequence",
+    "td_recompute": "Native inner type46, then authorized realization/downstream procedure slice through op20",
+    "do_not_execute_only_assignment_after_changing_tg": true,
+    "procedural_external_scripts": "Use configured existing model procedure scripts (including 20B realization); full 20B source is not bundled in this donor ZIP. Validate configured paths at launch."
+  },
+  "matrices": {
+    "assignment_od_by_normalized_dseg": {
+      "NATIVE_CW": 9301,
+      "NATIVE_CW_NOT": 9302,
+      "NATIVE_CS": 9303,
+      "NATIVE_CS_NOT": 9304,
+      "NATIVE_CL": 9305,
+      "NATIVE_CF": 9306,
+      "EXOG_EE_CW": 9401,
+      "EXOG_EE_CW_NOT": 9402,
+      "EXOG_EE_CS": 9403,
+      "EXOG_EE_CS_NOT": 9404,
+      "EXOG_EE_CL": 9405,
+      "EXOG_EE_CF": 9406
+    },
+    "authority_rule": "DemandSegment.ODMatrix identity; not blind DSEGCODE matrix-inventory selection",
+    "component_blocks": {
+      "GENERATION": {
+        "dseg_codes": [
+          "NATIVE_CW",
+          "NATIVE_CW_noT",
+          "NATIVE_CS",
+          "NATIVE_CS_noT"
+        ],
+        "matrix_nos": [
+          9101,
+          9102,
+          9103,
+          9104,
+          9105,
+          9106,
+          9107,
+          9108,
+          9109,
+          9110
+        ]
+      },
+      "TD_COMPONENT_LONG": {
+        "dseg_codes": [
+          "NATIVE_CL"
+        ],
+        "matrix_nos": [
+          9111,
+          9112,
+          9113,
+          9114,
+          9115
+        ]
+      },
+      "TD_COMPONENT_SCHOOL": {
+        "dseg_codes": [
+          "NATIVE_CW",
+          "NATIVE_CW_noT"
+        ],
+        "matrix_nos": [
+          9117
+        ]
+      },
+      "TD_COMPONENT_SERVICE": {
+        "dseg_codes": [
+          "NATIVE_CS",
+          "NATIVE_CS_noT"
+        ],
+        "matrix_nos": [
+          9106,
+          9107,
+          9108,
+          9109,
+          9110
+        ]
+      },
+      "TD_COMPONENT_WORK": {
+        "dseg_codes": [
+          "NATIVE_CW",
+          "NATIVE_CW_noT"
+        ],
+        "matrix_nos": [
+          9101,
+          9102,
+          9103,
+          9104,
+          9105
+        ]
+      },
+      "TD_FINECDF_V17": {
+        "dseg_codes": [],
+        "matrix_nos": [
+          9101,
+          9102,
+          9103,
+          9104,
+          9105,
+          9106,
+          9107,
+          9108,
+          9109,
+          9110,
+          9111,
+          9112,
+          9113,
+          9114,
+          9115,
+          9117
+        ]
+      }
+    },
+    "foreign_scope": [
+      9116,
+      9306
+    ],
+    "fixed_exog_matrices": [
+      9401,
+      9402,
+      9403,
+      9404,
+      9405,
+      9406
+    ],
+    "native_formula_outputs": "9301..9306 are regenerated formula outputs; no direct correction"
+  },
+  "transaction": {
+    "candidate_flow": [
+      "snapshot accepted parent",
+      "parameter proposal",
+      "mark mutation before first write",
+      "write and readback",
+      "recompute",
+      "fresh actual cordon diagnostics",
+      "evaluate",
+      "restore parent and verify",
+      "reapply selected winner",
+      "recompute and verify reproducibility",
+      "save accepted checkpoint"
+    ],
+    "normal_rollback": "Restore calibrated parameters + native recompute + semantic and diagnostic equality; no normal LoadVersion or SetValues",
+    "crash_recovery": "Last verified saved .ver and matching state manifest; fail closed on unverified rollback",
+    "donor_permission_semantics": {
+      "apply": false,
+      "production_apply": false,
+      "trial_calibration_enabled": true,
+      "trial_writes_performed": true
+    },
+    "cordon_permission_semantics": "New explicit live trial contract; retain old offline prohibition unchanged",
+    "source_not_overwritten": true,
+    "profile_diagnostic_reuse_not_valid_for_cordon": "Fresh cordon equality proof required"
+  },
+  "cache": {
+    "proposal": "Frozen path basis may guide local proposals but is not a post-assignment observed result",
+    "acceptance": "Current actual paths and volumes after assignment; no reuse proof from unchanged OD totals or path IDs alone",
+    "PERF01": "Same sealed snapshot only; identity invalidated on new capture",
+    "keep_cordon_fix3_precision": true,
+    "keep_diagfast_legacy_fallback": true
+  },
+  "replace_profile_interfaces": [
+    "diagnostics",
+    "generation_design incidence input",
+    "block_gate",
+    "ledger and diagnostic_hash",
+    "rollback_diagnostic_equivalence",
+    "profile roster validation",
+    "profile-specific lineage and source approvals"
+  ],
+  "whole_matrix_patch": {
+    "current_config": "CORDON_2025_CONFIG.json and CORDON_2025_AGGRESSIVE_CONFIG.json",
+    "current_code": "cordon2025.__main__.empirical_run",
+    "required_change": "validation_unordered_pairs=[]; 120 CAL and 0 VALID; no relation omitted in optimizer, targeting, C17, acceptance or reporting",
+    "implemented_in_this_task": false
+  },
+  "aggressive_parameter_schedule": [
+    {
+      "name": "SIGNED_EXPLORE",
+      "through_outer_cycle": 6,
+      "max_od_relative_up": 0.2,
+      "max_od_relative_down": 0.2,
+      "max_add_log_up": 0.12,
+      "max_add_log_down": 0.12,
+      "salary_max_abs_delta_per_block": 0.1,
+      "signed_max_family_global_log_up": 0.1,
+      "signed_max_family_global_log_down": 0.1,
+      "signed_soft_outward_step_factor": 0.5
+    },
+    {
+      "name": "SIGNED_REFINE",
+      "through_outer_cycle": 18,
+      "max_od_relative_up": 0.14,
+      "max_od_relative_down": 0.14,
+      "max_add_log_up": 0.08,
+      "max_add_log_down": 0.08,
+      "salary_max_abs_delta_per_block": 0.08,
+      "signed_max_family_global_log_up": 0.06,
+      "signed_max_family_global_log_down": 0.06,
+      "signed_soft_outward_step_factor": 0.4
+    },
+    {
+      "name": "DISTRIBUTION_FOCUS",
+      "through_outer_cycle": 100,
+      "max_od_relative_up": 0.08,
+      "max_od_relative_down": 0.08,
+      "max_add_log_up": 0.05,
+      "max_add_log_down": 0.05,
+      "salary_max_abs_delta_per_block": 0.05,
+      "signed_max_family_global_log_up": 0.03,
+      "signed_max_family_global_log_down": 0.03,
+      "signed_soft_outward_step_factor": 0.3
+    }
+  ],
+  "generation_backtracking_scales": [
+    1.0,
+    0.75,
+    0.5,
+    0.25,
+    0.125,
+    0.0625
+  ],
+  "scope_limit": "Extraction, comparison and donor tests only. No calibration code changed; no Visum model changed; no live acceptance performed."
+}

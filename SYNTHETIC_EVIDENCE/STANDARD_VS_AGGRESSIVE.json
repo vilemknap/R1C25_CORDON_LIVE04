@@ -1,0 +1,30 @@
+{
+  "aggressive_objective": 2.8615397744586146,
+  "aggressive_prediction": [
+    139.97064113492203,
+    90.0,
+    110.98825645396882
+  ],
+  "aggressive_relative_changes": [
+    0.1997064113492204,
+    -0.2
+  ],
+  "fixed_contribution": [
+    20.0,
+    10.0,
+    15.0
+  ],
+  "origin": "SYNTHETIC_TEST_FIXTURE",
+  "stage": "SIGNED_EXPLORE",
+  "standard_objective": 4.556121428571429,
+  "standard_prediction": [
+    135.0,
+    95.0,
+    112.0
+  ],
+  "standard_relative_changes": [
+    0.15,
+    -0.15
+  ],
+  "validation_used_for_optimization": false
+}

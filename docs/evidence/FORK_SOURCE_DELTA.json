@@ -1,0 +1,21 @@
+{
+  "baseline_files": 731,
+  "immutable_baseline_unchanged": true,
+  "missing": [],
+  "modified": [
+    {
+      "after_sha256": "1c24b099a9f41b5c91474725ffe11a29772b609b33fb7bccf962d47eab51660d",
+      "before_sha256": "f817aa114eae5a924116b8f73f7d3f22ae6b26742942b74d189a3d75bf6e30ed",
+      "path": "r1_15a2_core.py"
+    },
+    {
+      "after_sha256": "78c902da66c3aa460dced9dd15c756ff63199b10f3131797845a4234d2bc7056",
+      "before_sha256": "f568c2f0e94b73f5e336a926c37df091b4af36d2c401a985d44eeff15579bf0a",
+      "path": "r1_15a2_two_mode_v238.py"
+    }
+  ],
+  "old_deployment_guard_must_reject_fork": true,
+  "original_2022_config_unchanged": true,
+  "original_runtime_manifest_unchanged": true,
+  "preserved_files": 729
+}

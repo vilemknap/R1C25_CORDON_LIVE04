@@ -1,0 +1,22 @@
+R1 15A2 V2.3.9 SAFETY GATES
+
+1) Nejdřív spusť READ-ONLY:
+   R1_15A2_15T_ASSIGNMENT_SCOPE_FULL_GEOMETRY_READONLY.py
+   přes Scripts -> Execute script file.
+
+2) Pokračuj jen pokud 00_FINAL_STATUS.txt obsahuje:
+   PASS_ASSIGNMENT_SCOPE_AND_FULL_GEOMETRY_IDENTITY
+
+3) Potom vytvoř bitově identickou pracovní kopii .ver ve stejné složce.
+   Název MUSÍ obsahovat: 15U_WORKING_COPY
+   Vedle ní vytvoř 15U_WORKING_COPY_ACK.txt s řádkem:
+   I_CONFIRM_DISPOSABLE_WORKING_COPY
+
+4) Na pracovní kopii spusť:
+   R1_15A2_15U_NO_LOADVERSION_ROLLBACK_SMOKE.py
+
+5) Úplný PASS 15U:
+   PASS_NO_LOADVERSION_ROLLBACK_SUPPLY_GENERATION_TD
+
+Podrobnosti: README_R1_15A2_V2_3_9_SAFETY_GATES_CZ.md
+Produkční APPLY zůstává zakázaný.

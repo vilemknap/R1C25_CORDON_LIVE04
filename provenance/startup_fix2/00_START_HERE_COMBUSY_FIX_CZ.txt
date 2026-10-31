@@ -1,0 +1,83 @@
+R1_15A2 AGGRESSIVE TG/TD V1 FIX1 - COM BUSY READ RETRY HOTFIX V1
+============================================================
+Datum: 2026-10-23
+
+PROBLEM
+-------
+Opakovane spusteni po cyklu 09 skoncilo v preflight pred prvnim TG/TD cyklem:
+  pywintypes.com_error: Volany odmitl volani.
+Na zacatku se chyba projevila v:
+  r1_15a2_single_pass_snapshot_v24915p2c.py
+    visum.Net.Matrices.ItemByKey(matrix_no)
+  r1_15a2_supply_visum.py
+    self.visum.Net.Links (bulk i scalar read)
+
+POUZITI
+-------
+1) Rozbal KOMPLETNI ZIP do NOVÉ samostatné slozky. Alternativne rozbal maly
+   PATCH_ONLY ZIP do jiz rozbalene puvodni verze FIX1 (nic neprepisuje).
+2) V PTV Visum 2026 otevri NOVOU KOPII .ver se svou ulozenou upravou 20B.
+   Neprerazej puvodni ACCEPTED_A_0015 checkpoint. Tento balicek obsahuje
+   pouze Python kod, nikoliv vlastni .ver.
+3) SPUST JEN NOVY VSTUPNI SKRIPT:
+   R1_15A2_AGGRESSIVE_TGTD_V1_FIX1_COMBUSY_RETRY.py
+   (z te slozky, kam je rozbalen kompletní balik FIX1).
+4) Nespoustej puvodni R1_15A2_AGGRESSIVE_TGTD_V1_FIX1.py,
+   ten hotfix NEAKTIVUJE.
+
+CO SE MENI
+----------
+Nove soubory:
+  R1_15A2_AGGRESSIVE_TGTD_V1_FIX1_COMBUSY_RETRY.py
+  r1_15a2_com_busy_snapshot_hotfix_v1.py
+
+Cilene cteci vstupy s COM retry za behu:
+  - r1_15a2_supply_visum.VisumAdapter.read_links
+  - r1_15a2_supply_visum.VisumAdapter.snapshot
+  - r1_15a2_single_pass_snapshot_v24915p2c.single_pass_exact_snapshot
+    vcetne aliasu nacteneho v r1_15a2_trial_adapter_v24915p2c
+
+Originalni dva moduly se na disku NEMENI. Hotfix je instaluje do pameti pres
+novy entrypoint, aby neporusil tvrde SHA256 kontroly 947 chranenych souboru.
+Nestartuje dalsi Visum proces a neprovadi zadny dodatecny Visum zapis.
+
+RETRY POLITIKA
+--------------
+Omezeno na prechodna COM volani CALL_REJECTED / RETRY_LATER (HRESULT a
+kompatibilni hlasky detekovane puvodnim COM helperem). Bounded per read:
+  max_attempts = 64
+  initial_delay_seconds = 0.15
+  backoff_factor = 1.5
+  max_delay_seconds = 1.5
+  max_elapsed_seconds = 75
+Dalsi presne hodnoty lze volitelne nastavit ve scope:
+  com_resilience.scoped_policies.startup_snapshot_read
+Kdyz je v existujici konfiguraci com_resilience.enabled = false, nic se
+samovolne nezapina. V aktualni Aggressive FIX1 je true.
+Vnorenym volanim read_links pod snapshot se NENASOBI casove limity.
+
+INTEGRITA A KALIBRACE
+---------------------
+- Puvodni 947 chranenych souboru a 3 pridane schvalene soubory nezmeneny.
+- Puvodni SHA kontroly v .py launcheru zustavaji aktivni.
+- Nove dva soubory se zapisi do EFFECTIVE_CONFIG.implementation_files, stav opravy je v
+  EFFECTIVE_CONFIG.aggressive_tuning.com_busy_snapshot_retry_hotfix.
+- Pocet planovanych vnejsich cyklu zustava 100, ve FRESH rezimu od cyklu 1.
+  Jde o NOVY BEH z otevreneho .ver, NE navazani puvodniho cislovani od 10.
+- Ani tento hotfix, ani cela ZIP varianta NEUPRAVUJI 20B IPF toleranci.
+  Tolerance 1e-3 musi byt opravdu ulozena ve 20B ve zdrojovem .ver.
+- Zadna zmena TG/TD matematiky, akceptace, rollbacku ani LONG parametru.
+
+KDYZ COM ODMITANI POKRACUJE
+--------------------------
+Po vycerpani 75s bounded pokusu se puvodni COM exception znovu vyhodi;
+hotfix nema obchazet skutecne zablokovane/modální Visum.
+Nove detaily retry jsou logovany do CONSOLE_CAPTURE.log a evidovany
+v pameti jako adapter.r1_com_busy_read_retry_events.
+
+OFFLINE OVERENI
+---------------
+109/109 regresnich testu proslo; 6/6 novych fault-injection testu proslo.
+Verify parent source SHA: 947/947 + additions 3/3 PASS.
+Realny COM beh ve Windows/Visum nebylo mozne zde vykonat.
+

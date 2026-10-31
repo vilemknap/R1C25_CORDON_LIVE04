@@ -1,0 +1,25 @@
+R1 15A2 V2.4.8.4 - RUN ROOT HOTFIX
+==================================
+
+SPUSTIT:
+R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_8_4.py
+
+POSTUP:
+1. Rozbal CELÝ ZIP do krátké lokální složky.
+2. V PTV Visum 2026 může být otevřen původní accepted baseline .ver nebo accepted checkpoint z předchozího R1 15A2 runu.
+3. Scripts -> Execute script file.
+4. Vyber výše uvedený launcher V2_4_8_4.
+5. Nespouštěj z Procedure Sequence.
+
+PATH CACHE NEMAŽ:
+%LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248
+
+V2.4.8.4 opravuje V2.4.8.3 pád Windows MAX_PATH: pokud je CurrentVersionFile uvnitř
+starého R1_15A2_*_RUNS/RUN_.../CALIBRATION/CHECKPOINTS, nový run se už nevnoří
+pod tento checkpoint. Výstup se normalizuje na projektovou bázi vedle R1_15A2_*_RUNS.
+
+Kontrola po startu:
+RUN_ROOT_AUTHORITY.json -> project_base_mode může být PRIOR_RUN_TREE_NORMALIZED.
+PERSISTENT_PATH_CACHE_LOCATION.json -> root má zůstat %LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248.
+
+Real Visum acceptance ještě musí proběhnout; offline PASS není produkční autorizace.

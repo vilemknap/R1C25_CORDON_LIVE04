@@ -1,0 +1,101 @@
+{
+  "actual_assignment_verified": false,
+  "aggressive_policy": {
+    "apply_permitted": false,
+    "base_config_sha256": "bbe2a55cf8fd5ea7cd2a5982df6606a48208788bd2376ddadf3d6be2bf91d552",
+    "c17_budgets_unchanged": true,
+    "cycle_kind": "EXPLICIT_OFFLINE_STAGE_SELECTOR_NOT_LIVE_ITERATION",
+    "design_source_sha256": "6aad964325002c8d13c10412bce3f0242ee75fae3640214bc5ab8ec823edda56",
+    "effective_science_sha256": "78fd9c6dd3970aa89fb43dd473aec1bae19f41b9c965d8199064cd5d3c73f49d",
+    "live_visum_tested": false,
+    "new_science_lineage": true,
+    "no_2022_resume": true,
+    "outer_cycle": 1,
+    "policy_id": "CORDON_AGGRESSIVE_V1_PROFILE_FIX1_SEARCH_ONLY",
+    "profile_GEH_relaxations_imported": false,
+    "regularization_unchanged": true,
+    "source_policy_sha256": "c41e28c1ecbaa3bbdef43b259458f6407bfbef6af240d9312282e47e6b83e10f",
+    "stage": {
+      "max_add_log_down": 0.12,
+      "max_add_log_up": 0.12,
+      "max_od_relative_down": 0.2,
+      "max_od_relative_up": 0.2,
+      "name": "SIGNED_EXPLORE",
+      "salary_max_abs_delta_per_block": 0.1,
+      "signed_max_family_global_log_down": 0.1,
+      "signed_max_family_global_log_up": 0.1,
+      "signed_soft_outward_step_factor": 0.5,
+      "through_outer_cycle": 6
+    },
+    "validation_split_unchanged": true
+  },
+  "apply_permitted": false,
+  "c17": {
+    "global_credits_consumed": 0,
+    "physical_pair_allocation": "PRODUCTION_DISABLED",
+    "policy": "DISABLED"
+  },
+  "candidate_is_full_solver_optimum": false,
+  "convergence_kind": "UNDERLYING_GUIDANCE_SOLVER_NOT_BACKTRACKED_CANDIDATE_OPTIMALITY",
+  "epsilon_is_statistical_interval": false,
+  "final_breakdown": {
+    "c17_credit_loss": 0.0,
+    "cordon_data_loss": 2.403846153846154,
+    "od_l1_loss": 5e-05,
+    "od_ridge_loss": 0.00012500000000000003
+  },
+  "history": [
+    {
+      "block": 1,
+      "kkt_u": 0.0,
+      "kkt_x": 0.0,
+      "objective": 0.38681538461538467,
+      "parent_solver_iterations": 10,
+      "u_iterations": 0
+    }
+  ],
+  "hypothesis": "SYNTHETIC_ALGEBRA",
+  "initial_breakdown": {
+    "c17_credit_loss": 0.0,
+    "cordon_data_loss": 3.4615384615384626,
+    "od_l1_loss": 0.0,
+    "od_ridge_loss": 0.0
+  },
+  "kkt_u": 0.0,
+  "kkt_x": 12.13113461538462,
+  "live_visum_tested": false,
+  "numeric_converged": true,
+  "objective_final": 2.4040211538461542,
+  "objective_initial": 3.4615384615384626,
+  "origin": "SYNTHETIC_TEST_FIXTURE",
+  "prediction_kind": "LINEARIZED_SHADOW_OD_NOT_VISUM_RESULT",
+  "production_ready": false,
+  "relations": [
+    {
+      "actual_assignment_verified": false,
+      "after_LINEARIZED": 105.0,
+      "aggregation": "BIDIRECTIONAL_SUM",
+      "before_saved_path_prediction": 100.0,
+      "c17_scenario_relaxation": 0.0,
+      "destination_station": 2,
+      "epsilon_abs": 0.0,
+      "fixed_contribution": 0.0,
+      "flags": "UNMET_TARGET_OUTSIDE_RELAXATION",
+      "method": "SYNTHETIC_ALGEBRA",
+      "mutable_before": 100.0,
+      "observed": 130.0,
+      "origin_station": 1,
+      "raw_difference_after": -25.0,
+      "residual_after_relaxation": -25.0,
+      "role": "CALIBRATION"
+    }
+  ],
+  "relative_bounds": [
+    -0.2,
+    0.2
+  ],
+  "solver_backend": "PARENT_15A2_SOLVE_GUIDANCE_FISTA_PLUS_C17_BLOCK",
+  "status": "OFFLINE_AGGRESSIVE_SHADOW_PROPOSAL_READY",
+  "uses_supply_actuator": false,
+  "validation_used_for_optimization": false
+}

@@ -1,0 +1,35 @@
+--- cordon/r1_15a2_core.py
++++ profile/r1_15a2_core.py
+@@ -206,8 +206,6 @@
+     original_profile_indices: Any
+     dropped_objective_rows: List[Dict[str, Any]]
+     selection_summary: Dict[str, Any]
+-    # Optional 2025-only squared-deadband loss; None preserves legacy exactly.
+-    deadband: Any = None
+ 
+ 
+ @dataclass
+@@ -1136,10 +1134,7 @@
+ 
+ def _smooth_gradient(problem: GuidanceProblem, x: Any) -> Tuple[Any, Any]:
+     pred = problem.operator.forward(x)
+-    residual = pred - problem.target
+-    if problem.deadband is not None:
+-        residual = np.sign(residual) * np.maximum(0.0, np.abs(residual) - problem.deadband)
+-    weighted_normal_resid = (problem.row_weight ** 2) * residual
++    weighted_normal_resid = (problem.row_weight ** 2) * (pred - problem.target)
+     grad = problem.operator.transpose(weighted_normal_resid) + problem.ridge_diag * x
+     return grad, pred
+ 
+@@ -1168,10 +1163,7 @@
+ 
+ def guidance_objective(problem: GuidanceProblem, x: Any) -> float:
+     pred = problem.operator.forward(x)
+-    residual = pred - problem.target
+-    if problem.deadband is not None:
+-        residual = np.sign(residual) * np.maximum(0.0, np.abs(residual) - problem.deadband)
+-    r = problem.row_weight * residual
++    r = problem.row_weight * (pred - problem.target)
+     return 0.5 * float(np.dot(r, r)) + 0.5 * float(np.dot(problem.ridge_diag * x, x)) + float(np.dot(problem.l1_diag, np.abs(x)))
+ 
+ 

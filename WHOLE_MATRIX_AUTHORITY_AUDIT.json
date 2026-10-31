@@ -1,0 +1,1555 @@
+{
+  "calibration": 120,
+  "cells_sha256": "ec3835248ee0067669088fb216f5cefe1c7e9c5ce2e49824d4c12e12a0dd03a4",
+  "diagonal_cells": 16,
+  "effective_transform": "EXISTING_BIDIRECTIONAL_SUM_BOTH_MODEL_AND_TARGET",
+  "nonzero_offdiagonal": 240,
+  "offdiagonal_cells": 240,
+  "policy": "WHOLE_FINAL_SYMMETRIC_RPDI_MATRIX",
+  "production_approved": false,
+  "schema": "LIVE01_WHOLE_MATRIX_AUTHORITY_V1",
+  "source_cells": 256,
+  "source_path": "data/audited/PHYSICAL_TARGETS.csv",
+  "source_sha256": "9e5018da5dc3887bd3f17a0b1a006d43a067f3315d46144bf3ceaba4f94d8733",
+  "source_trace": [
+    {
+      "destination_station": 1,
+      "origin_station": 1,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 35.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1625.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 82.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 334.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 336.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 127.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 58.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 181.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 115.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1160.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 2415.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 227.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 909.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6023.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 1,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 4702.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 35.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 2,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 12.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 23.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 12.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 302.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 113.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 5.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 121.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 98.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 195.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 89.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1183.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 432.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 109.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 2,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 111.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1625.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 12.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 3,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 232.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1116.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 103.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 111.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 17.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 58.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 13.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 18.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 169.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 652.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 3,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 3989.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 82.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 23.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 232.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 4,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 36.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 57.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 108.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 37.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 68.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 20.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 17.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 22.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 27.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 19.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 38.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 4,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 133.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 334.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 12.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1116.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 36.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 5,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 19.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 25.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 9.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 14.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 3.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 2.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 8.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 27.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 306.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 5,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 913.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 336.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 302.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 103.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 57.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 19.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 6,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 633.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 366.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 329.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 24.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 7.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 191.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 145.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 56.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 57.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 6,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 30.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 127.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 113.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 111.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 108.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 25.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 633.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 7,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 74.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 283.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 7.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 4.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 84.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 76.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 30.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 70.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 7,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 368.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 58.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 5.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 37.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 9.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 366.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 74.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 8,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 8.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 2.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 3.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 12.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 8,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 43.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 181.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 121.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 68.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 14.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 329.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 283.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 8.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 9,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 11.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 7.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 99.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 89.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 22.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 4.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 9,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 165.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 115.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 98.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 17.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 20.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 3.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 24.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 7.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 11.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 10,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 21.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 21.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 35.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 532.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 67.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 10,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 90.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1160.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 195.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 58.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 17.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 2.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 7.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 4.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 2.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 7.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 21.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 11,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 83.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 321.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 83.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 384.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 11,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 139.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 2415.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 89.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 13.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 22.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 191.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 84.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 99.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 21.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 83.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 12,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 356.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 107.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 133.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 12,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 96.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 227.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1183.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 18.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 27.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 8.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 145.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 76.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 3.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 89.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 35.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 321.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 356.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 13,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 119.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 118.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 13,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 117.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 909.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 432.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 169.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 19.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 27.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 56.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 30.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 22.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 532.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 83.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 107.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 119.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 14,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1116.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 14,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 696.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 6023.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 109.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 652.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 38.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 306.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 57.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 70.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 12.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 4.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 67.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 384.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 133.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 118.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 1116.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 15,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 15,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 782.0
+    },
+    {
+      "destination_station": 1,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 4702.0
+    },
+    {
+      "destination_station": 2,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 111.0
+    },
+    {
+      "destination_station": 3,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 3989.0
+    },
+    {
+      "destination_station": 4,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 133.0
+    },
+    {
+      "destination_station": 5,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 913.0
+    },
+    {
+      "destination_station": 6,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 30.0
+    },
+    {
+      "destination_station": 7,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 368.0
+    },
+    {
+      "destination_station": 8,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 43.0
+    },
+    {
+      "destination_station": 9,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 165.0
+    },
+    {
+      "destination_station": 10,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 90.0
+    },
+    {
+      "destination_station": 11,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 139.0
+    },
+    {
+      "destination_station": 12,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 96.0
+    },
+    {
+      "destination_station": 13,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 117.0
+    },
+    {
+      "destination_station": 14,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 696.0
+    },
+    {
+      "destination_station": 15,
+      "origin_station": 16,
+      "source_status": "USED_IN_WHOLE_MATRIX",
+      "source_value": 782.0
+    },
+    {
+      "destination_station": 16,
+      "origin_station": 16,
+      "source_status": "AUDITED_STRUCTURAL_ZERO",
+      "source_value": 0.0
+    }
+  ],
+  "source_values_modified": false,
+  "unordered_pairs": 120,
+  "validation": 0
+}

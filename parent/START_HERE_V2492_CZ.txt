@@ -1,0 +1,22 @@
+R1 15A2 V2.4.9.2 - SIGNED GENERATION REFINEMENT
+
+Tato verze je určena pro další kalibrační běh po dokončení právě běžící V2.4.9.0.
+Aktuální V2.4.9.0 běh kvůli přípravě V2.4.9.2 nezastavuj.
+
+Spuštění:
+1. Rozbal celý ZIP do nové krátké lokální složky.
+2. Otevři bezpečný accepted checkpoint, který bude vybrán podle výsledku V2.4.9.0.
+3. Ponech %LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248 beze změny.
+4. Ve Visumu spusť Scripts -> Execute script file:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_2.py
+
+Nový run musí vzniknout přímo pod:
+  ...\2022\R1_15A2_V2492_RUNS\RUN_...
+
+Rozhodující evidence:
+  00_GENERATION_COEFFICIENT_REFERENCE.json
+  GENERATION_SIGNED_REFINEMENT_AUDIT.json
+  GENERATION_DESIGN.json
+  TD_SOFT_REFERENCE_ACCEPTANCE.json
+
+V2.4.9.2 nebyla dosud spuštěna v reálném PTV Visum COM.

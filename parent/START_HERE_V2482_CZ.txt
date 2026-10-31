@@ -1,0 +1,7 @@
+R1 15A2 V2.4.8.2 CP12
+
+1. Rozbal celý balík do nové složky, např. C:\Users\vilem_knap\Documents\R1_15A2_V2482
+2. Otevři accepted baseline .ver.
+3. Spusť R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_8_2.py přes Scripts > Execute script file.
+4. Starý V247/V2481 run nemaž; persistent cache ale už existuje v LOCALAPPDATA.
+5. Ověř PERSISTENT_PATH_CACHE_RESTORE.json a následně TWO_MODE_CACHE_REUSE.json / TRY_01.

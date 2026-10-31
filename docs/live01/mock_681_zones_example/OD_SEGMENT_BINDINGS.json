@@ -1,0 +1,146 @@
+{
+  "EXOG_EE_CF": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 484.79999999999995,
+    "matrix_no": 9406,
+    "matrix_sha256": "7ef91277d7c7de743e87d382fb2325e334a8af56fcdf8a89124ce25cfcdc9fac",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 484.79999999999995
+  },
+  "EXOG_EE_CL": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 508.8,
+    "matrix_no": 9405,
+    "matrix_sha256": "55158f4393870440319976b610a24d1aa16ed87b4452182eb0a5c3f1298e9451",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 508.8
+  },
+  "EXOG_EE_CS": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 532.8,
+    "matrix_no": 9403,
+    "matrix_sha256": "2d8d69a95e55efc9923c618d3af226a5a83f10a173a8b4a72b085189b02ce667",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 532.8
+  },
+  "EXOG_EE_CS_NOT": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 676.8,
+    "matrix_no": 9404,
+    "matrix_sha256": "d4ca5023a5f40499115f00b4b0bae4c077058abf3645def72a4c2e194041de29",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 676.8
+  },
+  "EXOG_EE_CW": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 556.8,
+    "matrix_no": 9401,
+    "matrix_sha256": "5cdcb32c9e578da34850861d59c567ed1cf7ee5a859a92e93dabaf9f4597b003",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 556.8
+  },
+  "EXOG_EE_CW_NOT": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 700.8,
+    "matrix_no": 9402,
+    "matrix_sha256": "712315baeb7bab4baa5e1b722ce48c016c2128fa17c59f02d76b4a0369cc9fa7",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 700.8
+  },
+  "NATIVE_CF": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 580.8,
+    "matrix_no": 9306,
+    "matrix_sha256": "58e5172d379465419db76975f7a2f3208c14bf9c1d97b968b54e938ac05432ab",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 580.8
+  },
+  "NATIVE_CL": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 604.8,
+    "matrix_no": 9305,
+    "matrix_sha256": "cb632801dd710c298476bc594b550645bc478aa99706985662be01db24208ac1",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 604.8
+  },
+  "NATIVE_CS": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 628.8,
+    "matrix_no": 9303,
+    "matrix_sha256": "086874c472ee69e2560bace0d2207f52fcb583614e51f9329f2534df27d07182",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 628.8
+  },
+  "NATIVE_CS_NOT": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 724.8,
+    "matrix_no": 9304,
+    "matrix_sha256": "a89904de60708c2cde01e65a0be86f9ba95591286de6396587d934e52974d787",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 724.8
+  },
+  "NATIVE_CW": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 652.8,
+    "matrix_no": 9301,
+    "matrix_sha256": "d38007b81805c4a38d4b68d0b16ee7fc5ab2e1cbb17d7d024bd5769bce70aaf2",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 652.8
+  },
+  "NATIVE_CW_NOT": {
+    "binding": "DemandSegment.ODMatrix",
+    "matrix_diagonal": 0.0,
+    "matrix_interzonal": 748.8,
+    "matrix_no": 9302,
+    "matrix_sha256": "c595a03ea80a4c47428e16f31f53d30f39d0e8486212cd09a21a1fc852c835e9",
+    "matrix_shape": [
+      681,
+      681
+    ],
+    "matrix_total": 748.8
+  }
+}

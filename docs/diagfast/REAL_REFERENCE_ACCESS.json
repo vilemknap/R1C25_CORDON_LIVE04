@@ -1,0 +1,92 @@
+{
+  "status": "REAL_SNAPSHOT_FOUND_DOWNLOAD_BLOCKED",
+  "drive_folder_id": "1vVMVfQhYRK7c1dZDmIQ-SEIbx8fLqBpl",
+  "drive_file_id": "1BGc6A0QZeH6LOTYK9lpf8i4R9PD3D5vW",
+  "file_bytes": 664272896,
+  "expected_sha256": "7e35a96ac1bc4fb306049d410379e349fde5aa8a07b15bf11301ed858253fa9a",
+  "full_sqlite_sha_verified_here": false,
+  "connector_download_attempt": {
+    "action": "fetch(download_raw_file=True,include_base64=False)",
+    "status": "HTTP_413",
+    "limit_bytes": 268435456,
+    "error": "File too large to download: 664272896 bytes exceeds the 268435456-byte limit"
+  },
+  "public_read_fallback": "FAILED_CONTAINER_DNS_UNAVAILABLE",
+  "matrix_authorities": [
+    {
+      "path": "matrix_authority/EXOG_EE_CF.npz",
+      "bytes": 11475,
+      "sha256": "70be13c0791ca7671d1eed58ffe7591feb8a6d9d41b10100e50ed30eb2f6c103",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/EXOG_EE_CL.npz",
+      "bytes": 8388,
+      "sha256": "28fd14551d82031bf73cc383ad138bde717acbed60e36bf3db70f38291f6cfda",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/EXOG_EE_CS.npz",
+      "bytes": 11142,
+      "sha256": "9222a56efad14f484ff4c8f26d8a28df633fd7643307c63b6b8eaa27641fe0ca",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/EXOG_EE_CS_NOT.npz",
+      "bytes": 10284,
+      "sha256": "7507921245b9d214315fcca96ee15700ab840604c76a6311e2d1b336d24a5752",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/EXOG_EE_CW.npz",
+      "bytes": 11135,
+      "sha256": "825d894a1dce429b30d79ac85b101cd1e58ceff3c34669936796c607b9605687",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/EXOG_EE_CW_NOT.npz",
+      "bytes": 10266,
+      "sha256": "b80f68556789a56ef29f368fc645d8f58dd44c458ee764b8e5ab630dd6849813",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/NATIVE_CF.npz",
+      "bytes": 142310,
+      "sha256": "9ad954125a417fa3dc60266c7f701c271b559b1f47c612eb197130f83f24ab8b",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/NATIVE_CL.npz",
+      "bytes": 3220497,
+      "sha256": "cd3b88843416b5afbfa04980d40c551aecee854e5c160f5174a236c16e21caa8",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/NATIVE_CS.npz",
+      "bytes": 3308375,
+      "sha256": "4b66981b880dc12b00314f22082b4937d4fdc55f8e6450e48bb18429e043461c",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/NATIVE_CS_NOT.npz",
+      "bytes": 3291565,
+      "sha256": "42600aed83692cacebbd398c18bdd709cd3bec7505a0751210a98b0d58280808",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/NATIVE_CW.npz",
+      "bytes": 3317042,
+      "sha256": "5ac16319363937f4aceeba76fa7f2168bbe02cace8d524e33613d0392678c478",
+      "status": "PASS"
+    },
+    {
+      "path": "matrix_authority/NATIVE_CW_NOT.npz",
+      "bytes": 3299707,
+      "sha256": "f22d6484f2b83487f15a60907cff4d095deaac55444df37f20e7a51b1d9bfb8f",
+      "status": "PASS"
+    }
+  ],
+  "native_visum_available": false,
+  "full_real_replay": "NOT_RUN",
+  "old_local_partial_sqlite_sha256": "840c8f2ccaf6368912edcf73098eeaa55125e6512f87df9cbbe06bd0eab91d43"
+}

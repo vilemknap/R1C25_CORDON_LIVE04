@@ -1,0 +1,88 @@
+R1 2025 CORDON / PERF-01: overena offline derived cache
+=====================================================
+
+CO TOTO VYDANI DELA
+Pouziva stejny zapeceteny snapshot jako FIX3. Prvni pruchod vytvori obe
+kordonove incidence, dalsi behy je nactou z obsahove overene cache. Nejde
+o novou kalibraci ve Visumu, rychlejsi COM export ani detekci noveho assignmentu.
+Zadny APPLY, TG/TD zapis, SaveVersion, LoadVersion ani assignment se neprovadi.
+
+PRIPRAVA
+1. Rozbalte CELY release do nove samostatne slozky R1C25_PERF01.
+   Puvodni FIX3 a model 2022 zustanou beze zmeny.
+2. Pouzijte normalni terminal s Pythonem a zavislostmi z requirements.txt,
+   nikoliv Scripts -> Execute script ve Visumu. Spustte v koreni release:
+   python verify_release.py
+3. Zachovejte kompletni hotovou vstupni slozku vcetne p.sqlite,
+   SNAPSHOT_EVIDENCE.json, GEOMETRY_PROOF.json, OD_PARITY.json,
+   RUN_CHECKPOINT.json a matrix_authority/*.npz.
+   Samotna stara nedokoncena p.sqlite z FIX2 NESTACI.
+
+PRIKLAD PRO WINDOWS CMD (nikoliv PowerShell syntaxe promennych)
+set "SRC=%LOCALAPPDATA%\R1C25\VISUM_CAPTURE_DIAGNOSTICS_9bd0a39f07fa"
+set "DERIVED=%LOCALAPPDATA%\R1C25_PERF01_CACHE"
+set "RUNS=%LOCALAPPDATA%\R1C25_PERF01_RUNS"
+
+PRVNI BUILD (novy nebo vlastni PERF01 koren; zadna adopce cizi slozky)
+python -m cordon2025 inspect-cache --config CORDON_2025_AGGRESSIVE_CONFIG.json --cache "%SRC%\p.sqlite" --evidence "%SRC%\SNAPSHOT_EVIDENCE.json" --source-checkpoint "%SRC%\RUN_CHECKPOINT.json" --reuse-cache-dir "%DERIVED%" --reuse-policy build-offline --output-root "%RUNS%" --run-name PERF01_BUILD
+
+OPAKOVANY OVERENY HIT
+python -m cordon2025 inspect-cache --config CORDON_2025_AGGRESSIVE_CONFIG.json --cache "%SRC%\p.sqlite" --evidence "%SRC%\SNAPSHOT_EVIDENCE.json" --source-checkpoint "%SRC%\RUN_CHECKPOINT.json" --reuse-cache-dir "%DERIVED%" --reuse-policy require-verified-hit --output-root "%RUNS%" --run-name PERF01_HIT_01
+
+Kazdy run-name musi byt novy. Samotny derived koren se pri stejnem klici
+nezvetsuje; nove vysledkove slozky obsahuji male odkazy a numericke vystupy.
+Ocekavany PERF01_CACHE_STATUS.json:
+  cache_action = CACHE_HIT_VERIFIED
+  geometry_redecode_count = 0
+  sqlite_geometry_scans = 0
+  native_com_read_count = 0
+  apply_permitted = false
+Zdrojove a odvozene soubory se stale cele hashuji. Warm proto neni nulove I/O.
+
+KONTROLA HOTOVEHO BEHU
+python -m cordon2025 verify-run --run-directory "%RUNS%\PERF01_HIT_01"
+Krome run manifestu se overuji i externi vazby na cache a vstupni snapshot.
+
+REALNY AKCEPTACNI TEST NA TVEM DOKONCENEM EXPORTU
+python tools\perf01_real_acceptance.py --snapshot-dir "%SRC%" --derived-dir "%LOCALAPPDATA%\R1C25_PERF01_REAL_CACHE" --output-dir "%LOCALAPPDATA%\R1C25_PERF01_REAL_CHECK_01"
+Tento test dela i puvodni pomaly vypocet pro nezavisle porovnani. Overuje
+presnou SHA-256 referencni p.sqlite, oba operatory, per-DSeg relace, cele OD
+audity a puvodni soucty 188009.680 / 62500.213. Nic necte z Visumu.
+Neni to bezny warm beh. Pocitejte s vyssi pameti puvodniho cold algoritmu.
+Nejde o potvrzeni noveho assignmentu ani schvaleni metodiky/C17/roku.
+
+KOMPATIBILITA VYSTUPU
+INCIDENCE.npz zustava numericky kompatibilni. Defaultni INCIDENCE_METADATA.json
+ma schema CORDON_INCIDENCE_REFERENCE_V4 a odkaz na overenou spolecnou autoritu.
+Soubor STATION_HITS_REFERENCE.json odkazuje na jedinou tabulku v bundle.
+Cache je nutne ponechat vedle vystupnich slozek; k jejich preneseni pribalit
+cache a pripadne aktualizovat EXPLICITNI cestu pres API, ne prohledavat disk.
+Pro samostatny stary format pridat --legacy-incidence-output. Ten zamerne
+materializuje rozsahly audit jako FIX3, takze ztraci cast uspor RAM a disku.
+Programova ctecka: cordon2025.perf01_cache.load_compact_result(folder, verified_cache).
+
+MISMATCH, NOVY ASSIGNMENT A RECOVERY
+- require-verified-hit pri chybejici variante skonci MISS; neprepocitava potichu.
+- build-offline smi vytvorit novy derivat jen ze stejneho validniho snapshotu.
+- Jiny snapshot potrebuje novy explicitni derived koren. Shodne OD soucty,
+  cisla tras, site nebo nazev .ver nejsou dukazem nezmeneneho assignmentu.
+- --reuse-context after-new-assignment konci CACHE_EPOCH_NOT_PROVEN_RECAPTURE_REQUIRED.
+- Poskozeny bundle se automaticky neprepisuje. Uchovejte dukazy; pouzijte novy
+  prazdny derived koren teprve po overeni vstupniho snapshotu.
+- Opusteny .perf01.writer.lock se nikdy automaticky neprebira. Rucni odstraneni
+  je dovolene az po prokazani, ze puvodni proces nebezi, a po archivaci staging
+  dat/logu. Nejbezpecnejsi restart je novy prazdny odvozeny koren.
+- Obvykle nic nemente ve zdrojovem exportu. Sidecary -wal/-shm/-journal zpusobi
+  blokaci; nesmazavat je u otevrene databaze. Pouzijte korektne uzavreny snapshot.
+
+NAVRAT NA PUVODNI CHOVANI
+Vynechte PERF01 volby: --reuse-policy disabled je default. Puvodni cold
+build_from_snapshot zustava nezmenenym vypoctovym oraclem. Nezapinejte stare
+persistent_path_cache_enabled / automatic_cache_discovery / automatic_live_reload.
+
+HRANICE OVERENI
+Implementace a regresni testy jsou offline/synteticke, vcetne mock-COM
+zapeceteneho nativniho formatu. Dokonceny realny p.sqlite o 664272896 bajtech
+nebyl pri vyvoji dostupny; realne E25-E28 jsou WAITING_FOR_REAL_FINAL_CACHE.
+Windows reparse/IO chovani je testovano simulacemi; skutecny Windows beh
+PERF01 zatim neni dolozen. Predchozi uspesny Visum capture neni test PERF01.

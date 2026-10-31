@@ -1,0 +1,523 @@
+{
+  "C17_one_margin_by_category": {
+    "BUS": 238.0,
+    "LNA": 4486.0,
+    "OA": 48645.0,
+    "STNA": 737.0,
+    "TNA": 2698.0
+  },
+  "apply_permitted": false,
+  "checks": [
+    {
+      "c17_one_margin": 48645.0,
+      "category": "OA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 142632.0,
+      "empirical_unknown_addition": 901.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 71914.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 142622.0,
+      "trip_type": "Transit"
+    },
+    {
+      "c17_one_margin": 0.0,
+      "category": "OA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 3843.0,
+      "empirical_unknown_addition": 15.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 4608.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 3854.0,
+      "trip_type": "NonTransit"
+    },
+    {
+      "c17_one_margin": 48645.0,
+      "category": "OA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 146475.0,
+      "empirical_unknown_addition": 916.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 76522.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 146476.0,
+      "trip_type": "ALL"
+    },
+    {
+      "c17_one_margin": 4488.0,
+      "category": "LNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 18617.0,
+      "empirical_unknown_addition": 141.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 8782.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 18612.0,
+      "trip_type": "Transit"
+    },
+    {
+      "c17_one_margin": 0.0,
+      "category": "LNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 769.0,
+      "empirical_unknown_addition": 2.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 754.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 766.0,
+      "trip_type": "NonTransit"
+    },
+    {
+      "c17_one_margin": 4486.0,
+      "category": "LNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 19386.0,
+      "empirical_unknown_addition": 143.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 9530.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 19378.0,
+      "trip_type": "ALL"
+    },
+    {
+      "c17_one_margin": 737.0,
+      "category": "STNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 2504.0,
+      "empirical_unknown_addition": 15.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 1208.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 2494.0,
+      "trip_type": "Transit"
+    },
+    {
+      "c17_one_margin": 0.0,
+      "category": "STNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 84.0,
+      "empirical_unknown_addition": 0.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 82.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 80.0,
+      "trip_type": "NonTransit"
+    },
+    {
+      "c17_one_margin": 737.0,
+      "category": "STNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 2588.0,
+      "empirical_unknown_addition": 15.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 1298.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 2574.0,
+      "trip_type": "ALL"
+    },
+    {
+      "c17_one_margin": 2697.0,
+      "category": "TNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 16632.0,
+      "empirical_unknown_addition": 142.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 9132.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 16632.0,
+      "trip_type": "Transit"
+    },
+    {
+      "c17_one_margin": 0.0,
+      "category": "TNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 419.0,
+      "empirical_unknown_addition": 0.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 376.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 424.0,
+      "trip_type": "NonTransit"
+    },
+    {
+      "c17_one_margin": 2698.0,
+      "category": "TNA",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 17051.0,
+      "empirical_unknown_addition": 142.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 9492.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 17056.0,
+      "trip_type": "ALL"
+    },
+    {
+      "c17_one_margin": 238.0,
+      "category": "BUS",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 770.0,
+      "empirical_unknown_addition": 2.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 366.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 774.0,
+      "trip_type": "Transit"
+    },
+    {
+      "c17_one_margin": 0.0,
+      "category": "BUS",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 82.0,
+      "empirical_unknown_addition": 0.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 98.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 88.0,
+      "trip_type": "NonTransit"
+    },
+    {
+      "c17_one_margin": 238.0,
+      "category": "BUS",
+      "checks": {
+        "D1_FINAL_EQUALS_D2_FINAL": true,
+        "D2_SYMMETRY": true,
+        "D2_SYM_EQUALS_D3_M0": true,
+        "D3_CONVERGENCE": true,
+        "D3_RPDI_SYMMETRY": true,
+        "NONNEGATIVE_CLASSIFICATION_ADDITION": true
+      },
+      "empiric_sum": 852.0,
+      "empirical_unknown_addition": 2.0,
+      "formula_rounding_verified_separately": true,
+      "model_direction_approved": false,
+      "original_orientation_label": "Riadok = Výstup (O)  |  Stĺpec = Vstup (D)",
+      "rpdi_physical_sum": 470.0,
+      "source_hashes": {
+        "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+        "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+        "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+        "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+        "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+        "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+      },
+      "sym_max_deviation_from_exact_mean": 0.5,
+      "sym_sum": 862.0,
+      "trip_type": "ALL"
+    }
+  ],
+  "direction_approved": false,
+  "formula_evidence": [
+    {
+      "cell": "C6",
+      "formula": "=IF(ISEVEN(ROW()+COLUMN()),ROUNDUP(('OD OA FINAL'!C6+'OD OA FINAL'!B7)/2,0),ROUNDDOWN(('OD OA FINAL'!C6+'OD OA FINAL'!B7)/2,0))",
+      "sheet": "OD OA SYM"
+    },
+    {
+      "cell": "C52",
+      "formula": "=C6+C29",
+      "sheet": "OD OA SYM"
+    },
+    {
+      "cell": "D52",
+      "formula": "=D6+D29",
+      "sheet": "OD OA SYM"
+    },
+    {
+      "cell": "R52",
+      "formula": "=R6",
+      "sheet": "OD OA SYM"
+    },
+    {
+      "cell": "B4",
+      "formula": "='Zdrojové matice'!B51",
+      "sheet": "OA_ALL_RPDI"
+    },
+    {
+      "cell": "D27",
+      "formula": "=ROUND(D1290,0)",
+      "sheet": "OA_ALL_RPDI"
+    },
+    {
+      "cell": "R27",
+      "formula": "=ROUND(R1290,0)",
+      "sheet": "OA_ALL_RPDI"
+    }
+  ],
+  "formula_recalculation_performed": false,
+  "mapping_count": 32,
+  "observation_semantics_approved": false,
+  "physical_RPDI_by_category": {
+    "BUS": 470.0,
+    "LNA": 9530.0,
+    "OA": 76522.0,
+    "STNA": 1298.0,
+    "TNA": 9492.0
+  },
+  "production_ready": false,
+  "source_files_unchanged": true,
+  "source_hashes": {
+    "D1.xlsx": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+    "D2.xlsx": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+    "D3.xlsx": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+    "MAPPING_INPUT.csv": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+    "MAPPING_INPUT.json": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+    "PHYSICAL_TARGETS_INPUT.csv": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354"
+  },
+  "status": "STATIC_PASS",
+  "target_count": 1280,
+  "unknown_classification_grand_total": 1218.0,
+  "unknown_classification_physical": {
+    "BUS": 1.0,
+    "LNA": 106.0,
+    "OA": 619.0,
+    "STNA": 10.0,
+    "TNA": 112.0
+  },
+  "unknown_classification_totals": {
+    "BUS": 2.0,
+    "LNA": 143.0,
+    "OA": 916.0,
+    "STNA": 15.0,
+    "TNA": 142.0
+  },
+  "year_bridge_approved": false
+}

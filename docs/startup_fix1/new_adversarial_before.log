@@ -1,0 +1,235 @@
+FFFFFFFFFFFFFFFFF                                                        [100%]
+=================================== FAILURES ===================================
+_______________ test_native_path_rows_zero_row_loss_is_detected ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_native_path_rows_zero_row0')
+
+    def test_native_path_rows_zero_row_loss_is_detected(tmp_path):
+        p,m,e,c=native_cache(tmp_path)
+        db=sqlite3.connect(p);db.execute('DELETE FROM volumes WHERE volume=0');db.commit();db.close();e['cache_sha256']=sha256(p)
+>       with pytest.raises(ContractError,match='INCOMPLETE_SEGMENT_VOLUME_ROWS'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:26: Failed
+_______________ test_native_conflicting_count_keys_are_detected ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_native_conflicting_count_0')
+
+    def test_native_conflicting_count_keys_are_detected(tmp_path):
+        p,m,e,c=native_cache(tmp_path)
+        db=sqlite3.connect(p);db.execute('UPDATE segments SET audit_json=?',(json.dumps({'path_rows':3,'parent_rows':2}),));db.commit();db.close();e['cache_sha256']=sha256(p)
+>       with pytest.raises(ContractError,match='CONFLICTING_SEGMENT_COUNT_AUTHORITY'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:33: Failed
+_____________________ test_canonical_total_alias_collision _____________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_canonical_total_alias_col0')
+
+    def test_canonical_total_alias_collision(tmp_path):
+        p,m,e,c=native_cache(tmp_path)
+        e['dseg_totals']['native_cw']=100.
+>       with pytest.raises(ContractError,match='DUPLICATE_CANONICAL_DSEG_TOTAL'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:40: Failed
+_______ test_conflicting_reverse_roles_before_bidirectional_aggregation ________
+
+    def test_conflicting_reverse_roles_before_bidirectional_aggregation():
+        inc=example();targets={(1,2):100,(2,1):100,(1,3):100,(3,1):100}
+>       with pytest.raises(ContractError,match='REVERSE_PAIR_CAL_VALID_LEAKAGE'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:46: Failed
+__________ test_nonphysical_targets_rejected_even_for_validation[nan] __________
+
+bad = nan
+
+    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-1.,True])
+    def test_nonphysical_targets_rejected_even_for_validation(bad):
+        inc=example();targets={(1,2):100,(2,1):100,(1,3):bad,(3,1):100}
+>       with pytest.raises(ContractError,match='INVALID_OBSERVATION_TARGET'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:53: Failed
+__________ test_nonphysical_targets_rejected_even_for_validation[inf] __________
+
+bad = inf
+
+    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-1.,True])
+    def test_nonphysical_targets_rejected_even_for_validation(bad):
+        inc=example();targets={(1,2):100,(2,1):100,(1,3):bad,(3,1):100}
+>       with pytest.raises(ContractError,match='INVALID_OBSERVATION_TARGET'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:53: Failed
+_________ test_nonphysical_targets_rejected_even_for_validation[-1.0] __________
+
+bad = -1.0
+
+    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-1.,True])
+    def test_nonphysical_targets_rejected_even_for_validation(bad):
+        inc=example();targets={(1,2):100,(2,1):100,(1,3):bad,(3,1):100}
+>       with pytest.raises(ContractError,match='INVALID_OBSERVATION_TARGET'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:53: Failed
+_________ test_nonphysical_targets_rejected_even_for_validation[True] __________
+
+bad = True
+
+    @pytest.mark.parametrize('bad',[float('nan'),float('inf'),-1.,True])
+    def test_nonphysical_targets_rejected_even_for_validation(bad):
+        inc=example();targets={(1,2):100,(2,1):100,(1,3):bad,(3,1):100}
+>       with pytest.raises(ContractError,match='INVALID_OBSERVATION_TARGET'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:53: Failed
+__ test_invalid_numeric_solver_options_fail_before_parent[solver_max_iter-0] ___
+
+key = 'solver_max_iter', value = 0
+
+    @pytest.mark.parametrize('key,value',[('solver_max_iter',0),('solver_max_iter',-1),('solver_check_every',0),('solver_tolerance',float('nan')),('solver_tolerance',-1.),('power_iterations',0),('block_max_iter',1.5)])
+    def test_invalid_numeric_solver_options_fail_before_parent(key,value):
+>       with pytest.raises(ContractError,match='INVALID_SOLVER_SETTING'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:59: Failed
+__ test_invalid_numeric_solver_options_fail_before_parent[solver_max_iter--1] __
+
+key = 'solver_max_iter', value = -1
+
+    @pytest.mark.parametrize('key,value',[('solver_max_iter',0),('solver_max_iter',-1),('solver_check_every',0),('solver_tolerance',float('nan')),('solver_tolerance',-1.),('power_iterations',0),('block_max_iter',1.5)])
+    def test_invalid_numeric_solver_options_fail_before_parent(key,value):
+>       with pytest.raises(ContractError,match='INVALID_SOLVER_SETTING'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:59: Failed
+_ test_invalid_numeric_solver_options_fail_before_parent[solver_check_every-0] _
+
+key = 'solver_check_every', value = 0
+
+    @pytest.mark.parametrize('key,value',[('solver_max_iter',0),('solver_max_iter',-1),('solver_check_every',0),('solver_tolerance',float('nan')),('solver_tolerance',-1.),('power_iterations',0),('block_max_iter',1.5)])
+    def test_invalid_numeric_solver_options_fail_before_parent(key,value):
+>       with pytest.raises(ContractError,match='INVALID_SOLVER_SETTING'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:59: Failed
+_ test_invalid_numeric_solver_options_fail_before_parent[solver_tolerance-nan] _
+
+key = 'solver_tolerance', value = nan
+
+    @pytest.mark.parametrize('key,value',[('solver_max_iter',0),('solver_max_iter',-1),('solver_check_every',0),('solver_tolerance',float('nan')),('solver_tolerance',-1.),('power_iterations',0),('block_max_iter',1.5)])
+    def test_invalid_numeric_solver_options_fail_before_parent(key,value):
+>       with pytest.raises(ContractError,match='INVALID_SOLVER_SETTING'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:59: Failed
+_ test_invalid_numeric_solver_options_fail_before_parent[solver_tolerance--1.0] _
+
+key = 'solver_tolerance', value = -1.0
+
+    @pytest.mark.parametrize('key,value',[('solver_max_iter',0),('solver_max_iter',-1),('solver_check_every',0),('solver_tolerance',float('nan')),('solver_tolerance',-1.),('power_iterations',0),('block_max_iter',1.5)])
+    def test_invalid_numeric_solver_options_fail_before_parent(key,value):
+>       with pytest.raises(ContractError,match='INVALID_SOLVER_SETTING'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:59: Failed
+__ test_invalid_numeric_solver_options_fail_before_parent[power_iterations-0] __
+
+key = 'power_iterations', value = 0
+
+    @pytest.mark.parametrize('key,value',[('solver_max_iter',0),('solver_max_iter',-1),('solver_check_every',0),('solver_tolerance',float('nan')),('solver_tolerance',-1.),('power_iterations',0),('block_max_iter',1.5)])
+    def test_invalid_numeric_solver_options_fail_before_parent(key,value):
+>       with pytest.raises(ContractError,match='INVALID_SOLVER_SETTING'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:59: Failed
+__ test_invalid_numeric_solver_options_fail_before_parent[block_max_iter-1.5] __
+
+key = 'block_max_iter', value = 1.5
+
+    @pytest.mark.parametrize('key,value',[('solver_max_iter',0),('solver_max_iter',-1),('solver_check_every',0),('solver_tolerance',float('nan')),('solver_tolerance',-1.),('power_iterations',0),('block_max_iter',1.5)])
+    def test_invalid_numeric_solver_options_fail_before_parent(key,value):
+>       with pytest.raises(ContractError,match='INVALID_SOLVER_SETTING'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:59: Failed
+______________________ test_negative_fixed_flow_rejected _______________________
+
+    def test_negative_fixed_flow_rejected():
+        inc=example();inc.fixed[0]=-1.
+>       with pytest.raises(ContractError,match='INVALID_INCIDENCE'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+
+tests/test_startup_hardening.py:65: Failed
+_______________________ test_nonfinite_operator_rejected _______________________
+
+    def test_nonfinite_operator_rejected():
+        inc=example();inc.operator.values[0]=np.nan
+        with pytest.raises(ContractError,match='INVALID_INCIDENCE'):
+>           solve(inc,cfg())
+
+tests/test_startup_hardening.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+cordon2025/optimizer.py:117: in solve
+    require(np.isfinite(total) and total<=previous+1e-7*max(1.,abs(previous)),'NONMONOTONE_SOLVER_BLOCK')
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = np.False_, message = 'NONMONOTONE_SOLVER_BLOCK'
+
+    def require(condition, message):
+        if not condition:
+>           raise ContractError(message)
+E           cordon2025.common.ContractError: NONMONOTONE_SOLVER_BLOCK
+
+cordon2025/common.py:40: ContractError
+
+During handling of the above exception, another exception occurred:
+
+    def test_nonfinite_operator_rejected():
+        inc=example();inc.operator.values[0]=np.nan
+>       with pytest.raises(ContractError,match='INVALID_INCIDENCE'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'INVALID_INCIDENCE'
+E         Actual message: 'NONMONOTONE_SOLVER_BLOCK'
+
+tests/test_startup_hardening.py:71: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_startup_hardening.py::test_native_path_rows_zero_row_loss_is_detected - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_native_conflicting_count_keys_are_detected - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_canonical_total_alias_collision - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_conflicting_reverse_roles_before_bidirectional_aggregation - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_nonphysical_targets_rejected_even_for_validation[nan] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_nonphysical_targets_rejected_even_for_validation[inf] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_nonphysical_targets_rejected_even_for_validation[-1.0] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_nonphysical_targets_rejected_even_for_validation[True] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_invalid_numeric_solver_options_fail_before_parent[solver_max_iter-0] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_invalid_numeric_solver_options_fail_before_parent[solver_max_iter--1] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_invalid_numeric_solver_options_fail_before_parent[solver_check_every-0] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_invalid_numeric_solver_options_fail_before_parent[solver_tolerance-nan] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_invalid_numeric_solver_options_fail_before_parent[solver_tolerance--1.0] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_invalid_numeric_solver_options_fail_before_parent[power_iterations-0] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_invalid_numeric_solver_options_fail_before_parent[block_max_iter-1.5] - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_negative_fixed_flow_rejected - Failed: DID NOT RAISE <class 'cordon2025.common.ContractError'>
+FAILED tests/test_startup_hardening.py::test_nonfinite_operator_rejected - AssertionError: Regex pattern did not match.
+  Expected regex: 'INVALID_INCIDENCE'
+  Actual message: 'NONMONOTONE_SOLVER_BLOCK'
+17 failed in 0.81s

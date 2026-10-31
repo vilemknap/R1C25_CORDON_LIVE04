@@ -1,0 +1,7 @@
+{
+  "checkpoint": "CP00",
+  "status": "SOURCE_PINS_PASS_AUDIT_COMPLETE",
+  "baseline_tests": "RUNNING",
+  "native_live": "NOT_RUN",
+  "historical_record": "CP00_ONLY_NOT_CURRENT_RELEASE_STATUS"
+}

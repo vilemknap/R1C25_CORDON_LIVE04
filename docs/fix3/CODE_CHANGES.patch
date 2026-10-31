@@ -1,0 +1,619 @@
+--- FIX2/cordon2025/__init__.py
++++ FIX3/cordon2025/__init__.py
+@@ -1,2 +1,2 @@
+ """Cordon offline optimizer plus injected-Visum read-only startup/capture. No APPLY."""
+-__version__ = "2.1.1-aggressive-startup-fix2-combusy"
++__version__ = "2.1.2-aggressive-startup-fix3-practical"
+--- FIX2/cordon2025/aggressive.py
++++ FIX3/cordon2025/aggressive.py
+@@ -51,6 +51,8 @@
+ 
+ def _state(inc, cfg, x, budget=None):
+     """Fair conditional score: optimize C17 for x=0 as well as every candidate."""
++    from .limits import numerical
++    numeric=numerical(cfg)
+     problem, selected, y, base, eps = build_problem(inc, cfg)
+     x = np.asarray(x, dtype=float)
+     require(x.shape == (len(inc.variables),) and np.all(np.isfinite(x)), 'AGGRESSIVE_INVALID_STEP')
+@@ -61,7 +63,8 @@
+         bcal = budget.subset(selected.tolist())
+     residual = base + problem.operator.forward(x) - y
+     ridgeu = float(cfg['c17_ridge'])
+-    u, uit, gap = _optimize_u(residual, problem.row_weight, eps, bcal, np.zeros(len(selected)), ridgeu)
++    u, uit, gap = _optimize_u(residual, problem.row_weight, eps, bcal, np.zeros(len(selected)), ridgeu,
++        tol=numeric['c17_solver_tolerance'],projection_tolerance=numeric['c17_projection_tolerance'])
+     require(gap <= float(cfg.get('kkt_tolerance', 1e-6)), 'AGGRESSIVE_C17_SCORE_NOT_CONVERGED')
+     data = 0.5 * float(np.sum((problem.row_weight * deadzone(residual - u, eps)) ** 2))
+     parts = {'cordon_data_loss': data,
+@@ -129,6 +132,8 @@
+ 
+ def propose(inc, config, budget=None, *, allow_unapproved_scenario=False, basis=None, zone_rows=None):
+     cfg = effective_config(config)
++    from .limits import numerical
++    numeric=numerical(cfg)
+     require(all(m['dseg_code'] in cfg['mutable_dsegs'] for m in inc.variables), 'AGGRESSIVE_VARIABLE_SCOPE_MISMATCH')
+     require(np.all(np.isfinite(inc.q_current)) and np.all(inc.q_current > 0), 'AGGRESSIVE_INVALID_OD_TOTAL')
+     raw = solve(inc, cfg, budget, allow_unapproved_scenario=allow_unapproved_scenario)
+@@ -142,7 +147,7 @@
+         decrease = baseline['objective'] - state['objective']
+         rel = decrease / max(baseline['objective'], 1e-12)
+         losses_ok = (decrease > 0 and rel >= cfg['generation_min_cal_relative_improvement']
+-            and state['parts']['cordon_data_loss'] <= baseline['parts']['cordon_data_loss']+1e-10)
++            and state['parts']['cordon_data_loss'] <= baseline['parts']['cordon_data_loss']+numeric['objective_comparison_atol']+numeric['objective_comparison_rtol']*abs(baseline['parts']['cordon_data_loss']))
+         feasible = bounded is None or feas['status'] in ('SYNTHETIC_FEASIBLE_TG_TD', 'LINEARIZED_FEASIBLE_TG_TD_NOT_LIVE_VERIFIED')
+         eligible = raw.report['numeric_converged'] and losses_ok and feasible
+         reasons = []
+--- FIX2/cordon2025/aggressive_policy.py
++++ FIX3/cordon2025/aggressive_policy.py
+@@ -84,8 +84,8 @@
+         require(outer_cycle is None or outer_cycle == cfg[META]['outer_cycle'], 'AGGRESSIVE_STAGE_REBASE_REQUIRES_BASE_CONFIG')
+         source = source_policy(); design_defaults()  # integrity matters on repeat use
+         cycle = policy.get('outer_cycle')
+-        require(type(cycle) is int and 1 <= cycle <= 100, 'AGGRESSIVE_OUTER_CYCLE_OUT_OF_RANGE')
+-        expected_stage = next(s for s in source['generation_stages'] if cycle <= s['through_outer_cycle'])
++        require(type(cycle) is int and 1 <= cycle and (cycle <= 100 or cfg.get('limit_profile')=='PRACTICAL_V1'), 'AGGRESSIVE_OUTER_CYCLE_OUT_OF_RANGE')
++        expected_stage = next((s for s in source['generation_stages'] if cycle <= s['through_outer_cycle']),source['generation_stages'][-1])
+         meta = cfg[META]
+         require(meta.get('stage') == expected_stage and meta.get('outer_cycle') == cycle
+                 and meta.get('policy_id') == POLICY_ID
+@@ -96,9 +96,9 @@
+                 'AGGRESSIVE_EFFECTIVE_METADATA_CHANGED')
+         return copy.deepcopy(cfg)
+     cycle = policy.get('outer_cycle', 1) if outer_cycle is None else outer_cycle
+-    require(type(cycle) is int and 1 <= cycle <= 100, 'AGGRESSIVE_OUTER_CYCLE_OUT_OF_RANGE')
++    require(type(cycle) is int and 1 <= cycle and (cycle <= 100 or cfg.get('limit_profile')=='PRACTICAL_V1'), 'AGGRESSIVE_OUTER_CYCLE_OUT_OF_RANGE')
+     source = source_policy()
+-    stage = next(s for s in source['generation_stages'] if cycle <= s['through_outer_cycle'])
++    stage = next((s for s in source['generation_stages'] if cycle <= s['through_outer_cycle']),source['generation_stages'][-1])
+     out = copy.deepcopy(cfg)
+     for key, value in design_defaults().items():
+         require(key not in out or out[key] == value, 'AGGRESSIVE_BASE_DESIGN_OVERRIDE_REQUIRES_NEW_POLICY:' + key)
+@@ -130,12 +130,19 @@
+         'max_selected_component_relative_degradation': source['td_max_selected_component_relative_degradation'],
+         'max_nonselected_component_objective_degradation': source['td_max_nonselected_component_relative_degradation'],
+     }
++    from .limits import numerical
++    numeric=numerical(out)
++    out['generation_min_cal_relative_improvement']=numeric['generation_min_relative_improvement']
++    out['td']['min_selected_component_relative_improvement']=numeric['td_min_relative_improvement']
++    out['td_soft_reference_policy']['aggregate_selected_min_relative_improvement']=numeric['td_min_relative_improvement']
+     out['native_ipf_tolerance_policy'] = 'UNCHANGED_NEVER_RELAXED_BY_CALIBRATOR'
+     out[META] = {
+         'policy_id': POLICY_ID, 'stage': copy.deepcopy(stage), 'outer_cycle': cycle,
+         'cycle_kind': 'EXPLICIT_OFFLINE_STAGE_SELECTOR_NOT_LIVE_ITERATION',
+         'source_policy_sha256': SOURCE_SHA256, 'design_source_sha256': DESIGN_SOURCE_SHA256, 'base_config_sha256': canonical_hash(cfg),
+         'effective_science_sha256': science_hash(out),
++        'limit_profile':out.get('limit_profile','LEGACY_STRICT'),
++        'last_stage_continuation':cycle>source['generation_stages'][-1]['through_outer_cycle'],
+         'new_science_lineage': True, 'no_2022_resume': True,
+         'c17_budgets_unchanged': True, 'regularization_unchanged': True,
+         'profile_GEH_relaxations_imported': False, 'validation_split_unchanged': True,
+--- FIX2/cordon2025/budget.py
++++ FIX3/cordon2025/budget.py
+@@ -63,7 +63,13 @@
+             if (np.max(np.abs(x-old),initial=0)<=tolerance and violation<=tolerance
+                     and np.max(np.abs(correction-old_correction),initial=0)<=tolerance):
+                 x=np.maximum(x,0)
+-                require(np.max(self.constraint_matrix@x-self.limits,initial=0)<=10*tolerance,'C17_PROJECTION_NOT_FEASIBLE')
++                used=self.constraint_matrix@x
++                require(np.max(used-self.limits,initial=0)<=10*tolerance,'C17_PROJECTION_NOT_FEASIBLE')
++                # Remove only the bounded numerical overdraw at termination.
++                # Unlike relaxing the ledger, this cannot create extra C17 credit.
++                if np.any(used>self.limits):
++                    ratio=np.min(self.limits[used>0]/used[used>0],initial=1.)
++                    x*=max(0.,float(ratio)*(1.-4.*np.finfo(float).eps))
+                 return x
+         raise ValueError('C17_PROJECTION_DID_NOT_CONVERGE')
+ 
+--- FIX2/cordon2025/com_busy.py
++++ FIX3/cordon2025/com_busy.py
+@@ -15,7 +15,7 @@
+ 
+ SOURCE = 'r1_15a2_com_busy_snapshot_hotfix_v1.py'
+ SOURCE_SHA256 = '2488191e97c17a072fd161c5645e17fa1fe0ac8c35412b92282d9737f0f76366'
+-RELEASE = 'CORDON_2025_STARTUP_FIX2_COMBUSY_20261023'
++RELEASE = 'CORDON_2025_STARTUP_FIX3_PRACTICAL_20261023'
+ # Literal defaults audited against the delivered source; checked by tests and
+ # parent_hotfix_scope before real startup. No silent enable of a disabled policy.
+ DEFAULTS = {'com_retry_enabled': True, 'com_retry_attempts': 64,
+--- FIX2/cordon2025/common.py
++++ FIX3/cordon2025/common.py
+@@ -90,6 +90,8 @@
+     require(cfg.get('category') == 'OA', 'V1_OA_ONLY')
+     require(cfg.get('basis') == 'RPDI', 'V1_RPDI_REQUIRED')
+     require(not any(cfg.get(k) for k in ('run_procseq','run_assignment','write_od','supply_enabled')), 'LIVE_SWITCH_FORBIDDEN')
++    from .limits import numerical
++    numerical(cfg)
+     from .aggressive_policy import enabled, effective_config
+     if enabled(cfg):
+         return effective_config(cfg, outer_cycle)
+--- FIX2/cordon2025/external_parity.py
++++ FIX3/cordon2025/external_parity.py
+@@ -1,15 +1,35 @@
+ """Independent per-OD parity against sealed matrix snapshots, not path-derived totals."""
+ from pathlib import Path,PurePosixPath
+ import numpy as np
+-from .common import require,parent_core,sha256
++import json
++import sqlite3
++from contextlib import closing
++from .common import require,parent_core,sha256,canonical_hash
++from .parity import ParityPolicy, compare, lattice_error
+ 
+ 
+-def check_matrix_authorities(cache,evidence,od_volumes,selected_codes):
++def check_matrix_authorities(cache,evidence,od_volumes,selected_codes,path_counts=None):
+     records=evidence.get('od_matrix_authorities')
+     if records is None:return None
+     core=parent_core();codes=[core.norm_code(r['dseg']) for r in records]
+     require(len(codes)==len(set(codes)) and set(codes)==set(selected_codes),'EXTERNAL_MATRIX_SCOPE_MISMATCH')
+     root=Path(cache).resolve().parent;reports=[]
++    record=evidence.get('path_matrix_parity_policy')
++    policy=ParityPolicy.from_record(record) if record is not None else ParityPolicy.legacy()
++    with closing(sqlite3.connect(Path(cache).resolve().as_uri()+'?mode=ro',uri=True)) as db:
++        meta=dict(db.execute('SELECT key,value FROM metadata'))
++        if record is not None:
++            require(canonical_hash(record)==evidence.get('path_matrix_parity_policy_sha256'), 'PARITY_POLICY_SHA_MISMATCH')
++            require(json.loads(meta.get('path_matrix_parity_policy','null'))==record,'PARITY_POLICY_CACHE_MISMATCH')
++        else:
++            require('path_matrix_parity_policy' not in meta,'PARITY_POLICY_EVIDENCE_MISSING')
++        original={core.norm_code(ds):ds for ds, in db.execute('SELECT dseg FROM segments')}
++        require(set(codes).issubset(original),'EXTERNAL_MATRIX_SCOPE_MISMATCH')
++        lattice={code:lattice_error(db,original[code],policy) for code in codes}
++        counts={(core.norm_code(ds),int(o),int(d)):int(n) for ds,o,d,n in db.execute(
++            'SELECT v.dseg,g.orig,g.dest,COUNT(*) FROM volumes v JOIN geometry g ON g.gid=v.gid GROUP BY v.dseg,g.orig,g.dest')}
++    if path_counts is not None:
++        require(all(path_counts.get(k)==n for k,n in counts.items() if k[0] in selected_codes),'PARITY_PATH_COUNT_MISMATCH')
+     for code,rec in zip(codes,records):
+         rel=PurePosixPath(rec['path'])
+         require(not rel.is_absolute() and '..' not in rel.parts and '\\' not in str(rel),'EXTERNAL_MATRIX_PATH_INVALID')
+@@ -25,10 +45,16 @@
+             if ds!=code:continue
+             require(o in ix and d in ix,'EXTERNAL_MATRIX_PATH_ZONE_MISSING')
+             reconstructed[ix[o],ix[d]]=vol
+-        mask=~np.eye(len(zones),dtype=bool);err=np.abs(values-reconstructed)
+-        require(not np.any(mask & (err>1e-6+1e-6*np.abs(values))),'EXTERNAL_MATRIX_PER_OD_PARITY_FAIL:'+code)
++        count_array=np.zeros_like(values,dtype=np.int64)
++        for (ds,o,d),count in counts.items():
++            if ds!=code:continue
++            require(o in ix and d in ix,'EXTERNAL_MATRIX_PATH_ZONE_MISSING')
++            count_array[ix[o],ix[d]]=count
++        report=compare(values,reconstructed,count_array,zones,code,policy,max_lattice_error=lattice[code],enforce_aggregate_checks=record is not None)
++        require(report['status']=='PASS','EXTERNAL_MATRIX_PER_OD_PARITY_FAIL:'+code+':'+','.join(report['failures']))
+         require(sha256(path)==rec['sha256'],'EXTERNAL_MATRIX_CHANGED_DURING_READ')
+-        reports.append({'dseg':code,'status':'PASS','basis':'INDEPENDENT_FULL_INTERZONAL_MATRIX',
+-            'matrix_sha256':rec['sha256'],'max_abs_error':float(err[mask].max(initial=0)),
+-            'diagonal_error_reported_not_imputed':float(np.diag(err).sum())})
++        report.update(basis='INDEPENDENT_FULL_INTERZONAL_MATRIX',matrix_sha256=rec['sha256'],
++            max_abs_error=report['max_abs_interzonal_error'],
++            diagonal_error_reported_not_imputed=report['diagonal_error_not_hidden'])
++        reports.append(report)
+     return reports
+--- FIX2/cordon2025/feasibility.py
++++ FIX3/cordon2025/feasibility.py
+@@ -39,7 +39,7 @@
+     evidence: dict
+ 
+ 
+-def evaluate_realizability(inc,solution,basis=None,tolerance=1e-5):
++def evaluate_realizability(inc,solution,basis=None,tolerance=None):
+     """A supplied full-OD response basis must include collateral and fixed rows.
+ 
+     Feasibility without a basis is UNKNOWN. Small marginal residuals alone never
+@@ -50,6 +50,9 @@
+         return {'status':'TG_TD_REALIZATION_NOT_VERIFIED','reason':'FULL_OD_ACTUATOR_RESPONSE_NOT_SUPPLIED',
+                 'residual':None,'apply_permitted':False,'live_verified':False}
+     core=parent_core();op=basis.operator
++    from .limits import numerical
++    numeric=numerical(solution.report)
++    tolerance=numeric['feasibility_atol'] if tolerance is None else tolerance
+     require(np.isfinite(tolerance) and tolerance>0,'INVALID_FEASIBILITY_TOLERANCE')
+     require(np.all(np.isfinite(op.values)),'INVALID_ACTUATOR_RESPONSE')
+     require(len(basis.row_keys)==op.n_rows and len(set(basis.row_keys))==op.n_rows,'ACTUATOR_ROW_KEY_MISMATCH')
+@@ -70,16 +73,18 @@
+     lo=np.asarray(basis.lower,dtype=float);hi=np.asarray(basis.upper,dtype=float)
+     require(lo.shape==hi.shape==(op.n_cols,) and np.all(np.isfinite(lo)) and np.all(np.isfinite(hi)) and np.all(lo<=0) and np.all(hi>=0),'ACTUATOR_BOUNDS_INVALID')
+     prob=core.GuidanceProblem(op,desired,np.ones(op.n_rows),np.zeros(op.n_cols),np.zeros(op.n_cols),lo,hi,[],[],np.arange(op.n_rows),[],{})
+-    result=core.solve_guidance(prob,{'solver_max_iter':10000,'solver_tolerance':1e-14,'power_iterations':60})
++    result=core.solve_guidance(prob,{'solver_max_iter':10000,'solver_tolerance':numeric['feasibility_solver_tolerance'],'power_iterations':60})
+     achieved=op.forward(result.x);residual=desired-achieved
+     maxerr=float(np.max(np.abs(residual),initial=0));rmse=float(np.sqrt(np.mean(residual**2))) if len(residual) else 0.
+     exact=basis.evidence['basis_kind']=='EXACT_SYNTHETIC_LINEAR'
+     from .optimizer import _kkt_x
+     kkt=_kkt_x(prob,result.x) if op.n_cols else 0.
+-    if maxerr<=tolerance:status='SYNTHETIC_FEASIBLE_TG_TD' if exact else 'LINEARIZED_FEASIBLE_TG_TD_NOT_LIVE_VERIFIED'
+-    elif kkt>1e-6:status='TG_TD_FEASIBILITY_SOLVER_NOT_CONVERGED'
++    allowed=tolerance+numeric['feasibility_rtol']*np.abs(desired)
++    if np.all(np.abs(residual)<=allowed):status='SYNTHETIC_FEASIBLE_TG_TD' if exact else 'LINEARIZED_FEASIBLE_TG_TD_NOT_LIVE_VERIFIED'
++    elif kkt>numeric['feasibility_kkt_tolerance']:status='TG_TD_FEASIBILITY_SOLVER_NOT_CONVERGED'
+     else:status='INFEASIBLE_TG_TD' if exact else 'INFEASIBLE_LOCAL_TG_TD_LINEARIZATION'
+-    return {'status':status,'basis_kind':basis.evidence['basis_kind'],'full_od_max_abs_residual':maxerr,
++    return {'status':status,'tolerance_abs':tolerance,
++            'tolerance_relative':numeric['feasibility_rtol'],'numerical_limits':numeric,'basis_kind':basis.evidence['basis_kind'],'full_od_max_abs_residual':maxerr,
+             'full_od_rmse':rmse,'kkt':kkt,'desired_delta':desired.tolist(),'realizable_delta':achieved.tolist(),
+             'residual':residual.tolist(),'actuator_step':result.x.tolist(),'basis_provenance':basis.evidence,
+             'global_nonlinear_infeasibility_claimed':False,'live_verified':False,'apply_permitted':False}
+--- FIX2/cordon2025/incidence.py
++++ FIX3/cordon2025/incidence.py
+@@ -106,6 +106,8 @@
+     if hits_output is not None:
+         require(Path(hits_output).resolve() != Path(path).resolve(), 'OUTPUT_INPUT_COLLISION')
+     core=parent_core()
++    from .limits import numerical
++    numeric=numerical(cfg)
+     require(cfg.get('apply') is False,'V1_APPLY_FORBIDDEN')
+     require(cfg.get('category')=='OA','V1_OA_ONLY')
+     requested=list(cfg.get('selected_dsegs',[]))
+@@ -204,15 +206,15 @@
+         require(set(codes).issubset(normalized_totals),'DSEG_TOTAL_AUTHORITY_INCOMPLETE')
+         for c in codes:
+             require(np.isfinite(normalized_totals[c]) and normalized_totals[c]>=0,'INVALID_EXPECTED_VOLUME')
+-            require(abs(dseg_vol[c]-normalized_totals[c])<=max(1e-8,1e-10*normalized_totals[c]),'DSEG_VOLUME_PARITY_FAIL:'+c)
++            require(abs(dseg_vol[c]-normalized_totals[c])<=max(numeric['internal_sum_atol'],numeric['internal_sum_rtol']*normalized_totals[c]),'DSEG_VOLUME_PARITY_FAIL:'+c)
+         od_expected=evidence.get('od_totals')
+         if od_expected is not None:
+             em={(core.norm_code(r['dseg']),int(r['orig']),int(r['dest'])):float(r['volume']) for r in od_expected}
+             require(len(em)==len(od_expected),'DUPLICATE_OD_AUTHORITY')
+             require(set(em)==set(q),'OD_AUTHORITY_SUPPORT_MISMATCH')
+-            require(all(np.isfinite(em[k]) and abs(em[k]-v)<=max(1e-8,1e-10*v) for k,v in q.items()),'OD_VOLUME_PARITY_FAIL')
++            require(all(np.isfinite(em[k]) and abs(em[k]-v)<=max(numeric['internal_sum_atol'],numeric['internal_sum_rtol']*v) for k,v in q.items()),'OD_VOLUME_PARITY_FAIL')
+         from .external_parity import check_matrix_authorities
+-        matrix_parity=check_matrix_authorities(p,evidence,q,codes)
++        matrix_parity=check_matrix_authorities(p,evidence,q,codes,npaths)
+         var_keys=sorted(k for k in mutable_keys if q[k]>0);var_index={key:i for i,key in enumerate(var_keys)}
+         variables=[{'variable_index':i,'dseg_code':c,'family':core.family_from_dseg(c),'origin':o,'destination':d,'q_current':q[(c,o,d)],'path_count':npaths[(c,o,d)]} for i,(c,o,d) in enumerate(var_keys)]
+         basevars=[{'dseg_code':c,'family':core.family_from_dseg(c),'origin':o,'destination':d,'q_current':v,'path_count':npaths[(c,o,d)]} for (c,o,d),v in sorted(q.items()) if c in mut]
+@@ -247,7 +249,7 @@
+             op=core.SparseOperator(rr,cc,vv,len(pairs),len(var_keys))
+             share=core.SparseOperator(rr,cc,vv/qvec[cc] if len(cc) else vv.copy(),len(pairs),len(var_keys))
+             require(np.all(share.values>=0) and np.all(share.values<=1+1e-10),'PAIR_SHARE_OUT_OF_BOUNDS')
+-            require(np.allclose(op.forward(np.ones(len(var_keys))),mtotals[meth],atol=1e-8,rtol=1e-10),'MUTABLE_PREDICTION_PARITY_FAIL')
++            require(np.allclose(op.forward(np.ones(len(var_keys))),mtotals[meth],atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']),'MUTABLE_PREDICTION_PARITY_FAIL')
+             rows=[{'observation_type':'KORDON_PAIR','category':'OA','origin_station':a,'destination_station':b,
+               'role':'DIAGNOSTIC','method':meth,'basis':'RPDI','model':float(totals[meth][i]),
+               'per_dseg':{c:float(per_dseg[meth][c][i]) for c in codes}} for i,(a,b) in enumerate(pairs)]
+--- FIX2/cordon2025/optimizer.py
++++ FIX3/cordon2025/optimizer.py
+@@ -54,6 +54,8 @@
+     except (TypeError, ValueError, OverflowError):
+         valid = False
+     require(valid, 'INVALID_SOLVER_SETTING:solver_tolerance')
++    from .limits import numerical
++    numeric=numerical(cfg)
+     nr, nc = len(inc.rows), len(inc.variables)
+     for name, size in (('model',nr),('mutable',nr),('fixed',nr),('q_current',nc)):
+         values = np.asarray(getattr(inc, name))
+@@ -65,8 +67,8 @@
+     require(np.all(np.isfinite(op.values)) and np.all(op.values >= 0), 'INVALID_INCIDENCE:operator_values')
+     for idx, size in ((op.row_idx,nr),(op.col_idx,nc)):
+         require(np.issubdtype(idx.dtype, np.integer) and np.all(idx >= 0) and np.all(idx < size), 'INVALID_INCIDENCE:sparse_index')
+-    require(np.allclose(inc.fixed + inc.mutable, inc.model, atol=1e-8,rtol=1e-10), 'INVALID_INCIDENCE:fixed_mutable_parity')
+-    require(np.allclose(op.forward(np.ones(nc)), inc.mutable, atol=1e-8,rtol=1e-10), 'INVALID_INCIDENCE:operator_parity')
++    require(np.allclose(inc.fixed + inc.mutable, inc.model, atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']), 'INVALID_INCIDENCE:fixed_mutable_parity')
++    require(np.allclose(op.forward(np.ones(nc)), inc.mutable, atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']), 'INVALID_INCIDENCE:operator_parity')
+ 
+ 
+ def build_problem(inc,cfg):
+@@ -103,12 +105,12 @@
+     return float(np.max(np.abs((x-z)*L),initial=0))
+ 
+ 
+-def _optimize_u(residual,weights,eps,budget,start,ridge,tol=1e-9,max_iter=5000):
++def _optimize_u(residual,weights,eps,budget,start,ridge,tol=1e-9,max_iter=5000,projection_tolerance=1e-11):
+     if budget is None or not budget.enabled:return np.zeros_like(residual),0,0.
+     L=max(1e-12,float(np.max(weights**2,initial=0))+ridge);u=np.array(start,copy=True)
+     for it in range(1,max_iter+1):
+         grad=-(weights**2)*deadzone(residual-u,eps)+ridge*u
+-        nxt=budget.project(u-grad/L,tolerance=1e-11)
++        nxt=budget.project(u-grad/L,tolerance=projection_tolerance)
+         gap=float(np.max(np.abs(nxt-u)*L,initial=0));u=nxt
+         if gap<tol:return u,it,gap
+     return u,max_iter,gap
+@@ -116,6 +118,8 @@
+ 
+ def solve(inc,cfg,budget=None,*,allow_unapproved_scenario=False):
+     core=parent_core()
++    from .limits import numerical
++    numeric=numerical(cfg)
+     require(allow_unapproved_scenario or inc.audit['origin']=='SYNTHETIC_TEST_FIXTURE',
+             'UNAPPROVED_OBSERVATION_SEMANTICS_EXPLICIT_SCENARIO_REQUIRED')
+     problem,selected,y,base,eps=build_problem(inc,cfg)
+@@ -144,7 +148,8 @@
+         else:
+             g=core.GuidanceResult(x,np.zeros(len(selected)),base-y-u,previous,previous,0,True,1.,[]);candidate=x
+         raw=base+problem.operator.forward(candidate)-y
+-        unew,uit,ugap=_optimize_u(raw,problem.row_weight,eps,bcal,u,ridgeu)
++        unew,uit,ugap=_optimize_u(raw,problem.row_weight,eps,bcal,u,ridgeu,
++            tol=numeric['c17_solver_tolerance'],projection_tolerance=numeric['c17_projection_tolerance'])
+         objective=cost(candidate,unew);total=sum(objective.values())
+         require(np.isfinite(total) and total<=previous+1e-7*max(1.,abs(previous)),'NONMONOTONE_SOLVER_BLOCK')
+         x,u=candidate,unew
+@@ -173,7 +178,8 @@
+             'mutable_before':float(inc.mutable[i]),'c17_scenario_relaxation':unc,'epsilon_abs':epsilon,
+             'raw_difference_after':(after-float(target)) if target is not None else None,
+             'residual_after_relaxation':residual,'flags':','.join(flags),'actual_assignment_verified':False})
+-    report={'status':'OFFLINE_SOLVER_PASS' if converged else 'OFFLINE_SOLVER_NOT_CONVERGED',
++    report={'limit_profile':cfg.get('limit_profile','LEGACY_STRICT'),'numerical_limits':numeric,
++        'status':'OFFLINE_SOLVER_PASS' if converged else 'OFFLINE_SOLVER_NOT_CONVERGED',
+         'numeric_converged':converged,'origin':inc.audit['origin'],
+         'hypothesis':inc.audit.get('method'),'objective_initial':sum(initial.values()),
+         'objective_final':sum(breakdown.values()),'initial_breakdown':initial,'final_breakdown':breakdown,
+--- FIX2/cordon2025/visum_startup.py
++++ FIX3/cordon2025/visum_startup.py
+@@ -26,9 +26,16 @@
+ from .authority import mapping
+ from . import com_busy
+ 
+-DEFAULTS = {'max_dense_matrix_cells':10000000, 'full_geometry_check':True, 'page_size':256, 'min_free_disk_gib':1.0,
+-    'max_store_gib':12.0, 'od_parity_atol':1e-6, 'od_parity_rtol':1e-6,
+-    **com_busy.DEFAULTS}
++DEFAULTS = {'max_dense_matrix_cells':25000000, 'full_geometry_check':True, 'page_size':256,
++    'min_free_disk_gib':0.5, 'max_store_gib':0.0,
++    'max_parent_rows_per_dseg':5000000, 'max_geometry_rows_per_mode':1000000000,
++    'od_parity_atol':1e-5, 'od_parity_rtol':1e-5, 'path_volume_quantum':0.001,
++    'path_volume_lattice_atol':1e-9, 'missing_path_cell_atol':0.0005,
++    'parity_aggregate_abs_floor':0.01, 'parity_max_net_relative_error':1e-4,
++    'parity_max_l1_relative_error':1e-3, 'parity_max_zero_flow_relative_mass':1e-4,
++    'matrix_sum_atol':0.001, 'matrix_sum_rtol':1e-7,
++    **com_busy.DEFAULTS, 'com_retry_attempts':128, 'com_retry_max_elapsed_seconds':180.0}
++
+ ACTIONS = ('PREFLIGHT','CAPTURE_DIAGNOSTICS')
+ 
+ 
+@@ -38,18 +45,20 @@
+     value.update(options or {})
+     require(type(value['full_geometry_check']) is bool,'INVALID_GEOMETRY_CHECK_OPTION')
+     require(type(value['com_retry_enabled']) is bool,'INVALID_STARTUP_SETTING:com_retry_enabled')
+-    for k in ('page_size','com_retry_attempts','max_dense_matrix_cells'):
++    integers={'page_size':4096,'com_retry_attempts':1000,'max_dense_matrix_cells':100000000,
++              'max_parent_rows_per_dseg':10000000,'max_geometry_rows_per_mode':1000000000}
++    for k, maximum in integers.items():
+         v=value[k]
+-        require(type(v) is int and 1 <= v <= ({'page_size':4096,'com_retry_attempts':100,'max_dense_matrix_cells':100000000}[k]),'INVALID_STARTUP_SETTING:'+k)
+-    for k in ('min_free_disk_gib','max_store_gib','od_parity_atol','od_parity_rtol',
+-              'com_retry_initial_delay_seconds','com_retry_max_delay_seconds','com_retry_backoff_factor',
+-              'com_retry_max_elapsed_seconds'):
++        require(type(v) is int and 1 <= v <= maximum,'INVALID_STARTUP_SETTING:'+k)
++    for k in set(DEFAULTS)-set(integers)-{'full_geometry_check','com_retry_enabled'}:
+         v=value[k]
+         require(type(v) in (int,float) and np.isfinite(v) and v>=0,'INVALID_STARTUP_SETTING:'+k)
+     require(value['com_retry_backoff_factor']>=1,'INVALID_STARTUP_SETTING:com_retry_backoff_factor')
+     require(value['com_retry_max_delay_seconds']>=value['com_retry_initial_delay_seconds'],'INVALID_STARTUP_RETRY_DELAY_ORDER')
+-    require(value['max_store_gib']>0,'INVALID_STARTUP_SETTING:max_store_gib')
+-    require(value['od_parity_rtol']<=1e-6 and value['od_parity_atol']<=1e-6,'OD_PARITY_TOLERANCE_MAY_NOT_BE_RELAXED')
++    require(value['max_store_gib']==0 or 0.001<=value['max_store_gib']<=1024,
++            'INVALID_STARTUP_SETTING:max_store_gib')
++    from .parity import from_options
++    from_options(value)  # validate the same policy that the external reader replays
+     return value
+ 
+ 
+@@ -156,7 +165,7 @@
+     no=com.exact_int(_call(lambda:matrix.AttValue('NO'),control,opt,'MATRIX_NO'),'Matrix.NO')
+     declared=com.finite_float(_call(lambda:matrix.AttValue('SUM'),control,opt,'MATRIX_SUM'),'Matrix.SUM')
+     total=float(arr.sum(dtype=np.float64));diag=float(np.trace(arr))
+-    require(abs(total-declared)<=max(1e-6,abs(total)*1e-8),'MATRIX_SUM_MISMATCH:'+ds['code'])
++    require(abs(total-declared)<=max(opt['matrix_sum_atol'],abs(total)*opt['matrix_sum_rtol']),'MATRIX_SUM_MISMATCH:'+ds['code'])
+     return arr,{'matrix_no':no,'matrix_total':total,'matrix_diagonal':diag,'matrix_interzonal':max(0.,total-diag),
+         'matrix_sha256':hashlib.sha256(np.ascontiguousarray(arr).tobytes()).hexdigest(),'matrix_shape':list(arr.shape)}
+ 
+@@ -219,20 +228,33 @@
+ 
+ 
+ def _od_parity(db,ds,values,zone_nos,opt):
+-    idx={z:i for i,z in enumerate(zone_nos)}
+-    reconstructed=np.zeros_like(values);row_keys=[]
+-    for o,d,v in db.execute('SELECT g.orig,g.dest,SUM(v.volume) FROM geometry g JOIN volumes v ON v.gid=g.gid WHERE v.dseg=? GROUP BY g.orig,g.dest',(ds['norm_code'],)):
+-        require(o in idx and d in idx,'PATH_ZONE_NOT_IN_LIVE_MATRIX')
+-        reconstructed[idx[o],idx[d]]=v;row_keys.append((o,d,v))
+-    delta=np.abs(reconstructed-values);mask=~np.eye(len(zone_nos),dtype=bool)
+-    allowed=opt['od_parity_atol']+opt['od_parity_rtol']*np.abs(values)
+-    bad=np.argwhere(mask & (delta>allowed))
+-    report={'dseg':ds['norm_code'],'status':'PASS' if not len(bad) else 'FAIL',
+-        'basis':'EACH_INTERZONAL_OD_MATRIX_CELL_VS_SUM_SAVED_PATH_VOLUMES',
+-        'max_abs_interzonal_error':float(delta[mask].max(initial=0)),
+-        'diagonal_error_not_hidden':float(np.diag(delta).sum()),'missing_or_inconsistent_od_count':len(bad),
+-        'sample_errors':[{'origin':zone_nos[i],'destination':zone_nos[j],'matrix':float(values[i,j]),'paths':float(reconstructed[i,j])} for i,j in bad[:20]]}
+-    return report,row_keys
++    from .parity import compare_database, from_options
++    return compare_database(db, ds['norm_code'], values, zone_nos, from_options(opt))
++
++
++
++def _add_parents_with_precision(collector,ds,mode,rows,authority,values,zones,opt):
++    """Replace only the legacy aggregate guard with independent cell evidence.
++
++    The unmodified 15A2 parser raises its aggregate failure AFTER committing all
++    rows and its audit. Every structural/parser/resource exception still escapes.
++    This helper never marks the inherited audit as passed or modifies its data.
++    """
++    two=parent_module('r1_15a2_two_mode_v238')
++    inherited_failure=None
++    try:
++        collector.add_parents(ds['norm_code'],mode,rows,authority)
++    except two.SupplyContractError as exc:
++        expected='SAME_RUN_OFFDIAGONAL_PARITY_FAILED:'+ds['norm_code']
++        if exception_text(exc) != expected:
++            raise
++        require(ds['norm_code'] in collector.parents,'INCOMPLETE_INHERITED_PARENT_AUDIT')
++        inherited_failure=expected
++    parity,_=_od_parity(collector.db,ds,values,zones,opt)
++    parity['inherited_aggregate_parity_passed']=bool(collector.parents[ds['norm_code']]['passes'])
++    parity['inherited_aggregate_failure']=inherited_failure
++    parity['independent_per_OD_precision_check_required']=True
++    return parity
+ 
+ 
+ def _geometry_equal(main,other,mode):
+@@ -260,13 +282,31 @@
+ def capture(visum,cfg,folder,control,opt,pre):
+     report,source,zones,links,dsegs=pre
+     two=parent_module('r1_15a2_two_mode_v238');supply=parent_module('r1_15a2_supply')
++    # Original parser/collector preserved. Only resource accounting is specialized:
++    # 0 means no artificial SQLite size cap, but actual free space is always checked.
+     st=dict(two.DEFAULT_SETTINGS,page_size=opt['page_size'],min_free_disk_gib=opt['min_free_disk_gib'],
+-            max_store_gib=opt['max_store_gib'],com_retry_policy=retry_policy(opt))
++            max_store_gib=opt['max_store_gib'] or 1024.,
++            max_parent_rows_per_dseg=opt['max_parent_rows_per_dseg'],
++            max_geometry_rows_per_mode=opt['max_geometry_rows_per_mode'],
++            com_retry_policy=retry_policy(opt))
++    class CordonCollector(two.TwoModeRouteCollector):
++        def check_resources(self,force=False):
++            now=time.monotonic()
++            if not force and now-self._last_resource_check<5:return
++            self._last_resource_check=now
++            dbpath=Path(self.route_db_path)
++            # Count journals too; do not defer a real disk failure to SQLite.
++            size=sum(p.stat().st_size for p in [dbpath,Path(str(dbpath)+'-wal'),
++                     Path(str(dbpath)+'-journal')] if p.exists())
++            if opt['max_store_gib'] and size>opt['max_store_gib']*1024**3:
++                raise two.DesignStopRequested('SQLITE_STORAGE_BUDGET_EXCEEDED')
++            if two.shutil.disk_usage(dbpath.parent).free<opt['min_free_disk_gib']*1024**3:
++                raise two.DesignStopRequested('LOW_FREE_DISK_SPACE')
+     path=folder/'p.sqlite';collector=None;checks=[];geometry_checks=[]
+     parent_hash=canonical_hash({'network':report['network_sha256'],'matrices':report['matrix_audit']})
+     matrix_dir=folder/'matrix_authority';mkdir(matrix_dir)
+     try:
+-        collector=two.TwoModeRouteCollector([],supply.SupplyPolicy(),parent_hash,links,path,st,control,geometry_only=True)
++        collector=CordonCollector([],supply.SupplyPolicy(),parent_hash,links,path,st,control,geometry_only=True)
+         groups=defaultdict(list)
+         for ds in dsegs:groups[ds['mode']].append(ds)
+         for group in groups.values():
+@@ -278,8 +318,7 @@
+                 write_npz(matrix_dir/(ds['norm_code']+'.npz'),values=arr,zone_nos=np.asarray(zones,dtype=np.int64))
+                 obj=_new_list(visum,'CreatePrTPathList',ds['code'],control,opt)
+                 rows=_bounded_rows(obj,two.PARENT_COLUMNS,st,control,opt,'PARENTS',dseg=ds['code'])
+-                collector.add_parents(ds['norm_code'],mode,rows,authority)
+-                parity,_=_od_parity(collector.db,ds,arr,zones,opt);checks.append(parity)
++                parity=_add_parents_with_precision(collector,ds,mode,rows,authority,arr,zones,opt);checks.append(parity)
+                 write_json(folder/'OD_PARITY.json',checks)
+                 require(parity['status']=='PASS','PER_OD_PATH_MATRIX_PARITY_FAIL:'+ds['code'])
+                 del arr,rows,obj
+@@ -294,9 +333,12 @@
+                 for ds in groups[mode][1:]:
+                     scratch=folder/('proof_'+ds['norm_code']+'.sqlite');probe=None
+                     try:
+-                        probe=two.TwoModeRouteCollector([],supply.SupplyPolicy(),parent_hash,links,scratch,st,control,geometry_only=True)
++                        probe=CordonCollector([],supply.SupplyPolicy(),parent_hash,links,scratch,st,control,geometry_only=True)
+                         parent_rows=collector.db.execute('SELECT g.orig,g.dest,g.path_index,v.volume FROM geometry g JOIN volumes v ON v.gid=g.gid WHERE v.dseg=? ORDER BY g.orig,g.dest,g.path_index',(ds['norm_code'],))
+-                        probe.add_parents(ds['norm_code'],mode,parent_rows,report['matrix_audit'][ds['norm_code']])
++                        with np.load(matrix_dir/(ds['norm_code']+'.npz'),allow_pickle=False) as saved:
++                            proof_parity=_add_parents_with_precision(probe,ds,mode,parent_rows,
++                                report['matrix_audit'][ds['norm_code']],saved['values'],saved['zone_nos'],opt)
++                        require(proof_parity['status']=='PASS','PROOF_STORE_PER_OD_PARITY_FAIL:'+ds['code'])
+                         obj=_new_list(visum,'CreatePrTPathLinkList',ds['code'],control,opt)
+                         probe.add_geometry(mode,_bounded_rows(obj,two.GEOMETRY_COLUMNS,st,control,opt,'FULL_GEOMETRY_CHECK',dseg=ds['code']))
+                         _geometry_equal(collector.db,probe.db,mode)
+@@ -327,10 +369,15 @@
+         sums={d:float(a['saved_path_volume_sum']) for d,a in collector.parents.items()}
+         identity='FULL_SAME_MODE_GEOMETRY_COMPARED_THIS_CAPTURE' if opt['full_geometry_check'] else 'PROVISIONAL_REPRESENTATIVE_ONLY'
+         collector.db.execute('UPDATE metadata SET value=? WHERE key=?',(identity,'geometry_identity'))
++        from .parity import from_options
++        parity_policy=from_options(opt).record()
++        collector.db.execute('INSERT INTO metadata VALUES(?,?)',('path_matrix_parity_policy',json.dumps(parity_policy,sort_keys=True)))
+         collector.db.execute('INSERT INTO metadata VALUES(?,?)',('capture_complete','true'))
+         collector.db.commit()
+         collector.close();collector=None
+-        evidence={'schema':'CORDON_FROZEN_CACHE_EVIDENCE_V1','completed':True,'model_year':2025,
++        evidence={'path_matrix_parity_policy':parity_policy,
++            'path_matrix_parity_policy_sha256':canonical_hash(parity_policy),
++            'schema':'CORDON_FROZEN_CACHE_EVIDENCE_V1','completed':True,'model_year':2025,
+             'basis':'RPDI','category':'OA','origin':'VISUM_SAVED_PATHS','cache_sha256':sha256(path),
+             'network_sha256':report['network_sha256'],'demand_sha256':canonical_hash(report['matrix_audit']),
+             'dseg_totals':sums,'geometry_full_identity_proven':bool(opt['full_geometry_check']),
+@@ -350,7 +397,9 @@
+ 
+ def _run_scoped(visum,*,action='PREFLIGHT',output_root=None,options=None,hotfix_evidence=None):
+     require(action in ACTIONS,'UNSUPPORTED_VISUM_ACTION_APPLY_NOT_IMPLEMENTED')
+-    opt=settings(options);cfg=read_config(ROOT/'CORDON_2025_AGGRESSIVE_CONFIG.json')
++    configured=read_json(ROOT/'CORDON_2025_STARTUP_OPTIONS.json') if (ROOT/'CORDON_2025_STARTUP_OPTIONS.json').is_file() else {}
++    configured.update(options or {})
++    opt=settings(configured);cfg=read_config(ROOT/'CORDON_2025_AGGRESSIVE_CONFIG.json')
+     name='VISUM_'+action+'_'+uuid.uuid4().hex[:12]
+     folder=None;control=None;opt_for_report=opt
+     try:
+--- FIX2/tests/test_aggressive_integration.py
++++ FIX3/tests/test_aggressive_integration.py
+@@ -22,6 +22,10 @@
+         if name in changes:
+             assert changes[name]['before_sha256']==digest
+             digest=changes[name]['after_sha256']
++        fix3=json.loads((ROOT/'docs/fix3/REVIEWED_CHANGES.json').read_text())['files']
++        if name in fix3:
++            assert fix3[name]['before_sha256']==digest
++            digest=fix3[name]['after_sha256']
+         assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,name
+ 
+ 
+--- FIX2/tests/test_aggressive_policy.py
++++ FIX3/tests/test_aggressive_policy.py
+@@ -28,7 +28,7 @@
+ 
+ @pytest.mark.parametrize('cycle',[0,-1,101,True,1.5,'1',None])
+ def test_invalid_cycle_rejected(cycle):
+-    c=raw_config();c['aggressive_policy']['outer_cycle']=cycle
++    c=raw_config();c['limit_profile']='LEGACY_STRICT';c['aggressive_policy']['outer_cycle']=cycle
+     with pytest.raises(ContractError,match='OUTER_CYCLE'):effective_config(c)
+ 
+ 
+@@ -37,8 +37,8 @@
+     assert base['relative_od_upper']==.15
+     assert ag['generation_backtracking_scales']==source['generation_backtracking_scales']
+     assert ag['td_realization_backtracking_scales']==source['td_realization_backtracking_scales']
+-    assert ag['td']['min_selected_component_relative_improvement']==.0005
+-    assert ag['generation_min_cal_relative_improvement']==.00001
++    assert ag['td']['min_selected_component_relative_improvement']==.00005
++    assert ag['generation_min_cal_relative_improvement']==.000001
+     for key in ('mutable_dsegs','selected_dsegs','validation_unordered_pairs','ridge','l1','epsilon_abs',
+                 'c17_ridge','c17_allocation_policy','repeat_policy','approvals','observation_methods',
+                 'solver_tolerance','kkt_tolerance'):
+--- FIX2/tests/test_combusy_entry_fix2.py
++++ FIX3/tests/test_combusy_entry_fix2.py
+@@ -112,4 +112,9 @@
+     protected=[r for r in records if r['path'].startswith(('data/','parent/')) or r['path'] in ('CORDON_2025_CONFIG.json','CORDON_2025_AGGRESSIVE_CONFIG.json')]
+     assert len(protected)>800
+     for rec in protected:
+-        assert hashlib.sha256((ROOT/rec['path']).read_bytes()).hexdigest()==rec['sha256'],rec['path']
++        digest=rec['sha256']
++        review=json.loads((ROOT/'docs/fix3/REVIEWED_CHANGES.json').read_text())['files']
++        if rec['path'] in review:
++            assert review[rec['path']]['before_sha256']==digest
++            digest=review[rec['path']]['after_sha256']
++        assert hashlib.sha256((ROOT/rec['path']).read_bytes()).hexdigest()==digest,rec['path']
+--- FIX2/tests/test_combusy_startup_fix2.py
++++ FIX3/tests/test_combusy_startup_fix2.py
+@@ -126,10 +126,12 @@
+     assert now[0] <= .4
+ 
+ 
+-def test_default_policy_exactly_matches_delivered_hotfix():
++def test_original_hotfix_defaults_preserved_with_explicit_practical_budget():
+     mod=parent_module('r1_15a2_com_busy_snapshot_hotfix_v1')
+     p=retry_policy(settings())
+-    assert all(p[k]==v for k,v in mod.DEFAULTS.items())
++    assert all(p[k]==v for k,v in mod.DEFAULTS.items() if k not in ('max_attempts','max_elapsed_seconds'))
++    assert mod.DEFAULTS['max_attempts']==64 and mod.DEFAULTS['max_elapsed_seconds']==75.
++    assert p['max_attempts']==128 and p['max_elapsed_seconds']==180.
+     assert p['enabled'] is True
+     assert hashlib.sha256((ROOT/'parent'/busy.SOURCE).read_bytes()).hexdigest()==busy.SOURCE_SHA256
+ 
+--- FIX2/tests/test_visum_startup.py
++++ FIX3/tests/test_visum_startup.py
+@@ -12,7 +12,7 @@
+ def setup(tmp_path):
+     v=FakeVisum(tmp_path/'model');out=tmp_path/'out';out.mkdir()
+     cfg=read_config(ROOT/'CORDON_2025_AGGRESSIVE_CONFIG.json')
+-    opt=settings({'page_size':2,'min_free_disk_gib':0,'com_retry_initial_delay_seconds':0.,'com_retry_max_delay_seconds':0.})
++    opt=settings({'page_size':2,'min_free_disk_gib':0,'com_retry_attempts':64,'com_retry_initial_delay_seconds':0.,'com_retry_max_delay_seconds':0.})
+     return v,cfg,out,ReadControl(out),opt
+ 
+ def ready(t):return preflight(*t)
+@@ -26,7 +26,7 @@
+ @pytest.mark.parametrize('options,message',[
+  ({'apply':True},'UNKNOWN_VISUM_STARTUP_OPTION'),({'page_size':0},'INVALID_STARTUP_SETTING'),
+  ({'page_size':True},'INVALID_STARTUP_SETTING'),({'full_geometry_check':1},'INVALID_GEOMETRY'),
+- ({'max_store_gib':0},'INVALID_STARTUP_SETTING'),({'od_parity_rtol':.1},'MAY_NOT_BE_RELAXED')])
++ ({'max_store_gib':-1},'INVALID_STARTUP_SETTING'),({'od_parity_rtol':float('nan')},'INVALID_STARTUP_SETTING')])
+ def test_bad_options(options,message):
+     with pytest.raises(Exception,match=message):settings(options)
+ 

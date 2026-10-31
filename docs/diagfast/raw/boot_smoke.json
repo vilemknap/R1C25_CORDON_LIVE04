@@ -1,0 +1,10 @@
+{
+  "status": "BOOTSTRAP_SMOKE_PASS",
+  "transport": "MOCK_INJECTED_VISUM",
+  "successful_status": "VISUM_SAVED_PATH_DIAGNOSTICS_COMPLETE",
+  "model_writes": [],
+  "isolated_modules_restored": true,
+  "no_instance_blocked": "NO_INJECTED_VISUM_RUN_FROM_TARGET_VISUM_SCRIPTS_MENU",
+  "output": "/mnt/data/diagfast_dev/boot_smoke_output/VISUM_CAPTURE_DIAGNOSTICS_15eb09e86332",
+  "native_tested": false
+}

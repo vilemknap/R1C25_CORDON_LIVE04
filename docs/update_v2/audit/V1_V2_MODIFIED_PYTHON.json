@@ -1,0 +1,42 @@
+[
+  {
+    "path": "cordon2025/__init__.py",
+    "before": "14557d0765eae7bc10cb77282806da0e7a2b882f05f67634fd332bf6ddeaed64",
+    "after": "0f691e08f0ac4f65216debcbeaf2b6e938a9c6a4787570930b52dd3b0cd720aa"
+  },
+  {
+    "path": "cordon2025/__main__.py",
+    "before": "e9250022debfa82f739585b7c7184344989b7a673e85c4c484714021ef1631d5",
+    "after": "968de6dea0a1f6b2891491fe423ea1a61ec575be5e941abcaf248d0d7a185ac1"
+  },
+  {
+    "path": "cordon2025/authority.py",
+    "before": "9b4276a717dc112cda4a90c811d2f4f7ff4a05efa1c38a799547e42558398e54",
+    "after": "4fc2ed8e7658aed10dd129020c13fa5a9369d541eb6fa848117a0242b03e8748"
+  },
+  {
+    "path": "cordon2025/common.py",
+    "before": "66af7d003f59b6bbfaedc981f374b0ca629809891c07d6bd78e9d8939606e224",
+    "after": "2e3dd95b7f44a95faa2aa664514d8672ae456403e3a0ccd38dd3ba7091c835be"
+  },
+  {
+    "path": "cordon2025/incidence.py",
+    "before": "09c8bf2492afc9fc2e8b3f6fa6740a3a6b9b3ca6d45580e8f7fb4f76c65ebbcb",
+    "after": "e0912898da000ebf0ae3a06be4fe5d82d0fc11a7f3801b46249ab4757a3cd062"
+  },
+  {
+    "path": "cordon2025/optimizer.py",
+    "before": "a2e1428ce4de1e7b17f760f9efe5e1db8b521803ccb51d33d1e16381ce17b847",
+    "after": "1fd2bb33671a481e5ea8c511d4532cc231d224873d0c2884f09dce7003684891"
+  },
+  {
+    "path": "tools/parent_compatibility.py",
+    "before": "6f38e3fba8611ee33fa8e19923ae5b433b54dbbadbe4c755d8fea76f9e85ec6d",
+    "after": "6cf89b9991a4a7bcd0a7744c7eac0c34d36b3c1ba7eb7c2e2f03514dd108cd58"
+  },
+  {
+    "path": "verify_release.py",
+    "before": "d1ec3da6198216c536681f0f34a62c8136888ab69a380487781ed8b26b06ad5b",
+    "after": "36769eda608beb2e4cb516512df7b8b32e019c695f9f51e512a1722d68423d82"
+  }
+]

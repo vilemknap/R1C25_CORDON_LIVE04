@@ -1,0 +1,35 @@
+Traceback (most recent call last):
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/tools/diagfast_benchmark.py", line 61, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/tools/diagfast_benchmark.py", line 40, in main
+    (a.output/'BENCHMARK_FAILED.txt').write_text(r.stderr);raise RuntimeError(r.stderr[-2000:])
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Traceback (most recent call last):
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/tools/diagfast_benchmark.py", line 61, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/tools/diagfast_benchmark.py", line 19, in main
+    result=run(host,backend=a.worker,output_root=a.output/'runs',options={'min_free_disk_gib':0},
+         fast_options={'fast_parent_page_size':a.page,'fast_geometry_page_size':a.page,'instrumentation':not a.no_instrumentation})
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/cordon2025/diagfast_runtime.py", line 139, in run
+    result=legacy.run(visum,action=action,output_root=output_root,options=options)
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/cordon2025/visum_startup.py", line 441, in run
+    return _run_scoped(visum,action=action,output_root=output_root,
+                       options=options,hotfix_evidence=proof)
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/cordon2025/visum_startup.py", line 416, in _run_scoped
+    session.checkpoint('CAPTURE_CLOSED_AND_SEALED')
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/cordon2025/diagfast_runtime.py", line 30, in call
+    with telemetry.span(label):return old(*a,**kw)
+                                      ~~~^^^^^^^^^
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/cordon2025/session.py", line 139, in checkpoint
+    validate_context(self.context)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/cordon2025/session.py", line 157, in validate_context
+    require(code_identity() == context.get('code_sha256'), 'CHECKPOINT_CODE_CHANGED')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/diagfast_dev/src/R1C25_DIAGFAST/cordon2025/common.py", line 40, in require
+    raise ContractError(message)
+cordon2025.common.ContractError: CHECKPOINT_CODE_CHANGED
+

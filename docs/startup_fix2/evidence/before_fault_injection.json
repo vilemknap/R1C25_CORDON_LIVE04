@@ -1,0 +1,26 @@
+[
+  {
+    "cutpoint": "ROOT_NET",
+    "result": "FAILED:BusyError:RPC call rejected"
+  },
+  {
+    "cutpoint": "NET_ZONES",
+    "result": "FAILED:BusyError:RPC call rejected"
+  },
+  {
+    "cutpoint": "NET_LINKS",
+    "result": "FAILED:BusyError:RPC call rejected"
+  },
+  {
+    "cutpoint": "NET_DSEGS",
+    "result": "FAILED:BusyError:RPC call rejected"
+  },
+  {
+    "cutpoint": "GET_MULTI_MEMBER",
+    "result": "FAILED:BusyError:RPC call rejected"
+  },
+  {
+    "cutpoint": "TYPEINFO",
+    "result": "FAILED:BusyError:RPC call rejected"
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "schema": "LIVE01_TO_LIVE02_INTERFACE_SPEC_V1",
+  "status": "INTERFACE_NOT_A_REAL_RUN",
+  "runtime_handoff_schema": "CORDON_LIVE02_HANDOFF_V1",
+  "runtime_handoff_file": "BASELINE_AND_PROPOSAL_CONTRACT.json",
+  "producer": "cordon2025.live01_baseline.run",
+  "validator": "cordon2025.live01_provenance.verify_handoff_directory",
+  "required_artifacts": [
+    "MODEL_READBACK.json",
+    "SOURCE_FINGERPRINT.json",
+    "RUN_CHECKPOINT.json",
+    "ALL_ORDERED_UNIQUE_PAIRS/PROPOSED_TG_CANDIDATES.json",
+    "EXACT_TWO_HITS/PROPOSED_TG_CANDIDATES.json"
+  ],
+  "required_before_any_LIVE02_write": [
+    "fresh current-model binding",
+    "verified immutable LIVE01 files",
+    "restore point / mark-before-mutation",
+    "explicit LIVE02 write policy",
+    "selected scenario method",
+    "native recompute and new assignment",
+    "new current path evidence",
+    "native effect and rollback verification"
+  ],
+  "apply_permitted": false,
+  "real_visum_verified": false,
+  "native_candidate_accepted": false
+}

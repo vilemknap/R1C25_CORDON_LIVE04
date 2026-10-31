@@ -1,0 +1,2 @@
+﻿origin_station;destination_station;observed;role;method;aggregation;before_saved_path_prediction;after_LINEARIZED;fixed_contribution;mutable_before;c17_scenario_relaxation;epsilon_abs;raw_difference_after;residual_after_relaxation;flags;actual_assignment_verified
+1;2;130.0;CALIBRATION;SYNTHETIC_ALGEBRA;BIDIRECTIONAL_SUM;100.0;105.0;0.0;100.0;0.0;0.0;-25.0;-25.0;UNMET_TARGET_OUTSIDE_RELAXATION;False

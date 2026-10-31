@@ -1,0 +1,15 @@
+{
+  "name": "parent_compat",
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--deselect=tests/test_v24915_release.py::test_v24915_config_runtime_bundle_and_lineage_are_hash_locked",
+    "--junitxml=/mnt/data/perf01_work/evidence/parent_compat.xml"
+  ],
+  "cwd": "/mnt/data/perf01_work/R1C25_PERF01/parent",
+  "returncode": 0,
+  "wall_s": 19.65097119899997
+}

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_live01_recovery.py",
+    "-q",
+    "--junitxml=/mnt/data/live01_recovery/recovery_evidence/RECOVERY_FAULTS_BEFORE_R2.xml"
+  ],
+  "cwd": "/mnt/data/live01_work/R1C25_LIVE01",
+  "environment_overrides": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_utc": "2026-10-24T09:06:24.289269+00:00",
+  "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+  "exit_code": 1,
+  "elapsed_seconds": 22.898304021000058,
+  "finished_utc": "2026-10-24T09:06:47.187820+00:00"
+}

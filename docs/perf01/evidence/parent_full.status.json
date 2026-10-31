@@ -1,0 +1,15 @@
+{
+  "name": "parent_full",
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--tb=short",
+    "--junitxml=/mnt/data/perf01_work/evidence/parent_full.xml"
+  ],
+  "cwd": "/mnt/data/perf01_work/R1C25_PERF01/parent",
+  "returncode": 1,
+  "wall_s": 22.562874083999986
+}

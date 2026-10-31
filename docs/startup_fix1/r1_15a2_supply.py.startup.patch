@@ -1,0 +1,24 @@
+--- aggressive_v1/r1_15a2_supply.py
++++ startup_fix1/r1_15a2_supply.py
+@@ -165,12 +165,18 @@
+     Alternatives are explicit paths of the SAME (DSeg, origin, destination).
+     Shared edges cancel in the conditional contrast. No graph search is used.
+     """
+-    def __init__(self, profiles, policy, parent_hash, editable_keys, *, duplicate_scope_policy="FAIL"):
++    def __init__(self, profiles, policy, parent_hash, editable_keys, *, duplicate_scope_policy="FAIL", geometry_only=False):
+         self.policy = policy
+         self.parent_hash = parent_hash
+         self.profiles = [dict(x) for x in profiles]
+-        self.authority_hash = observation_identity(profiles, include_model=False)
+-        observation_identity(profiles, include_model=True)
++        self.geometry_only = bool(geometry_only)
++        if self.geometry_only:
++            if self.profiles or list(editable_keys):
++                raise SupplyContractError("GEOMETRY_ONLY_CANNOT_HAVE_OBSERVATIONS_OR_ACTUATORS")
++            self.authority_hash = canonical_hash({"purpose": "READONLY_GEOMETRY_CAPTURE", "observations": []})
++        else:
++            self.authority_hash = observation_identity(profiles, include_model=False)
++            observation_identity(profiles, include_model=True)
+         self.keys = [edge_key(x) for x in profiles]
+         self.key_groups = [tuple(core._profile_link_keys(x)) for x in profiles]
+         if any(not group for group in self.key_groups):

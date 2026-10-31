@@ -1,0 +1,8 @@
+....................................................                     [100%]
+============================= slowest 5 durations ==============================
+1.23s call     tests/test_visum_startup.py::test_sealed_matrix_parity_rechecked_by_incidence_reader[scope-SCOPE_MISMATCH]
+1.00s call     tests/test_visum_startup.py::test_sealed_matrix_parity_rechecked_by_incidence_reader[traversal-PATH_INVALID]
+0.98s call     tests/test_visum_startup.py::test_sealed_matrix_parity_rechecked_by_incidence_reader[matrix-SHA_MISMATCH]
+0.90s call     tests/test_visum_startup.py::test_full_capture_hierarchy_across_page_boundaries_and_geometry_proof
+0.90s call     tests/test_visum_startup.py::test_sealed_matrix_parity_rechecked_by_incidence_reader[balance-PER_OD_PARITY_FAIL]
+52 passed, 1 deselected in 13.53s

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CORDON_FULL_GEOMETRY_PROOF_V2",
+  "type": "object",
+  "required": [
+    "schema",
+    "full",
+    "checks"
+  ],
+  "properties": {
+    "schema": {
+      "const": "CORDON_FULL_GEOMETRY_PROOF_V2"
+    },
+    "full": {
+      "const": true
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 12,
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "required": [
+          "dseg",
+          "check",
+          "verification",
+          "mode",
+          "geometry_routes",
+          "geometry_link_children",
+          "representative_geometry_sha256"
+        ],
+        "properties": {
+          "check": {
+            "enum": [
+              "FULL_REPRESENTATIVE",
+              "FULL_SAME_MODE_MATCH"
+            ]
+          },
+          "verification": {
+            "enum": [
+              "ORIGINAL_COLLECTOR_FULL",
+              "FULL_STREAM_EXACT_BYTES"
+            ]
+          },
+          "scratch_sqlite_created": {
+            "const": false
+          },
+          "scratch_sqlite_bytes_written": {
+            "const": 0
+          }
+        }
+      }
+    }
+  }
+}

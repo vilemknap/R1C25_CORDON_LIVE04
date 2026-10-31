@@ -1,0 +1,139 @@
+{
+  "15A2_CP79_production_ready": false,
+  "15A2_CP79_real_visum_tested": false,
+  "15A2_CP79_regression_gate": {
+    "compileall_rc": 0,
+    "generic_com_policy_unchanged": true,
+    "historical_manifest_supersession_policy": true,
+    "inline_com_preflight_synchronized": true,
+    "path_export_scope_exact": true,
+    "pytest_rc": 0,
+    "release_config_validation": true,
+    "runtime_bundle_validation": true,
+    "runtime_files_checked": 64,
+    "safe_finalizer_regression": true,
+    "tests_failed": 0,
+    "tests_passed": 783,
+    "tests_skipped": 4
+  },
+  "15A2_config_cal_role": "CALIBRATION",
+  "15A2_config_enable_kordon_pairs": false,
+  "15A2_config_export_dsegs": [
+    "NATIVE_CW",
+    "NATIVE_CW_noT",
+    "NATIVE_CS",
+    "NATIVE_CS_noT"
+  ],
+  "15A2_config_include_exog_ee_paths": false,
+  "15A2_config_mutable_dsegs": [
+    "NATIVE_CW",
+    "NATIVE_CW_noT",
+    "NATIVE_CS",
+    "NATIVE_CS_noT"
+  ],
+  "15N_v1_pathlinks": 786186,
+  "15N_v1_paths": 5244852,
+  "15N_v1_personal_dsegs_without_pathlinks": [
+    "EXOG_EE_CF",
+    "EXOG_EE_CL",
+    "EXOG_EE_CS",
+    "EXOG_EE_CS_noT",
+    "EXOG_EE_CW",
+    "EXOG_EE_CW_noT",
+    "NATIVE_CF",
+    "NATIVE_CL",
+    "NATIVE_CS",
+    "NATIVE_CS_noT",
+    "NATIVE_CW",
+    "NATIVE_CW_noT"
+  ],
+  "15N_v1_status": "PASS_EXPORTED_PRT_PATHS_AND_LINKS_FROM_VISUM_LISTS",
+  "2025_data_authority_status": "NO_2025_LIVE_PATH_CACHE_OR_RPDI_YEAR_RECONCILIATION",
+  "D1D2D3_previous_audit_checks": {
+    "D1_FINAL_EMPIRICKE_equals_D2_FINAL": "PASS 0 differing cells across all five ALL matrices 18x18",
+    "D2_ALL_equals_Transit_plus_NonTransit": "PASS",
+    "D2_SYM_equals_D3_M0_input": "PASS 0 differing cells across all five ALL 18x18 matrices",
+    "D2_SYM_symmetric_18x18": "PASS",
+    "D3_RPDI_symmetric_16x16": "PASS",
+    "all_unrecognized_deltas_nonnegative": "PASS",
+    "post_sym_total_change_from_D2_FINAL_all_classes": "-6 vehicles due to integer rounding",
+    "unknown_allocated_total_empirical_ALL": "1218"
+  },
+  "D3_RPDI_C17_one_margin_all": 56804.0,
+  "D3_RPDI_by_category": [
+    {
+      "C17_vs_known_ratio": 0.6356995373879407,
+      "D3_C17_one_symmetric_margin": 48645.0,
+      "D3_C17_row_plus_column": 97290.0,
+      "D3_known_16x16_sum": 76522.0,
+      "D3_special_vjazd_vyjazd_one_margin": 1807.0,
+      "D3_total_18x18": 177426.0,
+      "category": "OA"
+    },
+    {
+      "C17_vs_known_ratio": 0.4707240293809024,
+      "D3_C17_one_symmetric_margin": 4486.0,
+      "D3_C17_row_plus_column": 8972.0,
+      "D3_known_16x16_sum": 9530.0,
+      "D3_special_vjazd_vyjazd_one_margin": 205.0,
+      "D3_total_18x18": 18912.0,
+      "category": "LNA"
+    },
+    {
+      "C17_vs_known_ratio": 0.5677966101694916,
+      "D3_C17_one_symmetric_margin": 737.0,
+      "D3_C17_row_plus_column": 1474.0,
+      "D3_known_16x16_sum": 1298.0,
+      "D3_special_vjazd_vyjazd_one_margin": 20.0,
+      "D3_total_18x18": 2812.0,
+      "category": "STNA"
+    },
+    {
+      "C17_vs_known_ratio": 0.2842393594605984,
+      "D3_C17_one_symmetric_margin": 2698.0,
+      "D3_C17_row_plus_column": 5396.0,
+      "D3_known_16x16_sum": 9492.0,
+      "D3_special_vjazd_vyjazd_one_margin": 150.0,
+      "D3_total_18x18": 15188.0,
+      "category": "TNA"
+    },
+    {
+      "C17_vs_known_ratio": 0.5063829787234042,
+      "D3_C17_one_symmetric_margin": 238.0,
+      "D3_C17_row_plus_column": 476.0,
+      "D3_known_16x16_sum": 470.0,
+      "D3_special_vjazd_vyjazd_one_margin": 17.0,
+      "D3_total_18x18": 980.0,
+      "category": "BUS"
+    }
+  ],
+  "D3_RPDI_known_16x16_sum_all": 97312.0,
+  "D3_RPDI_special_one_margin_all": 2199.0,
+  "c17_budget_semantics": "One C17 symmetric row margin only, not two independent pools and not a per-pair unlimited tolerance",
+  "created_utc": "2026-10-19T14:24:02.824263+00:00",
+  "mapping_directed_edge_count": 32,
+  "mapping_station_count": 16,
+  "observed_OD_per_class": {
+    "BUS": 256,
+    "LNA": 256,
+    "OA": 256,
+    "STNA": 256,
+    "TNA": 256
+  },
+  "observed_OD_rows": 1280,
+  "schema": "R1_2025_CORDON_OLDER_OUTPUTS_AUDIT_V1",
+  "source_sha256": {
+    "15A2_V24915_zip": "5ba9c2baec1c433534c9aac49d92cb8f450f12f8a78d1f9f1db82cc5987ba716",
+    "15N_pathlinks": "9c582eceb3a07e486a38786a6a5b351cf8219ec70deb04ed82cab459be4b32a6",
+    "15N_summary": "dabaf713f96c5c59c95d1d9e77415ade6139cc53c71b78f7ee774c3ac414738a",
+    "D1": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+    "D2": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+    "D3": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+    "RPDI_16x16": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354",
+    "SDP_mapping": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+    "V24916_design_zip": "9b6b1e3d2f49f3aa646ffe4c45f7f9ee121c2e673cc1f27535c16bb368125ca2",
+    "previous_D1D2D3_audit": "9b2caecd3fe23bfd630bf35e9fc31566e97841175241c73a7bbc7e1f4905ca3e"
+  },
+  "status": "AUDIT_ONLY_NO_VISUM_OR_15A2_CODE_MODIFICATION",
+  "survey_2026_model_2025_year_alignment": "UNAPPROVED"
+}

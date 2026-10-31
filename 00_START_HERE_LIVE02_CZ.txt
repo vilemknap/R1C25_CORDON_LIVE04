@@ -1,0 +1,13 @@
+R1 2025 LIVE02: kordonova kalibrace TG ve Visumu (zapis TG, nativni prepocet, assignment,
+nove cteni cest, vyhodnoceni cele kordonove matice, ACCEPT/ROLLBACK).
+Varianta V24917 (vychozi): cileny zonovy fit + vypocteny krok STEP1 + hranicni prechody,
+LONG/SCHOOL, COMBUSY2 a PERF3 z profiloveho kalibratoru V24917.
+
+1. Otevri ve Visumu KOPII modelu R1 2025 s ulozenymi cestami, jejiz nazev obsahuje
+   LIVE02 / KOPIE / COPY / TEST / TRIAL / CALIB.
+2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE02_TG_CYCLE.py
+3. Vystupy: %LOCALAPPDATA%\R1C25_LIVE02\LIVE02_TG_<id>\  (00_RESULT.json)
+
+Navod: LIVE02_RUNBOOK_CZ.md
+Reporty: docs/live02/LIVE02_IMPLEMENTATION_REPORT_CZ.md, docs/live02/LIVE02_V24917_IMPLEMENTATION_REPORT_CZ.md
+Puvodni chovani HOTFIX2: v CORDON_LIVE02_CONFIG.json generation_mode = HOTFIX2_BACKTRACKING

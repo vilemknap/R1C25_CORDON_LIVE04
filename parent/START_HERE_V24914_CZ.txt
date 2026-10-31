@@ -1,0 +1,17 @@
+V24914 START HERE
+=================
+
+1. Otevři ve fresh Visum session:
+   ACCEPTED_A_0009_8f7cac7a950a.ver
+
+2. Spusť:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_14.py
+
+3. Ověř V24914_DEMAND_CONTINUATION_HANDOFF.json:
+   accepted_count = 9
+   next_outer_cycle = 6
+   semantic_state_hash = b599fdc7291e4a1d929db9818740e3f7aa7de53616b55238dcfcb2e8c40134a8
+
+4. Supply-only launcher zatím nepoužívej. Demand není joint-converged.
+
+5. Bounded MAX_ITERATIONS má pokračovat do dalšího outer cycle, ne ukončit celý run.

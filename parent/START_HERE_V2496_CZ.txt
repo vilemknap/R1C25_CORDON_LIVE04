@@ -1,0 +1,8 @@
+R1_15A2 V2.4.9.6
+
+1. Otevřete uživatelem zvolený accepted .ver v nové Visum session.
+2. Spusťte R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_6.py.
+3. Prvních 8 outer cycles používá EARLY_EXPLORATION Pareto acceptance.
+4. Sledujte RUN_STATUS.json, current_exploratory_checkpoint a BEST_SO_FAR_CHECKPOINT.json.
+5. Od cycle 9 se automaticky obnoví přesná V2.4.9.5 acceptance.
+6. Release není production-ready, dokud neprojde bounded real-Visum gate.

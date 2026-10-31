@@ -1,0 +1,89 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "measured_result_available": false,
+      "status": "TOOL_TIMEOUT",
+      "tool_timeout_seconds": 200
+    },
+    {
+      "attempt": 2,
+      "measurement_log": "docs/evidence/benchmark_100k_attempt2.log",
+      "status": "COMPLETED"
+    },
+    {
+      "attempt": 3,
+      "measurement_log": "docs/evidence/benchmark_100k_final.log",
+      "status": "COMPLETED_FINAL_SOURCE"
+    }
+  ],
+  "creation": {
+    "cache_bytes": 52858880,
+    "creation_seconds": 22.389390288000186,
+    "fixture_generation_peak_RSS_MiB": 482.59765625,
+    "geometry_count": 100000,
+    "phase": "create"
+  },
+  "measurement": {
+    "C17_policy": "DISABLED_FOR_SPARSE_SCALING_BENCHMARK",
+    "DSEG_volume_parity": "PASS",
+    "KKT_x": 3.681043304885684e-10,
+    "aggregation_seconds": 1.275688118999824,
+    "apply_permitted": false,
+    "external_OD_parity": "PASS",
+    "geometries": 100000,
+    "geometries_per_second": 6740.913069991318,
+    "geometry_decode_once": true,
+    "geometry_decodes": 100000,
+    "incidence_seconds": 14.834785579000027,
+    "live_visum_tested": false,
+    "mean_links_per_geometry": 48.99808,
+    "measure_process_peak_RSS_MiB": 1000.22265625,
+    "mutable_OD_variables": 200000,
+    "nnz_all_ordered": 666624,
+    "nnz_exact_two": 66672,
+    "objective_after": 5.999440308269718,
+    "objective_before": 94.76614420548641,
+    "ordered_link_occurrences": 4899808,
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "scope": "SYNTHETIC_COUNT_SCALING_NOT_REAL_R1_SPEED_CLAIM",
+    "segment_volume_rows": 600000,
+    "segment_volume_rows_per_second": 40445.4784199479,
+    "solver_iterations": 410,
+    "solver_seconds": 4.362986185000182,
+    "solver_status": "OFFLINE_SOLVER_PASS",
+    "source_cache_sha256": "840dad1975864905eb7ab78ba748af6a753a9b8eb5d7ffff3d45739cf7b77c86"
+  },
+  "measurement_previous_success": {
+    "C17_policy": "DISABLED_FOR_SPARSE_SCALING_BENCHMARK",
+    "DSEG_volume_parity": "PASS",
+    "KKT_x": 3.681043304885684e-10,
+    "aggregation_seconds": 1.2648208529999465,
+    "apply_permitted": false,
+    "external_OD_parity": "PASS",
+    "geometries": 100000,
+    "geometries_per_second": 6723.8109291321,
+    "geometry_decode_once": true,
+    "geometry_decodes": 100000,
+    "incidence_seconds": 14.872518138000032,
+    "live_visum_tested": false,
+    "mean_links_per_geometry": 48.99808,
+    "measure_process_peak_RSS_MiB": 999.03125,
+    "mutable_OD_variables": 200000,
+    "nnz_all_ordered": 666624,
+    "nnz_exact_two": 66672,
+    "objective_after": 5.999440308269718,
+    "objective_before": 94.76614420548641,
+    "ordered_link_occurrences": 4899808,
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "scope": "SYNTHETIC_COUNT_SCALING_NOT_REAL_R1_SPEED_CLAIM",
+    "segment_volume_rows": 600000,
+    "segment_volume_rows_per_second": 40342.865574792595,
+    "solver_iterations": 410,
+    "solver_seconds": 4.3234755739999855,
+    "solver_status": "OFFLINE_SOLVER_PASS",
+    "source_cache_sha256": "840dad1975864905eb7ab78ba748af6a753a9b8eb5d7ffff3d45739cf7b77c86"
+  }
+}

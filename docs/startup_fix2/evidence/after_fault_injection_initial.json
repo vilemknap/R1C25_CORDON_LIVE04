@@ -1,0 +1,26 @@
+[
+  {
+    "cutpoint": "ROOT_NET",
+    "result": "RECOVERED"
+  },
+  {
+    "cutpoint": "NET_ZONES",
+    "result": "RECOVERED"
+  },
+  {
+    "cutpoint": "NET_LINKS",
+    "result": "RECOVERED"
+  },
+  {
+    "cutpoint": "NET_DSEGS",
+    "result": "RECOVERED"
+  },
+  {
+    "cutpoint": "GET_MULTI_MEMBER",
+    "result": "RECOVERED"
+  },
+  {
+    "cutpoint": "TYPEINFO",
+    "result": "RECOVERED"
+  }
+]

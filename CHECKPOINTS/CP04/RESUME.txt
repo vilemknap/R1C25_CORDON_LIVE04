@@ -1,0 +1,15 @@
+Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate.
+{
+  "status": "OFFLINE_SOLVER_AND_REALIZABILITY_TESTED",
+  "focused_passed": 49,
+  "tests_log": "docs/evidence/CP04_all_focused.log",
+  "next_gate": "CP05_HARDENING_PERFORMANCE_REGRESSION_HANDOFF",
+  "synthetic_demo": "OFFLINE_RESULTS/CP04_SYNTHETIC_DEMO/DEMO_SUMMARY.json",
+  "production_ready": false,
+  "unresolved": [
+    "NO_2025_PATH_CACHE",
+    "SEMANTICS_UNAPPROVED",
+    "C17_PHYSICAL_ALLOCATION_DISABLED",
+    "REAL_TG_TD_RESPONSE_MISSING"
+  ]
+}

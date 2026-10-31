@@ -1,0 +1,23 @@
+{
+  "schema": "R1_15A2_V24915_FINAL_BUILD_RECEIPT_V1",
+  "release": "R1_15A2_V2_4_9_15_COM_BUSY_RETRY_SAFE_FINALIZER_20261019",
+  "package_revision": "V24915_COM_BUSY_RETRY_SAFE_FINALIZER_R1",
+  "created_utc": "2026-10-19T08:38:24.851221+00:00",
+  "parent_release": "R1_15A2_V2_4_9_14_DEMAND_CONTINUATION_SUPPLY_READY_20261019",
+  "parent_config_sha256": "0978519bed11bb9330d6d28bc4f5b6db0fe9e714e2d6b100499e7c641eadbade",
+  "contract_sha256": "aa3d8d27a3d04dab505d182d457fac70c44881aff11ed145dbacddb5027b5610",
+  "runtime_manifest_sha256": "c8a388f7d2bbf9e8e427d7547f38e3ec5f5463c3caa87880d466d2d0a04fe615",
+  "config_sha256": "ef5669db1db24041499896c307fb05b548084334ad1a037f3650f641f6996be3",
+  "source_patch_sha256": "b1896a0d27d1c08bcfae014c9d6cca23a14dbbbf29fc6d54547d77e2c09137fe",
+  "cp79_source_tree_hash": "7dddc486f436b17cb32a77f72a15017559ea3e53ce113d2a04a424bdb2aedc05",
+  "tests": {
+    "compileall_rc": 0,
+    "pytest_rc": 0,
+    "passed": 783,
+    "skipped": 4,
+    "failed": 0
+  },
+  "runtime_files_checked": 64,
+  "real_visum_tested": false,
+  "production_ready": false
+}

@@ -1,0 +1,20 @@
+{
+  "checkpoint": "CP_B01_CONTRACTS_AND_COM_BRIDGE",
+  "type": "INCREMENTAL_PATCH_ON_CORDON_AGGRESSIVE_V1",
+  "base_zip_sha256": "8bffad557e0e911f607a3e56d71dd55fea704844db9e9d34b8a6b78164dc42d9",
+  "native_visum_tested": false,
+  "model_writes": false,
+  "live_calibration_adapter_implemented": false,
+  "evidence": [
+    "CHECKPOINT_PLAN.txt",
+    "CP_B00_AUDIT.json",
+    "bridge_bootstrap_first.log",
+    "bridge_first.log",
+    "bridge_second.log",
+    "bridge_third.log",
+    "contracts_after.log",
+    "cordon_baseline.log",
+    "new_adversarial_before.log",
+    "profile_baseline.log"
+  ]
+}

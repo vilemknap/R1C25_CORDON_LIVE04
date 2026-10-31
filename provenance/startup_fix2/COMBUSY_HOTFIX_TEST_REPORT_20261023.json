@@ -1,0 +1,16 @@
+{
+  "release": "R1_15A2_AGGRESSIVE_FIX1_COMBUSY_SNAPSHOT_RETRY_V1_20261023",
+  "scope": "READ_ONLY_TRANSIENT_COM_RETRY_STARTUP_SNAPSHOT",
+  "parent_seal": {
+    "base_files_verified_unchanged": 947,
+    "additions_verified_unchanged": 3,
+    "verification": "PASS"
+  },
+  "regression": {"passed": 109, "failed": 0},
+  "fault_injection": {"passed": 6, "failed": 0},
+  "real_visum_tested": false,
+  "ipf_policy_changed_by_hotfix": false,
+  "outer_cycle_policy_changed": false,
+  "changes_to_parent_files": 0,
+  "new_entrypoint": "R1_15A2_AGGRESSIVE_TGTD_V1_FIX1_COMBUSY_RETRY.py"
+}

@@ -1,0 +1,12 @@
+{
+  "after_sha256": "521413230244d5059bd1096779d8a70afa91c6c0be2b41ee68394e4b6cc9dbe7",
+  "before_sha256": "521413230244d5059bd1096779d8a70afa91c6c0be2b41ee68394e4b6cc9dbe7",
+  "native_assignment_executed": false,
+  "network_sha256": "91e5d5a3dcac7ac3e0388950525f8c2e9d5e319de135ade5b509a50519ff687c",
+  "new_assignment_verified": false,
+  "oa_matrix_audit_sha256": "13f99a67fcea270e3fce953eea3c787beea9af56bb53ce65eb5af913012546ab",
+  "schema": "LIVE01_END_STATE_READBACK_V2",
+  "scope": "CURRENT_SOURCE_PARAMETERS_MATRICES_NETWORK_NOT_FUTURE_PATH_EPOCH",
+  "source_version": "/mnt/data/live01_work/smoke_FINAL/model/R1_2025_SYNTHETIC.ver",
+  "status": "DONOR_AND_OA_CURRENT_STATE_UNCHANGED"
+}

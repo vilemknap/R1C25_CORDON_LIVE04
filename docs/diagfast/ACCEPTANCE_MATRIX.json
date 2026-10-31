@@ -1,0 +1,397 @@
+{
+  "release_status": "READY_FOR_LIVE_PARITY",
+  "cases": [
+    {
+      "id": "A01",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "A02",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "A03",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "A04",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "A05",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "A06",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "A07",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "A08",
+      "status": "TESTED_OFFLINE",
+      "evidence": "source pins; inherited startup/source tests; test_diagfast_extended; final packaging verification",
+      "limitation": ""
+    },
+    {
+      "id": "B01",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B02",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B03",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B04",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B05",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B06",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B07",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B08",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "B09",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_pages + inherited bounded COM/COMBUSY tests",
+      "limitation": "Provider is mock; real PTV capacity must be tested."
+    },
+    {
+      "id": "C01",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C02",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C03",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C04",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C05",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C06",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C07",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C08",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C09",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C10",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C11",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C12",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C13",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C15",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C16",
+      "status": "TESTED_OFFLINE",
+      "evidence": "test_diagfast_geometry; test_diagfast_runtime; scaled benchmark",
+      "limitation": "Complete tested fixture, not full 868022 real routes."
+    },
+    {
+      "id": "C14",
+      "status": "PARTIAL_OFFLINE_REAL_PENDING",
+      "evidence": "513 group tests; 6000 geometry benchmark",
+      "limitation": "Reference exists on Drive; 664MB download blocked by connector 256MiB limit."
+    },
+    {
+      "id": "D01",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D02",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D03",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D04",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D05",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D06",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D07",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D08",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D09",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "D10",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited FIX3/PERF01 safety tests + test_diagfast_runtime/extended",
+      "limitation": "Inherited guards not redefined."
+    },
+    {
+      "id": "E01",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E02",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E03",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E04",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E05",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E06",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E07",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E08",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E09",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "E10",
+      "status": "TESTED_OFFLINE",
+      "evidence": "exact compare_runs; nonzero mutable operator test; PERF01 build/hit; source parity; original launcher remains",
+      "limitation": "Parent identity test remains expected inherited fail, reported separately."
+    },
+    {
+      "id": "F01",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited failure/IO/session tests; diagfast runtime/pages/extended; patch guards",
+      "limitation": "Windows-specific filesystem/COM behavior remains native pending."
+    },
+    {
+      "id": "F02",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited failure/IO/session tests; diagfast runtime/pages/extended; patch guards",
+      "limitation": "Windows-specific filesystem/COM behavior remains native pending."
+    },
+    {
+      "id": "F03",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited failure/IO/session tests; diagfast runtime/pages/extended; patch guards",
+      "limitation": "Windows-specific filesystem/COM behavior remains native pending."
+    },
+    {
+      "id": "F04",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited failure/IO/session tests; diagfast runtime/pages/extended; patch guards",
+      "limitation": "Windows-specific filesystem/COM behavior remains native pending."
+    },
+    {
+      "id": "F05",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited failure/IO/session tests; diagfast runtime/pages/extended; patch guards",
+      "limitation": "Windows-specific filesystem/COM behavior remains native pending."
+    },
+    {
+      "id": "F06",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited failure/IO/session tests; diagfast runtime/pages/extended; patch guards",
+      "limitation": "Windows-specific filesystem/COM behavior remains native pending."
+    },
+    {
+      "id": "F07",
+      "status": "TESTED_OFFLINE",
+      "evidence": "inherited failure/IO/session tests; diagfast runtime/pages/extended; patch guards",
+      "limitation": "Windows-specific filesystem/COM behavior remains native pending."
+    },
+    {
+      "id": "NATIVE_PAIRED_3X_256_512_1024",
+      "status": "NOT_RUN",
+      "evidence": "LIVE_VISUM_ACCEPTANCE.py and docs/live checklist",
+      "limitation": "No native PTV/Windows; final SQLite exists on Drive but download returned HTTP 413 (256MiB connector limit)."
+    },
+    {
+      "id": "REAL_FINAL_CACHE_REPLAY",
+      "status": "NOT_RUN",
+      "evidence": "LIVE_VISUM_ACCEPTANCE.py and docs/live checklist",
+      "limitation": "No native PTV/Windows; final SQLite exists on Drive but download returned HTTP 413 (256MiB connector limit)."
+    },
+    {
+      "id": "OPTIONAL_QA_32_LINKS",
+      "status": "NOT_IMPLEMENTED_OPTIONAL",
+      "evidence": "default OFF; legacy native reports kept",
+      "limitation": "PERF01 original offline compact output preserved."
+    },
+    {
+      "id": "OPTIONAL_COMPACT_NATIVE_REPORTS",
+      "status": "NOT_IMPLEMENTED_OPTIONAL",
+      "evidence": "default OFF; legacy native reports kept",
+      "limitation": "PERF01 original offline compact output preserved."
+    },
+    {
+      "id": "AUTOMATIC_BACKEND_FALLBACK",
+      "status": "DISABLED_EXPLICIT_MANUAL_FALLBACK",
+      "evidence": "legacy entry retained; no data error converted to success",
+      "limitation": "Original bounded page-size downshift is active, not whole-backend retry."
+    }
+  ],
+  "native_verified": false,
+  "apply_permitted": false
+}

@@ -1,0 +1,51 @@
+[
+  {
+    "family": "IOFIX3/IOFIX4 + PATHFIX3",
+    "runtime_status": "ACTIVE_OFFLINE",
+    "implementation": "cordon2025/io.py",
+    "source": "Fresh donor long-path and retry primitives; stricter cordon serializer",
+    "tests": "test_v2_io.py"
+  },
+  {
+    "family": "GATEFIX2",
+    "runtime_status": "ACTIVE_ADAPTED_OFFLINE",
+    "implementation": "cordon2025/state.py::observation_roster",
+    "source": "Dynamic cordon identity, not PROFILE488 hardcode",
+    "tests": "test_v2_state_targeting.py"
+  },
+  {
+    "family": "SEMRELOAD1",
+    "runtime_status": "ACTIVE_ADAPTED_OFFLINE",
+    "implementation": "cordon2025/state.py::snapshot_semantics",
+    "source": "Eight hashes including aggregate; reject mismatch, never LoadVersion",
+    "tests": "test_v2_state_targeting.py"
+  },
+  {
+    "family": "FRESH0 isolation / CACHE_DISABLED / NO_WALLCLOCK",
+    "runtime_status": "ACTIVE_OFFLINE",
+    "implementation": "cordon2025/session.py, state.py",
+    "source": "Owned short root, exclusive lock, explicit completed input only",
+    "tests": "test_v2_session.py"
+  },
+  {
+    "family": "PERF1/PERF2/PERF2C snapshot and readback",
+    "runtime_status": "LIBRARY_PORT_MOCK_VERIFIED_LIVE_DISABLED",
+    "implementation": "parent exact-byte libraries + state.readback_manager",
+    "source": "Exact snapshot, invalidation, fallback and diagnostic hash tests. No live adapter activation",
+    "tests": "97 unchanged donor tests in parent/tests; test_v2_state_targeting.py"
+  },
+  {
+    "family": "V24916 targeting / skim",
+    "runtime_status": "CAL_ONLY_OFFLINE_GUIDANCE; LIVE_PROFILE_TARGETING_DISABLED",
+    "implementation": "cordon2025/targeting.py",
+    "source": "Sparse path pressure, sealed distances, mutable family only",
+    "tests": "test_v2_state_targeting.py"
+  },
+  {
+    "family": "A0004/CYCLE3/PROFILE488/2022 oneclick",
+    "runtime_status": "NOT_PORTED_AS_RUN_CONFIGURATION",
+    "implementation": "None",
+    "source": "Must not replace 2025 scope, run authority or checkpoint",
+    "tests": "test_v2_port_identity.py"
+  }
+]

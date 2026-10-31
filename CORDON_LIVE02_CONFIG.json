@@ -1,0 +1,303 @@
+{
+  "schema": "R1_CORDON_LIVE02_CONFIG_V1",
+  "live_stage": "LIVE02_TG_CYCLE",
+  "execution_mode": "TECHNICAL_TRIAL",
+  "live01_contract_file": "CORDON_LIVE01_CONFIG.json",
+  "live01_contract_sha256": "019406f39fca5e5ddfd9b03d67a75512db9ab32a2a25787bbe0668c3b2cf9b2f",
+  "outer_cycle_start": 1,
+  "max_tg_cycles": 1,
+  "explicit_excluded_zone_nos": [],
+  "write_policy": {
+    "tg_zone_parameter_writes": true,
+    "td_parameter_writes": false,
+    "direct_od_matrix_writes": false,
+    "load_version": false,
+    "overwrite_source_version": false,
+    "save_accepted_version_new_file": true
+  },
+  "isolated_copy_guard": {
+    "required_version_name_tokens_any": [
+      "LIVE02",
+      "KOPIE",
+      "COPY",
+      "TEST",
+      "TRIAL",
+      "CALIB"
+    ],
+    "forbidden_version_name_tokens": [
+      "2022"
+    ]
+  },
+  "acceptance": {
+    "method": "ALL_ORDERED_UNIQUE_PAIRS",
+    "secondary_method": "EXACT_TWO_HITS",
+    "secondary_max_relative_degradation": 0.0,
+    "min_relative_improvement": 1e-05,
+    "minimum_absolute_improvement": 1e-08,
+    "diagnostic_hash_decimals": null,
+    "reproducibility": "EXACT_CORDON_DIAGNOSTIC_HASH",
+    "candidate_capture_failure_policy": "REJECT_CANDIDATE_AFTER_VERIFIED_ROLLBACK"
+  },
+  "generation_search": {
+    "backtracking_scales": [
+      1.0,
+      0.75,
+      0.5,
+      0.25,
+      0.125,
+      0.0625
+    ],
+    "max_trials": 6,
+    "first_sufficient_enabled": true,
+    "first_sufficient_min_relative_improvement": 0.001,
+    "pre_apply_gate_nonfatal": true,
+    "pre_apply_gate_shortcut": true,
+    "max_generation_pa_relative_gap": 0.02,
+    "max_generation_effect_log_error": 0.01,
+    "solver_tolerance_ladder": [
+      {
+        "solver_tolerance": 1e-11,
+        "solver_max_iter": 60000
+      },
+      {
+        "solver_tolerance": 1e-13,
+        "solver_max_iter": 200000
+      },
+      {
+        "solver_tolerance": 1e-15,
+        "solver_max_iter": 1000000
+      },
+      {
+        "solver_tolerance": 1e-30,
+        "solver_max_iter": 50000
+      }
+    ]
+  },
+  "evaluation": {
+    "trial_full_geometry_check": true,
+    "keep_trial_capture_db": false,
+    "rollback_proof": "PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE"
+  },
+  "donor_runtime": {
+    "source": "provenance/live01/DONOR_EFFECTIVE_CONFIG_FORENSIC_ONLY.json",
+    "expected_zones": 681,
+    "require_solver_convergence_for_apply": true,
+    "require_projection_convergence_for_apply": true,
+    "supply": {
+      "passenger_dsegs": [
+        "NATIVE_CW",
+        "NATIVE_CW_noT",
+        "NATIVE_CS",
+        "NATIVE_CS_noT",
+        "NATIVE_CL",
+        "NATIVE_CF",
+        "EXOG_EE_CW",
+        "EXOG_EE_CW_noT",
+        "EXOG_EE_CS",
+        "EXOG_EE_CS_noT",
+        "EXOG_EE_CL",
+        "EXOG_EE_CF"
+      ],
+      "freight_dsegs": [
+        "LNV",
+        "NV"
+      ],
+      "component_matrix_nos": [
+        9101,
+        9102,
+        9103,
+        9104,
+        9105,
+        9106,
+        9107,
+        9108,
+        9109,
+        9110,
+        9111,
+        9112,
+        9113,
+        9114,
+        9115,
+        9116,
+        9117
+      ],
+      "link_attributes": {},
+      "excluded_link_keys": [],
+      "editable_link_types": null,
+      "assignment_operations": [
+        {
+          "dseg_attribute": "DSEGSET",
+          "dseg_object_path": [
+            "PrTAssignmentParameters"
+          ],
+          "expected_dsegs": [
+            "EXOG_EE_CF",
+            "EXOG_EE_CL",
+            "EXOG_EE_CS",
+            "EXOG_EE_CS_NOT",
+            "EXOG_EE_CW",
+            "EXOG_EE_CW_NOT",
+            "LNV",
+            "NATIVE_CF",
+            "NATIVE_CL",
+            "NATIVE_CS",
+            "NATIVE_CS_NOT",
+            "NATIVE_CW",
+            "NATIVE_CW_NOT",
+            "NV"
+          ],
+          "no": 20,
+          "operation_type": 101
+        }
+      ],
+      "gap_readback": {
+        "maximum_gap": 0.005,
+        "operation_no": 20,
+        "source": "PRT_ASS_QUALITY_LIST"
+      }
+    },
+    "matrix_scope_by_block": {
+      "GENERATION": {
+        "dseg_codes": [
+          "NATIVE_CW",
+          "NATIVE_CW_noT",
+          "NATIVE_CS",
+          "NATIVE_CS_noT"
+        ],
+        "matrix_nos": [
+          9101,
+          9102,
+          9103,
+          9104,
+          9105,
+          9106,
+          9107,
+          9108,
+          9109,
+          9110
+        ]
+      }
+    },
+    "min_changed_matrices_by_block": {
+      "GENERATION": 1
+    },
+    "shared_objective": {
+      "minimum_improvement": 1e-08
+    },
+    "trial_calibration": {
+      "require_reproducible_reapply": true
+    },
+    "com_resilience": {
+      "backoff_factor": 2.0,
+      "bounded_path_export_retry_enabled": true,
+      "bounded_path_export_same_range_required": true,
+      "enabled": true,
+      "helper_retry_enabled": true,
+      "initial_delay_seconds": 0.05,
+      "max_attempts": 5,
+      "max_delay_seconds": 0.8,
+      "page_size_fallback_policy": "NONTRANSIENT_MEMORY_OR_RANGE_ERRORS_ONLY",
+      "raw_ole_invoke_without_retry_forbidden_in_active_path_export": true,
+      "retry_scope": "TRANSIENT_RPC_CALL_REJECTED_OR_RETRY_LATER_ONLY",
+      "retryable_hresult": [
+        -2147418111,
+        -2147417846
+      ],
+      "scoped_policies": {
+        "bounded_path_export": {
+          "backoff_factor": 1.7,
+          "enabled": true,
+          "initial_delay_seconds": 0.25,
+          "max_attempts": 48,
+          "max_delay_seconds": 3.0,
+          "max_elapsed_seconds": 120.0
+        },
+        "final_verification": {
+          "backoff_factor": 1.8,
+          "enabled": true,
+          "initial_delay_seconds": 0.25,
+          "max_attempts": 12,
+          "max_delay_seconds": 3.0,
+          "max_elapsed_seconds": 30.0
+        }
+      },
+      "zone_identity_cache": true,
+      "zone_readback_tolerance": 1e-07
+    },
+    "performance": {
+      "bulk_link_read": {
+        "enabled": true,
+        "fallback_to_scalar": true,
+        "verify_object_no": true
+      },
+      "v24915_perf1": {
+        "schema": "R1_15A2_V24915_PERF1_CONFIG_V1",
+        "phase_specific_procseq": {
+          "enabled": true,
+          "fallback_to_full": true,
+          "generation_plan": "ORIGINAL_ACTIVE_PREFIX_THROUGH_APPROVED_ASSIGNMENT",
+          "preserve_active_groups": true,
+          "safe_post_assignment_operations": [
+            {
+              "operation_type": 65,
+              "position": 21,
+              "text_contains_any": [
+                "12C",
+                "COUNTLOCATION",
+                "GEH",
+                "COLOR"
+              ]
+            }
+          ],
+          "safe_post_assignment_skip_positions": [],
+          "safe_pre_td_skip_operation_types": [
+            45,
+            75
+          ],
+          "supply_plan": "APPROVED_PRT_ASSIGNMENT_PLUS_ACTIVE_GROUPS",
+          "td_plan": "FIRST_ACTIVE_TD_THROUGH_APPROVED_ASSIGNMENT"
+        }
+      }
+    }
+  },
+  "generation_mode": "V24917_TARGETED_STEP1",
+  "v24917": {
+    "source_release": "R1_15A2_V24917_COMBUSY2FIX1_ROSTEREDGE1_BNDGEN2_STEP1_PERF3_20261025",
+    "source_zip_sha256": "ccfd540cb07b13a6eb40965cfac988689c6fe2aab7c4670f384561f202281f4f",
+    "run_options_source_sha256": "cfb7a7ce7cfa14c320114b61881f163f9bc68adf722ddb1b52964069258ea470",
+    "run_options": {
+      "tg_catchup_enabled": true,
+      "tg_max_trials": 3,
+      "ls_max_step_up": 0.5,
+      "ls_max_step_down": 0.1,
+      "ls_school_envelope": [
+        0.67,
+        1.5
+      ],
+      "ls_long_envelope_ref": [
+        0.5,
+        2.0
+      ],
+      "ls_ridge_relative": 0.05,
+      "ts_enabled": true,
+      "ts_robust_margin": 0.15,
+      "ts_min_scale": 0.05,
+      "ts_max_scale": 1.0,
+      "ts_grid_points": 20,
+      "perf3_enabled": true,
+      "cb_max_wait_seconds": 900,
+      "cb_block_retries": 3,
+      "bd_enabled": true,
+      "bd_zones": "650-680",
+      "fa_enabled": false
+    },
+    "run_options_environment_overrides": false,
+    "targeted_generation_policy": "DONOR_DEFAULT_POLICY",
+    "catchup_until_model_obs_ratio": 0.8,
+    "boundary_zone_policy": "CONFIGURED_ZONES_POSITIVE_WS_PA_AND_NO_ADD_ZAHR_ACTUATOR",
+    "long_school": "AUTO_IF_ATTRIBUTES_PRESENT",
+    "long_exposure": "CORDON_PAIR_NATIVE_CL_PATH_VOLUME",
+    "step1_secondary_method_prediction": "LINEAR_FIT_ON_SECONDARY_INCIDENCE_THEN_SECANT",
+    "fastassign1": "ONLY_WITH_TS_DISABLED_NOT_PORTED"
+  }
+}

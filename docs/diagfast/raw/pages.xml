@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="53" time="0.896" timestamp="2026-10-23T21:03:59.826286+00:00" hostname="065c207d5cdd"><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-0]" time="0.183" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-1]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-255]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-256]" time="0.008" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-257]" time="0.007" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-511]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-512]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-513]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-1023]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-1024]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-1025]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[256-3073]" time="0.014" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-0]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-1]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-255]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-256]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-257]" time="0.012" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-511]" time="0.012" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-512]" time="0.012" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-513]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-1023]" time="0.012" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-1024]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-1025]" time="0.007" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[512-3073]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-0]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-1]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-255]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-256]" time="0.008" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-257]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-511]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-512]" time="0.007" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-513]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-1023]" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-1024]" time="0.012" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-1025]" time="0.013" /><testcase classname="tests.test_diagfast_pages" name="test_pages_complete_exact_and_counts[1024-3073]" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_geometry_hierarchy_page_boundary_exact[256]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_geometry_hierarchy_page_boundary_exact[512]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_geometry_hierarchy_page_boundary_exact[1024]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_bounded_downshift_same_first_no_skip" time="0.018" /><testcase classname="tests.test_diagfast_pages" name="test_busy_retries_exact_same_range" time="0.019"><failure message="fake_visum_startup.BusyError">setup = (PosixPath('/tmp/pytest-of-root/pytest-1/test_busy_retries_exact_same_r0/out'), &lt;cordon2025.visum_startup.ReadControl ...True, 'com_retry_initial_delay_seconds': 0.0, ...}, &lt;cordon2025.diagfast_telemetry.Telemetry object at 0x7f74bc4dc5f0&gt;)
+
+    def test_busy_retries_exact_same_range(setup):
+        p=Provider([[1,2,1,10.]]);p.busy=2
+&gt;       assert read(p,512,setup)==p.data
+               ^^^^^^^^^^^^^^^^^
+
+tests/test_diagfast_pages.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_diagfast_pages.py:40: in read
+    return list(fast.rows(SimpleNamespace(_oleobj_=p),columns or two.PARENT_COLUMNS,
+cordon2025/diagfast_pages.py:66: in rows
+    yield from two.bounded_rows(measured,columns,current,control,phase,**details)
+parent/r1_15a2_two_mode_v238.py:242: in bounded_rows
+    raw = com.bounded_ole_invoke_with_retry(
+parent/r1_15a2_com_compat.py:255: in bounded_ole_invoke_with_retry
+    return com_call_with_retry(
+parent/r1_15a2_com_compat.py:170: in com_call_with_retry
+    return call()
+           ^^^^^^
+parent/r1_15a2_com_compat.py:256: in &lt;lambda&gt;
+    lambda: ole.Invoke(memid, 0, kind, True, first, last),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/diagfast_pages.py:38: in Invoke
+    result=self.target.Invoke(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/com_busy.py:116: in Invoke
+    return self.obj.Invoke(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;test_diagfast_pages.Provider object at 0x7f74bc208550&gt;, mid = 11
+lcid = 0, kind = 1, method = True, first = 1, last = 512
+
+    def Invoke(self,mid,lcid,kind,method,first,last):
+        self.calls.append((first,last))
+        if self.stop:self.stop.touch()
+        if self.busy:
+            self.busy-=1
+&gt;           raise BusyError()
+E           fake_visum_startup.BusyError
+
+tests/test_diagfast_pages.py:22: BusyError</failure></testcase><testcase classname="tests.test_diagfast_pages" name="test_busy_exhaustion_never_downshifts" time="0.019"><failure message="assert [(1, 512)] == [(1, 512), (1, 512), (1, 512)]&#10;  &#10;  Right contains 2 more items, first extra item: (1, 512)&#10;  &#10;  Full diff:&#10;    [&#10;        (&#10;            1,&#10;            512,&#10;        ),&#10;  -     (&#10;  -         1,&#10;  -         512,&#10;  -     ),&#10;  -     (&#10;  -         1,&#10;  -         512,&#10;  -     ),&#10;    ]">setup = (PosixPath('/tmp/pytest-of-root/pytest-1/test_busy_exhaustion_never_dow0/out'), &lt;cordon2025.visum_startup.ReadControl ...True, 'com_retry_initial_delay_seconds': 0.0, ...}, &lt;cordon2025.diagfast_telemetry.Telemetry object at 0x7f74aff99c70&gt;)
+
+    def test_busy_exhaustion_never_downshifts(setup):
+        p=Provider([]);p.busy=100
+        with pytest.raises(BusyError):read(p,512,setup)
+&gt;       assert p.calls==[(1,512)]*3
+E       assert [(1, 512)] == [(1, 512), (1, 512), (1, 512)]
+E         
+E         Right contains 2 more items, first extra item: (1, 512)
+E         
+E         Full diff:
+E           [
+E               (
+E                   1,
+E                   512,
+E               ),
+E         -     (
+E         -         1,
+E         -         512,
+E         -     ),
+E         -     (
+E         -         1,
+E         -         512,
+E         -     ),
+E           ]
+
+tests/test_diagfast_pages.py:76: AssertionError</failure></testcase><testcase classname="tests.test_diagfast_pages" name="test_invalid_provider[width-BOUNDED_ROW_SCHEMA_MISMATCH]" time="0.009" /><testcase classname="tests.test_diagfast_pages" name="test_invalid_provider[signature-UNVERIFIED]" time="0.008" /><testcase classname="tests.test_diagfast_pages" name="test_invalid_provider[repeat-NO_PROGRESS]" time="0.008" /><testcase classname="tests.test_diagfast_pages" name="test_data_error_not_retried_or_fallback" time="0.010" /><testcase classname="tests.test_diagfast_pages" name="test_stop_before_retry" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_wrong_thread" time="0.002" /><testcase classname="tests.test_diagfast_pages" name="test_legacy_uses_original_page_size" time="0.011" /><testcase classname="tests.test_diagfast_pages" name="test_settings_reject_untested[options0]" time="0.000" /><testcase classname="tests.test_diagfast_pages" name="test_settings_reject_untested[options1]" time="0.000" /><testcase classname="tests.test_diagfast_pages" name="test_settings_reject_untested[options2]" time="0.000" /><testcase classname="tests.test_diagfast_pages" name="test_settings_reject_untested[options3]" time="0.001" /></testsuite></testsuites>

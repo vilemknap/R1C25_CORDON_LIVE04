@@ -1,0 +1,49 @@
+..........................................F............................. [ 51%]
+.....................................................................    [100%]
+=================================== FAILURES ===================================
+_________________ test_model_year_and_network_are_independent __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-8/test_model_year_and_network_ar0')
+
+    def test_model_year_and_network_are_independent(tmp_path):
+        p,m,e,c=fixture(tmp_path);c['actual_network_sha256']='other'
+>       with pytest.raises(ContractError,match='NETWORK_IDENTITY'):build_from_snapshot(p,m,c,e)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_hardening.py:60: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+cordon2025/incidence.py:130: in build_from_snapshot
+    state_audit=snapshot_semantics(evidence,cfg,meta)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/state.py:43: in snapshot_semantics
+    require(valid_hash(cfg[config_key]), 'EXPECTED_SOURCE_HASH_INVALID:' + config_key)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+message = 'EXPECTED_SOURCE_HASH_INVALID:actual_network_sha256'
+
+    def require(condition, message):
+        if not condition:
+>           raise ContractError(message)
+E           cordon2025.common.ContractError: EXPECTED_SOURCE_HASH_INVALID:actual_network_sha256
+
+cordon2025/common.py:40: ContractError
+
+During handling of the above exception, another exception occurred:
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-8/test_model_year_and_network_ar0')
+
+    def test_model_year_and_network_are_independent(tmp_path):
+        p,m,e,c=fixture(tmp_path);c['actual_network_sha256']='other'
+>       with pytest.raises(ContractError,match='NETWORK_IDENTITY'):build_from_snapshot(p,m,c,e)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'NETWORK_IDENTITY'
+E         Actual message: 'EXPECTED_SOURCE_HASH_INVALID:actual_network_sha256'
+
+tests/test_hardening.py:60: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_hardening.py::test_model_year_and_network_are_independent - AssertionError: Regex pattern did not match.
+  Expected regex: 'NETWORK_IDENTITY'
+  Actual message: 'EXPECTED_SOURCE_HASH_INVALID:actual_network_sha256'
+1 failed, 140 passed in 6.62s

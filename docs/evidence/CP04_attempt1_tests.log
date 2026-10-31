@@ -1,0 +1,14 @@
+F.................                                                       [100%]
+=================================== FAILURES ===================================
+____________________ test_parent_solver_signed_cordon_loss _____________________
+
+    def test_parent_solver_signed_cordon_loss():
+        inc=example();s=solve(inc,cfg())
+        assert s.report['numeric_converged']
+>       assert s.report['objective_final']<s.report['objective_initial']*.001
+E       assert 0.006991999019979065 < (5.9615384615384635 * 0.001)
+
+tests/test_optimizer.py:30: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_optimizer.py::test_parent_solver_signed_cordon_loss - assert 0.006991999019979065 < (5.9615384615384635 * 0.001)
+1 failed, 17 passed in 0.49s

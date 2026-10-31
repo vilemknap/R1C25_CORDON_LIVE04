@@ -1,0 +1,58 @@
+--- a/r1_15a2_core.py
++++ b/r1_15a2_core.py
+@@ -206,6 +206,8 @@
+     original_profile_indices: Any
+     dropped_objective_rows: List[Dict[str, Any]]
+     selection_summary: Dict[str, Any]
++    # Optional 2025-only squared-deadband loss; None preserves legacy exactly.
++    deadband: Any = None
+ 
+ 
+ @dataclass
+@@ -1134,7 +1136,10 @@
+ 
+ def _smooth_gradient(problem: GuidanceProblem, x: Any) -> Tuple[Any, Any]:
+     pred = problem.operator.forward(x)
+-    weighted_normal_resid = (problem.row_weight ** 2) * (pred - problem.target)
++    residual = pred - problem.target
++    if problem.deadband is not None:
++        residual = np.sign(residual) * np.maximum(0.0, np.abs(residual) - problem.deadband)
++    weighted_normal_resid = (problem.row_weight ** 2) * residual
+     grad = problem.operator.transpose(weighted_normal_resid) + problem.ridge_diag * x
+     return grad, pred
+ 
+@@ -1163,7 +1168,10 @@
+ 
+ def guidance_objective(problem: GuidanceProblem, x: Any) -> float:
+     pred = problem.operator.forward(x)
+-    r = problem.row_weight * (pred - problem.target)
++    residual = pred - problem.target
++    if problem.deadband is not None:
++        residual = np.sign(residual) * np.maximum(0.0, np.abs(residual) - problem.deadband)
++    r = problem.row_weight * residual
+     return 0.5 * float(np.dot(r, r)) + 0.5 * float(np.dot(problem.ridge_diag * x, x)) + float(np.dot(problem.l1_diag, np.abs(x)))
+ 
+ 
+--- a/r1_15a2_two_mode_v238.py
++++ b/r1_15a2_two_mode_v238.py
+@@ -1169,6 +1169,20 @@
+             'collateral_to_support_ratio':collateral/max(driver_support,1e-9),
+             'uses_validation_targets':False,'counterfactual_flow_prediction':False,
+             'geometry_identity':PROVISIONAL,'conditional_on_geometry_sharing_assumption':True}
++
++    def cordon_incidence_offline(self, station_map, cfg, snapshot_evidence, *, hits_output=None):
++        """2025 extension: consume this COMPLETED store read-only; never enumerate COM.
++
++        The original incidence()/2022 controller is unchanged. No cfg flag can
++        turn this V1 hook into an APPLY path. Snapshot hash/parity is revalidated.
++        """
++        if cfg.get('apply') is not False:
++            raise SupplyContractError('CORDON_V1_APPLY_FORBIDDEN')
++        if not self.incidence_ready:
++            raise SupplyContractError('CORDON_CACHE_NOT_READY')
++        from cordon2025.incidence import build_from_snapshot
++        return build_from_snapshot(self.route_db_path, station_map, cfg,
++                                   snapshot_evidence, hits_output=hits_output)
+ 
+     def incidence(self, cfg, actuatable_zones, live_od_matrices=None):
+         """Same core incidence algebra via normalized profile hits, no COM reread.

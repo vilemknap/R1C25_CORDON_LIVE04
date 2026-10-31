@@ -1,0 +1,40 @@
+{
+  "status": "PARITY_PASS_TESTED_OFFLINE",
+  "native_status": "LIVE_PENDING",
+  "full_real_reference_status": "NOT_RUN_SQLITE_DOWNLOAD_HTTP413_LIMIT_256MIB",
+  "scope": [
+    "eight_SQL_tables",
+    "geometry_blob_bytes_and_order",
+    "all_OD_matrices",
+    "12_per_OD_parity",
+    "STATION_HITS",
+    "4_incidence_NPZ",
+    "all_metadata_numeric_values",
+    "120_observations_108CAL_12VALID",
+    "PERF01_BUILD_HIT"
+  ],
+  "numeric_tolerance": 0,
+  "synthetic_benchmark_runs": 12,
+  "parity_statuses": [
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS"
+  ],
+  "allowed_normalizations": [
+    "cache/evidence digests only after exact SQL/evidence comparison",
+    "proof backend provenance"
+  ],
+  "not_a_calibration_acceptance_test": true,
+  "apply_permitted": false,
+  "detailed_report": "PARITY_REPORT_SYNTHETIC_DETAIL.json",
+  "real_reference_access": "REAL_REFERENCE_ACCESS.json"
+}

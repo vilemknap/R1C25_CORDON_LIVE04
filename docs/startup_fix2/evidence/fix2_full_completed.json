@@ -1,0 +1,27 @@
+{
+  "name": "fix2_full_completed",
+  "cwd": "/mnt/data/cordon_recovery_20261023/work/R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX2_COMBUSY_20261023",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--disable-warnings",
+    "--junitxml=/mnt/data/cordon_recovery_20261023/evidence/fix2_full_completed.xml",
+    "tests"
+  ],
+  "native_visum": false,
+  "platform": "linux",
+  "returncode": 0,
+  "status": "PASS",
+  "elapsed_seconds": 127.25126545600006,
+  "counts": {
+    "tests": 424,
+    "passed": 424,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

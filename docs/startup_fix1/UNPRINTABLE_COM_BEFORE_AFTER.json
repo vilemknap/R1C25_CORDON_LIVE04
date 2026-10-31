@@ -1,0 +1,10 @@
+{
+  "original_cordon": {
+    "exception_type": "ValueError",
+    "calls": 1
+  },
+  "patched": {
+    "exception_type": "Unprintable",
+    "calls": 3
+  }
+}

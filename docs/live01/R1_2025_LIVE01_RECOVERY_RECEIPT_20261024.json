@@ -1,0 +1,37 @@
+{
+  "schema": "LIVE01_RECOVERY_RECEIPT_V1",
+  "recovered_checkpoint": "CP03_ZONE_AUTHORITY_AND_BASELINE_SOLVE_20261024.zip",
+  "drive_file_id": "1BdqyTqoToiYcv3-ivq6g3s1g3g4VAgmQ",
+  "checkpoint_sha256": "04322b22e07d86eef86bd64b61478cba7d64a281ddd2f99bff966012ea28a45b",
+  "crc": "PASS",
+  "source_pins": [
+    {
+      "name": "R1_15A2_AGGRESSIVE_FIX1_COMBUSY_TD09C16_HOTFIX2_FULL_20261023(3).zip",
+      "expected_sha256": "c3f5a2d77a6c0b6b6512fca9fcadd9ccc7b0112c6a945da1f862c437cc490543",
+      "actual_sha256": "c3f5a2d77a6c0b6b6512fca9fcadd9ccc7b0112c6a945da1f862c437cc490543",
+      "crc_error": null,
+      "members": 1178,
+      "passed": true
+    },
+    {
+      "name": "R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_FULL_20261023.zip",
+      "expected_sha256": "967f71326cc78f9c63e40721c8984dee87d0f9a84909e0d60abc2f8cde4f6342",
+      "actual_sha256": "967f71326cc78f9c63e40721c8984dee87d0f9a84909e0d60abc2f8cde4f6342",
+      "crc_error": null,
+      "members": 1608,
+      "passed": true
+    },
+    {
+      "name": "R1_2025_CORDON_LIVE_DONOR_CONTRACT_20261024.zip",
+      "expected_sha256": "88d60535c167571432f0b416f024070a14c0debdd3f2b00d1414bdebed9c8e43",
+      "actual_sha256": "88d60535c167571432f0b416f024070a14c0debdd3f2b00d1414bdebed9c8e43",
+      "crc_error": null,
+      "members": 24,
+      "passed": true
+    }
+  ],
+  "recovered_targeted_evidence": "70 passed; previous full suite log incomplete, not counted as a pass",
+  "next_checkpoint": "CP04_FULL_REGRESSION_AND_FAILURE_INJECTION",
+  "native_visum": "NOT_RUN",
+  "apply_permitted": false
+}

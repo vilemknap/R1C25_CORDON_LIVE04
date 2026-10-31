@@ -1,0 +1,11 @@
+R1 15A2 V2.4.8.9 – TD REALIZATION STABILIZATION
+
+1. Rozbal celý balík do nové krátké složky.
+2. Otevři bezpečný B_0000 checkpoint, ne A_0001 z metodicky staré větve.
+3. Ponech %LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248.
+4. Ve Visumu spusť Scripts -> Execute script file:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_8_9.py
+5. Nový run musí vzniknout přímo v R1_15A2_V2489_RUNS.
+6. Kontroluj TD_REALIZATION_ATTEMPTS.json a rollback mirror pointery.
+
+Skutečný Visum V2489 acceptance zatím není součástí offline balíku.

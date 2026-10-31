@@ -1,0 +1,16 @@
+{
+  "checkpoint": "CP00A",
+  "created_utc": "2026-10-19T20:19:06.284564+00:00",
+  "details": {
+    "status": "BASELINE_PASS",
+    "tests": "783 passed, 4 skipped, rc=0",
+    "supersedes": "CP00 input acquisition incomplete",
+    "next": "CP01 authority import"
+  },
+  "source_files": 767,
+  "manifest_sha256": "a1b63e43a554eaae59dbe8af13848390e39b60197e98dcfbf143e4f389e4366c",
+  "predecessor_status_sha256": "10c591c9cc05e849f392cc1d58d1039d2f38faba4af535da41e7ceef377f434b",
+  "apply": false,
+  "live_visum_tested": false,
+  "resume": "Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate."
+}

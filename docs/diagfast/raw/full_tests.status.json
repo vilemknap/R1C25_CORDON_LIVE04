@@ -1,0 +1,14 @@
+{
+  "name": "full_tests",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--junitxml=/mnt/data/diagfast_dev/evidence/full_tests.xml"
+  ],
+  "cwd": "/mnt/data/diagfast_dev/test_frozen/R1C25_DIAGFAST",
+  "returncode": 0,
+  "wall_seconds": 449.86407947540283
+}

@@ -1,0 +1,2148 @@
+[
+  {
+    "donor": "resume",
+    "file": "R1_15A2_DEMAND_EXTENSION_B0018_CYCLES16_25_V2_4_9_15_PERF2C_R3.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_activate_extension",
+      "_deployment_preflight_extension",
+      "_load_config_extension",
+      "_runtime_preflight_extension",
+      "_wrap_controller",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_DEMAND_EXTENSION_B0018_CYCLES16_25_V2_4_9_15_PERF2C_R3A.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_sibling_safe_assert_new_run_is_not_nested",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_assert_new_run_is_not_nested",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_activate_sealed_idp_authority",
+      "_assert_new_run_is_not_nested",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_activate_overlay",
+      "_combined_deployment_preflight",
+      "_combined_runtime_preflight",
+      "_load_config_with_overlay",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_FRESH100_PROFILE488_FRESHCACHE_SAVEFIX1_NO_WALLCLOCK.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_FRESH100_TGTD100_ONLY_SEMFIX1_FRESHCACHE_NO_WALLCLOCK.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_assert_new_run_is_not_nested",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_FRESH100_TGTD100_ONLY_SEMFIX1_NO_WALLCLOCK.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_assert_new_run_is_not_nested",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_RESUME_PROFILE488_A0004_CYCLE3_TD_IOFIX1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_RESUME_PROFILE488_A0004_CYCLE3_TD_IOFIX4_GATEFIX2_SEMRELOAD1_PATHFIX1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_build_source_semantic",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_normalize_recovery_source_session",
+      "_profile488_assess_11d_idp_gate",
+      "_run_tree_ancestors",
+      "_semantic_field_mismatches",
+      "_short_run_layout",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_RESUME_PROFILE488_A0004_CYCLE3_TD_TELEMETRYFIX1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "R1_15A2_SUPPLY_ONLY_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_R2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_acceleration_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_approved_assignments",
+      "_atomic_json",
+      "_cfg",
+      "_column",
+      "_full_plan",
+      "_link_volume_table",
+      "_profile_identity",
+      "activate_operation_plan",
+      "count_profile_signature",
+      "enabled",
+      "phase_recompute_plan",
+      "rollback_diagnostic_equivalence"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_candidate_readback_bundle_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "CandidateReadbackBundle",
+      "CandidateReadbackBundle.snapshot",
+      "CandidateReadbackBundle.to_dict",
+      "CandidateReadbackManager",
+      "CandidateReadbackManager.__init__",
+      "CandidateReadbackManager._event",
+      "CandidateReadbackManager._matches_context",
+      "CandidateReadbackManager.add_count",
+      "CandidateReadbackManager.add_duration",
+      "CandidateReadbackManager.attach_diagnostics",
+      "CandidateReadbackManager.begin_candidate",
+      "CandidateReadbackManager.can_capture",
+      "CandidateReadbackManager.capture",
+      "CandidateReadbackManager.enabled",
+      "CandidateReadbackManager.end_candidate",
+      "CandidateReadbackManager.feature_cfg",
+      "CandidateReadbackManager.invalidate",
+      "CandidateReadbackManager.mark_assignment_completed",
+      "CandidateReadbackManager.mark_assignment_failed",
+      "CandidateReadbackManager.mark_assignment_started",
+      "CandidateReadbackManager.require_current",
+      "CandidateReadbackManager.snapshot_from_current",
+      "CandidateReadbackManager.telemetry_snapshot",
+      "CandidateReadbackManager.try_current",
+      "CandidateReadbackManager.update_parameter_evidence",
+      "_bundle_payload_dict",
+      "_deepcopy",
+      "_diagnostic_hashable",
+      "_utc_now",
+      "bundle_hash",
+      "diagnostic_reference_hash"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_demand_continuation_profile488_a0004.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "_root",
+      "load_authority",
+      "matches_live_semantic",
+      "resolve_continuation",
+      "validate_authority",
+      "validate_generation_reference"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_demand_continuation_v24915r4.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "_root",
+      "load_authority",
+      "matches_live_semantic",
+      "resolve_continuation",
+      "validate_authority",
+      "validate_generation_reference"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_demand_continuation_v24915r5.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_extend",
+      "_require",
+      "_root",
+      "load_extension_contract",
+      "matches_b0016_live_semantic",
+      "resolve_a0009",
+      "resolve_b0016"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_demand_extension_b0018_v24915p2c3.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "_root",
+      "load_authority",
+      "matches_b0016_live_semantic",
+      "resolve_a0009",
+      "resolve_b0016"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_inplace_transaction_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "atomic_json",
+      "recompute_after_restore",
+      "restore_generation_parameters",
+      "restore_parameters",
+      "restore_supply_parameters",
+      "restore_td_parameters",
+      "rollback_and_verify"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_inplace_transaction_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "atomic_json",
+      "recompute_after_restore",
+      "restore_generation_parameters",
+      "restore_parameters",
+      "restore_supply_parameters",
+      "restore_td_parameters",
+      "rollback_and_verify"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_overnight_controller_coupled_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_all_td_restore_rows",
+      "_bounded_inner_budget_cycle_status",
+      "_bounded_inner_budget_stop",
+      "_finecdf_budget_for_cycle",
+      "_finecdf_td_once",
+      "_finecdf_td_once_impl",
+      "_generation_counts_cfg",
+      "_generation_step_for_cycle",
+      "_generation_update_once",
+      "_generation_update_once_impl",
+      "_is_retryable_td_realization_error",
+      "_publish_best_so_far_checkpoint",
+      "_realize_finecdf_td",
+      "_rollback_td_all",
+      "_runtime_demand_continuation",
+      "_sha256_file",
+      "_td_acceptance_cfg_for_cycle",
+      "_td_expected_freeze",
+      "_td_parent_state_equivalent",
+      "_td_realization_scales",
+      "_td_rows_at_scale",
+      "_validate_realized_td_state",
+      "run_overnight_calibration_coupled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_overnight_controller_coupled_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_all_td_restore_rows",
+      "_bounded_inner_budget_cycle_status",
+      "_bounded_inner_budget_stop",
+      "_finecdf_budget_for_cycle",
+      "_finecdf_td_once",
+      "_finecdf_td_once_impl",
+      "_generation_counts_cfg",
+      "_generation_step_for_cycle",
+      "_generation_update_once",
+      "_generation_update_once_impl",
+      "_is_retryable_td_realization_error",
+      "_publish_best_so_far_checkpoint",
+      "_realize_finecdf_td",
+      "_rollback_td_all",
+      "_runtime_demand_continuation",
+      "_sha256_file",
+      "_td_acceptance_cfg_for_cycle",
+      "_td_expected_freeze",
+      "_td_parent_state_equivalent",
+      "_td_realization_scales",
+      "_td_rows_at_scale",
+      "_validate_realized_td_state",
+      "run_overnight_calibration_coupled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_overnight_controller_coupled_v24915p2_force100.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_all_td_restore_rows",
+      "_bounded_inner_budget_cycle_status",
+      "_bounded_inner_budget_stop",
+      "_finecdf_budget_for_cycle",
+      "_finecdf_td_once",
+      "_finecdf_td_once_impl",
+      "_generation_counts_cfg",
+      "_generation_step_for_cycle",
+      "_generation_update_once",
+      "_generation_update_once_impl",
+      "_is_retryable_td_realization_error",
+      "_publish_best_so_far_checkpoint",
+      "_realize_finecdf_td",
+      "_rollback_td_all",
+      "_runtime_demand_continuation",
+      "_sha256_file",
+      "_td_acceptance_cfg_for_cycle",
+      "_td_expected_freeze",
+      "_td_parent_state_equivalent",
+      "_td_realization_scales",
+      "_td_rows_at_scale",
+      "_validate_realized_td_state",
+      "run_overnight_calibration_coupled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_overnight_controller_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "OvernightControl",
+      "OvernightControl.__init__",
+      "OvernightControl._write",
+      "OvernightControl.checkpoint",
+      "OvernightControl.elapsed",
+      "OvernightControl.finish",
+      "OvernightControl.recovery",
+      "OvernightControl.remaining",
+      "TimeBudgetReached",
+      "UserStopRequested",
+      "_accepted_state_cache_transition",
+      "_adopt_candidate",
+      "_apply_candidate",
+      "_assign_candidate",
+      "_baseline_parameter_guard",
+      "_candidate_signature",
+      "_evaluate_candidate",
+      "_final_snapshot_with_retry",
+      "_first_sufficient_candidate",
+      "_mark_transient_final_verification_failure",
+      "_planned_generation_rows",
+      "_rollback_candidate",
+      "_save_rotating_checkpoint",
+      "_science_hash",
+      "_write_acceptance",
+      "run_overnight_calibration"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_overnight_controller_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "OvernightControl",
+      "OvernightControl.__init__",
+      "OvernightControl._write",
+      "OvernightControl.checkpoint",
+      "OvernightControl.elapsed",
+      "OvernightControl.finish",
+      "OvernightControl.recovery",
+      "OvernightControl.remaining",
+      "TimeBudgetReached",
+      "UserStopRequested",
+      "_accepted_state_cache_transition",
+      "_adopt_candidate",
+      "_apply_candidate",
+      "_assign_candidate",
+      "_baseline_parameter_guard",
+      "_candidate_signature",
+      "_evaluate_candidate",
+      "_final_snapshot_with_retry",
+      "_first_sufficient_candidate",
+      "_mark_transient_final_verification_failure",
+      "_planned_generation_rows",
+      "_rollback_candidate",
+      "_save_rotating_checkpoint",
+      "_science_hash",
+      "_write_acceptance",
+      "run_overnight_calibration"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_perf_telemetry_failopen_hotfix_profile488.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_failopen_atomic_json",
+      "_fallback_path",
+      "_record_io_error",
+      "activate",
+      "deactivate_for_test"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_runtime_io_hotfix_profile488.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_OSProxy",
+      "_OSProxy.__getattr__",
+      "_OSProxy.replace",
+      "_patch_finecdf_reference_module",
+      "_safe_copy_if_file",
+      "_short_temp_sibling",
+      "_transient",
+      "activate",
+      "critical_atomic_json",
+      "critical_atomic_text",
+      "replace_with_retry"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_safety_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_canonical",
+      "_expected_perf1",
+      "_parent",
+      "_require",
+      "_validate_reviewed_delta",
+      "preflight_v24915p1_deployment_files",
+      "validate_v24915p1_config",
+      "validate_v24915p1_runtime_bundle"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_safety_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_canonical",
+      "_expected_feature",
+      "_parent",
+      "_r4_baseline",
+      "_require",
+      "_validate_reviewed_delta",
+      "preflight_v24915p2_deployment_files",
+      "validate_v24915p2_config",
+      "validate_v24915p2_runtime_bundle"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_safety_v24915p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "preflight_v24915p2c_overlay"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_safety_v24915p2c3.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_canon",
+      "_require",
+      "preflight_v24915p2c3_overlay",
+      "validate_v24915p2c3_config_delta"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_single_pass_snapshot_v24915p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "OperationRecord",
+      "SnapshotReadContext",
+      "SnapshotReadContext.__init__",
+      "SnapshotReadContext.dseg_bindings",
+      "SnapshotReadContext.generation_values",
+      "SnapshotReadContext.get_once",
+      "SnapshotReadContext.links",
+      "SnapshotReadContext.operation_records",
+      "SnapshotReadContext.td_and_operations",
+      "SnapshotReadContext.telemetry",
+      "_find_td_operation_from_records",
+      "_inventory_from_records",
+      "_matrix_fingerprint_exact",
+      "_operation_text",
+      "_read_dseg_bindings",
+      "_read_operation_records",
+      "_read_td_snapshot_from_records",
+      "single_pass_exact_snapshot"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_supply_handoff_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_candidate_authority_paths",
+      "discover_demand_convergence_authority",
+      "run_verified_supply_only"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_supply_handoff_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_candidate_authority_paths",
+      "discover_demand_convergence_authority",
+      "run_verified_supply_only"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_supply_temp_sqlite_hotfix_v24915p2c2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_prepare_read_only_temp_schema",
+      "activate_supply_temp_sqlite_hotfix"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_trial_adapter_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter._execute_perf1_plan",
+      "VisumAdapter.assign_for_block",
+      "VisumAdapter.rollback_diagnostic_equivalence"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_trial_adapter_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter.__init__",
+      "VisumAdapter._execute_perf1_plan",
+      "VisumAdapter._profile_payload_factory",
+      "VisumAdapter._sync_readback_telemetry",
+      "VisumAdapter.apply_generation",
+      "VisumAdapter.apply_supply",
+      "VisumAdapter.apply_td",
+      "VisumAdapter.assign",
+      "VisumAdapter.assign_for_block",
+      "VisumAdapter.begin_candidate_readback_context",
+      "VisumAdapter.capture_candidate_readback",
+      "VisumAdapter.current_candidate_readback",
+      "VisumAdapter.diagnostics",
+      "VisumAdapter.end_candidate_readback_context",
+      "VisumAdapter.invalidate_candidate_readback",
+      "VisumAdapter.legacy_snapshot_from_live_visum",
+      "VisumAdapter.parameter_persistence",
+      "VisumAdapter.readback_telemetry",
+      "VisumAdapter.restore",
+      "VisumAdapter.rollback_diagnostic_equivalence",
+      "VisumAdapter.snapshot",
+      "VisumAdapter.snapshot_from_bundle"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "resume",
+    "file": "r1_15a2_trial_adapter_v24915p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter.__init__",
+      "VisumAdapter._component_hashes",
+      "VisumAdapter._disable_perf2c",
+      "VisumAdapter._record_snapshot_event",
+      "VisumAdapter.legacy_snapshot_from_live_visum"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "00_0_SPUSTIT_V24916_FRESH0_ISOLATED_ACTIVE_TARGETING.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_atomic_json",
+      "_base_layout",
+      "_hash",
+      "_install_runtime",
+      "_isolated_fresh_run_cache_root",
+      "_isolated_project_layout",
+      "_isolated_workspace",
+      "_run_live_preflight",
+      "_write_bootstrap",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_DEMAND_EXTENSION_B0018_CYCLES16_25_V2_4_9_15_PERF2C_R3.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_activate_extension",
+      "_deployment_preflight_extension",
+      "_load_config_extension",
+      "_runtime_preflight_extension",
+      "_wrap_controller",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_DEMAND_EXTENSION_B0018_CYCLES16_25_V2_4_9_15_PERF2C_R3A.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_sibling_safe_assert_new_run_is_not_nested",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_assert_new_run_is_not_nested",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_activate_sealed_idp_authority",
+      "_assert_new_run_is_not_nested",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_activate_overlay",
+      "_combined_deployment_preflight",
+      "_combined_runtime_preflight",
+      "_load_config_with_overlay",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_FRESH100_PROFILE488_FRESHCACHE_SAVEFIX1_NO_WALLCLOCK.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_FRESH100_TGTD100_ONLY_SEMFIX1_FRESHCACHE_NO_WALLCLOCK.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_assert_new_run_is_not_nested",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_FRESH100_TGTD100_ONLY_SEMFIX1_NO_WALLCLOCK.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_assert_new_run_is_not_nested",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_RESUME_PROFILE488_A0004_CYCLE3_TD_IOFIX1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_RESUME_PROFILE488_A0004_CYCLE3_TD_TELEMETRYFIX1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "R1_15A2_SUPPLY_ONLY_PERSISTENT_PATH_CACHE_V2_4_9_15_PERF2C_R2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_a0004_live_preflight_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_resolved_from_report",
+      "build_live_authority",
+      "require_live_authority_current"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_acceleration_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_approved_assignments",
+      "_atomic_json",
+      "_cfg",
+      "_column",
+      "_full_plan",
+      "_link_volume_table",
+      "_profile_identity",
+      "activate_operation_plan",
+      "count_profile_signature",
+      "enabled",
+      "phase_recompute_plan",
+      "rollback_diagnostic_equivalence"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_active_controller_patch_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "install"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_active_demand_evidence_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "ActiveDemandEvidenceBuilder",
+      "ActiveDemandEvidenceBuilder.__init__",
+      "ActiveDemandEvidenceBuilder._distance",
+      "ActiveDemandEvidenceBuilder._identity",
+      "ActiveDemandEvidenceBuilder._native_dsegs",
+      "ActiveDemandEvidenceBuilder._path_profile_od_rows",
+      "ActiveDemandEvidenceBuilder._profile_rows",
+      "ActiveDemandEvidenceBuilder.build",
+      "ActiveDemandEvidenceBuilder.distance_value",
+      "_as_int",
+      "_call",
+      "_component_rows",
+      "_exact_link",
+      "_plain_multi",
+      "_public_driver_audit",
+      "_read_flowbundle_matrix"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_active_targeting_runtime_v24916_a0004.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_hash",
+      "apply_active_runtime_delta",
+      "validate_active_runtime_delta"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_active_targeting_runtime_v24916_fresh0isolated.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_hash",
+      "apply_active_runtime_delta",
+      "validate_active_runtime_delta"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_active_targeting_runtime_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_hash",
+      "apply_active_runtime_delta",
+      "validate_active_runtime_delta"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_block_classifier_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_finite",
+      "classify_shadow_rows"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_candidate_readback_bundle_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "CandidateReadbackBundle",
+      "CandidateReadbackBundle.snapshot",
+      "CandidateReadbackBundle.to_dict",
+      "CandidateReadbackManager",
+      "CandidateReadbackManager.__init__",
+      "CandidateReadbackManager._event",
+      "CandidateReadbackManager._matches_context",
+      "CandidateReadbackManager.add_count",
+      "CandidateReadbackManager.add_duration",
+      "CandidateReadbackManager.attach_diagnostics",
+      "CandidateReadbackManager.begin_candidate",
+      "CandidateReadbackManager.can_capture",
+      "CandidateReadbackManager.capture",
+      "CandidateReadbackManager.enabled",
+      "CandidateReadbackManager.end_candidate",
+      "CandidateReadbackManager.feature_cfg",
+      "CandidateReadbackManager.invalidate",
+      "CandidateReadbackManager.mark_assignment_completed",
+      "CandidateReadbackManager.mark_assignment_failed",
+      "CandidateReadbackManager.mark_assignment_started",
+      "CandidateReadbackManager.require_current",
+      "CandidateReadbackManager.snapshot_from_current",
+      "CandidateReadbackManager.telemetry_snapshot",
+      "CandidateReadbackManager.try_current",
+      "CandidateReadbackManager.update_parameter_evidence",
+      "_bundle_payload_dict",
+      "_deepcopy",
+      "_diagnostic_hashable",
+      "_utc_now",
+      "bundle_hash",
+      "diagnostic_reference_hash"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_coefficient_ledger_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_atomic_json",
+      "_write_csv",
+      "compare_snapshot_to_ledger",
+      "ledger_from_snapshot",
+      "write_ledger"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_continuation_profile488_a0004.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "_root",
+      "load_authority",
+      "matches_live_semantic",
+      "resolve_continuation",
+      "validate_authority",
+      "validate_generation_reference"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_continuation_v24915r4.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "_root",
+      "load_authority",
+      "matches_live_semantic",
+      "resolve_continuation",
+      "validate_authority",
+      "validate_generation_reference"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_continuation_v24915r5.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_extend",
+      "_require",
+      "_root",
+      "load_extension_contract",
+      "matches_b0016_live_semantic",
+      "resolve_a0009",
+      "resolve_b0016"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_evidence_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "DemandEvidenceManager",
+      "DemandEvidenceManager.__init__",
+      "DemandEvidenceManager._family_pressure_rows",
+      "DemandEvidenceManager._flowbundle_od_output",
+      "DemandEvidenceManager._od_skim_rows",
+      "DemandEvidenceManager._profile_dseg_summary",
+      "DemandEvidenceManager.generation_projection",
+      "DemandEvidenceManager.set_snapshot",
+      "DemandEvidenceManager.snapshot_for",
+      "DemandEvidenceManager.td_mask",
+      "DemandEvidenceManager.write_outputs",
+      "DemandEvidenceSnapshot",
+      "_atomic_write_bytes",
+      "_bin_bounds",
+      "_distance_bin",
+      "_f",
+      "_file_record",
+      "_safe_int",
+      "_sha256_file",
+      "_write_csv",
+      "_write_json",
+      "build_generation_targets",
+      "build_shadow_block_classifier",
+      "build_supported_od",
+      "build_td_targeting",
+      "canonical_dseg",
+      "deep_merge",
+      "evidence_id",
+      "family_from_code",
+      "path_parity",
+      "retain_flowbundle_coverage",
+      "target_projection_rows"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_evidence_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "BoundedDemandEvidenceManager",
+      "BoundedDemandEvidenceManager.__init__",
+      "BoundedDemandEvidenceManager.clear",
+      "BoundedDemandEvidenceManager.get",
+      "BoundedDemandEvidenceManager.publish",
+      "BoundedDemandEvidenceManager.require_current",
+      "BoundedDemandEvidenceManager.telemetry",
+      "DemandEvidenceSnapshot",
+      "DemandEvidenceSnapshot.as_dict",
+      "DemandEvidenceSnapshot.verify"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_extension_b0018_v24915p2c3.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "_root",
+      "load_authority",
+      "matches_b0016_live_semantic",
+      "resolve_a0009",
+      "resolve_b0016"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_support_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_support_for_dseg",
+      "audit_live_matrices",
+      "canonical_dseg",
+      "path_epoch_validity_report"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_support_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "GenerationTargetSet",
+      "TDComponentPressure",
+      "_hash",
+      "_zone_order_from_reduced",
+      "build_generation_target_zones",
+      "build_generation_target_zones_with_order",
+      "build_td_component_pressure"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_targeting_hooks_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "GenerationTargetingAudit",
+      "TDTargetingAudit",
+      "_get",
+      "_hash",
+      "_set_clone",
+      "apply_generation_positive_damping",
+      "recompute_generation_post_target_summary",
+      "select_td_components"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_demand_targeting_integration_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "DemandTargetingHooks",
+      "DemandTargetingHooks.__init__",
+      "DemandTargetingHooks.after_fresh_candidate_assignment",
+      "DemandTargetingHooks.before_finecdf_active_set",
+      "DemandTargetingHooks.before_generation_apply",
+      "V24916FeatureFlags",
+      "V24916FeatureFlags.from_config"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_finecdf_bridge_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "NoDirectMatrixWriteTDAdapter",
+      "NoDirectMatrixWriteTDAdapter.__init__",
+      "NoDirectMatrixWriteTDAdapter._capture_addval_guard",
+      "NoDirectMatrixWriteTDAdapter._capture_generation_guard",
+      "NoDirectMatrixWriteTDAdapter._guard_generation_addval",
+      "NoDirectMatrixWriteTDAdapter._read_attr",
+      "NoDirectMatrixWriteTDAdapter.assert_isolated",
+      "NoDirectMatrixWriteTDAdapter.execute",
+      "NoDirectMatrixWriteTDAdapter.gravity",
+      "NoDirectMatrixWriteTDAdapter.guard_protected",
+      "NoDirectMatrixWriteTDAdapter.isolate_td",
+      "NoDirectMatrixWriteTDAdapter.read_abc",
+      "NoDirectMatrixWriteTDAdapter.read_matrix",
+      "NoDirectMatrixWriteTDAdapter.read_outputs",
+      "NoDirectMatrixWriteTDAdapter.restore_controls",
+      "NoDirectMatrixWriteTDAdapter.restore_state",
+      "NoDirectMatrixWriteTDAdapter.set_abc",
+      "_abc_delta_rows",
+      "_install_native_multi_diagnostic_guard",
+      "_sha",
+      "load_reference",
+      "run_finecdf_inner"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_finecdf_target_hook_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "assert_all_17_restored",
+      "build_targeted_active_set"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_flowbundle_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "FlowBundleAdapter",
+      "FlowBundleAdapter.__init__",
+      "FlowBundleAdapter._call",
+      "FlowBundleAdapter._clear",
+      "FlowBundleAdapter._flowbundle_object",
+      "FlowBundleAdapter._matrix_for_directed_link",
+      "FlowBundleAdapter.extract_snapshot",
+      "FlowBundleContract",
+      "FlowBundleContract.as_dict",
+      "FlowBundleExtraction",
+      "_att",
+      "_dseg_collection",
+      "_iter_collection",
+      "_link_by_exact_key",
+      "_link_objects",
+      "_profile_family",
+      "_profile_id",
+      "canonical_dseg",
+      "contract_hash",
+      "discover_dsegs",
+      "driver_profile_audit",
+      "dseg_family",
+      "dseg_role",
+      "fval",
+      "ival",
+      "profile_directed_keys",
+      "select_driver_profiles"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_flowbundle_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "FlowBundleEvidenceIdentity",
+      "FlowBundleEvidenceIdentity.identity_hash",
+      "FlowBundleMatrixReducer",
+      "FlowBundleMatrixReducer.__init__",
+      "FlowBundleMatrixReducer._shape",
+      "FlowBundleMatrixReducer._value",
+      "FlowBundleMatrixReducer.reduce",
+      "ReducedFlowBundle",
+      "ReducedFlowBundle.as_dict",
+      "_canonical_json",
+      "assert_reduced_parity",
+      "canonical_hash",
+      "ordered_zone_hash",
+      "reduce_both_directions",
+      "reduce_directed"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_fresh0_shortroot_parent_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "UnlimitedOvernightControl",
+      "UnlimitedOvernightControl.__init__",
+      "UnlimitedOvernightControl._write",
+      "_activate_sealed_idp_authority",
+      "_apply_current_profile_metadata_to_working_copy",
+      "_assert_new_run_is_not_nested",
+      "_bind_current_profile_authority",
+      "_fresh100_runtime_continuation",
+      "_fresh100_runtime_preflight",
+      "_fresh_baseline_sidecar_diagnostic",
+      "_fresh_run_cache_root",
+      "_is_relative_to",
+      "_is_runs_root",
+      "_load_current_profile_authority",
+      "_main_impl",
+      "_normalize_fresh100_to_parent50",
+      "_run_tree_ancestors",
+      "_stable_project_base",
+      "_stable_project_layout",
+      "_validate_fresh100_effective_config",
+      "load_config",
+      "main"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_fresh_baseline_live_preflight_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_as_int",
+      "_att",
+      "_both_live_sample",
+      "_call",
+      "_canonical_hash",
+      "_directed_live_sample",
+      "_dseg_role_authority",
+      "_exact_link",
+      "_matrix_meta_exact",
+      "_minimal_matrix_inventory",
+      "_native_objects",
+      "_preflight_adapter_cfg",
+      "_profile488_authority",
+      "_profile_samples",
+      "_read_csv",
+      "_read_flowbundle_matrix",
+      "_sha256_file",
+      "build_live_authority",
+      "require_live_authority_current",
+      "write_live_authority"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_inplace_transaction_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "atomic_json",
+      "recompute_after_restore",
+      "restore_generation_parameters",
+      "restore_parameters",
+      "restore_supply_parameters",
+      "restore_td_parameters",
+      "rollback_and_verify"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_inplace_transaction_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "atomic_json",
+      "recompute_after_restore",
+      "restore_generation_parameters",
+      "restore_parameters",
+      "restore_supply_parameters",
+      "restore_td_parameters",
+      "rollback_and_verify"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_inplace_transaction_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_immutable_restore_audit",
+      "restore_all_demand_coefficients",
+      "restore_all_generation",
+      "restore_all_td",
+      "rollback_and_verify"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_live_preflight_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "PreflightResult",
+      "PreflightResult.as_dict",
+      "_hash",
+      "run_read_only_preflight"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_overnight_controller_coupled_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_all_td_restore_rows",
+      "_bounded_inner_budget_cycle_status",
+      "_bounded_inner_budget_stop",
+      "_finecdf_budget_for_cycle",
+      "_finecdf_td_once",
+      "_finecdf_td_once_impl",
+      "_generation_counts_cfg",
+      "_generation_step_for_cycle",
+      "_generation_update_once",
+      "_generation_update_once_impl",
+      "_is_retryable_td_realization_error",
+      "_publish_best_so_far_checkpoint",
+      "_realize_finecdf_td",
+      "_rollback_td_all",
+      "_runtime_demand_continuation",
+      "_sha256_file",
+      "_td_acceptance_cfg_for_cycle",
+      "_td_expected_freeze",
+      "_td_parent_state_equivalent",
+      "_td_realization_scales",
+      "_td_rows_at_scale",
+      "_validate_realized_td_state",
+      "run_overnight_calibration_coupled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_overnight_controller_coupled_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_all_td_restore_rows",
+      "_bounded_inner_budget_cycle_status",
+      "_bounded_inner_budget_stop",
+      "_finecdf_budget_for_cycle",
+      "_finecdf_td_once",
+      "_finecdf_td_once_impl",
+      "_generation_counts_cfg",
+      "_generation_step_for_cycle",
+      "_generation_update_once",
+      "_generation_update_once_impl",
+      "_is_retryable_td_realization_error",
+      "_publish_best_so_far_checkpoint",
+      "_realize_finecdf_td",
+      "_rollback_td_all",
+      "_runtime_demand_continuation",
+      "_sha256_file",
+      "_td_acceptance_cfg_for_cycle",
+      "_td_expected_freeze",
+      "_td_parent_state_equivalent",
+      "_td_realization_scales",
+      "_td_rows_at_scale",
+      "_validate_realized_td_state",
+      "run_overnight_calibration_coupled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_overnight_controller_coupled_v24915p2_force100.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_all_td_restore_rows",
+      "_bounded_inner_budget_cycle_status",
+      "_bounded_inner_budget_stop",
+      "_finecdf_budget_for_cycle",
+      "_finecdf_td_once",
+      "_finecdf_td_once_impl",
+      "_generation_counts_cfg",
+      "_generation_step_for_cycle",
+      "_generation_update_once",
+      "_generation_update_once_impl",
+      "_is_retryable_td_realization_error",
+      "_publish_best_so_far_checkpoint",
+      "_realize_finecdf_td",
+      "_rollback_td_all",
+      "_runtime_demand_continuation",
+      "_sha256_file",
+      "_td_acceptance_cfg_for_cycle",
+      "_td_expected_freeze",
+      "_td_parent_state_equivalent",
+      "_td_realization_scales",
+      "_td_rows_at_scale",
+      "_validate_realized_td_state",
+      "run_overnight_calibration_coupled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_overnight_controller_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "OvernightControl",
+      "OvernightControl.__init__",
+      "OvernightControl._write",
+      "OvernightControl.checkpoint",
+      "OvernightControl.elapsed",
+      "OvernightControl.finish",
+      "OvernightControl.recovery",
+      "OvernightControl.remaining",
+      "TimeBudgetReached",
+      "UserStopRequested",
+      "_accepted_state_cache_transition",
+      "_adopt_candidate",
+      "_apply_candidate",
+      "_assign_candidate",
+      "_baseline_parameter_guard",
+      "_candidate_signature",
+      "_evaluate_candidate",
+      "_final_snapshot_with_retry",
+      "_first_sufficient_candidate",
+      "_mark_transient_final_verification_failure",
+      "_planned_generation_rows",
+      "_rollback_candidate",
+      "_save_rotating_checkpoint",
+      "_science_hash",
+      "_write_acceptance",
+      "run_overnight_calibration"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_overnight_controller_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "OvernightControl",
+      "OvernightControl.__init__",
+      "OvernightControl._write",
+      "OvernightControl.checkpoint",
+      "OvernightControl.elapsed",
+      "OvernightControl.finish",
+      "OvernightControl.recovery",
+      "OvernightControl.remaining",
+      "TimeBudgetReached",
+      "UserStopRequested",
+      "_accepted_state_cache_transition",
+      "_adopt_candidate",
+      "_apply_candidate",
+      "_assign_candidate",
+      "_baseline_parameter_guard",
+      "_candidate_signature",
+      "_evaluate_candidate",
+      "_final_snapshot_with_retry",
+      "_first_sufficient_candidate",
+      "_mark_transient_final_verification_failure",
+      "_planned_generation_rows",
+      "_rollback_candidate",
+      "_save_rotating_checkpoint",
+      "_science_hash",
+      "_write_acceptance",
+      "run_overnight_calibration"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_overnight_controller_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_all_td_restore_rows",
+      "_bounded_inner_budget_cycle_status",
+      "_bounded_inner_budget_stop",
+      "_finecdf_budget_for_cycle",
+      "_finecdf_td_once",
+      "_finecdf_td_once_impl",
+      "_generation_counts_cfg",
+      "_generation_step_for_cycle",
+      "_generation_update_once",
+      "_generation_update_once_impl",
+      "_is_retryable_td_realization_error",
+      "_publish_best_so_far_checkpoint",
+      "_realize_finecdf_td",
+      "_rollback_td_all",
+      "_runtime_demand_continuation",
+      "_sha256_file",
+      "_td_acceptance_cfg_for_cycle",
+      "_td_expected_freeze",
+      "_td_parent_state_equivalent",
+      "_td_realization_scales",
+      "_td_rows_at_scale",
+      "_validate_realized_td_state",
+      "run_overnight_calibration_coupled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_overnight_controller_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "build_v24916_hooks"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_perf_telemetry_failopen_hotfix_profile488.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_failopen_atomic_json",
+      "_fallback_path",
+      "_record_io_error",
+      "activate",
+      "deactivate_for_test"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_procseq_guard_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "ProcedureSequenceGuardResult",
+      "_hash",
+      "guard_candidate_sequence"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_runtime_io_hotfix_profile488.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_OSProxy",
+      "_OSProxy.__getattr__",
+      "_OSProxy.replace",
+      "_ShutilProxy",
+      "_ShutilProxy.__getattr__",
+      "_ShutilProxy.copy2",
+      "_ShutilProxy.copyfile",
+      "_ensure_parent",
+      "_exists",
+      "_is_file",
+      "_native_path",
+      "_open_text",
+      "_patch_finecdf_loader",
+      "_patch_finecdf_reference_module",
+      "_short_temp_path",
+      "_size",
+      "_transient",
+      "_unlink",
+      "activate",
+      "audit_run_path_budget",
+      "critical_atomic_json",
+      "critical_atomic_text",
+      "critical_copy_if_file",
+      "critical_runtime_read_csv_auto",
+      "critical_runtime_read_json",
+      "critical_runtime_write_csv",
+      "critical_runtime_write_json",
+      "replace_with_retry",
+      "safe_copy2",
+      "safe_sha256_file"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_runtime_manifest_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "sha256_file",
+      "verify_runtime_manifest"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_safety_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_canonical",
+      "_expected_perf1",
+      "_parent",
+      "_require",
+      "_validate_reviewed_delta",
+      "preflight_v24915p1_deployment_files",
+      "validate_v24915p1_config",
+      "validate_v24915p1_runtime_bundle"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_safety_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_canonical",
+      "_expected_feature",
+      "_parent",
+      "_r4_baseline",
+      "_require",
+      "_validate_reviewed_delta",
+      "preflight_v24915p2_deployment_files",
+      "validate_v24915p2_config",
+      "validate_v24915p2_runtime_bundle"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_safety_v24915p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_require",
+      "preflight_v24915p2c_overlay"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_safety_v24915p2c3.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_canon",
+      "_require",
+      "preflight_v24915p2c3_overlay",
+      "validate_v24915p2c3_config_delta"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_safety_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_canonical",
+      "_normalized_performance",
+      "_operation_script_path",
+      "_parent",
+      "_require",
+      "audit_external_run_scripts",
+      "preflight_v24916_deployment_files",
+      "validate_v24916_config",
+      "validate_v24916_runtime_bundle"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_safety_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "V24916SafetyContract",
+      "_hash",
+      "assert_feature_off_exact",
+      "build_safety_contract"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_single_pass_snapshot_v24915p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "OperationRecord",
+      "SnapshotReadContext",
+      "SnapshotReadContext.__init__",
+      "SnapshotReadContext.dseg_bindings",
+      "SnapshotReadContext.generation_values",
+      "SnapshotReadContext.get_once",
+      "SnapshotReadContext.links",
+      "SnapshotReadContext.operation_records",
+      "SnapshotReadContext.td_and_operations",
+      "SnapshotReadContext.telemetry",
+      "_find_td_operation_from_records",
+      "_inventory_from_records",
+      "_matrix_fingerprint_exact",
+      "_operation_text",
+      "_read_dseg_bindings",
+      "_read_operation_records",
+      "_read_td_snapshot_from_records",
+      "single_pass_exact_snapshot"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_skim_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "DistanceAuthority",
+      "DistanceAuthority.to_summary",
+      "DistanceAuthority.value",
+      "OptionalSkimAuthority",
+      "OptionalSkimAuthority.summary",
+      "OptionalSkimAuthority.value",
+      "OptionalSkimBundleAuthority",
+      "OptionalSkimBundleAuthority.to_summary",
+      "OptionalSkimBundleAuthority.value",
+      "SkimAuthorityCache",
+      "SkimAuthorityCache.__init__",
+      "SkimAuthorityCache.load_optional",
+      "SkimAuthorityCache.optional_inventory",
+      "SkimAuthorityCache.required_distance",
+      "SkimAuthorityCache.reset_for_state",
+      "_f",
+      "_hash_matrix",
+      "_matrix_values",
+      "_multi_values",
+      "_plain_multi",
+      "distance_bin",
+      "matrix_by_code_or_no",
+      "matrix_inventory",
+      "read_distance_authority",
+      "read_optional_skim_authority",
+      "write_authority_summary",
+      "zone_numbers"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_skim_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "SealedSkimIdentity",
+      "SealedSkimIdentity.as_dict",
+      "_hash",
+      "_matrix_shape",
+      "_matrix_value",
+      "matrix_values_hash",
+      "ordered_zone_hash",
+      "require_same_skim_identity",
+      "seal_dist_km",
+      "shortest_imp_oracle_enabled"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_supply_handoff_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_candidate_authority_paths",
+      "discover_demand_convergence_authority",
+      "run_verified_supply_only"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_supply_handoff_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_candidate_authority_paths",
+      "discover_demand_convergence_authority",
+      "run_verified_supply_only"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_supply_temp_sqlite_hotfix_v24915p2c2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "_prepare_read_only_temp_schema",
+      "activate_supply_temp_sqlite_hotfix"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_trial_adapter_v24915p1.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter._execute_perf1_plan",
+      "VisumAdapter.assign_for_block",
+      "VisumAdapter.rollback_diagnostic_equivalence"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_trial_adapter_v24915p2.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter.__init__",
+      "VisumAdapter._execute_perf1_plan",
+      "VisumAdapter._profile_payload_factory",
+      "VisumAdapter._sync_readback_telemetry",
+      "VisumAdapter.apply_generation",
+      "VisumAdapter.apply_supply",
+      "VisumAdapter.apply_td",
+      "VisumAdapter.assign",
+      "VisumAdapter.assign_for_block",
+      "VisumAdapter.begin_candidate_readback_context",
+      "VisumAdapter.capture_candidate_readback",
+      "VisumAdapter.current_candidate_readback",
+      "VisumAdapter.diagnostics",
+      "VisumAdapter.end_candidate_readback_context",
+      "VisumAdapter.invalidate_candidate_readback",
+      "VisumAdapter.legacy_snapshot_from_live_visum",
+      "VisumAdapter.parameter_persistence",
+      "VisumAdapter.readback_telemetry",
+      "VisumAdapter.restore",
+      "VisumAdapter.rollback_diagnostic_equivalence",
+      "VisumAdapter.snapshot",
+      "VisumAdapter.snapshot_from_bundle"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_trial_adapter_v24915p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter.__init__",
+      "VisumAdapter._component_hashes",
+      "VisumAdapter._disable_perf2c",
+      "VisumAdapter._record_snapshot_event",
+      "VisumAdapter.legacy_snapshot_from_live_visum"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_trial_adapter_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter.__init__",
+      "VisumAdapter._build_demand_evidence",
+      "VisumAdapter._component_rows",
+      "VisumAdapter._evidence_cfg",
+      "VisumAdapter._implementation_hashes",
+      "VisumAdapter._path_profile_od_rows",
+      "VisumAdapter._profiles_for_demand_evidence",
+      "VisumAdapter.apply_generation",
+      "VisumAdapter.block_gate",
+      "VisumAdapter.candidate_support_risk",
+      "VisumAdapter.generation_design",
+      "VisumAdapter.td_target_plan"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_trial_adapter_v24916p2c.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter.__init__",
+      "VisumAdapter._try_persistent_restore",
+      "VisumAdapter.v24916_feature_state",
+      "VisumAdapter.v24916_select_td_components",
+      "VisumAdapter.v24916_target_generation_rows"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_trial_adapter_v24916p2c_active.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "VisumAdapter",
+      "VisumAdapter.__init__",
+      "VisumAdapter._targets_from_snapshot",
+      "VisumAdapter.apply_generation",
+      "VisumAdapter.block_gate",
+      "VisumAdapter.candidate_support_risk",
+      "VisumAdapter.generation_design",
+      "VisumAdapter.td_target_plan",
+      "VisumAdapter.v24916_active_telemetry"
+    ],
+    "removed_symbols": []
+  },
+  {
+    "donor": "fresh",
+    "file": "r1_15a2_trial_evaluator_v24916.py",
+    "modified_symbols": [],
+    "added_symbols": [
+      "adopt_candidate",
+      "apply_candidate",
+      "candidate_signature",
+      "evaluate_candidate"
+    ],
+    "removed_symbols": []
+  }
+]

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.251" timestamp="2026-10-23T06:38:26.661079+00:00" hostname="e013c2f5b98e"><testcase classname="tests.test_combusy_entry_fix2" name="test_stop_during_native_message_pump_prevents_next_page_RPC" time="0.148"><failure message="assert 2 == 1">setup = (&lt;fake_visum_startup.FakeVisum object at 0x7f98758eda90&gt;, {'actual_demand_sha256': None, 'actual_network_sha256': None...attempts': 4, 'com_retry_backoff_factor': 1.5, 'com_retry_enabled': True, 'com_retry_initial_delay_seconds': 0.0, ...})
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7f9875dcd350&gt;
+
+    def test_stop_during_native_message_pump_prevents_next_page_RPC(setup, monkeypatch):
+        v,c,o,ctl,opt=setup
+        obj=ListObj(v,'parent');obj.SetObjects(0,'NATIVE_CW',0)
+        v.failures['Invoke']=(2,BusyError)
+        com=parent_module('r1_15a2_com_compat')
+        monkeypatch.setattr(com,'_pump_waiting_messages',lambda:(o/'STOP_REQUESTED').touch())
+        two=parent_module('r1_15a2_two_mode_v238')
+        st=dict(two.DEFAULT_SETTINGS,page_size=2,com_retry_policy=retry_policy(opt))
+        with pytest.raises(RuntimeError,match='USER_STOP_REQUESTED'):
+            list(_bounded_rows(obj,two.PARENT_COLUMNS,st,ctl,opt,'CANCEL_PAGE'))
+        # The next rejected attempt must not reach COM after STOP exists.
+&gt;       assert v.counters['Invoke']==1
+E       assert 2 == 1
+
+tests/test_combusy_entry_fix2.py:25: AssertionError</failure></testcase></testsuite></testsuites>

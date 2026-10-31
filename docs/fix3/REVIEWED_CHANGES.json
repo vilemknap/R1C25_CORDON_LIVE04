@@ -1,0 +1,87 @@
+{
+  "base_release_sha256": "99991c17e0abc88d316a7cf6c4e92eb706b8644d8ed45af1b5665d2c66362225",
+  "files": {
+    "CORDON_2025_AGGRESSIVE_CONFIG.json": {
+      "before_sha256": "2dc81721112debe925161ede202d4d55571a1b3b8760c98dd2891c67fbd5118e",
+      "after_sha256": "ac82c94aaec28cb24c384d929af9fc74ed09da3ec1572baaaa67d1566d838bb3"
+    },
+    "CORDON_2025_CONFIG.json": {
+      "before_sha256": "16430fd30feefc93954aea8630e358f721a5adfee831601ec5f9e4bed6b01fb8",
+      "after_sha256": "2753d75cc09eac96975042c61bffeca61cb41008de51d916f22d5b214fe63d11"
+    },
+    "cordon2025/__init__.py": {
+      "before_sha256": "265c4e3918ecdebbbc6fbb4f0fec08c95504997801f59b7e43b19ecd648b3e25",
+      "after_sha256": "6851801e755c62aaf90106e51a762dc2c166af27d6fd11773fdfb5adf8a15e6d"
+    },
+    "cordon2025/aggressive.py": {
+      "before_sha256": "1405644de6392e05261667136f3f92e2ed755dea0f0d7b0568c90ba32c404dee",
+      "after_sha256": "1dc238d6edbdd635fc48dbd621b9d2d70b9b6ae5b5977fce5ebe1b3e4034fca4"
+    },
+    "cordon2025/aggressive_policy.py": {
+      "before_sha256": "009b837e0a9b606774babaf921fb81258a75a36b1b80083bb0776ae791a03eef",
+      "after_sha256": "d87ba375460347828e9a315f61ea3ac757d54f9a7db799ed0c16e6a5d1192af2"
+    },
+    "cordon2025/budget.py": {
+      "before_sha256": "81e6dd1177e3fd4ba393d3faeedef6331aea4c4428a3a703657f993b0b8fa2e0",
+      "after_sha256": "eb5e09980120823f90d837145b31082fd1bcb9ba99ce43142a398d993116b13a"
+    },
+    "cordon2025/com_busy.py": {
+      "before_sha256": "1f854581a81865a96f3923bc8c0b4dbbe303e446f9b53da7f20835a321ec170e",
+      "after_sha256": "b6a4cc532897a129c9bac55c523e6a7e0b1b2100fca35b36e2233e6ecef08293"
+    },
+    "cordon2025/common.py": {
+      "before_sha256": "523f4e265ace3362e1ed7b0d43b4e80173b816a537c2b06174f0149bcdbdf047",
+      "after_sha256": "e88281ab4d47f4d154cb56b8daab25c28f9daa130373948b6fd3ffacb7b1640a"
+    },
+    "cordon2025/external_parity.py": {
+      "before_sha256": "9a11fb39eb86e50fecd398da97cc1e293a103d26b7c788e0e4baf7dd76a89e36",
+      "after_sha256": "64005cf77bd66fbeb50715d9ac99aceb989328aa53c2053846e0963cc62b4ef4"
+    },
+    "cordon2025/feasibility.py": {
+      "before_sha256": "750ab4e4f84d7dd6895ffecc3533927e3ec1779171b4a8d6fb199a5729dc8641",
+      "after_sha256": "fa46e9a5e9fc2fca851c63526ad9114c357491a57a2110345683f608ebb8ec63"
+    },
+    "cordon2025/incidence.py": {
+      "before_sha256": "b6999a99295cb99d79603cda1485faca7560903b23dbf78f38d2e3b7883f26e2",
+      "after_sha256": "6660d041f1849fc570b6296efd43fb7c1734853d23ad92af4875fae8a2a9052b"
+    },
+    "cordon2025/optimizer.py": {
+      "before_sha256": "c131f39fea46bcf1e144e7175e67cf0473658ff1a2bf546a017113cd3805acb9",
+      "after_sha256": "4b9fd6f18d4604e159aaf7b02ae62c348bcfe529e309142b1950c1e21baa7114"
+    },
+    "cordon2025/visum_startup.py": {
+      "before_sha256": "b9543967965c09b2efc26ca4ac4007fccfb67748ae113bebd2934ca4f50c9511",
+      "after_sha256": "37d6c2b7ccfd1b4cd9f0318893d09f91e54b9ccdb0d9597b74b54c3ac7b43074"
+    },
+    "tests/test_aggressive_integration.py": {
+      "before_sha256": "0bd07e192c694af75e5718d480ba5fcb8f9407255b4b1cc22a2c7c5dc1944044",
+      "after_sha256": "b8ee06990166d04e216b1a9e23460c23596b15053fc5573953aa5707f52d7668"
+    },
+    "tests/test_aggressive_policy.py": {
+      "before_sha256": "271496655c655acf85571a48dffe94cdaaec7164af854dc350ccc96b1095137d",
+      "after_sha256": "ab50256ffa84f813563bbace53e3bc39c20e90199cca90426b2fa1c56497d65f"
+    },
+    "tests/test_combusy_entry_fix2.py": {
+      "before_sha256": "0f73160a5f58bf195d32641b9dcd931a79cbdeff0e351381bdf0463d5b2da413",
+      "after_sha256": "afa15c0ab0e0124b070d5da52ae35852cd77ddc8ad2a96153287f1a2505660f9"
+    },
+    "tests/test_combusy_startup_fix2.py": {
+      "before_sha256": "616d171738b5f2a8095efbf6b8f71a0575e2be505dfa98355582294861f35604",
+      "after_sha256": "821506a4fec77c7495be026c4ed57717cc43bacc77d999ed5134834fe23a1f3e"
+    },
+    "tests/test_visum_startup.py": {
+      "before_sha256": "fa20607abf94b2b0967a0e82fb1fc5f03bf5f36a646987710447e43d7c904f85",
+      "after_sha256": "1b2a9a6f73ed4b13f141b5e78ec8426623acf2a4fc486a2e139a248061705197"
+    }
+  },
+  "new_files": [
+    "CORDON_2025_STARTUP_OPTIONS.json",
+    "REPLAY_OD_PARITY.py",
+    "cordon2025/limits.py",
+    "cordon2025/parity.py",
+    "provenance/startup_fix3/STARTUP_FIX2_SOURCE_MANIFEST.json",
+    "tests/test_practical_limits_fix3.py"
+  ],
+  "protected_parent_and_data_count": 807,
+  "protected_parent_and_data_all_byte_identical": true
+}

@@ -1,0 +1,12 @@
+{
+  "cordon_v2": {
+    "source": "/mnt/data/R1_2025_CORDON_V2_BUGFIX_PORT_20261022.zip",
+    "sha256": "a5b5435b573d6e9ddc95b9036617461a3b9ff4458cf17eca81089c8c1d0e9c46",
+    "entries": 1163
+  },
+  "profile_aggressive": {
+    "source": "/mnt/data/R1_15A2_PROFILE488_AGGRESSIVE_TGTD_V1_FIX1_IOFIX4_BASE_20261022(1).zip",
+    "sha256": "f88e672818e8485b54f6eb1a406dfb319d1285030f7ca66ab8d392527d983d4b",
+    "entries": 1168
+  }
+}

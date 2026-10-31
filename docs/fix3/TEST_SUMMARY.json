@@ -1,0 +1,44 @@
+{
+  "baseline": {
+    "tests": 424,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 114.391
+  },
+  "focused": {
+    "tests": 94,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 8.7
+  },
+  "full_final": {
+    "tests": 493,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 118.487
+  },
+  "parent_compat": {
+    "tests": 883,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 4,
+    "seconds": 18.799
+  },
+  "parent_identity": {
+    "tests": 1,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 0.148
+  },
+  "precision_extra": {
+    "tests": 84,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 8.023
+  }
+}

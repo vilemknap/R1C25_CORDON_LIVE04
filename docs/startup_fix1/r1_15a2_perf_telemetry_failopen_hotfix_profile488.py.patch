@@ -1,0 +1,130 @@
+--- cordon/r1_15a2_perf_telemetry_failopen_hotfix_profile488.py
++++ profile/r1_15a2_perf_telemetry_failopen_hotfix_profile488.py
+@@ -1,66 +1,50 @@
+ # -*- coding: utf-8 -*-
+-"""Fail-open, long-path-safe hotfix for V246 performance telemetry.
++"""Runtime-only fail-open hotfix for V246 performance telemetry publication.
+ 
+-The parent telemetry module remains byte-for-byte untouched.  This overlay only
+-replaces its private JSON writer.  Telemetry is evidence-only: persistent locks,
+-MAX_PATH-style failures, or fallback publication errors must never terminate
+-calibration.
++The parent r1_15a2_perf_v246.py remains byte-for-byte untouched so all reviewed
++parent deployment hashes stay valid. This overlay replaces only its private
++_atomic_json telemetry writer at runtime. PERFORMANCE/* is evidence-only and a
++Windows file lock must never change acceptance, rollback, or model state.
+ """
+ from __future__ import annotations
+ 
+ from datetime import datetime
+ from pathlib import Path
+-import hashlib
+ import json
+ import os
++import itertools
+ import threading
+ import time
+ 
+ import r1_15a2_perf_v246 as perf
+-import r1_15a2_runtime_io_hotfix_profile488 as critical_io
+ 
+ _ACTIVATED = False
+ _ORIGINAL = perf._atomic_json
++_COUNTER = itertools.count()
+ 
+ 
+ def _record_io_error(path: Path, exc: BaseException) -> None:
+     try:
+-        critical_io._ensure_parent(path)
+-        error_path = path.parent / "TELEMETRY_IO_ERRORS.log"
+-        with critical_io._open_text(error_path, "a", encoding="utf-8") as h:
+-            h.write(
+-                "%s\t%s\t%s: %s\n"
+-                % (
+-                    datetime.now().astimezone().isoformat(),
+-                    str(path),
+-                    type(exc).__name__,
+-                    str(exc),
+-                )
+-            )
++        path.parent.mkdir(parents=True, exist_ok=True)
++        with (path.parent / "TELEMETRY_IO_ERRORS.log").open("a", encoding="utf-8") as h:
++            h.write("%s\t%s\t%s: %s\n" % (
++                datetime.now().astimezone().isoformat(), str(path),
++                type(exc).__name__, str(exc)))
+     except BaseException:
+         pass
+ 
+ 
+ def _fallback_path(path: Path) -> Path:
+-    seed = "%s|%s|%s|%s" % (
+-        path.name,
+-        os.getpid(),
+-        threading.get_ident(),
+-        time.monotonic_ns(),
+-    )
+-    token = hashlib.blake2s(seed.encode("utf-8"), digest_size=6).hexdigest()
+-    # Preserve the established discoverable pattern while keeping the basename
+-    # short enough for deep run trees.
+-    return path.with_name("%s.FALLBACK_%s.json" % (path.stem[:16], token))
++    return path.parent / ((path.stem[:16] or "TEL") + ".FALLBACK_%x_%x.json" % (os.getpid(), next(_COUNTER)))
+ 
+ 
+ def _failopen_atomic_json(path, value):
+     path = Path(path)
+     tmp = None
+     try:
+-        critical_io._ensure_parent(path)
+-        tmp = critical_io._short_temp_path(path, "p")
+-        with critical_io._open_text(tmp, "w", encoding="utf-8") as handle:
++        path.parent.mkdir(parents=True, exist_ok=True)
++        tmp = path.parent / (".r1pt_%x_%x.tmp" % (os.getpid(), next(_COUNTER)))
++        with tmp.open("w", encoding="utf-8") as handle:
+             json.dump(value, handle, ensure_ascii=True, indent=2, allow_nan=False)
+             handle.flush()
+             os.fsync(handle.fileno())
+@@ -68,10 +52,7 @@
+         last = None
+         for attempt in range(8):
+             try:
+-                os.replace(
+-                    critical_io._native_path(tmp),
+-                    critical_io._native_path(path),
+-                )
++                os.replace(tmp, path)
+                 return True
+             except OSError as exc:
+                 last = exc
+@@ -83,7 +64,7 @@
+             _record_io_error(path, last)
+         try:
+             fallback = _fallback_path(path)
+-            with critical_io._open_text(fallback, "w", encoding="utf-8") as handle:
++            with fallback.open("w", encoding="utf-8") as handle:
+                 json.dump(value, handle, ensure_ascii=True, indent=2, allow_nan=False)
+                 handle.flush()
+                 os.fsync(handle.fileno())
+@@ -96,8 +77,8 @@
+     finally:
+         if tmp is not None:
+             try:
+-                if critical_io._exists(tmp):
+-                    critical_io._unlink(tmp)
++                if tmp.exists():
++                    tmp.unlink()
+             except BaseException:
+                 pass
+ 
+@@ -110,11 +91,9 @@
+     return {
+         "status": "ACTIVE",
+         "target": "r1_15a2_perf_v246._atomic_json",
+-        "policy": "TELEMETRY_IO_BEST_EFFORT_LONG_PATH_SAFE_NEVER_ABORT_CALIBRATION",
++        "policy": "TELEMETRY_IO_BEST_EFFORT_NEVER_ABORT_CALIBRATION",
+         "parent_module_modified_on_disk": False,
+         "replace_retry_attempts": 8,
+-        "short_temp_names": True,
+-        "windows_extended_length_path_io": True,
+         "fallback_snapshot": True,
+     }
+ 

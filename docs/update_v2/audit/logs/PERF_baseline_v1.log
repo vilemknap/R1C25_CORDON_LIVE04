@@ -1,0 +1,14 @@
+MEASURE_START
+EVIDENCE_LOADED
+INCIDENCE_DONE 29.59425784599989
+AGGREGATION_DONE 2.5453735510000115
+Timeout (0:00:40)!
+Thread 0x00007fc50684c780 (most recent call first):
+  File "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/parent/r1_15a2_core.py", line 178 in forward
+  File "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/parent/r1_15a2_core.py", line 1138 in _smooth_gradient
+  File "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/parent/r1_15a2_core.py", line 1196 in solve_guidance
+  File "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/cordon2025/optimizer.py", line 109 in solve
+  File "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/tools/benchmark.py", line 79 in phase_measure
+  File "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/tools/benchmark.py", line 102 in main
+  File "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/tools/benchmark.py", line 113 in <module>
+{"scope": "SYNTHETIC_COUNT_SCALING_NOT_REAL_R1_SPEED_CLAIM", "python": "3.13.5", "platform": "Linux-6.18.55-x86_64-with-glibc2.41", "geometries": 100000, "segment_volume_rows": 600000, "ordered_link_occurrences": 4899808, "mean_links_per_geometry": 48.99808, "incidence_seconds": 29.59425784599989, "geometries_per_second": 3379.033882869156, "segment_volume_rows_per_second": 20274.203297214935, "geometry_decodes": 100000, "mutable_OD_variables": 200000, "nnz_all_ordered": 666624, "nnz_exact_two": 66672, "aggregation_seconds": 2.5453735510000115, "solver_seconds": 8.05735864999997, "solver_status": "OFFLINE_SOLVER_PASS", "objective_before": 94.76614420548641, "objective_after": 5.999440308269718, "KKT_x": 3.681043304885684e-10, "solver_iterations": 410, "measure_process_peak_RSS_MiB": 1005.47265625, "source_cache_sha256": "840dad1975864905eb7ab78ba748af6a753a9b8eb5d7ffff3d45739cf7b77c86", "geometry_decode_once": true, "DSEG_volume_parity": "PASS", "external_OD_parity": "PASS", "live_visum_tested": false, "apply_permitted": false, "C17_policy": "DISABLED_FOR_SPARSE_SCALING_BENCHMARK"}

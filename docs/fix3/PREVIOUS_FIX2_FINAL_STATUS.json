@@ -1,0 +1,102 @@
+{
+  "release": "R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX2_COMBUSY_20261023",
+  "version": "2.1.1-aggressive-startup-fix2-combusy",
+  "status": "OFFLINE_AND_MOCK_COM_STARTUP_VERIFIED_NATIVE_LIVE_CALIBRATION_BLOCKED",
+  "model_year": 2025,
+  "survey_year": 2026,
+  "recovered_source": {
+    "file": "R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX1_20261023.zip",
+    "sha256": "a33de1331de6540afb15ffbc3a84a1621c29be48647398c327853f28b9256b65",
+    "drive_file_id": "1a2S_gMlkqIMcyO_h-Uw92xr18J_5i6Gp",
+    "original_manifest_verified_files": 1298
+  },
+  "hotfix_source": {
+    "file": "R1_15A2_AGGRESSIVE_V1_FIX1_COMBUSY_RETRY_HOTFIX1_FULL_20261023(1).zip",
+    "sha256": "599d2e2e5ff537c93584e69e59de5c8ddabc8de733c48eebfc172087f1833c16",
+    "existing_files_changed": 0,
+    "added_files": 5
+  },
+  "test_counts": {
+    "recovered_baseline_nonstart": {
+      "tests": 270,
+      "passed": 270,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "recovered_baseline_start": {
+      "tests": 68,
+      "passed": 68,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "hotfix_reference_full": {
+      "tests": 971,
+      "passed": 967,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 4
+    },
+    "fix2_full_completed": {
+      "tests": 424,
+      "passed": 424,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "fix2_parent_compat": {
+      "tests": 883,
+      "passed": 879,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 4
+    },
+    "fix2_parent_original_identity": {
+      "tests": 1,
+      "passed": 0,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "new_tests": 86,
+  "numerical_parity": 84,
+  "preservation": {
+    "protected_existing_files_checked": 808,
+    "scientific_and_existing_other_cordon_modules_checked": 17,
+    "all_unchanged": true,
+    "new_parent_library_only": "parent/r1_15a2_com_busy_snapshot_hotfix_v1.py",
+    "new_parent_library_sha256": "2488191e97c17a072fd161c5645e17fa1fe0ac8c35412b92282d9737f0f76366"
+  },
+  "apply_permitted": false,
+  "native_visum_tested": false,
+  "native_windows_tested": false,
+  "live_calibration_implemented": false,
+  "model_writes_or_assignment_executed": false,
+  "production_ready": false,
+  "entry_preflight": "RUN_CORDON_2025_VISUM.py",
+  "entry_capture": "RUN_CORDON_2025_CAPTURE.py",
+  "retry_default": {
+    "attempts": 64,
+    "initial_pause_seconds": 0.15,
+    "backoff": 1.5,
+    "max_pause_seconds": 1.5,
+    "max_elapsed_seconds_per_failed_read": 75
+  },
+  "retry_limitations": [
+    "Not a whole-run deadline",
+    "Cannot interrupt an in-flight native COM call",
+    "Persistent rejection raises original exception; no silent success"
+  ],
+  "remaining_gates": [
+    "Native Windows/PTV run on the actual 2025 model/network",
+    "Observation relation semantics and directional authority",
+    "2026-to-2025 reference bridge",
+    "Production C17 accounting approval",
+    "Live TG/TD -> assignment -> cordon objective -> acceptance/rollback"
+  ],
+  "historical_identity_test": "Original unmodified V24915 guard rejects four PRE-EXISTING fork files; preserved as failure, not weakened",
+  "earlier_incomplete_runs": "See docs/startup_fix2/evidence; initial interrupted runs are not counted as PASS",
+  "clean_release_receipt": "External FINAL_VERIFICATION JSON after clean extraction, tests and Drive hash verification"
+}

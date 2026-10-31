@@ -1,0 +1,12 @@
+{
+  "test_v24915_perf1_exact_safe_acceleration.py": "94f37304eaaed9579b5918d857ef5f4721064d2f2ec9a072a373a82266185468",
+  "test_v24915p2_candidate_readback_bundle.py": "a1621cf085b1ccea240f86f15c993589d8c7da9e93befb768cb817b8f7251dc2",
+  "test_v24915p2_fault_injection.py": "d7adff44060518b12b6f89081be19a4e4a8212bb3afb48637f201c6afb0d1ad4",
+  "test_v24915p2_invalidation.py": "abbe7a3432346328757b25d638e865ada2c1f3799b02f1a5d07d92aa16c506f7",
+  "test_v24915p2_snapshot_parity.py": "f93ce2e3f9c924e80ba3f804857150fa7f43322991b85727cedb35695b59729a",
+  "test_v24915p2_r6_nonfinite_diagnostic_reference.py": "05c80bb9a652255fd4f32986f0c53339fd29de14e4895dab8861e7339971e1fb",
+  "test_v24915p2c_single_pass_snapshot.py": "2097ff2d972a1411c51e54938cd22ceafd91796f6c85af73707c52dd6b6c068a",
+  "test_v24916_demand_evidence.py": "bce24a108dabb3d5163a1c8d2a87cdb0d713f9141d1831f7f15161f4dcb32569",
+  "test_v24916_flowbundle_targeting.py": "439d2a4e921aef0b2adb21cb6c81f2f53456cf3bac22b03393f54c7dc189afa3",
+  "test_v24916_active_evidence_builder.py": "7a49d7e0a641b250faafacb052e7567df0d91725bee753e14d344d7ecf5d159e"
+}

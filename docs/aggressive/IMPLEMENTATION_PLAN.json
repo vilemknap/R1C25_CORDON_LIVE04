@@ -1,0 +1,29 @@
+{
+  "checkpoints": [
+    {
+      "id": "A00",
+      "scope": "Audit source policy and immutable baseline; 170 cordon tests and 34 supplied aggressive tests."
+    },
+    {
+      "id": "A01",
+      "scope": "Sealed aggressive stage policy, matching 6/18/100 cycles; new configuration and runtime hashes; preserve C17/scope/IO guards."
+    },
+    {
+      "id": "A02",
+      "scope": "Functional offline backtracking, fair C17 baseline, TG/TD bounds and local feasibility; no live COM; CLI/launcher."
+    },
+    {
+      "id": "A03",
+      "scope": "Synthetic standard-vs-aggressive, safety/lineage/compatibility tests, clean ZIP verification, final Drive handoff."
+    }
+  ],
+  "never_enable": [
+    "apply",
+    "run_assignment",
+    "run_procseq",
+    "write_od",
+    "supply_enabled"
+  ],
+  "origin": "SOURCE_DERIVED_POLICY_CORDON_SPECIFIC_ADAPTER",
+  "live_visum_tested": false
+}

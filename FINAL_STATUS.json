@@ -1,0 +1,70 @@
+{
+  "release": "R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX3_PRACTICAL_20261023",
+  "status": "REAL_INPUT_PARITY_AND_OFFLINE_MOCK_TESTS_PASS_NATIVE_CAPTURE_PENDING",
+  "version": "2.1.2-aggressive-startup-fix3-practical",
+  "base_release_sha256": "99991c17e0abc88d316a7cf6c4e92eb706b8644d8ed45af1b5665d2c66362225",
+  "apply_permitted": false,
+  "native_visum_tested": false,
+  "live_calibration_implemented": false,
+  "production_ready": false,
+  "real_failed_Native_CW_replay": "OLD_FAIL_NEW_PASS",
+  "entry_preflight": "RUN_CORDON_2025_VISUM.py",
+  "entry_capture": "RUN_CORDON_2025_CAPTURE.py",
+  "profile": "PRACTICAL_V1",
+  "remaining_gates": [
+    "Full real 12-segment geometry capture",
+    "Observation semantics and year bridge",
+    "C17 policy approval",
+    "Live TG/TD + assignment + acceptance/rollback"
+  ],
+  "test_counts": {
+    "baseline": {
+      "tests": 424,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 114.391
+    },
+    "focused": {
+      "tests": 94,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 8.7
+    },
+    "full_final": {
+      "tests": 493,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 118.487
+    },
+    "parent_compat": {
+      "tests": 883,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 4,
+      "seconds": 18.799
+    },
+    "parent_identity": {
+      "tests": 1,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.148
+    },
+    "precision_extra": {
+      "tests": 84,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 8.023
+    }
+  },
+  "new_tests": 69,
+  "synthetic_demo": "PASS",
+  "source_cache_complete": false,
+  "source_matrix_and_cache_modified": false,
+  "original_parent_guard": "UNCHANGED_EXPECTED_FAIL_FOUR_HISTORICAL_FORK_FILES",
+  "protected_parent_and_data_unchanged": 807
+}

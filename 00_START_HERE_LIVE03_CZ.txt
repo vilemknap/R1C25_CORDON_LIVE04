@@ -1,0 +1,16 @@
+R1 2025 LIVE03: spolecna kordonova kalibrace TG + TD ve Visumu.
+- Pozorovani podle Sprievodne spravy: pary FIRST_LAST na tranzitni matici RPDI (OA),
+  16 stanicnich radku C17 (izolovane + 2x vjazd-vyjazd + konce NonTransit), rok 2026->2025 faktor 1,0.
+- TG: V24917 cileny fit + STEP1, krok predikovan NATIVNE (TG/TD/maticove operace bez assignmentu
+  na zmrazenych cestach) misto linearni predikce.
+- TD_CORDON: gravitacni b/c po rodinach WORK/SERVICE/SCHOOL, objective = jen kordon,
+  IDP (FineCDF v1.9) jen jako straz proti zhorseni. Pokus prijat na miste, nebo overeny rollback.
+
+1. Otevri ve Visumu KOPII modelu R1 2025 s ulozenymi cestami; nazev obsahuje
+   LIVE03 / KOPIE / COPY / TEST / TRIAL / CALIB.
+2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE03_TG_TD_CYCLE.py
+3. Vystupy: %LOCALAPPDATA%\R1C25_LIVE03\LIVE03_TGTD_<id>\  (00_RESULT.json)
+
+Navod: LIVE03_RUNBOOK_CZ.md
+Report: docs/live03/LIVE03_IMPLEMENTATION_REPORT_CZ.md
+LIVE02 (jen TG, puvodni pozorovani ALL) zustava beze zmeny: RUN_R1_2025_CORDON_LIVE02_TG_CYCLE.py

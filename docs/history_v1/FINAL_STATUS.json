@@ -1,0 +1,105 @@
+{
+  "TG_TD_live_realization": "NOT_VERIFIED",
+  "apply_permitted": false,
+  "baseline_tests": {
+    "errors": 0,
+    "evidence_sha256": "ee2b6a7fe9fc378e92cabbab2235b37e6135ba4c4c7981d4543dbd7bd8a05879",
+    "failed": 0,
+    "failures": [],
+    "passed": 783,
+    "skipped": 4,
+    "source": "docs/evidence/parent_baseline.xml",
+    "tests": 787
+  },
+  "c17_physical_pair_allocation": "PRODUCTION_DISABLED",
+  "checkpoint_scope": "LOCAL_ISOLATED_2025_ONLY",
+  "compile_status": "PASS",
+  "focused_tests": {
+    "errors": 0,
+    "evidence_sha256": "aa26b68e227acf692cfeff9f962e09a6d8c8ff0c9d10fd0336c5114e70f4cbbc",
+    "failed": 0,
+    "failures": [],
+    "passed": 86,
+    "skipped": 0,
+    "source": "docs/evidence/CP05_focused.xml",
+    "tests": 86
+  },
+  "gate": {
+    "apply_permitted": false,
+    "blockers": [
+      "OBSERVATION_SEMANTICS_UNAPPROVED",
+      "DIRECTION_MAPPING_UNAPPROVED",
+      "YEAR_BRIDGE_UNAPPROVED",
+      "NETWORK_MAPPING_UNAPPROVED",
+      "DSEG_SCOPE_UNAPPROVED",
+      "GEOMETRY_IDENTITY_UNAPPROVED",
+      "PATH_VOLUME_PARITY_UNAPPROVED",
+      "C17_POLICY_UNAPPROVED",
+      "NO_2025_PATH_CACHE",
+      "NOT_LIVE_TESTED",
+      "V1_OFFLINE_ONLY"
+    ],
+    "live_visum_tested": false,
+    "production_ready": false
+  },
+  "legacy_failure_classification": "EXPECTED_PRISTINE_DEPLOYMENT_HASH_REJECTION_NOT_RELAXED",
+  "legacy_full_suite_all_passed": false,
+  "live_visum_tested": false,
+  "new_offline_tests_all_passed": true,
+  "packaging_verification": "SEPARATE_FINAL_ZIP_VERIFIER_RECEIPT",
+  "parent_compatibility_suite": {
+    "errors": 0,
+    "evidence_sha256": "5a203ee60d9b5e8c73dd320b5510cd8ee440b04ec26334c4a96a148f7dc09696",
+    "explicitly_deselected": 1,
+    "failed": 0,
+    "failures": [],
+    "passed": 782,
+    "skipped": 4,
+    "source": "docs/evidence/CP05_parent_compatibility.xml",
+    "tests": 786
+  },
+  "parent_version": "2.4.9.15",
+  "production_ready": false,
+  "real_2025_paths_tested": false,
+  "schema": "R1_CORDON_2025_OFFLINE_RESULT_V1",
+  "source_delta": {
+    "baseline_files": 731,
+    "immutable_baseline_unchanged": true,
+    "missing": [],
+    "modified": [
+      {
+        "after_sha256": "1c24b099a9f41b5c91474725ffe11a29772b609b33fb7bccf962d47eab51660d",
+        "before_sha256": "f817aa114eae5a924116b8f73f7d3f22ae6b26742942b74d189a3d75bf6e30ed",
+        "path": "r1_15a2_core.py"
+      },
+      {
+        "after_sha256": "78c902da66c3aa460dced9dd15c756ff63199b10f3131797845a4234d2bc7056",
+        "before_sha256": "f568c2f0e94b73f5e336a926c37df091b4af36d2c401a985d44eeff15579bf0a",
+        "path": "r1_15a2_two_mode_v238.py"
+      }
+    ],
+    "old_deployment_guard_must_reject_fork": true,
+    "original_2022_config_unchanged": true,
+    "original_runtime_manifest_unchanged": true,
+    "preserved_files": 729
+  },
+  "static_authority_status": "STATIC_PASS",
+  "status": "OFFLINE_IMPLEMENTED_TESTED_LIVE_BLOCKED",
+  "synthetic_demo_status": "SYNTHETIC_DEMO_PASS",
+  "unchanged_parent_suite_on_modified_fork": {
+    "errors": 0,
+    "evidence_sha256": "4d9b63d34444cf80eecdbdf9018d9b355963e80f5a4e221a452afac9b4fb8efc",
+    "failed": 1,
+    "failures": [
+      {
+        "class": "tests.test_v24915_release",
+        "message": "r1_15a2_supply.SupplyContractError: V24915_RUNTIME_BUNDLE_INVALID:[{\"path\": \"r1_15a2_core.py\", \"reason\": \"SIZE_MISMATCH\"}, {\"path\": \"r1_15a2_two_mode_v238.py\", \"reason\": \"SIZE_MISMATCH\"}]",
+        "name": "test_v24915_config_runtime_bundle_and_lineage_are_hash_locked"
+      }
+    ],
+    "passed": 782,
+    "skipped": 4,
+    "source": "docs/evidence/CP05_parent_unmodified_suite_expected_identity_failure.xml",
+    "tests": 787
+  }
+}

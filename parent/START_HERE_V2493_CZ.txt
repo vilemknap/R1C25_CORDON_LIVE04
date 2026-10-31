@@ -1,0 +1,10 @@
+R1 15A2 V2.4.9.3 — START HERE
+
+1. Použij launcher:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_3.py
+2. Startuj z ověřeného V2.4.9.0 checkpointu ACCEPTED_B_0000_2b3bb8f7818b.ver.
+3. Neobnovuj poškozenou Visum session, ve které došlo k "Volaný odmítl volání".
+4. Nejprve spusť bounded live gate podle LIVE_VISUM_ACCEPTANCE_V2_4_9_3_CZ.md.
+5. V2.4.9.3 používá weighted mean GEH, jeden LONG_COMPOSITE a transient-only COM retry.
+
+Offline stav: 692 testů PASS; real Visum acceptance pending; production_ready=false.

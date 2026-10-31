@@ -1,0 +1,5 @@
+R1 2025 LIVE01: read-only baseline a navrh TG, nikoli zapis do modelu.
+Spust ve Visumu RUN_R1_2025_CORDON_LIVE_BASELINE.py.
+Navod: LIVE_VISUM_BASELINE_RUNBOOK_CZ.md
+Historicke root README/FINAL_STATUS se tykaji predchozich verzi.
+Aktualni stav: RELEASE_FINAL_VERIFICATION_LIVE01.json.

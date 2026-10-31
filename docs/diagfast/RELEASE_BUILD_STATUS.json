@@ -1,0 +1,26 @@
+{
+  "status": "READY_FOR_LIVE_PARITY",
+  "full_suite": {
+    "passed": 715,
+    "failed": 0
+  },
+  "parent_full": {
+    "passed": 879,
+    "skipped": 4,
+    "failed_known_inherited_identity": 1
+  },
+  "parent_compat": {
+    "passed": 879,
+    "skipped": 4,
+    "deselected_known_identity": 1
+  },
+  "native_tested": false,
+  "real_final_reference_available": false,
+  "production_ready": false,
+  "apply_permitted": false,
+  "final_archive_readback": "SEE_DELIVERED_RELEASE_FINAL_VERIFICATION_SIDECAR",
+  "new_tests": 142,
+  "real_final_reference_available_on_drive": true,
+  "real_final_reference_download_status": "BLOCKED_HTTP_413_256MIB",
+  "matrix_authorities_sha_verified": 12
+}

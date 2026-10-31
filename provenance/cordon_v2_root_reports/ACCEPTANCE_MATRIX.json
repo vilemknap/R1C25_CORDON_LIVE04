@@ -1,0 +1,150 @@
+[
+  {
+    "id": "01",
+    "requirement": "16/32 map, exact directions",
+    "status": "PASS",
+    "test_names": [
+      "test_actual_mapping",
+      "test_same_linkno_opposite_direction"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "02",
+    "requirement": "Two explicit unapproved hypotheses",
+    "status": "PASS",
+    "test_names": [
+      "test_decode_once_mode_scope_and_fixed",
+      "test_real_unapproved_requires_explicit_scenario"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "03",
+    "requirement": "Repeat audit",
+    "status": "PASS",
+    "test_names": [
+      "test_decode_once_mode_scope_and_fixed"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "04",
+    "requirement": "DSeg separate, geometry unapproved",
+    "status": "PASS",
+    "test_names": [
+      "test_mode_identity_not_inferred",
+      "test_dseg_mode_authority_independent_of_matching_two_tables"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "05",
+    "requirement": "Fixed prediction not actuator",
+    "status": "PASS",
+    "test_names": [
+      "test_decode_once_mode_scope_and_fixed",
+      "test_frozen_actuator_rejected"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "06",
+    "requirement": "Path volume/share parity, unsupported new OD",
+    "status": "PASS",
+    "test_names": [
+      "test_bad_parity",
+      "test_epoch_support_and_zero",
+      "test_sparse_adjoint_and_abs_relative_change_equivalence"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "07",
+    "requirement": "Actual D1-D2-D3 audit",
+    "status": "PASS",
+    "test_names": [
+      "test_actual_lineage"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "08",
+    "requirement": "Shared station/category/global credits",
+    "status": "PASS",
+    "test_names": [
+      "test_station_shared_across_relations_and_reverse",
+      "test_global_tighter_than_station_caps"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "09",
+    "requirement": "No unrestricted per-pair tolerance",
+    "status": "PASS",
+    "test_names": [
+      "test_actual_C17_not_double_counted",
+      "test_disabled_and_unapproved_no_relaxation"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "10",
+    "requirement": "Signed loss, bounds, regularization",
+    "status": "PASS",
+    "test_names": [
+      "test_parent_solver_signed_cordon_loss",
+      "test_shared_C17_joint_solver_and_independent_oracle"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "11",
+    "requirement": "Infeasible actuator patterns",
+    "status": "PASS",
+    "test_names": [
+      "test_opposing_cycle_has_zero_marginal_error_but_cannot_be_realized"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "12",
+    "requirement": "CAL/VALID isolation",
+    "status": "PASS",
+    "test_names": [
+      "test_validation_never_used",
+      "test_role_split_and_aggregation"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "13",
+    "requirement": "Category, year, bridge gate",
+    "status": "PASS",
+    "test_names": [
+      "test_config_rejects_scope_or_write_switch",
+      "test_all_approval_flags_still_do_not_allow_v1_apply"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "14",
+    "requirement": "Missing cache cannot pass live",
+    "status": "PASS",
+    "test_names": [
+      "test_nonexistent_cache_fails_not_live_pass"
+    ],
+    "unresolved_test_names": []
+  },
+  {
+    "id": "15",
+    "requirement": "Offline no model writes",
+    "status": "PASS",
+    "test_names": [
+      "test_no_live_import_needed_in_clean_process",
+      "test_parent_config_and_controller_bytes_unchanged",
+      "test_old_2022_entrypoint_refuses_modified_fork_identity"
+    ],
+    "unresolved_test_names": []
+  }
+]

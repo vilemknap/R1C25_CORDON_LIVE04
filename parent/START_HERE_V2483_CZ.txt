@@ -1,0 +1,13 @@
+R1 15A2 V2.4.8.3 CACHE COMPAT HOTFIX
+
+1. NEMAŽTE %LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248.
+2. Otevřete stejný accepted baseline .ver jako při V2481.
+3. Ve Visumu zvolte Scripts -> Execute script file.
+4. Spusťte:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_8_3.py
+5. Nejdříve zkontrolujte PERSISTENT_PATH_CACHE_RESTORE.json:
+   status = PERSISTENT_PATH_EPOCH_RESTORED
+   contract_validation.mode = EXPLICIT_PREDECESSOR_READ_COMPATIBILITY
+6. Očekávaný další gate: bez počátečního FORCED_SUPPORT_REFRESH přejít do GENERATION TRY_01.
+
+Tento build není production-ready bez reálného Visum ověření.

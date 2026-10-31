@@ -1,0 +1,20 @@
+{
+  "preflight": {
+    "allowed_to_calibrate": false,
+    "allowed_to_modify_visum": false,
+    "c17_symmetric_one_margin": 48645.0,
+    "category": "OA",
+    "mapped_directed_edges": 32,
+    "mapped_station_count": 16,
+    "model_year": 2025,
+    "orientation_approved": false,
+    "station_pair_semantics_approved": false,
+    "status": "STATIC_INPUT_PASS_DIAGNOSTIC_ONLY",
+    "survey_year": 2026,
+    "target_offdiag_pairs": 240,
+    "target_offdiag_sum": 76522.0,
+    "unknown_pair_tolerance": "NOT_ALLOCATED_AS_INDEPENDENT_PAIR_INTERVALS",
+    "year_alignment_approved": false
+  },
+  "route_evidence": "NO_ROUTE_STORE_GIVEN"
+}

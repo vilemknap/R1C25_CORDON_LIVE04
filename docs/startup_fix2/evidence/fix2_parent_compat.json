@@ -1,0 +1,28 @@
+{
+  "name": "fix2_parent_compat",
+  "cwd": "/mnt/data/cordon_recovery_20261023/work/R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX2_COMBUSY_20261023/parent",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--disable-warnings",
+    "--junitxml=/mnt/data/cordon_recovery_20261023/evidence/fix2_parent_compat.xml",
+    "tests",
+    "--deselect=tests/test_v24915_release.py::test_v24915_config_runtime_bundle_and_lineage_are_hash_locked"
+  ],
+  "native_visum": false,
+  "platform": "linux",
+  "returncode": 0,
+  "status": "PASS",
+  "elapsed_seconds": 23.82811976500011,
+  "counts": {
+    "tests": 883,
+    "passed": 879,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4
+  }
+}

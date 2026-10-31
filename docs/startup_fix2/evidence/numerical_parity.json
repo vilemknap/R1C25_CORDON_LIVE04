@@ -1,0 +1,692 @@
+{
+  "status": "EXACT_NUMERICAL_ARRAY_PARITY_PASS",
+  "checks": [
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        3
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        3
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        3
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        3
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        1
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "row",
+      "shape": [
+        10
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "col",
+      "shape": [
+        10
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "through",
+      "shape": [
+        10
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "share",
+      "shape": [
+        10
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "q",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "model",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "mutable",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "field": "fixed",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "row",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "col",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "through",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "share",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "q",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "model",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "mutable",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "field": "fixed",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        6
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        0
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        0
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        0
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        0
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        2
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        3
+      ],
+      "exact_equal": true
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        3
+      ],
+      "exact_equal": true
+    }
+  ],
+  "array_count": 84,
+  "run_outputs": {
+    "before": {
+      "status": "SYNTHETIC_AGGRESSIVE_DEMO_PASS",
+      "output": "/mnt/data/cordon_recovery_20261023/numeric_parity/before/NUMERIC_PARITY",
+      "apply": false
+    },
+    "after": {
+      "status": "SYNTHETIC_AGGRESSIVE_DEMO_PASS",
+      "output": "/mnt/data/cordon_recovery_20261023/numeric_parity/after/NUMERIC_PARITY",
+      "apply": false
+    }
+  },
+  "source_kind": "SYNTHETIC_DEMO_NOT_R1_COUNTS",
+  "scientific_parameters_changed": false
+}

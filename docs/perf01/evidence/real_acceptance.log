@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/mnt/data/perf01_work/R1C25_PERF01/tools/perf01_real_acceptance.py", line 72, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/mnt/data/perf01_work/R1C25_PERF01/tools/perf01_real_acceptance.py", line 37, in main
+    require(cache.is_file() and cache.stat().st_size==EXPECTED_BYTES and sha256(cache)==EXPECTED,'WAITING_FOR_REAL_FINAL_CACHE')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/perf01_work/R1C25_PERF01/cordon2025/common.py", line 40, in require
+    raise ContractError(message)
+cordon2025.common.ContractError: WAITING_FOR_REAL_FINAL_CACHE

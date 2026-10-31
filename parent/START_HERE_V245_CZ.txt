@@ -1,0 +1,73 @@
+R1 15A2 V2.4.5 - OPRAVA CELEHO KALIBRACNIHO RIDICIHO PRUCHODU
+Datum: 2026-10-16
+
+SPUSTENI
+1. Rozbal cely ZIP do nove samostatne slozky. Nekopiruj pouze launcher do V2.4.4.
+2. Ve Visumu otevri spravny ulozeny zdrojovy R1 model .ver.
+3. Spust rucne jako soubor pres Scripts > Execute script file:
+   R1_15A2_FULL_OVERNIGHT_COUPLED_V2_4_5.py
+   Nevkladej jej jako inline kod, nespoustej jej jako operaci Procedure Sequence.
+   Ze zdrojoveho .ver nejprve vytvori WORKING_START.ver. Kalibracni zmeny
+   provadi v pracovnim modelu, nikoli v souboru puvodniho zdrojoveho modelu.
+4. Ostatni launchery a START_HERE soubory v baliku jsou historie/zavislosti.
+   Pro toto vydani pouzivej VYHRADNE launcher V2_4_5 a konfiguraci V2_4_5.
+
+CO JE OTESTOVANO
+Kompletni offline regresni sada, realny ridici pruchod s deklarovanou
+syntetickou nahradou native Visum vypoctu, skutecny referencni FineCDF Runner
+na testovacich maticich, parsery COM-shaped exportu, rollback a ukladani.
+Skutecny Visum COM, uzivatelske GUI a nocni vypocet na tvem R1 modelu zde
+spusteny NEBYLY. Offline PASS neni real-network ani production PASS.
+
+PRUBEH
+TG counts-only -> FineCDF TD -> uplny downstream assignment, opakovane.
+ADDVAL1 se odemkne az po nejmene dvou uplnych potvrzenych stacionarnich
+TG+TD cyklech. Vycerpany rozpocet, chyba a preruseny cyklus nejsou konvergence.
+Stationarita znamena vycerpany nakonfigurovany lokalni search, nikoli dukaz
+spravne kalibrace, globalniho optima nebo schvaleni metodiky/validace.
+
+KDE JSOU VYSLEDKY
+Vedle projektu vznikne R1_15A2_V2_4_5_FULL_CALIBRATION_REPAIR_RUNS.
+LATEST_RUN.txt ukazuje na aktualni RUN_*.
+Kontroluj 00_RESULT.json, 00_FINAL_STATUS.txt a CALIBRATION/RUN_STATUS.json.
+Uspesny uplny ridici pruchod:
+  COMPLETED_CONFIGURED_DEMAND_AND_SUPPLY_SEARCH
+  final_state_verified=true, calibration_complete=true
+  FINAL_CALIBRATED_WORKING_COPY.ver
+Bezpecne overeny, ale nedokonceny pruchod:
+  final_state_verified=true, calibration_complete=false
+  FINAL_VERIFIED_PARTIAL_WORKING_COPY.ver
+Chyba / neovereny stav:
+  zadny FINAL*.ver neni autorizovan; projdi traceback a posledni checkpoint.
+Soubory .ver vznikle OFFLINE testy jsou oznacene synteticke soubory, NE modely.
+
+ZASTAVENI A OBNOVA
+Pro kooperativni stop vytvor prazdny STOP_REQUESTED v aktualnim RUN_*.
+Rozpoctovy limit je 36 000 s, ale prave bezici native COM operaci nelze timto
+skriptem preemptivne ukoncit. Dokonceni atomickeho rollbacku ma prednost pred
+stopem i casovym limitem. Kdyz se native Visum zasekne nebo spadne, Python
+nemuze zarucit vykonani finally; slouzi diskovy overeny checkpoint.
+Pri manualnim reopen pouzij .ver z LATEST_ACCEPTED_CHECKPOINT.json. Po vstupu
+do supply je jeho nejnovejsi pointer v CALIBRATION/SUPPLY_ROUTE_CHOICE.
+Pri chybnem supply handoffu kontroluj i vnorene supply_result / RUN_STATUS.
+Automaticke resume pres LoadVersion tato verze neumoznuje. Nezamenuj ulozeny
+checkpoint s dukazem, ze byly dokonceny zbyle faze.
+Lock .R1_15A2_FULL_CALIBRATION.lock u zdrojoveho modelu blokuje soubezny start.
+Po tvrdem padu jej odstran rucne jen po overeni, ze zadny takovy run nebezi.
+
+OMEZENI, KTERA ZUSTAVAJI VIDITELNA
+- Pracovni kalibrace neni production release; production_apply zustava false.
+- Prozatimni sdileni geometrie v ramci C/C_NOT zustava pouze navrhovy podklad.
+  Akceptace kandidata nadale vyzaduje cerstvy assignment a live diagnostiku.
+- Explicitni 0-link parent je zachovan; z nulove linkove sekvence samotne
+  netvrdime, ze byla dodatecne prokazana presna konektorova topologie.
+- Nebyla dodana skutecna V244 SQLite/evidence jako samostatny datovy balik;
+  pouzit byl zdrojovy kod a vlozena textova evidence o padu 15 -> 57.
+- Dialogy, lokalni prava, licence, vykon/RAM a stabilita Visum COM potrebuji
+  overeni na cilovem pocitaci. Tento balik je nenahrazuje simulaci.
+
+NEZAVISLA KONTROLA DODAVKY (mimo Visum, volitelne)
+python VERIFY_PACKAGE_V2_4_5.py
+python VERIFY_PACKAGE_V2_4_5.py --tests
+Druhy prikaz vyzaduje pytest a numericke zavislosti v Python prostredi.
+Verifier spousti pouze offline testy a neotevira ani nemeni model Visum.

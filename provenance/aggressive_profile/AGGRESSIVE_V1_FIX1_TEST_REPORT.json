@@ -1,0 +1,74 @@
+{
+  "schema": "R1_AGGRESSIVE_V1_FIX1_TEST_REPORT",
+  "status": "OFFLINE_TESTS_PASS_REAL_VISUM_NOT_RUN",
+  "full_suite": {
+    "execution_mode": "ALL_TEST_FILES_IN_FRESH_PYTEST_PROCESSES_MAX_4_PARALLEL",
+    "test_files": 99,
+    "collected": 965,
+    "passed": 961,
+    "skipped": 4,
+    "failed": 0,
+    "errors": 0,
+    "all_process_returncodes_zero": true,
+    "elapsed_seconds": 185.575
+  },
+  "targeted_regressions": {
+    "passed": 34,
+    "failed": 0,
+    "source": "FIX1_TEST_EVIDENCE/focused.xml"
+  },
+  "single_process_full_suite_attempt": {
+    "status": "TIMEOUT",
+    "timeout_seconds": 120,
+    "completed_result_not_claimed": true,
+    "replacement": "All 99 test files executed to completion in fresh pytest processes."
+  },
+  "compileall": {
+    "returncode": 0,
+    "python_files": 292
+  },
+  "base_preservation": {
+    "files_verified_unchanged": 947,
+    "modified": 0,
+    "missing": 0,
+    "base_archive_sha256": "b468435e6803ac6a591ee02251e35dd1dec8d2d2f692fc21f411451bdf956a4d"
+  },
+  "key_regressions": [
+    "Exact supplied 488/498 CAL=488/462 VALID=0/36 failure reproduced",
+    "Actual post-overlay prepare_runtime_config runs 12D and 11D gates with 488/488/0",
+    "Incorrect count / role and invalid IDP evidence remain rejected",
+    "Real launcher main setup reaches controller under simulated COM; source checkpoint unchanged",
+    "Dirty A0013 session reloads that same checkpoint; all seven semantic hashes required",
+    "Short run/cache roots, critical I/O retries and fail-open telemetry verified",
+    "Aggressive V1 numeric policy preserved unchanged"
+  ],
+  "skipped_tests": [
+    {
+      "class": "tests.test_v24912_complete_runtime_bundle",
+      "test": "test_v24912_complete_runtime_preflight_passes",
+      "reason": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+    },
+    {
+      "class": "tests.test_v24912_complete_runtime_bundle",
+      "test": "test_v24912_runtime_manifest_is_exact",
+      "reason": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+    },
+    {
+      "class": "tests.test_v24912_guard_policy_rebase",
+      "test": "test_v24912_safety_validator_accepts_runtime_config_and_pins_parent",
+      "reason": "V24912 runtime manifest is intentionally superseded by V24913 shared-core changes"
+    },
+    {
+      "class": "tests.test_v24914_demand_continuation",
+      "test": "test_v24914_config_runtime_bundle_and_v24913_supply_policy_are_hash_locked",
+      "reason": "V24915 intentionally supersedes shared runtime files and owns its own exact manifest"
+    }
+  ],
+  "real_windows_visum_run": false,
+  "claims_not_made": [
+    "No production calibration success claimed",
+    "No change in LONG generation volume",
+    "No IPF tolerance relaxation"
+  ],
+  "clean_archive_verification": "See external R1_15A2_AGGRESSIVE_V1_FIX1_FINAL_VERIFICATION.json for the tested ZIP SHA256 and clean-extraction results."
+}

@@ -1,0 +1,687 @@
+{
+  "status": "EXACT_NUMERICAL_PARITY_PASS",
+  "runs": {
+    "before": {
+      "exit_code": 0
+    },
+    "after": {
+      "exit_code": 0
+    }
+  },
+  "array_fields_checked": 84,
+  "fields": [
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        3
+      ]
+    },
+    {
+      "file": "AGGRESSIVE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        3
+      ]
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        3
+      ]
+    },
+    {
+      "file": "AGGRESSIVE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        3
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "BOUNDED_BACKTRACK/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        1
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "row",
+      "identical": true,
+      "shape": [
+        10
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "col",
+      "identical": true,
+      "shape": [
+        10
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "through",
+      "identical": true,
+      "shape": [
+        10
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "share",
+      "identical": true,
+      "shape": [
+        10
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "q",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "model",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "mutable",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "fixed",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "row",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "col",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "through",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "share",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "q",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "model",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "mutable",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "fixed",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        6
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "CACHE/EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        120
+      ]
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        0
+      ]
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        0
+      ]
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "NO_OP_C17/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        0
+      ]
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        0
+      ]
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "NO_OP_C17/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/NEGATIVE_CYCLE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/RAW_UNDAMPED_GUIDANCE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "REALIZABILITY/POSITIVE_CYCLE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        4
+      ]
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "array": "relative_change",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "array": "delta_q",
+      "identical": true,
+      "shape": [
+        2
+      ]
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "identical": true,
+      "shape": [
+        3
+      ]
+    },
+    {
+      "file": "STANDARD/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "identical": true,
+      "shape": [
+        3
+      ]
+    }
+  ],
+  "native_visum_tested": false
+}

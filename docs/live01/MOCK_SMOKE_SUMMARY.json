@@ -1,0 +1,101 @@
+{
+  "execution_kind": "MOCK_NOT_NATIVE",
+  "result": {
+    "schema": "LIVE01_RESULT_V1",
+    "status": "MOCK_READONLY_BASELINE_PASS",
+    "stage": "LIVE01_BASELINE_READ_ONLY",
+    "execution_kind": "MOCK",
+    "output_directory": "/mnt/data/live01_work/smoke_FINAL/runs/LIVE01_BASELINE_2a6c6df8f33a",
+    "model_year": 2025,
+    "source_cells": 256,
+    "objective_rows_per_method": 120,
+    "validation_rows": 0,
+    "variants": {
+      "ALL_ORDERED_UNIQUE_PAIRS": {
+        "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+        "candidate_count": 64,
+        "proposal_sha256": "1e5ff6e3e5d0393c9f37782c2b0b61378e7f0baf25cfacb51a1ac58096dca6ce",
+        "proposal_path": "ALL_ORDERED_UNIQUE_PAIRS/PROPOSED_TG_CANDIDATES.json"
+      },
+      "EXACT_TWO_HITS": {
+        "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+        "candidate_count": 64,
+        "proposal_sha256": "e9e8b06fe0f6399e6fda50f4e7c4a14f489590607ef16e05742c6702a76eceaa",
+        "proposal_path": "EXACT_TWO_HITS/PROPOSED_TG_CANDIDATES.json"
+      }
+    },
+    "apply_permitted": false,
+    "assignment_executed": false,
+    "native_candidate_accepted": false,
+    "real_visum_verified": false,
+    "native_readonly_baseline_verified": false,
+    "production_ready": false,
+    "next_stage": "LIVE02_FIRST_NATIVE_TG_CYCLE",
+    "remaining_gates": [
+      "NATIVE_CANDIDATE_EFFECT_NOT_RUN",
+      "ROLLBACK_NOT_RUN",
+      "PRODUCTION_METHODOLOGY_NOT_CERTIFIED"
+    ]
+  },
+  "checkpoint": {
+    "status": "OFFLINE_RUN_CHECKPOINT_VERIFIED",
+    "completed": true,
+    "stage": "LIVE01_BASELINE_COMPLETE",
+    "artifacts_verified": 58,
+    "restart_mode": "VERIFIED_OFFLINE_RESTART_FROM_INPUTS_NOT_SOLVER_CONTINUATION",
+    "apply_permitted": false,
+    "live_visum_tested": false,
+    "production_ready": false
+  },
+  "handoff_verification": {
+    "status": "LIVE01_HANDOFF_ARTIFACTS_VERIFIED_NOT_APPLY_AUTHORIZED",
+    "candidate_counts": {
+      "ALL_ORDERED_UNIQUE_PAIRS": 64,
+      "EXACT_TWO_HITS": 64
+    },
+    "checkpoint": {
+      "status": "OFFLINE_RUN_CHECKPOINT_VERIFIED",
+      "completed": true,
+      "stage": "LIVE01_BASELINE_COMPLETE",
+      "artifacts_verified": 58,
+      "restart_mode": "VERIFIED_OFFLINE_RESTART_FROM_INPUTS_NOT_SOLVER_CONTINUATION",
+      "apply_permitted": false,
+      "live_visum_tested": false,
+      "production_ready": false
+    },
+    "apply_permitted": false,
+    "fresh_live_readback_required": true,
+    "restore_proof_needed": true,
+    "native_candidate_effect_verified": false
+  },
+  "elapsed_seconds": 18.726937287000055,
+  "mutation_calls": [],
+  "unbounded_path_calls": 0,
+  "zone_count": 681,
+  "personal_segments": 12,
+  "assignment_segments": 14,
+  "methods": {
+    "ALL_ORDERED_UNIQUE_PAIRS": {
+      "candidate_count": 64,
+      "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+      "objective_rows": 120,
+      "mutable_variables": 960,
+      "operator_nonzeros": 744,
+      "objective_initial": 38764.286082922175,
+      "objective_final": 37874.06647388661,
+      "realizability_status": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "real_visum_verified": false
+    },
+    "EXACT_TWO_HITS": {
+      "candidate_count": 64,
+      "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+      "objective_rows": 120,
+      "mutable_variables": 960,
+      "operator_nonzeros": 744,
+      "objective_initial": 38764.286082922175,
+      "objective_final": 37874.06647388661,
+      "realizability_status": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "real_visum_verified": false
+    }
+  }
+}

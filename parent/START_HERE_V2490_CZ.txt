@@ -1,0 +1,16 @@
+R1 15A2 V2.4.9.0 — TD SOFT REFERENCE
+
+1. Rozbal celý balík do nové krátké složky, např. ...\2022\R1_15A2_V2490.
+2. Otevři bezpečný checkpoint:
+   ...\R1_15A2_V2489_RUNS\RUN_20261016_233441_498675\CALIBRATION\CHECKPOINTS\ACCEPTED_B_0000_e79c01ed340c.ver
+3. Ponech %LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248 beze změny.
+4. Ve Visumu spusť Scripts -> Execute script file:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_0.py
+5. Nový run musí vzniknout přímo v ...\2022\R1_15A2_V2490_RUNS\RUN_*.
+6. U TD kontroluj zejména:
+   TD_PARAMETER_FREEZE_AUDIT.json
+   TD_SOFT_REFERENCE_ACCEPTANCE.json
+   TD_REALIZATION_ATTEMPTS.json
+7. `SOFT_REFERENCE_PLATEAU` je validní bounded stationarity, pokud rollback parentu projde. IPF exhaustion ani hard guard failure plateau není.
+
+Skutečný Visum V2490 acceptance není součástí offline balíku.

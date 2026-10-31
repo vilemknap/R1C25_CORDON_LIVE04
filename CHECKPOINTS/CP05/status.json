@@ -1,0 +1,24 @@
+{
+  "checkpoint": "CP05",
+  "created_utc": "2026-10-19T20:48:58.340880+00:00",
+  "details": {
+    "status": "OFFLINE_IMPLEMENTATION_TESTS_AND_HANDOFF_PREPARED",
+    "new_tests_passed": 86,
+    "parent_compatibility_passed": 782,
+    "parent_skipped": 4,
+    "parent_identity_test_explicitly_deselected": 1,
+    "full_unmodified_parent_suite_failed_on_legacy_identity": 1,
+    "minimum_acceptance_cases_passed": 15,
+    "real_2025_path_cache": false,
+    "apply": false,
+    "next_gate": "VERIFY_SELF_CONTAINED_ZIP_IN_CLEAN_DIRECTORY",
+    "tests": "TEST_REPORT.md",
+    "performance": "PERFORMANCE_REPORT.md"
+  },
+  "source_files": 946,
+  "manifest_sha256": "eb33b42138a2bea503576eda2b69682c9ee15bd7471dbf51f9ed022de49e6e8f",
+  "predecessor_status_sha256": "3f6a8ad38edae7c77109d14d0bdb62c2c947dab3641eb051c636c8ebcdf77929",
+  "apply": false,
+  "live_visum_tested": false,
+  "resume": "Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate."
+}

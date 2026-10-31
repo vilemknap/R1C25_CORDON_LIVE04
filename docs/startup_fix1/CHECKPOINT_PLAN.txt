@@ -1,0 +1,6 @@
+CP_B00: source hashes, parent comparison, fresh baseline tests.
+CP_B01: adversarial data-contract and solver tests, minimal fixes preserving parent.
+CP_B02: injected-session Visum preflight and bounded saved-path acquisition using existing 15A2 collector/parser, isolated imports, no assignment/writes.
+CP_B03: fake-COM end-to-end startup, retries, matrix drift, path coverage, repeated launch, read-only contract; parent/cordon regression.
+CP_B04: clean unpack, release integrity, technical truth boundary, handoff and Drive upload.
+No automatic semantic approvals. A working one-click profiling runner is not a cordon controller. No runtime code may attach a different Visum instance or call the profile launcher.

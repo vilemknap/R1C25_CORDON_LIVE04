@@ -1,0 +1,123 @@
+{
+  "schema": "R1_CORDON_2025_OFFLINE_V2",
+  "parent_version": "2.4.9.15",
+  "mode": "OFFLINE_PROPOSAL",
+  "apply": false,
+  "model_year": 2025,
+  "survey_year": 2026,
+  "category": "OA",
+  "basis": "RPDI",
+  "c17_allocation_policy": "UNAPPROVED",
+  "observation_methods": [
+    "ALL_ORDERED_UNIQUE_PAIRS",
+    "EXACT_TWO_HITS"
+  ],
+  "primary_aggregation": "BIDIRECTIONAL_SUM",
+  "repeat_policy": "EXCLUDE_FLAGGED",
+  "approvals": {},
+  "selected_dsegs": [
+    "NATIVE_CW",
+    "NATIVE_CW_NOT",
+    "NATIVE_CS",
+    "NATIVE_CS_NOT",
+    "NATIVE_CL",
+    "NATIVE_CF",
+    "EXOG_EE_CW",
+    "EXOG_EE_CW_NOT",
+    "EXOG_EE_CS",
+    "EXOG_EE_CS_NOT",
+    "EXOG_EE_CL",
+    "EXOG_EE_CF"
+  ],
+  "mutable_dsegs": [
+    "NATIVE_CW",
+    "NATIVE_CW_NOT",
+    "NATIVE_CS",
+    "NATIVE_CS_NOT"
+  ],
+  "mutable_relation_policy": "BOTH_ENDPOINTS_ACTUATABLE",
+  "actuatable_zones": null,
+  "relative_od_lower": -0.15,
+  "relative_od_upper": 0.15,
+  "ridge": 0.1,
+  "l1": 0.001,
+  "epsilon_abs": 0.0,
+  "epsilon_is_statistical_confidence_interval": false,
+  "solver_max_iter": 6000,
+  "solver_tolerance": 1e-09,
+  "solver_check_every": 10,
+  "power_iterations": 50,
+  "block_max_iter": 100,
+  "kkt_tolerance": 1e-05,
+  "c17_ridge": 0.02,
+  "calibration_role": "CALIBRATION",
+  "pair_role_policy": "PAIRED_HOLDOUT_NO_REVERSE_LEAKAGE",
+  "validation_unordered_pairs": [
+    [
+      1,
+      3
+    ],
+    [
+      2,
+      13
+    ],
+    [
+      3,
+      16
+    ],
+    [
+      4,
+      7
+    ],
+    [
+      5,
+      16
+    ],
+    [
+      6,
+      8
+    ],
+    [
+      9,
+      12
+    ],
+    [
+      10,
+      14
+    ],
+    [
+      11,
+      15
+    ],
+    [
+      12,
+      13
+    ],
+    [
+      1,
+      14
+    ],
+    [
+      7,
+      9
+    ]
+  ],
+  "role_split_status": "DEVELOPMENT_HOLDOUT_NOT_INDEPENDENT_FIELD_VALIDATION",
+  "run_procseq": false,
+  "run_assignment": false,
+  "write_od": false,
+  "supply_enabled": false,
+  "real_2025_path_cache": null,
+  "actual_network_sha256": null,
+  "authority_family": "CORDON_SDP",
+  "persistent_path_cache_enabled": false,
+  "automatic_cache_discovery": false,
+  "automatic_live_reload": false,
+  "flowbundle_count_authority": false,
+  "wallclock_limit_seconds": null,
+  "expected_snapshot_semantics": null,
+  "expected_observation_roster": null,
+  "actual_demand_sha256": null,
+  "upstream_technical_port": "V24915_PERF2C_RESUME_IOFIX4_AND_V24916_FRESH0_IOFIX3_PATHFIX3_20261022",
+  "limit_profile": "PRACTICAL_V1"
+}

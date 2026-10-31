@@ -1,0 +1,658 @@
+{
+  "schema": "LIVE01_TEST_REPORT_V1",
+  "release_status": "READY_FOR_NATIVE_READONLY_BASELINE",
+  "recovered_from": "CP03",
+  "new_live01_testcases": 116,
+  "original_cordon_testcases": 715,
+  "runs": {
+    "FINAL_FULL": {
+      "status": "PASS",
+      "testcases": 831,
+      "passed": 830,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 1,
+      "details": [
+        {
+          "name": "test_real_native_CW_capture_replay",
+          "classname": "tests.test_practical_limits_fix3",
+          "kind": "skipped",
+          "message": "Real user failure fixture supplied externally, not embedded"
+        }
+      ],
+      "command_evidence": {
+        "command": [
+          "/opt/pyvenv/bin/python",
+          "-m",
+          "pytest",
+          "tests",
+          "-q",
+          "-ra",
+          "--junitxml=/mnt/data/live01_recovery/recovery_evidence/FINAL_FULL.xml"
+        ],
+        "cwd": "/mnt/data/live01_work/R1C25_LIVE01",
+        "environment_overrides": {
+          "OPENBLAS_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "started_utc": "2026-10-24T09:11:42.147569+00:00",
+        "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+        "exit_code": 0,
+        "elapsed_seconds": 1154.8060250899998,
+        "finished_utc": "2026-10-24T09:30:56.953854+00:00"
+      }
+    },
+    "RECOVERY_FAULTS_BEFORE_R2": {
+      "status": "NOT_PASS",
+      "testcases": 4,
+      "passed": 0,
+      "failed": 4,
+      "errors": 0,
+      "skipped": 0,
+      "details": [
+        {
+          "name": "test_final_readback_covers_current_oa_network_and_source[oa_same_sum]",
+          "classname": "tests.test_live01_recovery",
+          "kind": "failure",
+          "message": "Failed: DID NOT RAISE <class 'Exception'>"
+        },
+        {
+          "name": "test_final_readback_covers_current_oa_network_and_source[oa_binding]",
+          "classname": "tests.test_live01_recovery",
+          "kind": "failure",
+          "message": "Failed: DID NOT RAISE <class 'Exception'>"
+        },
+        {
+          "name": "test_final_readback_covers_current_oa_network_and_source[network]",
+          "classname": "tests.test_live01_recovery",
+          "kind": "failure",
+          "message": "Failed: DID NOT RAISE <class 'Exception'>"
+        },
+        {
+          "name": "test_final_readback_covers_current_oa_network_and_source[source_pointer]",
+          "classname": "tests.test_live01_recovery",
+          "kind": "failure",
+          "message": "Failed: DID NOT RAISE <class 'Exception'>"
+        }
+      ],
+      "command_evidence": {
+        "command": [
+          "/opt/pyvenv/bin/python",
+          "-m",
+          "pytest",
+          "tests/test_live01_recovery.py",
+          "-q",
+          "--junitxml=/mnt/data/live01_recovery/recovery_evidence/RECOVERY_FAULTS_BEFORE_R2.xml"
+        ],
+        "cwd": "/mnt/data/live01_work/R1C25_LIVE01",
+        "environment_overrides": {
+          "OPENBLAS_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "started_utc": "2026-10-24T09:06:24.289269+00:00",
+        "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+        "exit_code": 1,
+        "elapsed_seconds": 22.898304021000058,
+        "finished_utc": "2026-10-24T09:06:47.187820+00:00"
+      }
+    },
+    "RECOVERY_FIXED": {
+      "status": "PASS",
+      "testcases": 13,
+      "passed": 13,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "details": [],
+      "command_evidence": {
+        "command": [
+          "/opt/pyvenv/bin/python",
+          "-m",
+          "pytest",
+          "tests/test_live01_recovery.py",
+          "-q",
+          "--junitxml=/mnt/data/live01_recovery/recovery_evidence/RECOVERY_FIXED.xml"
+        ],
+        "cwd": "/mnt/data/live01_work/R1C25_LIVE01",
+        "environment_overrides": {
+          "OPENBLAS_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "started_utc": "2026-10-24T09:07:55.170867+00:00",
+        "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+        "exit_code": 0,
+        "elapsed_seconds": 203.24651945200003,
+        "finished_utc": "2026-10-24T09:11:18.417554+00:00"
+      }
+    },
+    "DONOR_RECHECK": {
+      "status": "PASS",
+      "testcases": 981,
+      "passed": 977,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 4,
+      "details": [
+        {
+          "name": "test_v24912_complete_runtime_preflight_passes",
+          "classname": "tests.test_v24912_complete_runtime_bundle",
+          "kind": "skipped",
+          "message": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+        },
+        {
+          "name": "test_v24912_runtime_manifest_is_exact",
+          "classname": "tests.test_v24912_complete_runtime_bundle",
+          "kind": "skipped",
+          "message": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+        },
+        {
+          "name": "test_v24912_safety_validator_accepts_runtime_config_and_pins_parent",
+          "classname": "tests.test_v24912_guard_policy_rebase",
+          "kind": "skipped",
+          "message": "V24912 runtime manifest is intentionally superseded by V24913 shared-core changes"
+        },
+        {
+          "name": "test_v24914_config_runtime_bundle_and_v24913_supply_policy_are_hash_locked",
+          "classname": "tests.test_v24914_demand_continuation",
+          "kind": "skipped",
+          "message": "V24915 intentionally supersedes shared runtime files and owns its own exact manifest"
+        }
+      ],
+      "command_evidence": {
+        "command": [
+          "/opt/pyvenv/bin/python",
+          "-m",
+          "pytest",
+          "tests",
+          "-q",
+          "--junitxml=/mnt/data/live01_recovery/recovery_evidence/DONOR_RECHECK.xml"
+        ],
+        "cwd": "/mnt/data/live01_work/donor_reference",
+        "environment_overrides": {
+          "OPENBLAS_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "started_utc": "2026-10-24T09:08:17.578489+00:00",
+        "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+        "exit_code": 0,
+        "elapsed_seconds": 58.75046181899995,
+        "finished_utc": "2026-10-24T09:09:16.329443+00:00"
+      }
+    },
+    "PARENT_RECHECK": {
+      "status": "NOT_PASS",
+      "testcases": 884,
+      "passed": 879,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 4,
+      "details": [
+        {
+          "name": "test_v24912_complete_runtime_preflight_passes",
+          "classname": "tests.test_v24912_complete_runtime_bundle",
+          "kind": "skipped",
+          "message": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+        },
+        {
+          "name": "test_v24912_runtime_manifest_is_exact",
+          "classname": "tests.test_v24912_complete_runtime_bundle",
+          "kind": "skipped",
+          "message": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+        },
+        {
+          "name": "test_v24912_safety_validator_accepts_runtime_config_and_pins_parent",
+          "classname": "tests.test_v24912_guard_policy_rebase",
+          "kind": "skipped",
+          "message": "V24912 runtime manifest is intentionally superseded by V24913 shared-core changes"
+        },
+        {
+          "name": "test_v24914_config_runtime_bundle_and_v24913_supply_policy_are_hash_locked",
+          "classname": "tests.test_v24914_demand_continuation",
+          "kind": "skipped",
+          "message": "V24915 intentionally supersedes shared runtime files and owns its own exact manifest"
+        },
+        {
+          "name": "test_v24915_config_runtime_bundle_and_lineage_are_hash_locked",
+          "classname": "tests.test_v24915_release",
+          "kind": "failure",
+          "message": "r1_15a2_supply.SupplyContractError: V24915_RUNTIME_BUNDLE_INVALID:[{\"path\": \"r1_15a2_com_compat.py\", \"reason\": \"SIZE_MISMATCH\"}, {\"path\": \"r1_15a2_core.py\", \"reason\": \"SIZE_MISMATCH\"}, {\"path\": \"r1_15a2_supply.py\", \"reason\": \"SIZE_MISMATCH\"}, {\"path\": \"r1_15a2_two_mode_v238.py\", \"reason\": \"SIZE_MISMATCH\"}]"
+        }
+      ],
+      "command_evidence": {
+        "command": [
+          "/opt/pyvenv/bin/python",
+          "-m",
+          "pytest",
+          "tests",
+          "-q",
+          "--junitxml=/mnt/data/live01_recovery/recovery_evidence/PARENT_RECHECK.xml"
+        ],
+        "cwd": "/mnt/data/live01_work/R1C25_LIVE01/parent",
+        "environment_overrides": {
+          "OPENBLAS_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "started_utc": "2026-10-24T09:08:17.771275+00:00",
+        "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+        "exit_code": 1,
+        "elapsed_seconds": 51.865129388000014,
+        "finished_utc": "2026-10-24T09:09:09.636597+00:00"
+      }
+    },
+    "PARENT_COMPAT_FINAL": {
+      "status": "PASS",
+      "testcases": 883,
+      "passed": 879,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 4,
+      "details": [
+        {
+          "name": "test_v24912_complete_runtime_preflight_passes",
+          "classname": "tests.test_v24912_complete_runtime_bundle",
+          "kind": "skipped",
+          "message": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+        },
+        {
+          "name": "test_v24912_runtime_manifest_is_exact",
+          "classname": "tests.test_v24912_complete_runtime_bundle",
+          "kind": "skipped",
+          "message": "V24913 intentionally supersedes shared runtime files and owns its own exact manifest"
+        },
+        {
+          "name": "test_v24912_safety_validator_accepts_runtime_config_and_pins_parent",
+          "classname": "tests.test_v24912_guard_policy_rebase",
+          "kind": "skipped",
+          "message": "V24912 runtime manifest is intentionally superseded by V24913 shared-core changes"
+        },
+        {
+          "name": "test_v24914_config_runtime_bundle_and_v24913_supply_policy_are_hash_locked",
+          "classname": "tests.test_v24914_demand_continuation",
+          "kind": "skipped",
+          "message": "V24915 intentionally supersedes shared runtime files and owns its own exact manifest"
+        }
+      ],
+      "command_evidence": {
+        "command": [
+          "/opt/pyvenv/bin/python",
+          "-m",
+          "pytest",
+          "tests",
+          "-q",
+          "-ra",
+          "--deselect=tests/test_v24915_release.py::test_v24915_config_runtime_bundle_and_lineage_are_hash_locked",
+          "--junitxml=/mnt/data/live01_recovery/recovery_evidence/PARENT_COMPAT_FINAL.xml"
+        ],
+        "cwd": "/mnt/data/live01_work/R1C25_LIVE01/parent",
+        "environment_overrides": {
+          "OPENBLAS_NUM_THREADS": "1",
+          "OMP_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1",
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "started_utc": "2026-10-24T09:13:37.098813+00:00",
+        "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+        "exit_code": 0,
+        "elapsed_seconds": 39.11634649999996,
+        "finished_utc": "2026-10-24T09:14:16.215370+00:00"
+      }
+    }
+  },
+  "standalone_mock": {
+    "execution_kind": "MOCK_NOT_NATIVE",
+    "result": {
+      "schema": "LIVE01_RESULT_V1",
+      "status": "MOCK_READONLY_BASELINE_PASS",
+      "stage": "LIVE01_BASELINE_READ_ONLY",
+      "execution_kind": "MOCK",
+      "output_directory": "/mnt/data/live01_work/smoke_FINAL/runs/LIVE01_BASELINE_2a6c6df8f33a",
+      "model_year": 2025,
+      "source_cells": 256,
+      "objective_rows_per_method": 120,
+      "validation_rows": 0,
+      "variants": {
+        "ALL_ORDERED_UNIQUE_PAIRS": {
+          "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+          "candidate_count": 64,
+          "proposal_sha256": "1e5ff6e3e5d0393c9f37782c2b0b61378e7f0baf25cfacb51a1ac58096dca6ce",
+          "proposal_path": "ALL_ORDERED_UNIQUE_PAIRS/PROPOSED_TG_CANDIDATES.json"
+        },
+        "EXACT_TWO_HITS": {
+          "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+          "candidate_count": 64,
+          "proposal_sha256": "e9e8b06fe0f6399e6fda50f4e7c4a14f489590607ef16e05742c6702a76eceaa",
+          "proposal_path": "EXACT_TWO_HITS/PROPOSED_TG_CANDIDATES.json"
+        }
+      },
+      "apply_permitted": false,
+      "assignment_executed": false,
+      "native_candidate_accepted": false,
+      "real_visum_verified": false,
+      "native_readonly_baseline_verified": false,
+      "production_ready": false,
+      "next_stage": "LIVE02_FIRST_NATIVE_TG_CYCLE",
+      "remaining_gates": [
+        "NATIVE_CANDIDATE_EFFECT_NOT_RUN",
+        "ROLLBACK_NOT_RUN",
+        "PRODUCTION_METHODOLOGY_NOT_CERTIFIED"
+      ]
+    },
+    "checkpoint": {
+      "status": "OFFLINE_RUN_CHECKPOINT_VERIFIED",
+      "completed": true,
+      "stage": "LIVE01_BASELINE_COMPLETE",
+      "artifacts_verified": 58,
+      "restart_mode": "VERIFIED_OFFLINE_RESTART_FROM_INPUTS_NOT_SOLVER_CONTINUATION",
+      "apply_permitted": false,
+      "live_visum_tested": false,
+      "production_ready": false
+    },
+    "handoff_verification": {
+      "status": "LIVE01_HANDOFF_ARTIFACTS_VERIFIED_NOT_APPLY_AUTHORIZED",
+      "candidate_counts": {
+        "ALL_ORDERED_UNIQUE_PAIRS": 64,
+        "EXACT_TWO_HITS": 64
+      },
+      "checkpoint": {
+        "status": "OFFLINE_RUN_CHECKPOINT_VERIFIED",
+        "completed": true,
+        "stage": "LIVE01_BASELINE_COMPLETE",
+        "artifacts_verified": 58,
+        "restart_mode": "VERIFIED_OFFLINE_RESTART_FROM_INPUTS_NOT_SOLVER_CONTINUATION",
+        "apply_permitted": false,
+        "live_visum_tested": false,
+        "production_ready": false
+      },
+      "apply_permitted": false,
+      "fresh_live_readback_required": true,
+      "restore_proof_needed": true,
+      "native_candidate_effect_verified": false
+    },
+    "elapsed_seconds": 18.726937287000055,
+    "mutation_calls": [],
+    "unbounded_path_calls": 0,
+    "zone_count": 681,
+    "personal_segments": 12,
+    "assignment_segments": 14,
+    "methods": {
+      "ALL_ORDERED_UNIQUE_PAIRS": {
+        "candidate_count": 64,
+        "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+        "objective_rows": 120,
+        "mutable_variables": 960,
+        "operator_nonzeros": 744,
+        "objective_initial": 38764.286082922175,
+        "objective_final": 37874.06647388661,
+        "realizability_status": "TG_TD_REALIZATION_NOT_VERIFIED",
+        "real_visum_verified": false
+      },
+      "EXACT_TWO_HITS": {
+        "candidate_count": 64,
+        "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED",
+        "objective_rows": 120,
+        "mutable_variables": 960,
+        "operator_nonzeros": 744,
+        "objective_initial": 38764.286082922175,
+        "objective_final": 37874.06647388661,
+        "realizability_status": "TG_TD_REALIZATION_NOT_VERIFIED",
+        "real_visum_verified": false
+      }
+    }
+  },
+  "numeric_parity_cp03_vs_fixed": {
+    "status": "PASS",
+    "execution_kind": "MOCK_NOT_NATIVE",
+    "npz_fields_exact_equal": 24,
+    "all_candidate_rows_exact_equal": true,
+    "fields": [
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "row",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "col",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "through",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "share",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "q",
+        "shape": [
+          960
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "model",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "mutable",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "INCIDENCE.npz",
+        "field": "fixed",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "SOLUTION.npz",
+        "field": "relative_change",
+        "shape": [
+          960
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "SOLUTION.npz",
+        "field": "delta_q",
+        "shape": [
+          960
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "SOLUTION.npz",
+        "field": "c17_relaxation",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "file": "SOLUTION.npz",
+        "field": "linearized_prediction",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "row",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "col",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "through",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "share",
+        "shape": [
+          744
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "q",
+        "shape": [
+          960
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "model",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "mutable",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "INCIDENCE.npz",
+        "field": "fixed",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "SOLUTION.npz",
+        "field": "relative_change",
+        "shape": [
+          960
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "SOLUTION.npz",
+        "field": "delta_q",
+        "shape": [
+          960
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "SOLUTION.npz",
+        "field": "c17_relaxation",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "file": "SOLUTION.npz",
+        "field": "linearized_prediction",
+        "shape": [
+          120
+        ],
+        "exact_equal": true
+      }
+    ],
+    "model_writes_final": [],
+    "source": "Recovered CP03 versus patched LIVE01 on deterministic 681-zone fixture",
+    "not_a_performance_benchmark": true
+  },
+  "protected_base_source": {
+    "status": "PASS",
+    "checked": 1606,
+    "mismatches": [],
+    "algorithm": "SHA256",
+    "base_zip_sha256": "967f71326cc78f9c63e40721c8984dee87d0f9a84909e0d60abc2f8cde4f6342"
+  },
+  "compiled_files": 403,
+  "native_visum": "NOT_RUN",
+  "native_windows": "NOT_RUN",
+  "real_assignment_effect": "NOT_RUN_LIVE02_OUT_OF_SCOPE",
+  "parent_full_identity_failure": "EXPECTED_PREEXISTING_FORK_IDENTITY_DIFFERENCE_NOT_REWRITTEN; complete failure retained, compatibility separately deselects only this test",
+  "performance_claim": "NONE_FUNCTIONAL_TEST_TIMINGS_ONLY",
+  "environment": {
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "numpy": "see requirements-tested.txt",
+    "threads": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "all_cordon",
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--tb=short",
+    "--junitxml=/mnt/data/perf01_work/evidence/all_cordon.xml"
+  ],
+  "cwd": "/mnt/data/perf01_work/R1C25_PERF01",
+  "returncode": 1,
+  "wall_s": 274.6152763990001
+}

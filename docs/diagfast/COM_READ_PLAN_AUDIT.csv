@@ -1,0 +1,7 @@
+stage,legacy,fast_planned,invariant
+preflight,12 matrix reads,12 matrix reads,exact content hashes
+parents,12 full scans,12 full scans,all keys and Vol(AP)
+geometry,2 representatives,2 original representatives,original collector
+proof,10 SQLite copies,10 streaming proofs,full keys and packed bytes
+final,12 matrix and 12 parent reads,unchanged,independent state guard
+network,full directed key inventory,unchanged,no 32-link substitution

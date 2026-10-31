@@ -1,0 +1,19 @@
+{
+  "base_zip_files": 1608,
+  "protected_unchanged": 1606,
+  "changed_original": [
+    {
+      "path": "SHA256SUMS.txt",
+      "classification": "NEW_RELEASE_MANIFEST",
+      "base_sha256": "3c76cea66e1a2e6831bc2473d28b06efadb1c3987b144a93dddf32e3bbbccf7c",
+      "current_sha256": "c5be15f4388d7c68ab128ac066bf2f50aba721c1d1613fab802da8a2abfdfdde"
+    },
+    {
+      "path": "SOURCE_MANIFEST.json",
+      "classification": "NEW_RELEASE_MANIFEST",
+      "base_sha256": "e33535cdb6d14315314ea488b5fc8f97b4b5f4298baf47fae3e3a0f25ad7cdbf",
+      "current_sha256": "66bba9175bbeee9c17dea3a4d916976337d33cfd7483501426cf729abb39dd40"
+    }
+  ],
+  "note": "Manifest current hashes are refreshed at final packaging, not used for protected-file comparison."
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "R1_15A2_V24916_FLOWBUNDLE_SKIM_INTEGRATION_PLAN_V1",
+  "proposed_release": "R1_15A2_V2_4_9_16_FLOWBUNDLE_SKIM_TARGETING_REBASE_20261019",
+  "parent": {
+    "release": "R1_15A2_V2_4_9_15_COM_BUSY_RETRY_SAFE_FINALIZER_20261019",
+    "zip_sha256": "5ba9c2baec1c433534c9aac49d92cb8f450f12f8a78d1f9f1db82cc5987ba716"
+  },
+  "donor": {
+    "release": "R1_15A2_V2_4_9_DEMAND_EVIDENCE_COEFFICIENT_ROLLBACK_20261017",
+    "zip_sha256": "d5107cb7814a903f8001d36aca903701a164885d7bf225d778678f878486184a",
+    "role": "DONOR_ONLY_NOT_MERGE_PARENT"
+  },
+  "historic_sources": {
+    "R1_15A_FLOWBUNDLE_SKIM_OD_FEEDBACK_V1_6(6).py": "da692d41d6bea2478d9fea0ba8766ffe74eb302ebeafd9caf86e4b55727999f5",
+    "R1_15C_SKIM_OD_EXPORT_V1_1(3).py": "cca8764fc65d8699e62a59041e4d955f34331302965826dd6d01ce32a32b02df",
+    "R1_15D_SUPPLY_SKIM_ADDVALUE_SYNTHESIS_V1_0(7).py": "65cd92b17df4023f140b6dd651f5772580b59fc76306d76e5ea285b69960b5ee"
+  },
+  "verified_offline": {
+    "donor_compileall": "PASS",
+    "donor_pytest": "669 passed",
+    "parent_compileall": "PASS",
+    "parent_pytest": "783 passed, 4 skipped"
+  },
+  "hard_invariants": [
+    "Current V24915 soft-reference V19 TD policy unchanged",
+    "Current V24912 early-exploration and severity policy unchanged",
+    "Current V24914 continuation lineage unchanged",
+    "Current V24915 COM retry/finalizer unchanged",
+    "Path incidence remains sole numerical count-response authority",
+    "Fresh assignment plus live 12D/11D remains acceptance authority",
+    "Supply writes and supply acceptance unchanged",
+    "No IPF or IDP tolerance relaxation"
+  ],
+  "implementation_order": [
+    "Read-only FlowBundle/skim live preflight",
+    "Deterministic retry-safe FlowBundle adapter",
+    "DIST_KM plus optional skim authority",
+    "Total and OD parity gates",
+    "Signed-safe TG targeting",
+    "V19-compatible TD component mask",
+    "Candidate support-risk audit",
+    "Retry-safe full demand coefficient ledger",
+    "V24916 launcher/config/safety/runtime manifest",
+    "Full regression, package verification and live canary"
+  ],
+  "not_in_v24916_hard_acceptance": [
+    "Skim values in scalar objective",
+    "Automatic supply writes from 15D",
+    "Hard cached-vs-shortest IMP re-enumeration trigger",
+    "Targeted incremental path augmentation"
+  ],
+  "status": "DESIGN_VERIFIED_IMPLEMENTATION_NOT_YET_PERFORMED"
+}

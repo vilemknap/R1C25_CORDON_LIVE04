@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "executable_files_compared": 890,
+  "mismatches": [],
+  "scope": "RC1 full test code vs final packaging; documentation and test-output cleanup only"
+}

@@ -1,0 +1,13 @@
+{
+  "apply_permitted": false,
+  "capture_policy": "FRESH_CAPTURE_THIS_INVOCATION",
+  "current_model_fingerprint": "366be9ec7383e2aacfd7d03e221eebf412060029f30c8cb135a655fe19b861e5",
+  "demand_sha256": "13f99a67fcea270e3fce953eea3c787beea9af56bb53ce65eb5af913012546ab",
+  "historical_2022_cache_used": false,
+  "network_sha256": "91e5d5a3dcac7ac3e0388950525f8c2e9d5e319de135ade5b509a50519ff687c",
+  "new_assignment_verified": false,
+  "production_ready": false,
+  "saved_paths_read_from_current_injected_model": true,
+  "schema": "LIVE01_CAPTURE_BINDING_V1",
+  "source_snapshot_sha256": "dcd788e7af63b0f2e89d45a102ddd8efc842f92a9dcf7e03d77bcb232c5ddc2b"
+}

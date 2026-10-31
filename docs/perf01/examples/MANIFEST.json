@@ -1,0 +1,455 @@
+{
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "files": [
+    {
+      "bytes": 95975,
+      "path": "ALL_OD_TOTALS.npz",
+      "sha256": "eae56961e9607f103bfc9b9fa80ba3adb0de0ac6da347fd8a6c04e4371d04032"
+    },
+    {
+      "bytes": 188041,
+      "path": "ALL_ORDERED_UNIQUE_PAIRS.json",
+      "sha256": "640756a9eb77fb0528fce4ee5a975ca80ef0fb74254faad4bcdf190e0d0c56d0"
+    },
+    {
+      "bytes": 13466581,
+      "path": "ALL_ORDERED_UNIQUE_PAIRS.npz",
+      "sha256": "9919113cab56eee76775981f7d0df9d4c86bd566683d6c8bca09357f5db86474"
+    },
+    {
+      "bytes": 145448,
+      "path": "EXACT_TWO_HITS.json",
+      "sha256": "706f6a0c97086238989ea08f983b893cac382a9ea976b6361bc04d6026a38105"
+    },
+    {
+      "bytes": 67635,
+      "path": "EXACT_TWO_HITS.npz",
+      "sha256": "92b393dd2ba0c4457b20b97098d2b7a6641e9451f42e68c80793d03e3b4389c0"
+    },
+    {
+      "bytes": 4519,
+      "path": "SHARED_AUDIT.json",
+      "sha256": "9ce9eff2c3c25bfa1d12344f5ff5dc1028166c0ea70f621f3864956595d7196e"
+    },
+    {
+      "bytes": 4584949,
+      "path": "STATION_HITS.csv",
+      "sha256": "171faece8751d0952bc0ca24caf4eff7d3ee6ab0b50ff30370b7e9ad53821151"
+    },
+    {
+      "bytes": 376319,
+      "path": "VARIABLE_TABLES.npz",
+      "sha256": "5df24bd450f4e1815fce38f44f2b223504cc68ae636938c5f576f32b7d6d30ed"
+    }
+  ],
+  "geometry_key": "937bc603ed163bf2ec23d249a1dc8b8f30dd1086ba90e59a57143408d330e3a7",
+  "identities": {
+    "geometry": {
+      "algorithm": {
+        "files": {
+          "cordon2025/common.py": "9137844e742914b947f335195ed566df6286b4d7fdc5b60d219a0f75e606f0d2",
+          "cordon2025/external_parity.py": "64005cf77bd66fbeb50715d9ac99aceb989328aa53c2053846e0963cc62b4ef4",
+          "cordon2025/incidence.py": "eb6d6b9f79590c22f1fcac48960285e203c16a2ea533e9ad71e0146b68e8054d",
+          "cordon2025/io.py": "00b54266bda7fa3627ddf7840416ecc3446007a4bc55f6f9f373618477e6af70",
+          "cordon2025/limits.py": "fdcaa70f21be03e54b015dbf951c29fa37f2101e2d34c0e88aaadfd95cfdce9b",
+          "cordon2025/parity.py": "bfa9eca31ddab6b7e53983d8ab863d105d60aa6457d09f59f8ebf562995f81a3",
+          "cordon2025/perf01_cache.py": "21268db1b6188979463f028183f681b5c62ee283e8619e585880d638f03b31c8",
+          "cordon2025/perf01_codec.py": "d5f0a8928df3c832b25456b8eb4cf27c1a40a3493d2884483418e59f722e3271",
+          "cordon2025/perf01_identity.py": "fc56196c5d4f5d72d08fe032a7b2103561ee60b1bdc245113ed91728ad8a9d8c",
+          "cordon2025/state.py": "1d3154fd229943111f165772ae9fdb8bf68906cd12c50a6deda2c72195b67a0f",
+          "parent/r1_15a2_core.py": "1c24b099a9f41b5c91474725ffe11a29772b609b33fb7bccf962d47eab51660d",
+          "parent/r1_15a2_runtime_io_hotfix_profile488.py": "18eb285d940398f4918e98ee899c77bc25dc19df4abfa9c89e587c128d978cac",
+          "parent/r1_15a2_two_mode_v238.py": "4a67733c16d832d0a544df9efa3b914c58b0db6ed87949ade99e13f157bc4eea"
+        },
+        "implementation": "PERF01_1.0_20261023",
+        "sha256": "879d4aaa6b70f0c696f7e99a8be9c78c82989dd6495aca816440b772969274ff"
+      },
+      "mapping": [
+        [
+          10001,
+          1,
+          2,
+          1
+        ],
+        [
+          10001,
+          2,
+          1,
+          1
+        ],
+        [
+          10006,
+          6,
+          7,
+          2
+        ],
+        [
+          10006,
+          7,
+          6,
+          2
+        ],
+        [
+          10011,
+          11,
+          12,
+          3
+        ],
+        [
+          10011,
+          12,
+          11,
+          3
+        ],
+        [
+          10016,
+          16,
+          17,
+          4
+        ],
+        [
+          10016,
+          17,
+          16,
+          4
+        ],
+        [
+          10021,
+          21,
+          22,
+          5
+        ],
+        [
+          10021,
+          22,
+          21,
+          5
+        ],
+        [
+          10026,
+          26,
+          27,
+          6
+        ],
+        [
+          10026,
+          27,
+          26,
+          6
+        ],
+        [
+          10031,
+          31,
+          32,
+          7
+        ],
+        [
+          10031,
+          32,
+          31,
+          7
+        ],
+        [
+          10036,
+          36,
+          37,
+          8
+        ],
+        [
+          10036,
+          37,
+          36,
+          8
+        ],
+        [
+          10041,
+          41,
+          42,
+          9
+        ],
+        [
+          10041,
+          42,
+          41,
+          9
+        ],
+        [
+          10046,
+          46,
+          47,
+          10
+        ],
+        [
+          10046,
+          47,
+          46,
+          10
+        ],
+        [
+          10051,
+          51,
+          52,
+          11
+        ],
+        [
+          10051,
+          52,
+          51,
+          11
+        ],
+        [
+          10056,
+          56,
+          57,
+          12
+        ],
+        [
+          10056,
+          57,
+          56,
+          12
+        ],
+        [
+          10061,
+          61,
+          62,
+          13
+        ],
+        [
+          10061,
+          62,
+          61,
+          13
+        ],
+        [
+          10066,
+          66,
+          67,
+          14
+        ],
+        [
+          10066,
+          67,
+          66,
+          14
+        ],
+        [
+          10071,
+          71,
+          72,
+          15
+        ],
+        [
+          10071,
+          72,
+          71,
+          15
+        ],
+        [
+          10076,
+          76,
+          77,
+          16
+        ],
+        [
+          10076,
+          77,
+          76,
+          16
+        ]
+      ],
+      "model_year": 2025,
+      "source_id": "e5ff767f1ba240ae9f361fdc64ae384283cee96a6308c7edbab62331c146ce3e"
+    },
+    "incidence": {
+      "actual_demand_sha256": null,
+      "actual_network_sha256": null,
+      "actuatable_zones": null,
+      "expected_snapshot_semantics": null,
+      "geometry_key": "937bc603ed163bf2ec23d249a1dc8b8f30dd1086ba90e59a57143408d330e3a7",
+      "internal_sum_atol": 1e-06,
+      "internal_sum_rtol": 1e-08,
+      "methods": [
+        "ALL_ORDERED_UNIQUE_PAIRS",
+        "EXACT_TWO_HITS"
+      ],
+      "mutable_dsegs": [
+        "NATIVE_CS",
+        "NATIVE_CS_NOT",
+        "NATIVE_CW",
+        "NATIVE_CW_NOT"
+      ],
+      "mutable_relation_policy": "ALL_MUTABLE_RELATIONS",
+      "repeat_policy": "EXCLUDE_FLAGGED",
+      "selected_dsegs": [
+        "NATIVE_CW",
+        "NATIVE_CS",
+        "NATIVE_CF",
+        "NATIVE_CL",
+        "EXOG_EE_CF",
+        "EXOG_EE_CL",
+        "EXOG_EE_CS",
+        "EXOG_EE_CW",
+        "NATIVE_CW_NOT",
+        "NATIVE_CS_NOT",
+        "EXOG_EE_CS_NOT",
+        "EXOG_EE_CW_NOT"
+      ]
+    }
+  },
+  "implementation": "PERF01_1.0_20261023",
+  "key": "524f24c7c9f53851401e7a5663240699393952fb09a2c178b99c4347aea9c8cc",
+  "live_calibration_verified": false,
+  "schema": "CORDON_PERF01_DERIVED_V1",
+  "source": {
+    "assignment_freshness": "NOT_CERTIFIED",
+    "basis": "RPDI",
+    "category": "OA",
+    "completed": true,
+    "demand_sha256": "8f91a4c7ff00cc49d3804cf2cb648f3b66f72c98f846bc584fda3e3a0331679a",
+    "dseg_inventory": [
+      "EXOG_EE_CF",
+      "EXOG_EE_CL",
+      "EXOG_EE_CS",
+      "EXOG_EE_CS_NOT",
+      "EXOG_EE_CW",
+      "EXOG_EE_CW_NOT",
+      "NATIVE_CF",
+      "NATIVE_CL",
+      "NATIVE_CS",
+      "NATIVE_CS_NOT",
+      "NATIVE_CW",
+      "NATIVE_CW_NOT"
+    ],
+    "files": {
+      "SNAPSHOT_EVIDENCE.json": {
+        "bytes": 62210956,
+        "sha256": "1cf1d146c39b05bd36dd6d98bf7509f74d3e53d7ae088ca382665abb7cf27e67"
+      },
+      "p.sqlite": {
+        "bytes": 47083520,
+        "sha256": "87a3bcc927ccc1d86d3a1d40a8b71cc6cf96315f6cffd4f27281017938c044aa"
+      }
+    },
+    "geometry_full_identity_proven": true,
+    "model_year": 2025,
+    "network_sha256": "c59155ef82ccfd91d6c7157e72ae9dc253e0f4f1f05ab73c0bc4820fd2f2cb00",
+    "new_assignment_verified": false,
+    "origin": "SYNTHETIC_TEST_FIXTURE",
+    "schema": "CORDON_PERF01_DERIVED_V1",
+    "survey_year": 2026
+  },
+  "source_id": "e5ff767f1ba240ae9f361fdc64ae384283cee96a6308c7edbab62331c146ce3e",
+  "source_validation": {
+    "full_geometry_proof": true,
+    "metadata": {
+      "apply_permitted": "false",
+      "geometry_identity": "FULL_IDENTITY_SYNTHETIC_TEST_ONLY",
+      "parent_hash": "SYNTHETIC_STATE",
+      "schema": "R1_15A2_TWO_MODE_PATH_STORE_V238"
+    },
+    "mode_dseg_inventory": [
+      {
+        "audit": {
+          "matrix_total": 87425.0,
+          "parent_rows": 50000
+        },
+        "dseg": "EXOG_EE_CF",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 104909.9999999992,
+          "parent_rows": 50000
+        },
+        "dseg": "EXOG_EE_CL",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 122394.99999999904,
+          "parent_rows": 50000
+        },
+        "dseg": "EXOG_EE_CS",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 52604.99999999957,
+          "parent_rows": 50000
+        },
+        "dseg": "EXOG_EE_CS_NOT",
+        "mode": "C_NOT"
+      },
+      {
+        "audit": {
+          "matrix_total": 139880.0000000008,
+          "parent_rows": 50000
+        },
+        "dseg": "EXOG_EE_CW",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 70140.00000000068,
+          "parent_rows": 50000
+        },
+        "dseg": "EXOG_EE_CW_NOT",
+        "mode": "C_NOT"
+      },
+      {
+        "audit": {
+          "matrix_total": 52454.9999999996,
+          "parent_rows": 50000
+        },
+        "dseg": "NATIVE_CF",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 69940.0000000004,
+          "parent_rows": 50000
+        },
+        "dseg": "NATIVE_CL",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 34970.0000000002,
+          "parent_rows": 50000
+        },
+        "dseg": "NATIVE_CS",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 35070.00000000034,
+          "parent_rows": 50000
+        },
+        "dseg": "NATIVE_CS_NOT",
+        "mode": "C_NOT"
+      },
+      {
+        "audit": {
+          "matrix_total": 17485.0000000001,
+          "parent_rows": 50000
+        },
+        "dseg": "NATIVE_CW",
+        "mode": "C"
+      },
+      {
+        "audit": {
+          "matrix_total": 17535.00000000017,
+          "parent_rows": 50000
+        },
+        "dseg": "NATIVE_CW_NOT",
+        "mode": "C_NOT"
+      }
+    ],
+    "oracle": "FIX3_BUILD_FROM_SNAPSHOT",
+    "per_od_parity": "PASS",
+    "sqlite_integrity": "ok",
+    "sqlite_schema": "R1_15A2_TWO_MODE_PATH_STORE_V238"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "schema": "PERF01_TEST_REPORT_V1",
+  "status": "OFFLINE_TESTS_PASS_REAL_FINAL_CACHE_PENDING",
+  "apply_permitted": false,
+  "live_calibration_verified": false,
+  "baseline": {
+    "tests": 493,
+    "passed": 492,
+    "failed": 0,
+    "skipped": 1,
+    "failures": []
+  },
+  "cordon_complete": {
+    "tests": 573,
+    "passed": 573,
+    "failed": 0,
+    "skipped": 0,
+    "failures": []
+  },
+  "parent_complete_unchanged_tests": {
+    "tests": 884,
+    "passed": 879,
+    "failed": 1,
+    "skipped": 4,
+    "failures": [
+      {
+        "classname": "tests.test_v24915_release",
+        "name": "test_v24915_config_runtime_bundle_and_lineage_are_hash_locked",
+        "time": "0.051"
+      }
+    ]
+  },
+  "parent_compatibility": {
+    "tests": 883,
+    "passed": 879,
+    "failed": 0,
+    "skipped": 4,
+    "failures": [],
+    "deselected": 1
+  },
+  "new_perf01_cases": 80,
+  "source": "same sealed offline snapshot only",
+  "native_real": "WAITING_FOR_REAL_FINAL_CACHE",
+  "not_native_execution": "COM-formatted fixtures were made with fake COM, not native PTV",
+  "earlier_attempts": [
+    {
+      "file": "perf01_initial.log",
+      "status": "INTERRUPTED_NOT_PASS"
+    },
+    {
+      "file": "all_cordon.xml",
+      "summary": {
+        "tests": 568,
+        "passed": 563,
+        "failed": 5,
+        "skipped": 0,
+        "failures": [
+          {
+            "classname": "tests.test_visum_bootstrap",
+            "name": "test_no_native_model_write_from_complete_entry",
+            "time": "0.383"
+          },
+          {
+            "classname": "tests.test_visum_bootstrap",
+            "name": "test_repeat_entry_does_not_reuse_old_module_or_run",
+            "time": "0.279"
+          },
+          {
+            "classname": "tests.test_visum_bootstrap",
+            "name": "test_missing_numpy_has_clear_diagnostic_no_install",
+            "time": "0.160"
+          },
+          {
+            "classname": "tests.test_visum_bootstrap",
+            "name": "test_run_from_different_cwd_without_file_global",
+            "time": "0.170"
+          },
+          {
+            "classname": "tests.test_visum_bootstrap",
+            "name": "test_capture_entry_no_system_exit_or_argument_parsing",
+            "time": "0.163"
+          }
+        ]
+      },
+      "cause": "Five bootstrap tests detected a newly added tool missing from release manifest while development was in progress. Manifest regenerated, all 573 pass afterwards."
+    },
+    {
+      "file": "benchmark_initial_failure.json",
+      "status": "OOM_NOT_PASS",
+      "resolution": "Dictionary encoded repeated labels, fromiter numeric arrays, removed duplicate evidence parse, released cold structures before derived readback."
+    }
+  ],
+  "clean_package_verification": "Recorded separately in final verification after packaging, not claimed by this pre-package report.",
+  "clean_unpacked_rc1": {
+    "cordon_passed": 573,
+    "parent_compat_passed": 879,
+    "parent_skipped": 4,
+    "parent_deselected": 1,
+    "release_manifest_verified_before_after": true,
+    "executable_parity_to_final": {
+      "status": "PASS",
+      "executable_files_compared": 890,
+      "mismatches": [],
+      "scope": "RC1 full test code vs final packaging; documentation and test-output cleanup only"
+    }
+  }
+}

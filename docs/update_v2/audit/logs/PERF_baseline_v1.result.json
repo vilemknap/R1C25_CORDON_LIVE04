@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019/tools/benchmark.py",
+    "--count",
+    "100000",
+    "--phase",
+    "measure",
+    "--work-dir",
+    "/mnt/data/R1_CORDON_UPDATE_20261022/performance_scratch"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/baseline/cordon_v1/R1_2025_CORDON_OPTIMIZER_V1_OFFLINE_20261019",
+  "returncode": 0,
+  "elapsed_seconds": 44.25486993789673
+}

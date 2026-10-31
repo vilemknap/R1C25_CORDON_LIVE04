@@ -1,0 +1,44 @@
+........................................................................ [  8%]
+........................................................................ [ 16%]
+........................................................................ [ 24%]
+........................................................................ [ 32%]
+........................................................................ [ 40%]
+........................................................................ [ 48%]
+........................................................................ [ 57%]
+........................................................................ [ 65%]
+........................................................................ [ 73%]
+.s.s..........s................s.............F.......................... [ 81%]
+........................................................................ [ 89%]
+........................................................................ [ 97%]
+....................                                                     [100%]
+=================================== FAILURES ===================================
+________ test_v24915_config_runtime_bundle_and_lineage_are_hash_locked _________
+
+    def test_v24915_config_runtime_bundle_and_lineage_are_hash_locked():
+        entry = _entrypoint()
+        cfg = entry.load_config()
+        config_result = validate_v24915_config(cfg, ROOT)
+>       runtime_result = validate_v24915_runtime_bundle(cfg, ROOT)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_v24915_release.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+r1_15a2_safety_v24915.py:158: in validate_v24915_runtime_bundle
+    deployment = preflight_v24915_deployment_files(root)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+r1_15a2_safety_v24915.py:124: in preflight_v24915_deployment_files
+    _require(not failures, "V24915_RUNTIME_BUNDLE_INVALID:" +
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+condition = False
+code = 'V24915_RUNTIME_BUNDLE_INVALID:[{"path": "r1_15a2_com_compat.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_core.p...th": "r1_15a2_supply.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_two_mode_v238.py", "reason": "SIZE_MISMATCH"}]'
+
+    def _require(condition: bool, code: str) -> None:
+        if not condition:
+>           raise SupplyContractError(code)
+E           r1_15a2_supply.SupplyContractError: V24915_RUNTIME_BUNDLE_INVALID:[{"path": "r1_15a2_com_compat.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_core.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_supply.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_two_mode_v238.py", "reason": "SIZE_MISMATCH"}]
+
+r1_15a2_safety_v24915.py:34: SupplyContractError
+=========================== short test summary info ============================
+FAILED tests/test_v24915_release.py::test_v24915_config_runtime_bundle_and_lineage_are_hash_locked - r1_15a2_supply.SupplyContractError: V24915_RUNTIME_BUNDLE_INVALID:[{"path": "r1_15a2_com_compat.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_core.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_supply.py", "reason": "SIZE_MISMATCH"}, {"path": "r1_15a2_two_mode_v238.py", "reason": "SIZE_MISMATCH"}]
+1 failed, 879 passed, 4 skipped in 48.59s

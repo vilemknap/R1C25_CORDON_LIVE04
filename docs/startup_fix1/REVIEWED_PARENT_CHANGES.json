@@ -1,0 +1,22 @@
+{
+  "parent/r1_15a2_supply.py": {
+    "before_sha256": "9af418d483edffe2e22c931443adb2e33e5960508d04c343e0a386c47a2a103a",
+    "after_sha256": "700b008d684ae61560733537b090d0bd3f30a5a7bd7e0171ab6f542034a1dab7",
+    "rationale": "Explicit geometry-only init without fabricated observations; old default rejects empty profiles"
+  },
+  "parent/r1_15a2_com_compat.py": {
+    "before_sha256": "a06924770db29ea9b5726c68f9be99a4d2c5730545705a15d70b2dc41d3995d8",
+    "after_sha256": "72f0097a937dda1defc342e91d172b18ffc15b8c81052cf6e68cee0fa3367a68",
+    "rationale": "Preserve unprintable COM exception; eligibility/backoff unchanged"
+  },
+  "parent/r1_15a2_two_mode_v238.py": {
+    "before_sha256": "78c902da66c3aa460dced9dd15c756ff63199b10f3131797845a4234d2bc7056",
+    "after_sha256": "4a67733c16d832d0a544df9efa3b914c58b0db6ed87949ade99e13f157bc4eea",
+    "rationale": "Explicit geometry-only capture option; all profile objective methods blocked for this mode"
+  },
+  "parent/R1_15A2_VISUM_COM_PREFLIGHT_V2_3_6_INLINE.py": {
+    "before_sha256": "55c5ad82ac3c3e02eba02e80220eb7e8afb9fd90cff19c07e68112a2bb0813f6",
+    "after_sha256": "d01b30c57cb294e893d6e523e1a7e46eaccc9c53233e9f4998c91eea2afff84f",
+    "rationale": "Synchronize embedded COM boundary with reviewed module; no source authority changes"
+  }
+}

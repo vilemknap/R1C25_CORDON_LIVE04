@@ -1,0 +1,6 @@
+R1 15A2 V2.4.3 HOTFIX
+
+Run in PTV Visum via Scripts -> Execute script file:
+R1_15A2_FULL_OVERNIGHT_COUPLED_V2_4_3.py
+
+V2.4.2 failed before the first demand calibration cycle because the recompute output directory did not exist. V2.4.3 fixes that directory lifecycle and prevents a failed run from being mislabeled as FINAL_CALIBRATED_WORKING_COPY.ver.

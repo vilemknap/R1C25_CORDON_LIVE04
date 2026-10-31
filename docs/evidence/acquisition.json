@@ -1,0 +1,5 @@
+{
+  "base": "/mnt/data/R1_2025_CORDON_V1_DEV_20261019/BASELINE_READONLY",
+  "release": "/mnt/data/R1_2025_CORDON_V1_DEV_20261019/RELEASE",
+  "parent_archive_sha256": "5ba9c2baec1c433534c9aac49d92cb8f450f12f8a78d1f9f1db82cc5987ba716"
+}

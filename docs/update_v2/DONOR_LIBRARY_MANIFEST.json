@@ -1,0 +1,210 @@
+{
+  "r1_15a2_acceleration_v24915p1.py": {
+    "sha256": "132aada68b462fb4b3c5afce894161667b848314a083f39d218f75376fa4069e",
+    "source": "fresh"
+  },
+  "r1_15a2_active_controller_patch_v24916p2c.py": {
+    "sha256": "4a72cd7428eaa55ec96b2e8af37b96e343b1661b52e3ee8d7cf392c84d229e8d",
+    "source": "fresh"
+  },
+  "r1_15a2_active_demand_evidence_v24916p2c.py": {
+    "sha256": "da4197451c5a0cb935da0a86650df0231a4abf9c94b0efc14a9c931483647200",
+    "source": "fresh"
+  },
+  "r1_15a2_active_targeting_runtime_v24916p2c.py": {
+    "sha256": "136ab4d16a080e72fdf4f5bce17c1deb7a3ea94833d538cbedb19c61e2ea21f3",
+    "source": "fresh"
+  },
+  "r1_15a2_block_classifier_v24916.py": {
+    "sha256": "93bcdbde4179ebffdbfce91e1dde2f577b9cee9f19496e889b779e8e3b715bb4",
+    "source": "fresh"
+  },
+  "r1_15a2_candidate_readback_bundle_v24915p2.py": {
+    "sha256": "03778ff5da5398af2cf007b9f7f4077e376dde0812989753c00da300306ee4ff",
+    "source": "fresh"
+  },
+  "r1_15a2_coefficient_ledger_v24916.py": {
+    "sha256": "f3061cfda2d96dfe2c56bf920a9545cb66e5b7e8f4301906740e79311bc8cac4",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_continuation_v24915r4.py": {
+    "sha256": "7b3d5e957a8fb9c0f92477e83cce30415304d5f6624b9724f9d038ff309bb71c",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_continuation_v24915r5.py": {
+    "sha256": "89c288fe0ac83fb9b8a42bfea84cf76ac6032fa33e09d9a831513dd8a41dcdd4",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_evidence_v24916.py": {
+    "sha256": "66e60dbb430c7603934d39410b2ff43fdf6ea9d0baeab569c358a00f5f9d57c4",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_evidence_v24916p2c.py": {
+    "sha256": "675b074bae337a2bd25b493883be745841b8d3615a012a46376cf4f9d447f5be",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_support_v24916.py": {
+    "sha256": "735d9021268809810e56958e9d868e1951e93dc72787ee91e8327a58f8051e6c",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_support_v24916p2c.py": {
+    "sha256": "9d152e74a74a4a9a72ac9bc4557ed5cfcb1a3b5b0829cd98c378702d9a6d0a0b",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_targeting_hooks_v24916p2c.py": {
+    "sha256": "02145a35a8e04fe4db86fe0e8b1447698b7f7af833003d239361ef760620ac98",
+    "source": "fresh"
+  },
+  "r1_15a2_demand_targeting_integration_v24916p2c.py": {
+    "sha256": "6c880ec5f983d86e83fc4e79e148c09c47a367c13b1a6d1a4577d94a9cda0eff",
+    "source": "fresh"
+  },
+  "r1_15a2_finecdf_bridge_v24916.py": {
+    "sha256": "2496e83821552729cbc4787f9c84c671437c546851ce06f3dce24aec35177bc6",
+    "source": "fresh"
+  },
+  "r1_15a2_finecdf_target_hook_v24916p2c.py": {
+    "sha256": "4c3dc372702bac2a5750a93bce8a070877ff261f7cff54c25f3d23555b425ec4",
+    "source": "fresh"
+  },
+  "r1_15a2_flowbundle_v24916.py": {
+    "sha256": "89a93d16070dbd22b98da1ef10746a235333e0a82a70933ecb6dcf19ed31f848",
+    "source": "fresh"
+  },
+  "r1_15a2_flowbundle_v24916p2c.py": {
+    "sha256": "ac1fb7de2dcc9450025451632bd9e83084588b45db86f723fc72a3888a0d626b",
+    "source": "fresh"
+  },
+  "r1_15a2_inplace_transaction_v24915p1.py": {
+    "sha256": "71b95ee19cf8fb6ec76a8505c6a864b6eca9d941d7fa5205a32893d1daddc494",
+    "source": "fresh"
+  },
+  "r1_15a2_inplace_transaction_v24915p2.py": {
+    "sha256": "7861eabd909ee8a38ab840699ce5da425e8d49a58304a84a6a78b5d80fbcfced",
+    "source": "fresh"
+  },
+  "r1_15a2_inplace_transaction_v24916.py": {
+    "sha256": "1b9515f382dfb805d15116924053e4fa28614d2fcba463a1d711668ec17f0da5",
+    "source": "fresh"
+  },
+  "r1_15a2_live_preflight_v24916p2c.py": {
+    "sha256": "ee817cce955e11f69e3c605ea20edb0daf281072aca7a9a12548d1be648c0426",
+    "source": "fresh"
+  },
+  "r1_15a2_overnight_controller_coupled_v24915p1.py": {
+    "sha256": "30953079addaebcaf96673391e08667f5087a95e3fce559b4305105e6167a35c",
+    "source": "fresh"
+  },
+  "r1_15a2_overnight_controller_coupled_v24915p2.py": {
+    "sha256": "1b073a16b23fce8bc23b744f0c7a8d8c838e9599b4ab8f2cabe55b1324773acd",
+    "source": "fresh"
+  },
+  "r1_15a2_overnight_controller_coupled_v24915p2_force100.py": {
+    "sha256": "e40c54c2c88b3b3e00fd77b9d6931f81884a641770231953e46fb786fdcde30f",
+    "source": "fresh"
+  },
+  "r1_15a2_overnight_controller_v24915p1.py": {
+    "sha256": "76381e38bf3cee3265048ed4ad27951dff684425ca1d0b094e0409057e641e50",
+    "source": "fresh"
+  },
+  "r1_15a2_overnight_controller_v24915p2.py": {
+    "sha256": "0d9e5ef63520a816fcbb680036c55f85f8b1fe4cf6fabeb69b78af7501e4a346",
+    "source": "fresh"
+  },
+  "r1_15a2_overnight_controller_v24916.py": {
+    "sha256": "902fc9bd9670f3eb524af3d82434bca9a85aa20f764f119cb614737d5fa58434",
+    "source": "fresh"
+  },
+  "r1_15a2_overnight_controller_v24916p2c.py": {
+    "sha256": "568eacdd424d8c30a22a00e30827da6dd0a988590f4453a625a9a62b577562b3",
+    "source": "fresh"
+  },
+  "r1_15a2_perf_telemetry_failopen_hotfix_profile488.py": {
+    "sha256": "f2c0c59ffc828c4d7875808e49ec03a150b733c31d23c15bee577efab5cf969a",
+    "source": "fresh"
+  },
+  "r1_15a2_procseq_guard_v24916p2c.py": {
+    "sha256": "3ccd772853eaebe01f1eb2db05512a3ba55c3f07ba61128668227b87ff9dd274",
+    "source": "fresh"
+  },
+  "r1_15a2_runtime_io_hotfix_profile488.py": {
+    "sha256": "18eb285d940398f4918e98ee899c77bc25dc19df4abfa9c89e587c128d978cac",
+    "source": "fresh"
+  },
+  "r1_15a2_runtime_manifest_v24916p2c.py": {
+    "sha256": "bb970938371895a2e844b003ffcdb80a4e4c030293e5ec5b456bf209cac6842e",
+    "source": "fresh"
+  },
+  "r1_15a2_safety_v24915p1.py": {
+    "sha256": "9b3711f42f0253df3433d8cbc3773d71bfb1f7fe19b7f6ad5ec712b8d0e26eee",
+    "source": "fresh"
+  },
+  "r1_15a2_safety_v24915p2.py": {
+    "sha256": "8049bb7d460562f9c1e576dcfc3709658b6db7543876afdbe401ee7cc362daf4",
+    "source": "fresh"
+  },
+  "r1_15a2_safety_v24915p2c.py": {
+    "sha256": "6fcb872cbde8cdce8a44f55824cdf59fe88e285b15de7c729114b43f417f040e",
+    "source": "fresh"
+  },
+  "r1_15a2_safety_v24916.py": {
+    "sha256": "3179509f016e29e45f649d8b66fe1985b89e732680be08ef58c9412a6b27e175",
+    "source": "fresh"
+  },
+  "r1_15a2_safety_v24916p2c.py": {
+    "sha256": "4f6f22ae832cefa45e872ccb45b65928b3acf301bad97511161af1c2d48325f0",
+    "source": "fresh"
+  },
+  "r1_15a2_single_pass_snapshot_v24915p2c.py": {
+    "sha256": "599161fe370e133ba575047ad83ee7b709c07140931ecf3634cfb4d03e812b73",
+    "source": "fresh"
+  },
+  "r1_15a2_skim_v24916.py": {
+    "sha256": "874a7527fbd27dc08b084b6148c419197933351935d9febfc0aea5fed88bc843",
+    "source": "fresh"
+  },
+  "r1_15a2_skim_v24916p2c.py": {
+    "sha256": "dc4bac07a1e58a07f115dcbc9ba6762db28115c6cd687369dd9b41fd2ccf1739",
+    "source": "fresh"
+  },
+  "r1_15a2_supply_handoff_v24915p1.py": {
+    "sha256": "e19a667f5a555894c832a57b808cd72d57510d6e6c5f6175076ebb755ea3eead",
+    "source": "fresh"
+  },
+  "r1_15a2_supply_handoff_v24915p2.py": {
+    "sha256": "c7b835aac90272280f5a4d60104aa0bb361870570b2959f10f26b89e7ca9f206",
+    "source": "fresh"
+  },
+  "r1_15a2_supply_temp_sqlite_hotfix_v24915p2c2.py": {
+    "sha256": "ba3a28c85b9e234222357c482b58c56cdf792fdd01edd692ef938cbe5c313f27",
+    "source": "fresh"
+  },
+  "r1_15a2_trial_adapter_v24915p1.py": {
+    "sha256": "75a58053d55ccbbe647f338285d8801c81829f528d7c7a1f84e50f5f2aa8adf9",
+    "source": "fresh"
+  },
+  "r1_15a2_trial_adapter_v24915p2.py": {
+    "sha256": "f8178d460709037f3d34be6a555616335a7b5f9f05fb4f9d8bbff20485e99e24",
+    "source": "fresh"
+  },
+  "r1_15a2_trial_adapter_v24915p2c.py": {
+    "sha256": "381e543dc833fff85c912ad9849fb03178c8e3f7f0bf6d843e515910abe36d91",
+    "source": "fresh"
+  },
+  "r1_15a2_trial_adapter_v24916.py": {
+    "sha256": "4192780a68ed0a5cd433a7b8751fc69ed185ae018070513340a4c0d4540d650d",
+    "source": "fresh"
+  },
+  "r1_15a2_trial_adapter_v24916p2c.py": {
+    "sha256": "7a4e60d1bd2d1fca03c8f11765895aa42712471019df4353ff8dd2c8786a1c35",
+    "source": "fresh"
+  },
+  "r1_15a2_trial_adapter_v24916p2c_active.py": {
+    "sha256": "7112867c06e830348dec6a8dda5626ce4bb20f5508bd24fe8fe9b66874a5bbee",
+    "source": "fresh"
+  },
+  "r1_15a2_trial_evaluator_v24916.py": {
+    "sha256": "2eba02c0509bff10e5f5f2d292e3aeed104dc642b7cc47f81c558fd08a3bb7f1",
+    "source": "fresh"
+  }
+}

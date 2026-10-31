@@ -1,0 +1,27 @@
+from pathlib import Path
+import subprocess,sys,os,json,numpy as np
+b=Path('/mnt/data/cordon_recovery_20261023');r=Path((b/'ACTIVE_ROOT.txt').read_text().strip())
+parents={'before':b/'recovered/R1_CORDON_AGGRESSIVE_STARTUP_FIX1_20261023','after':r}
+results={}
+for label,source in parents.items():
+    out=b/'numeric_parity'/label
+    args=[sys.executable,'RUN_CORDON_AGGRESSIVE_OFFLINE.py','demo','--run-name','NUMERIC_PARITY','--output-root',str(out)]
+    p=subprocess.run(args,cwd=source,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1'),capture_output=True,text=True,timeout=30)
+    (b/'evidence'/('numeric_'+label+'.log')).write_text(p.stdout+p.stderr)
+    if p.returncode:raise RuntimeError((label,p.returncode,p.stderr[-1200:]))
+    results[label]=json.loads(p.stdout.strip().splitlines()[-1])
+paths={k:Path(v['output']) for k,v in results.items()}
+a={p.relative_to(paths['before']).as_posix():p for p in paths['before'].rglob('*.npz')}
+bb={p.relative_to(paths['after']).as_posix():p for p in paths['after'].rglob('*.npz')}
+assert set(a)==set(bb) and a
+checks=[]
+for k in sorted(a):
+    with np.load(a[k],allow_pickle=False) as x,np.load(bb[k],allow_pickle=False) as y:
+        assert x.files==y.files
+        for field in x.files:
+            equal=np.array_equal(x[field],y[field],equal_nan=True)
+            checks.append({'file':k,'field':field,'shape':list(x[field].shape),'exact_equal':bool(equal)})
+            assert equal,(k,field)
+report={'status':'EXACT_NUMERICAL_ARRAY_PARITY_PASS','checks':checks,'array_count':len(checks),'run_outputs':results,'source_kind':'SYNTHETIC_DEMO_NOT_R1_COUNTS','scientific_parameters_changed':False}
+(b/'evidence/numerical_parity.json').write_text(json.dumps(report,indent=2))
+print(json.dumps({'status':report['status'],'arrays':len(checks),'archives':len(a),'outputs':results},indent=2))

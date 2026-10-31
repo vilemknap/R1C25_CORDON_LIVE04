@@ -1,0 +1,29 @@
+F
+=================================== FAILURES ===================================
+_______ test_v2_bytes_preserved_except_explicit_reviewed_startup_patches _______
+
+    def test_v2_bytes_preserved_except_explicit_reviewed_startup_patches():
+        records=json.loads((ROOT/'docs/aggressive/PRESERVED_V2_FILES.json').read_text())
+        assert len(records)>700
+        changes=json.loads((ROOT/'docs/startup_fix1/REVIEWED_PARENT_CHANGES.json').read_text())
+        assert set(changes)=={'parent/R1_15A2_VISUM_COM_PREFLIGHT_V2_3_6_INLINE.py','parent/r1_15a2_com_compat.py','parent/r1_15a2_supply.py','parent/r1_15a2_two_mode_v238.py'}
+        for name,digest in records.items():
+            if name in changes:
+                assert changes[name]['before_sha256']==digest
+                digest=changes[name]['after_sha256']
+>           assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,name
+E           AssertionError: CORDON_2025_CONFIG.json
+E           assert '2753d75cc09e...d5b214fe63d11' == '16430fd30fee...9e4bed6b01fb8'
+E             
+E             - 16430fd30feefc93954aea8630e358f721a5adfee831601ec5f9e4bed6b01fb8
+E             + 2753d75cc09eac96975042c61bffeca61cb41008de51d916f22d5b214fe63d11
+
+tests/test_aggressive_integration.py:25: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_aggressive_integration.py::test_v2_bytes_preserved_except_explicit_reviewed_startup_patches - AssertionError: CORDON_2025_CONFIG.json
+assert '2753d75cc09e...d5b214fe63d11' == '16430fd30fee...9e4bed6b01fb8'
+  
+  - 16430fd30feefc93954aea8630e358f721a5adfee831601ec5f9e4bed6b01fb8
+  + 2753d75cc09eac96975042c61bffeca61cb41008de51d916f22d5b214fe63d11
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 0.16s

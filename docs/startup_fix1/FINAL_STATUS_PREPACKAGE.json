@@ -1,0 +1,83 @@
+{
+  "release": "R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX1_20261023",
+  "status": "OFFLINE_AND_MOCK_STARTUP_TESTED_NATIVE_VISUM_NOT_VERIFIED",
+  "baseline": {
+    "cordon": {
+      "passed": 253
+    },
+    "profile_donor": {
+      "passed": 961,
+      "skipped": 4
+    }
+  },
+  "final_tests": {
+    "cordon": {
+      "passed": 338,
+      "failed": 0,
+      "new_cases": 85
+    },
+    "parent_complete": {
+      "passed": 879,
+      "skipped": 4,
+      "failed": 1,
+      "failure": "historical V24915 byte-identity rejects reviewed fork; parent manifest unchanged"
+    },
+    "parent_compat": {
+      "passed": 879,
+      "skipped": 4,
+      "deselected": 1
+    }
+  },
+  "numeric_parity": {
+    "array_fields": 84,
+    "bitwise_equal": true
+  },
+  "native_windows_tested": false,
+  "native_visum_tested": false,
+  "actual_2025_network_tested": false,
+  "actual_2025_path_cache_supplied": false,
+  "injected_visum_readonly_entry_implemented": true,
+  "actual_path_capture_implemented": true,
+  "live_TG_TD_assignment_controller_implemented": false,
+  "apply_permitted": false,
+  "production_ready": false,
+  "profile_donor_changed": false,
+  "running_2022_model_touched": false,
+  "source_comparison": [
+    {
+      "file": "R1_2025_CORDON_AGGRESSIVE_V1_20261023.zip",
+      "size": 40131880,
+      "sha256": "8bffad557e0e911f607a3e56d71dd55fea704844db9e9d34b8a6b78164dc42d9"
+    },
+    {
+      "file": "R1_15A2_PROFILE488_AGGRESSIVE_TGTD_V1_FIX1_IOFIX4_BASE_20261022(2).zip",
+      "size": 11179070,
+      "sha256": "f88e672818e8485b54f6eb1a406dfb319d1285030f7ca66ab8d392527d983d4b"
+    }
+  ],
+  "benchmark": {
+    "status": "SYNTHETIC_COM_BRIDGE_BENCHMARK_PASS",
+    "native_visum_tested": false,
+    "origin": "SYNTHETIC_PROVIDER_NOT_REAL_R1",
+    "zones": 201,
+    "dsegs": 12,
+    "parents_per_dseg": 10000,
+    "segment_path_rows": 120000,
+    "stored_mode_geometries": 20000,
+    "fully_checked_segment_geometry_rows": 480000,
+    "com_page_size": 256,
+    "bounded_calls": 2868,
+    "unbounded_calls": 0,
+    "model_writes": [],
+    "preflight_seconds": 0.4085374539999975,
+    "capture_with_full_geometry_proof_seconds": 6.597062391999998,
+    "both_incidence_seconds": 1.1806352140001763,
+    "cache_bytes": 6418432,
+    "process_peak_rss_kib": 177544,
+    "memory_note": "Includes the synthetic COM provider (materialized mock rows) and Python runtime; not a native COM forecast.",
+    "matrix_parity": [
+      "PASS",
+      "PASS"
+    ]
+  }
+}

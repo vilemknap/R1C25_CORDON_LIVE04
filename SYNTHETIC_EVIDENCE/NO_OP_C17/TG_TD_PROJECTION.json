@@ -1,0 +1,10 @@
+{
+  "apply_permitted": false,
+  "existing_generation_design": "ZONE_PARAMETER_AUTHORITY_NOT_SUPPLIED",
+  "family_summaries": [],
+  "marginal_projection_weighted_rmse": 0.0,
+  "od_realization_error": null,
+  "projection_rows": [],
+  "real_visum_verified": false,
+  "status": "PROJECTION_AVAILABLE_REALIZATION_NOT_VERIFIED"
+}

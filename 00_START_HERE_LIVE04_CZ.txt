@@ -1,0 +1,21 @@
+R1 2025 LIVE04: kordonova kalibrace TG + TD (LIVE03) portovana na profilovy kalibrator v7
+(vilemknap/R1_15A2_V24917_v7 @ 977cef4, P2.5/A4 - verze, ktera bezi ve Visumu).
+- Pozorovani a cil beze zmeny proti LIVE03 (FIRST_LAST na Transit RPDI + 16 radku C17, rok 1,0).
+- TG: v7 GENFIX2 STEP1 - obalky podle role P 0,75-2,5 / A 0,75-4,0, MOBILITY2 + MOBILITYZONE1,
+  BDPA1, nativni predikce na zmrazenych cestach; SCHOOL TG pevne (AMDY), LONG TG odlozeno.
+- TD_CORDON: jako LIVE03 (b/c po rodinach, objective = jen kordon, IDP jen straz).
+- LONG post-TD maska >= 80 km (9697) pri kazdem nativnim prepoctu vcetne sond; baseline musi byt
+  uz maskovana (kopie ulozena z behu v7), jinak stop pred prvnim zapisem.
+
+1. Otevri KOPII modelu R1 2025 s ulozenymi cestami v instanci Visumu, kde NEBEZI kalibrace v7;
+   nazev obsahuje LIVE04 / KOPIE / COPY / TEST / TRIAL / CALIB.
+2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py
+3. Vystupy: %LOCALAPPDATA%\R1C25_LIVE04\LIVE04_TGTD_<id>\  (00_RESULT.json)
+
+LIVE04.1: pamet mezi cykly (Jacobian TD s overovaci sondou, korekce zmeny tras v TG, pocet uzlu);
+  meni jen predikci a volbu kroku, nikdy prijeti. Vypnuti: memory.enabled=false.
+
+Navod: LIVE04_RUNBOOK_CZ.md
+Report: docs/live04/LIVE04_IMPLEMENTATION_REPORT_CZ.md, docs/live04/LIVE04_1_MEMORY_CZ.md
+LIVE02 (V24917) a LIVE03 v tomto stromu nebezi (donory v parent/ jsou v7, jejich piny je zastavi pred
+zapisem). Pro LIVE03 pouzij jeho vlastni ZIP.

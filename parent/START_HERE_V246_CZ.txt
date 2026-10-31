@@ -1,0 +1,17 @@
+R1 15A2 V2.4.6 ADAPTIVE PERFORMANCE
+===================================
+
+1. Rozbal CELÝ ZIP do nové krátké lokální složky.
+2. Otevři čistý autoritativní R1 .ver ve Visumu 2026.
+3. Scripts -> Execute script file:
+   R1_15A2_FULL_OVERNIGHT_ADAPTIVE_V2_4_6.py
+4. Nespouštěj historický V2.4.5 launcher ani samostatný FineCDF skript.
+5. Průběh sleduj v R1_15A2_V246_RUNS/RUN_*/00_PROGRESS.json
+   a CALIBRATION/PERFORMANCE/SUMMARY.json.
+6. Řízený stop: vytvoř STOP_REQUESTED v aktivním RUN_* nebo jeho rodiči.
+
+Před prvním během přečti:
+- README_R1_15A2_V2_4_6_ADAPTIVE_PERFORMANCE_CZ.md
+- LIVE_VISUM_ACCEPTANCE_V2_4_6_CZ.md
+
+Stav dodávky: offline ověřeno; reálný PTV Visum COM běh zatím neproveden.

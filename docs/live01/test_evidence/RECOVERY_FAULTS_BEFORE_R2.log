@@ -1,0 +1,84 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+____ test_final_readback_covers_current_oa_network_and_source[oa_same_sum] _____
+
+case = (<fake_live01.Live01Visum object at 0x7f7c12dbba10>, {'apply_permitted': False, 'assignment_enabled': False, 'authorit...attempts': 3, 'com_retry_backoff_factor': 1.5, 'com_retry_enabled': True, 'com_retry_initial_delay_seconds': 0.0, ...})
+mutation = 'oa_same_sum'
+
+    @pytest.mark.parametrize('mutation',['oa_same_sum','oa_binding','network','source_pointer'])
+    def test_final_readback_covers_current_oa_network_and_source(case,mutation):
+        v,cfg,folder,ctl,opt=case;pre,state=model_preflight(*case)
+        if mutation=='oa_same_sum':
+            m=v.dsegs['NATIVE_CW'].ODMatrix.values;m[0,1]+=.01;m[0,2]-=.01
+        elif mutation=='oa_binding':v.dsegs['EXOG_EE_CW'].ODMatrix.no=9999
+        elif mutation=='network':v.Net.Links.rows[-1]['TSYSSET']='C,LNV,NV'
+        else:
+            new=v.source.with_name('other_2025.ver');new.write_bytes(v.source.read_bytes());v.IO.CurrentVersionFile=str(new)
+>       with pytest.raises(Exception,match='CHANGED|STALE|MISMATCH'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_live01_recovery.py:25: Failed
+_____ test_final_readback_covers_current_oa_network_and_source[oa_binding] _____
+
+case = (<fake_live01.Live01Visum object at 0x7f7c12d29bd0>, {'apply_permitted': False, 'assignment_enabled': False, 'authorit...attempts': 3, 'com_retry_backoff_factor': 1.5, 'com_retry_enabled': True, 'com_retry_initial_delay_seconds': 0.0, ...})
+mutation = 'oa_binding'
+
+    @pytest.mark.parametrize('mutation',['oa_same_sum','oa_binding','network','source_pointer'])
+    def test_final_readback_covers_current_oa_network_and_source(case,mutation):
+        v,cfg,folder,ctl,opt=case;pre,state=model_preflight(*case)
+        if mutation=='oa_same_sum':
+            m=v.dsegs['NATIVE_CW'].ODMatrix.values;m[0,1]+=.01;m[0,2]-=.01
+        elif mutation=='oa_binding':v.dsegs['EXOG_EE_CW'].ODMatrix.no=9999
+        elif mutation=='network':v.Net.Links.rows[-1]['TSYSSET']='C,LNV,NV'
+        else:
+            new=v.source.with_name('other_2025.ver');new.write_bytes(v.source.read_bytes());v.IO.CurrentVersionFile=str(new)
+>       with pytest.raises(Exception,match='CHANGED|STALE|MISMATCH'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_live01_recovery.py:25: Failed
+______ test_final_readback_covers_current_oa_network_and_source[network] _______
+
+case = (<fake_live01.Live01Visum object at 0x7f7c12d2a710>, {'apply_permitted': False, 'assignment_enabled': False, 'authorit...attempts': 3, 'com_retry_backoff_factor': 1.5, 'com_retry_enabled': True, 'com_retry_initial_delay_seconds': 0.0, ...})
+mutation = 'network'
+
+    @pytest.mark.parametrize('mutation',['oa_same_sum','oa_binding','network','source_pointer'])
+    def test_final_readback_covers_current_oa_network_and_source(case,mutation):
+        v,cfg,folder,ctl,opt=case;pre,state=model_preflight(*case)
+        if mutation=='oa_same_sum':
+            m=v.dsegs['NATIVE_CW'].ODMatrix.values;m[0,1]+=.01;m[0,2]-=.01
+        elif mutation=='oa_binding':v.dsegs['EXOG_EE_CW'].ODMatrix.no=9999
+        elif mutation=='network':v.Net.Links.rows[-1]['TSYSSET']='C,LNV,NV'
+        else:
+            new=v.source.with_name('other_2025.ver');new.write_bytes(v.source.read_bytes());v.IO.CurrentVersionFile=str(new)
+>       with pytest.raises(Exception,match='CHANGED|STALE|MISMATCH'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_live01_recovery.py:25: Failed
+___ test_final_readback_covers_current_oa_network_and_source[source_pointer] ___
+
+case = (<fake_live01.Live01Visum object at 0x7f7c12d2b750>, {'apply_permitted': False, 'assignment_enabled': False, 'authorit...attempts': 3, 'com_retry_backoff_factor': 1.5, 'com_retry_enabled': True, 'com_retry_initial_delay_seconds': 0.0, ...})
+mutation = 'source_pointer'
+
+    @pytest.mark.parametrize('mutation',['oa_same_sum','oa_binding','network','source_pointer'])
+    def test_final_readback_covers_current_oa_network_and_source(case,mutation):
+        v,cfg,folder,ctl,opt=case;pre,state=model_preflight(*case)
+        if mutation=='oa_same_sum':
+            m=v.dsegs['NATIVE_CW'].ODMatrix.values;m[0,1]+=.01;m[0,2]-=.01
+        elif mutation=='oa_binding':v.dsegs['EXOG_EE_CW'].ODMatrix.no=9999
+        elif mutation=='network':v.Net.Links.rows[-1]['TSYSSET']='C,LNV,NV'
+        else:
+            new=v.source.with_name('other_2025.ver');new.write_bytes(v.source.read_bytes());v.IO.CurrentVersionFile=str(new)
+>       with pytest.raises(Exception,match='CHANGED|STALE|MISMATCH'):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'Exception'>
+
+tests/test_live01_recovery.py:25: Failed
+=========================== short test summary info ============================
+FAILED tests/test_live01_recovery.py::test_final_readback_covers_current_oa_network_and_source[oa_same_sum] - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_live01_recovery.py::test_final_readback_covers_current_oa_network_and_source[oa_binding] - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_live01_recovery.py::test_final_readback_covers_current_oa_network_and_source[network] - Failed: DID NOT RAISE <class 'Exception'>
+FAILED tests/test_live01_recovery.py::test_final_readback_covers_current_oa_network_and_source[source_pointer] - Failed: DID NOT RAISE <class 'Exception'>
+4 failed in 21.20s

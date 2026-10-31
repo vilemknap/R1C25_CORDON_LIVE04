@@ -1,0 +1,19 @@
+R1 15A2 V2.4.8.6 — sjednocená větev stable project root + Generation saturation
+
+SPUSTIT VÝHRADNĚ:
+R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_8_6.py
+
+OČEKÁVANÝ RUN ROOT:
+C:\Users\vilem_knap\Documents\VISUM\v45\2022\R1_15A2_V2486_RUNS\RUN_...
+
+PERSISTENTNÍ CACHE NEMAZAT:
+C:\Users\vilem_knap\AppData\Local\R1_15A2_PATH_CACHE_V248
+
+PRVNÍ KONTROLY:
+1. RUN_ROOT_AUTHORITY.json: project_base musí být ...\VISUM\v45\2022 a postcondition=true.
+2. PERSISTENT_PATH_CACHE_RESTORE.json: cache restore/import musí být autorizovaný.
+3. GENERATION_DESIGN.json: summary.bound_constrained_projection.enabled=true.
+4. U zóny 619 nesmí být zápis ZAHR_PROD_WORK/ZAHR_PROD_SERV nad 10.
+5. Musí vzniknout TRY_01 a po odmítnutí musí rollback zůstat passes=true.
+
+NESPouštěj launchery V2.4.8.2–V2.4.8.5 místo této verze.

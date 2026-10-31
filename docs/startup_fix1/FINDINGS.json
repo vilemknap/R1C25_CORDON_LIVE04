@@ -1,0 +1,100 @@
+[
+  {
+    "id": "S01",
+    "kind": "MISSING_INTEGRATION",
+    "finding": "Originalni spoustec odmital objekt Visum",
+    "resolution": "Novy oddeleny vstup pro PREFLIGHT a CAPTURE, nikdy profilovy CSD spoustec",
+    "status": "IMPLEMENTED_MOCK_TESTED"
+  },
+  {
+    "id": "S02",
+    "kind": "INHERITED_DATA_BUG",
+    "finding": "Importer ignoroval skutecne auditni pole path_rows; nulovy radek mohl zmizet bez zmeny sumy",
+    "resolution": "Nativni row-count a kolize count autorit kontrolovany",
+    "status": "FIXED_TESTED"
+  },
+  {
+    "id": "S03",
+    "kind": "INHERITED_DATA_BUG",
+    "finding": "Agregace mohla skryt rozdeleni opacnych smeru CAL/VALID",
+    "resolution": "Role se kontroluji pred agregaci",
+    "status": "FIXED_TESTED"
+  },
+  {
+    "id": "S04",
+    "kind": "INHERITED_DATA_BUG",
+    "finding": "NaN/Inf/zaporne/bool survey hodnoty a neplatne solver parametry neodmitnuty vcas",
+    "resolution": "Kontrola vsech targets, parametru a sparse vstupu pred solverem",
+    "status": "FIXED_TESTED"
+  },
+  {
+    "id": "S05",
+    "kind": "INHERITED_COM_BUG",
+    "finding": "Neprintovatelna COM vyjimka nahradila puvodni hresult chybu ValueError",
+    "resolution": "Bezpecny text chyby zachova puvodni vyjimku a retry",
+    "status": "FIXED_TESTED"
+  },
+  {
+    "id": "S06",
+    "kind": "RUNTIME_RISK",
+    "finding": "Predchozi importy jineho 15A2 v trvalem Pythonu Visumu",
+    "resolution": "Izolace modulu a sys.path s obnovou po uspechu i chybe, busy guard",
+    "status": "IMPLEMENTED_MOCK_TESTED"
+  },
+  {
+    "id": "S07",
+    "kind": "RUNTIME_RISK",
+    "finding": "GUI filtr aktivnich objektu / neoverena signatura / hierarchie pres davku",
+    "resolution": "Pouze OnlyActive=False a overeny bounded exporter 15A2",
+    "status": "IMPLEMENTED_MOCK_TESTED"
+  },
+  {
+    "id": "S08",
+    "kind": "RUNTIME_RISK",
+    "finding": "Spravny celkovy soucet skryje presun objemu mezi OD bunkami",
+    "resolution": "Nezavisla per-OD parita proti zive matici a opakovane NPZ overeni",
+    "status": "IMPLEMENTED_MOCK_TESTED"
+  },
+  {
+    "id": "S09",
+    "kind": "RUNTIME_RISK",
+    "finding": "Predpoklad shodne geometrie uvnitr modu bez dukazu",
+    "resolution": "Plne porovnani sekvenci, zmena => STOP; nikoli zamena C/C_noT",
+    "status": "IMPLEMENTED_MOCK_TESTED"
+  },
+  {
+    "id": "S10",
+    "kind": "RUNTIME_RISK",
+    "finding": "Zmena matic/tras/sitove struktury behem capture",
+    "resolution": "Konecny readback + kontrolni hashe a zadny completed snapshot pri chybe",
+    "status": "IMPLEMENTED_MOCK_TESTED"
+  },
+  {
+    "id": "S11",
+    "kind": "STARTUP_DEPENDENCY",
+    "finding": "Openpyxl se nacital i pri cteni CSV mapovani",
+    "resolution": "Lazy import pouze pri explicitnim auditu seitu; test bez openpyxl/scipy/pandas",
+    "status": "FIXED_TESTED"
+  },
+  {
+    "id": "S12",
+    "kind": "RUNTIME_RISK",
+    "finding": "Uklid nebo telemetrie prekryje primarni chybu",
+    "resolution": "Noncritical progress a primary-preserving cleanup; kriticke vysledky fail closed",
+    "status": "IMPLEMENTED_MOCK_TESTED"
+  },
+  {
+    "id": "S13",
+    "kind": "KNOWN_LIMIT",
+    "finding": "Zive TG/TD/assignment/ACCEPT/ROLLBACK kordonove vetve chybi",
+    "resolution": "Nevydavat read-only capture za kalibraci; samostatny live adapter je dalsi nutna implementace",
+    "status": "NOT_IMPLEMENTED"
+  },
+  {
+    "id": "S14",
+    "kind": "KNOWN_LIMIT",
+    "finding": "Metodicke a nativni 2025 autority nejsou overene",
+    "resolution": "Ponechany blokace semantics/year/C17/real native session",
+    "status": "BLOCKED"
+  }
+]

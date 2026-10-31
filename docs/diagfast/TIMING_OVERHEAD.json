@@ -1,0 +1,63 @@
+{
+  "origin": "SYNTHETIC_NO_NATIVE_COM",
+  "status": "PASS",
+  "routes_per_mode": 3000,
+  "zones": 681,
+  "repetitions": 3,
+  "medians_s": {
+    "RAW_LEGACY": 11.531876292999868,
+    "TIMED_LEGACY": 12.054177957000093
+  },
+  "instrumented_minus_raw_s": 0.5223016640002243,
+  "relative_overhead": 0.04529199331745115,
+  "order": "ALTERNATING_FRESH_PROCESSES_OS_CACHE_UNCONTROLLED",
+  "runs": [
+    {
+      "worker": "RAW_LEGACY",
+      "wall_seconds": 12.444095679999919,
+      "provider_calls": 3696,
+      "output_directory": "/mnt/data/diagfast_dev/final_overhead/runs/VISUM_CAPTURE_DIAGNOSTICS_c9ee40ebca47"
+    },
+    {
+      "worker": "TIMED_LEGACY",
+      "wall_seconds": 12.130801173000009,
+      "provider_calls": 3696,
+      "output_directory": "/mnt/data/diagfast_dev/final_overhead/runs/VISUM_CAPTURE_DIAGNOSTICS_1a819968acee"
+    },
+    {
+      "worker": "TIMED_LEGACY",
+      "wall_seconds": 11.312165330000198,
+      "provider_calls": 3696,
+      "output_directory": "/mnt/data/diagfast_dev/final_overhead/runs/VISUM_CAPTURE_DIAGNOSTICS_1dbe13780328"
+    },
+    {
+      "worker": "RAW_LEGACY",
+      "wall_seconds": 11.531876292999868,
+      "provider_calls": 3696,
+      "output_directory": "/mnt/data/diagfast_dev/final_overhead/runs/VISUM_CAPTURE_DIAGNOSTICS_fb5e5f8d1b2b"
+    },
+    {
+      "worker": "RAW_LEGACY",
+      "wall_seconds": 11.370789560000048,
+      "provider_calls": 3696,
+      "output_directory": "/mnt/data/diagfast_dev/final_overhead/runs/VISUM_CAPTURE_DIAGNOSTICS_fd547e81c8ee"
+    },
+    {
+      "worker": "TIMED_LEGACY",
+      "wall_seconds": 12.054177957000093,
+      "provider_calls": 3696,
+      "output_directory": "/mnt/data/diagfast_dev/final_overhead/runs/VISUM_CAPTURE_DIAGNOSTICS_6d4c384c8c00"
+    }
+  ],
+  "parity": [
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS",
+    "PARITY_PASS"
+  ],
+  "native_overhead": "NOT_MEASURED",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41"
+}

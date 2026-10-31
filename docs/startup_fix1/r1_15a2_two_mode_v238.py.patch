@@ -1,0 +1,23 @@
+--- cordon/r1_15a2_two_mode_v238.py
++++ profile/r1_15a2_two_mode_v238.py
+@@ -1169,20 +1169,6 @@
+             'collateral_to_support_ratio':collateral/max(driver_support,1e-9),
+             'uses_validation_targets':False,'counterfactual_flow_prediction':False,
+             'geometry_identity':PROVISIONAL,'conditional_on_geometry_sharing_assumption':True}
+-
+-    def cordon_incidence_offline(self, station_map, cfg, snapshot_evidence, *, hits_output=None):
+-        """2025 extension: consume this COMPLETED store read-only; never enumerate COM.
+-
+-        The original incidence()/2022 controller is unchanged. No cfg flag can
+-        turn this V1 hook into an APPLY path. Snapshot hash/parity is revalidated.
+-        """
+-        if cfg.get('apply') is not False:
+-            raise SupplyContractError('CORDON_V1_APPLY_FORBIDDEN')
+-        if not self.incidence_ready:
+-            raise SupplyContractError('CORDON_CACHE_NOT_READY')
+-        from cordon2025.incidence import build_from_snapshot
+-        return build_from_snapshot(self.route_db_path, station_map, cfg,
+-                                   snapshot_evidence, hits_output=hits_output)
+ 
+     def incidence(self, cfg, actuatable_zones, live_od_matrices=None):
+         """Same core incidence algebra via normalized profile hits, no COM reread.

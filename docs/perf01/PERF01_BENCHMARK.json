@@ -1,0 +1,629 @@
+{
+  "schema": "PERF01_BENCHMARK_V1",
+  "dataset": {
+    "geometries": 100000,
+    "modes": 2,
+    "note": "NOT real R1 snapshot",
+    "ordered_path_edge_lengths": "varied 0..80",
+    "origin": "SYNTHETIC_TEST_FIXTURE",
+    "segments": 12,
+    "stations": 16,
+    "volume_rows": 600000
+  },
+  "environment": {
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+    "cpu_count": 5
+  },
+  "runs": [
+    {
+      "apply_permitted": false,
+      "cpu_s": 88.871971175,
+      "native_visum_tested": false,
+      "operation": "reference",
+      "output_bytes": 605157595,
+      "peak_rss_mib": 3087.0,
+      "process_io_delta": {
+        "cancelled_write_bytes": 0,
+        "rchar": 1828631424,
+        "read_bytes": 4714496,
+        "syscr": 113981,
+        "syscw": 70736,
+        "wchar": 605159467,
+        "write_bytes": 605265920
+      },
+      "signatures": {
+        "ALL_ORDERED_UNIQUE_PAIRS": {
+          "arrays_sha256": "eee73a1daf7960e95710d5ba518ba815fdf78584d99ef30d41ce903e83b3bfed",
+          "directed_rows_sha256": "a47dd6ad6800c601b89934b8e75d2710d342d4e87495dc3e20d87040c55842cd",
+          "model_sum": 29758541.227999307,
+          "nnz": 7358336,
+          "rows_sha256": "d3d6423ce4fe26b3daae611d9f96ba96bee03616839c240dc648956e21007878",
+          "variables": 200000
+        },
+        "EXACT_TWO_HITS": {
+          "arrays_sha256": "cbb6bbeb753b528048e53cfe7c7f9e4ed862634a08b2667a25794b0629fabf62",
+          "directed_rows_sha256": "459841d8fbd7d575df86d1e193b75086b1a01028c551239782f2d45d0414bf4d",
+          "model_sum": 109352.04799999925,
+          "nnz": 27152,
+          "rows_sha256": "086f03550a94dbc4e15783d10ba538eb7887f9778654e16e4b4ef5fa9b138fd4",
+          "variables": 200000
+        }
+      },
+      "source_sqlite_bytes": 47083520,
+      "status": {
+        "cache_action": "COLD_REFERENCE",
+        "geometry_redecode_count": 100000,
+        "native_com_read_count": 0,
+        "sqlite_geometry_scans": 1
+      },
+      "wall_s": 89.13278166500004
+    },
+    {
+      "apply_permitted": false,
+      "cpu_s": 77.101619455,
+      "native_visum_tested": false,
+      "operation": "build",
+      "output_bytes": 26830531,
+      "peak_rss_mib": 3088.73046875,
+      "process_io_delta": {
+        "cancelled_write_bytes": 0,
+        "rchar": 1263166756,
+        "read_bytes": 114896896,
+        "syscr": 138085,
+        "syscw": 886,
+        "wchar": 45775020,
+        "write_bytes": 45932544
+      },
+      "signatures": {
+        "ALL_ORDERED_UNIQUE_PAIRS": {
+          "arrays_sha256": "eee73a1daf7960e95710d5ba518ba815fdf78584d99ef30d41ce903e83b3bfed",
+          "directed_rows_sha256": "a47dd6ad6800c601b89934b8e75d2710d342d4e87495dc3e20d87040c55842cd",
+          "model_sum": 29758541.227999307,
+          "nnz": 7358336,
+          "rows_sha256": "d3d6423ce4fe26b3daae611d9f96ba96bee03616839c240dc648956e21007878",
+          "variables": 200000
+        },
+        "EXACT_TWO_HITS": {
+          "arrays_sha256": "cbb6bbeb753b528048e53cfe7c7f9e4ed862634a08b2667a25794b0629fabf62",
+          "directed_rows_sha256": "459841d8fbd7d575df86d1e193b75086b1a01028c551239782f2d45d0414bf4d",
+          "model_sum": 109352.04799999925,
+          "nnz": 27152,
+          "rows_sha256": "086f03550a94dbc4e15783d10ba538eb7887f9778654e16e4b4ef5fa9b138fd4",
+          "variables": 200000
+        }
+      },
+      "source_sqlite_bytes": 47083520,
+      "status": {
+        "apply_permitted": false,
+        "assignment_executed": false,
+        "cache_action": "CACHE_BUILT_OFFLINE",
+        "cold_build_wall_s": 45.97362061199988,
+        "cpu_s": 57.788771331999996,
+        "derived_bytes_read": 71164737,
+        "derived_bytes_written": 18940302,
+        "elapsed_wall_s": 57.87808169200002,
+        "geometry_key": "937bc603ed163bf2ec23d249a1dc8b8f30dd1086ba90e59a57143408d330e3a7",
+        "geometry_redecode_count": 100000,
+        "hash_byte_counter_scope": "PERF01_VALIDATOR_SUCCESSFUL_BYTES_EXCLUDES_COLD_ORACLE_INTERNAL_HASHING",
+        "hit": false,
+        "implementation": "PERF01_1.0_20261023",
+        "incidence_key": "524f24c7c9f53851401e7a5663240699393952fb09a2c178b99c4347aea9c8cc",
+        "live_calibration_verified": false,
+        "load_wall_s": 2.214334918000077,
+        "manifest_schema": "CORDON_PERF01_DERIVED_V1",
+        "miss_reason": "NO_DERIVED_BUNDLE_FOR_KEY",
+        "native_com_read_count": 0,
+        "origin": "SYNTHETIC_TEST_FIXTURE",
+        "peak_rss_mib": 3088.73046875,
+        "publication_wall_s": 8.31278357899987,
+        "schema": "CORDON_PERF01_CACHE_STATUS_V1",
+        "source_bytes_hashed": 327883428,
+        "source_id": "e5ff767f1ba240ae9f361fdc64ae384283cee96a6308c7edbab62331c146ce3e",
+        "source_identities": {
+          "assignment_freshness": "NOT_CERTIFIED",
+          "basis": "RPDI",
+          "category": "OA",
+          "completed": true,
+          "demand_sha256": "8f91a4c7ff00cc49d3804cf2cb648f3b66f72c98f846bc584fda3e3a0331679a",
+          "dseg_inventory": [
+            "EXOG_EE_CF",
+            "EXOG_EE_CL",
+            "EXOG_EE_CS",
+            "EXOG_EE_CS_NOT",
+            "EXOG_EE_CW",
+            "EXOG_EE_CW_NOT",
+            "NATIVE_CF",
+            "NATIVE_CL",
+            "NATIVE_CS",
+            "NATIVE_CS_NOT",
+            "NATIVE_CW",
+            "NATIVE_CW_NOT"
+          ],
+          "files": {
+            "SNAPSHOT_EVIDENCE.json": {
+              "bytes": 62210956,
+              "sha256": "1cf1d146c39b05bd36dd6d98bf7509f74d3e53d7ae088ca382665abb7cf27e67"
+            },
+            "p.sqlite": {
+              "bytes": 47083520,
+              "sha256": "87a3bcc927ccc1d86d3a1d40a8b71cc6cf96315f6cffd4f27281017938c044aa"
+            }
+          },
+          "geometry_full_identity_proven": true,
+          "model_year": 2025,
+          "network_sha256": "c59155ef82ccfd91d6c7157e72ae9dc253e0f4f1f05ab73c0bc4820fd2f2cb00",
+          "new_assignment_verified": false,
+          "origin": "SYNTHETIC_TEST_FIXTURE",
+          "schema": "CORDON_PERF01_DERIVED_V1",
+          "survey_year": 2026
+        },
+        "source_validation_reuse": "SAME_BYTES_SAME_ALGORITHM_NOT_NEW_ASSIGNMENT",
+        "source_verification_wall_s": 1.2873538970000027,
+        "sqlite_geometry_scans": 1,
+        "station_hit_visits": 3474044,
+        "status_write_result": {
+          "optional": true,
+          "published": true
+        },
+        "validation_status": "SOURCE_AND_DERIVED_CONTENT_VERIFIED"
+      },
+      "wall_s": 77.22587178699996
+    },
+    {
+      "apply_permitted": false,
+      "cpu_s": 23.462777451999997,
+      "native_visum_tested": false,
+      "operation": "warm",
+      "output_bytes": 26830397,
+      "peak_rss_mib": 2248.0,
+      "process_io_delta": {
+        "cancelled_write_bytes": 0,
+        "rchar": 413629717,
+        "read_bytes": 32768,
+        "syscr": 1213,
+        "syscw": 171,
+        "wchar": 26832269,
+        "write_bytes": 26869760
+      },
+      "signatures": {
+        "ALL_ORDERED_UNIQUE_PAIRS": {
+          "arrays_sha256": "eee73a1daf7960e95710d5ba518ba815fdf78584d99ef30d41ce903e83b3bfed",
+          "directed_rows_sha256": "a47dd6ad6800c601b89934b8e75d2710d342d4e87495dc3e20d87040c55842cd",
+          "model_sum": 29758541.227999307,
+          "nnz": 7358336,
+          "rows_sha256": "d3d6423ce4fe26b3daae611d9f96ba96bee03616839c240dc648956e21007878",
+          "variables": 200000
+        },
+        "EXACT_TWO_HITS": {
+          "arrays_sha256": "cbb6bbeb753b528048e53cfe7c7f9e4ed862634a08b2667a25794b0629fabf62",
+          "directed_rows_sha256": "459841d8fbd7d575df86d1e193b75086b1a01028c551239782f2d45d0414bf4d",
+          "model_sum": 109352.04799999925,
+          "nnz": 27152,
+          "rows_sha256": "086f03550a94dbc4e15783d10ba538eb7887f9778654e16e4b4ef5fa9b138fd4",
+          "variables": 200000
+        }
+      },
+      "source_sqlite_bytes": 47083520,
+      "status": {
+        "apply_permitted": false,
+        "assignment_executed": false,
+        "cache_action": "CACHE_HIT_VERIFIED",
+        "cpu_s": 3.821681929,
+        "derived_bytes_read": 52224664,
+        "derived_bytes_written": 0,
+        "elapsed_wall_s": 3.8250505229998453,
+        "geometry_key": "937bc603ed163bf2ec23d249a1dc8b8f30dd1086ba90e59a57143408d330e3a7",
+        "geometry_redecode_count": 0,
+        "hash_byte_counter_scope": "PERF01_VALIDATOR_SUCCESSFUL_BYTES_EXCLUDES_COLD_ORACLE_INTERNAL_HASHING",
+        "hit": true,
+        "implementation": "PERF01_1.0_20261023",
+        "incidence_key": "524f24c7c9f53851401e7a5663240699393952fb09a2c178b99c4347aea9c8cc",
+        "live_calibration_verified": false,
+        "load_wall_s": 2.400687414999993,
+        "manifest_schema": "CORDON_PERF01_DERIVED_V1",
+        "miss_reason": null,
+        "native_com_read_count": 0,
+        "origin": "SYNTHETIC_TEST_FIXTURE",
+        "peak_rss_mib": 829.37109375,
+        "schema": "CORDON_PERF01_CACHE_STATUS_V1",
+        "source_bytes_hashed": 218588952,
+        "source_id": "e5ff767f1ba240ae9f361fdc64ae384283cee96a6308c7edbab62331c146ce3e",
+        "source_identities": {
+          "assignment_freshness": "NOT_CERTIFIED",
+          "basis": "RPDI",
+          "category": "OA",
+          "completed": true,
+          "demand_sha256": "8f91a4c7ff00cc49d3804cf2cb648f3b66f72c98f846bc584fda3e3a0331679a",
+          "dseg_inventory": [
+            "EXOG_EE_CF",
+            "EXOG_EE_CL",
+            "EXOG_EE_CS",
+            "EXOG_EE_CS_NOT",
+            "EXOG_EE_CW",
+            "EXOG_EE_CW_NOT",
+            "NATIVE_CF",
+            "NATIVE_CL",
+            "NATIVE_CS",
+            "NATIVE_CS_NOT",
+            "NATIVE_CW",
+            "NATIVE_CW_NOT"
+          ],
+          "files": {
+            "SNAPSHOT_EVIDENCE.json": {
+              "bytes": 62210956,
+              "sha256": "1cf1d146c39b05bd36dd6d98bf7509f74d3e53d7ae088ca382665abb7cf27e67"
+            },
+            "p.sqlite": {
+              "bytes": 47083520,
+              "sha256": "87a3bcc927ccc1d86d3a1d40a8b71cc6cf96315f6cffd4f27281017938c044aa"
+            }
+          },
+          "geometry_full_identity_proven": true,
+          "model_year": 2025,
+          "network_sha256": "c59155ef82ccfd91d6c7157e72ae9dc253e0f4f1f05ab73c0bc4820fd2f2cb00",
+          "new_assignment_verified": false,
+          "origin": "SYNTHETIC_TEST_FIXTURE",
+          "schema": "CORDON_PERF01_DERIVED_V1",
+          "survey_year": 2026
+        },
+        "source_validation_reuse": "SAME_BYTES_SAME_ALGORITHM_NOT_NEW_ASSIGNMENT",
+        "source_verification_wall_s": 1.3283432630000789,
+        "sqlite_geometry_scans": 0,
+        "station_hit_visits": 0,
+        "status_write_result": {
+          "optional": true,
+          "published": true
+        },
+        "validation_status": "SOURCE_AND_DERIVED_CONTENT_VERIFIED"
+      },
+      "wall_s": 23.49363315400001
+    },
+    {
+      "apply_permitted": false,
+      "cpu_s": 23.42231219,
+      "native_visum_tested": false,
+      "operation": "warm",
+      "output_bytes": 26830393,
+      "peak_rss_mib": 2248.0625,
+      "process_io_delta": {
+        "cancelled_write_bytes": 0,
+        "rchar": 413629705,
+        "read_bytes": 0,
+        "syscr": 1213,
+        "syscw": 171,
+        "wchar": 26832265,
+        "write_bytes": 26877952
+      },
+      "signatures": {
+        "ALL_ORDERED_UNIQUE_PAIRS": {
+          "arrays_sha256": "eee73a1daf7960e95710d5ba518ba815fdf78584d99ef30d41ce903e83b3bfed",
+          "directed_rows_sha256": "a47dd6ad6800c601b89934b8e75d2710d342d4e87495dc3e20d87040c55842cd",
+          "model_sum": 29758541.227999307,
+          "nnz": 7358336,
+          "rows_sha256": "d3d6423ce4fe26b3daae611d9f96ba96bee03616839c240dc648956e21007878",
+          "variables": 200000
+        },
+        "EXACT_TWO_HITS": {
+          "arrays_sha256": "cbb6bbeb753b528048e53cfe7c7f9e4ed862634a08b2667a25794b0629fabf62",
+          "directed_rows_sha256": "459841d8fbd7d575df86d1e193b75086b1a01028c551239782f2d45d0414bf4d",
+          "model_sum": 109352.04799999925,
+          "nnz": 27152,
+          "rows_sha256": "086f03550a94dbc4e15783d10ba538eb7887f9778654e16e4b4ef5fa9b138fd4",
+          "variables": 200000
+        }
+      },
+      "source_sqlite_bytes": 47083520,
+      "status": {
+        "apply_permitted": false,
+        "assignment_executed": false,
+        "cache_action": "CACHE_HIT_VERIFIED",
+        "cpu_s": 3.60044506,
+        "derived_bytes_read": 52224664,
+        "derived_bytes_written": 0,
+        "elapsed_wall_s": 3.601701348000006,
+        "geometry_key": "937bc603ed163bf2ec23d249a1dc8b8f30dd1086ba90e59a57143408d330e3a7",
+        "geometry_redecode_count": 0,
+        "hash_byte_counter_scope": "PERF01_VALIDATOR_SUCCESSFUL_BYTES_EXCLUDES_COLD_ORACLE_INTERNAL_HASHING",
+        "hit": true,
+        "implementation": "PERF01_1.0_20261023",
+        "incidence_key": "524f24c7c9f53851401e7a5663240699393952fb09a2c178b99c4347aea9c8cc",
+        "live_calibration_verified": false,
+        "load_wall_s": 2.2793337390000943,
+        "manifest_schema": "CORDON_PERF01_DERIVED_V1",
+        "miss_reason": null,
+        "native_com_read_count": 0,
+        "origin": "SYNTHETIC_TEST_FIXTURE",
+        "peak_rss_mib": 829.34375,
+        "schema": "CORDON_PERF01_CACHE_STATUS_V1",
+        "source_bytes_hashed": 218588952,
+        "source_id": "e5ff767f1ba240ae9f361fdc64ae384283cee96a6308c7edbab62331c146ce3e",
+        "source_identities": {
+          "assignment_freshness": "NOT_CERTIFIED",
+          "basis": "RPDI",
+          "category": "OA",
+          "completed": true,
+          "demand_sha256": "8f91a4c7ff00cc49d3804cf2cb648f3b66f72c98f846bc584fda3e3a0331679a",
+          "dseg_inventory": [
+            "EXOG_EE_CF",
+            "EXOG_EE_CL",
+            "EXOG_EE_CS",
+            "EXOG_EE_CS_NOT",
+            "EXOG_EE_CW",
+            "EXOG_EE_CW_NOT",
+            "NATIVE_CF",
+            "NATIVE_CL",
+            "NATIVE_CS",
+            "NATIVE_CS_NOT",
+            "NATIVE_CW",
+            "NATIVE_CW_NOT"
+          ],
+          "files": {
+            "SNAPSHOT_EVIDENCE.json": {
+              "bytes": 62210956,
+              "sha256": "1cf1d146c39b05bd36dd6d98bf7509f74d3e53d7ae088ca382665abb7cf27e67"
+            },
+            "p.sqlite": {
+              "bytes": 47083520,
+              "sha256": "87a3bcc927ccc1d86d3a1d40a8b71cc6cf96315f6cffd4f27281017938c044aa"
+            }
+          },
+          "geometry_full_identity_proven": true,
+          "model_year": 2025,
+          "network_sha256": "c59155ef82ccfd91d6c7157e72ae9dc253e0f4f1f05ab73c0bc4820fd2f2cb00",
+          "new_assignment_verified": false,
+          "origin": "SYNTHETIC_TEST_FIXTURE",
+          "schema": "CORDON_PERF01_DERIVED_V1",
+          "survey_year": 2026
+        },
+        "source_validation_reuse": "SAME_BYTES_SAME_ALGORITHM_NOT_NEW_ASSIGNMENT",
+        "source_verification_wall_s": 1.2360427850001088,
+        "sqlite_geometry_scans": 0,
+        "station_hit_visits": 0,
+        "status_write_result": {
+          "optional": true,
+          "published": true
+        },
+        "validation_status": "SOURCE_AND_DERIVED_CONTENT_VERIFIED"
+      },
+      "wall_s": 23.450350528999707
+    },
+    {
+      "apply_permitted": false,
+      "cpu_s": 23.15502954,
+      "native_visum_tested": false,
+      "operation": "warm",
+      "output_bytes": 26830397,
+      "peak_rss_mib": 2248.078125,
+      "process_io_delta": {
+        "cancelled_write_bytes": 0,
+        "rchar": 413629713,
+        "read_bytes": 0,
+        "syscr": 1213,
+        "syscw": 171,
+        "wchar": 26832269,
+        "write_bytes": 26873856
+      },
+      "signatures": {
+        "ALL_ORDERED_UNIQUE_PAIRS": {
+          "arrays_sha256": "eee73a1daf7960e95710d5ba518ba815fdf78584d99ef30d41ce903e83b3bfed",
+          "directed_rows_sha256": "a47dd6ad6800c601b89934b8e75d2710d342d4e87495dc3e20d87040c55842cd",
+          "model_sum": 29758541.227999307,
+          "nnz": 7358336,
+          "rows_sha256": "d3d6423ce4fe26b3daae611d9f96ba96bee03616839c240dc648956e21007878",
+          "variables": 200000
+        },
+        "EXACT_TWO_HITS": {
+          "arrays_sha256": "cbb6bbeb753b528048e53cfe7c7f9e4ed862634a08b2667a25794b0629fabf62",
+          "directed_rows_sha256": "459841d8fbd7d575df86d1e193b75086b1a01028c551239782f2d45d0414bf4d",
+          "model_sum": 109352.04799999925,
+          "nnz": 27152,
+          "rows_sha256": "086f03550a94dbc4e15783d10ba538eb7887f9778654e16e4b4ef5fa9b138fd4",
+          "variables": 200000
+        }
+      },
+      "source_sqlite_bytes": 47083520,
+      "status": {
+        "apply_permitted": false,
+        "assignment_executed": false,
+        "cache_action": "CACHE_HIT_VERIFIED",
+        "cpu_s": 3.596186704,
+        "derived_bytes_read": 52224664,
+        "derived_bytes_written": 0,
+        "elapsed_wall_s": 3.5967915670003094,
+        "geometry_key": "937bc603ed163bf2ec23d249a1dc8b8f30dd1086ba90e59a57143408d330e3a7",
+        "geometry_redecode_count": 0,
+        "hash_byte_counter_scope": "PERF01_VALIDATOR_SUCCESSFUL_BYTES_EXCLUDES_COLD_ORACLE_INTERNAL_HASHING",
+        "hit": true,
+        "implementation": "PERF01_1.0_20261023",
+        "incidence_key": "524f24c7c9f53851401e7a5663240699393952fb09a2c178b99c4347aea9c8cc",
+        "live_calibration_verified": false,
+        "load_wall_s": 2.265887568999915,
+        "manifest_schema": "CORDON_PERF01_DERIVED_V1",
+        "miss_reason": null,
+        "native_com_read_count": 0,
+        "origin": "SYNTHETIC_TEST_FIXTURE",
+        "peak_rss_mib": 829.32421875,
+        "schema": "CORDON_PERF01_CACHE_STATUS_V1",
+        "source_bytes_hashed": 218588952,
+        "source_id": "e5ff767f1ba240ae9f361fdc64ae384283cee96a6308c7edbab62331c146ce3e",
+        "source_identities": {
+          "assignment_freshness": "NOT_CERTIFIED",
+          "basis": "RPDI",
+          "category": "OA",
+          "completed": true,
+          "demand_sha256": "8f91a4c7ff00cc49d3804cf2cb648f3b66f72c98f846bc584fda3e3a0331679a",
+          "dseg_inventory": [
+            "EXOG_EE_CF",
+            "EXOG_EE_CL",
+            "EXOG_EE_CS",
+            "EXOG_EE_CS_NOT",
+            "EXOG_EE_CW",
+            "EXOG_EE_CW_NOT",
+            "NATIVE_CF",
+            "NATIVE_CL",
+            "NATIVE_CS",
+            "NATIVE_CS_NOT",
+            "NATIVE_CW",
+            "NATIVE_CW_NOT"
+          ],
+          "files": {
+            "SNAPSHOT_EVIDENCE.json": {
+              "bytes": 62210956,
+              "sha256": "1cf1d146c39b05bd36dd6d98bf7509f74d3e53d7ae088ca382665abb7cf27e67"
+            },
+            "p.sqlite": {
+              "bytes": 47083520,
+              "sha256": "87a3bcc927ccc1d86d3a1d40a8b71cc6cf96315f6cffd4f27281017938c044aa"
+            }
+          },
+          "geometry_full_identity_proven": true,
+          "model_year": 2025,
+          "network_sha256": "c59155ef82ccfd91d6c7157e72ae9dc253e0f4f1f05ab73c0bc4820fd2f2cb00",
+          "new_assignment_verified": false,
+          "origin": "SYNTHETIC_TEST_FIXTURE",
+          "schema": "CORDON_PERF01_DERIVED_V1",
+          "survey_year": 2026
+        },
+        "source_validation_reuse": "SAME_BYTES_SAME_ALGORITHM_NOT_NEW_ASSIGNMENT",
+        "source_verification_wall_s": 1.2475181800000428,
+        "sqlite_geometry_scans": 0,
+        "station_hit_visits": 0,
+        "status_write_result": {
+          "optional": true,
+          "published": true
+        },
+        "validation_status": "SOURCE_AND_DERIVED_CONTENT_VERIFIED"
+      },
+      "wall_s": 23.18799747700041
+    },
+    {
+      "apply_permitted": false,
+      "cpu_s": 23.766217703,
+      "native_visum_tested": false,
+      "operation": "warm",
+      "output_bytes": 26830405,
+      "peak_rss_mib": 2248.0703125,
+      "process_io_delta": {
+        "cancelled_write_bytes": 0,
+        "rchar": 413629729,
+        "read_bytes": 0,
+        "syscr": 1213,
+        "syscw": 171,
+        "wchar": 26832277,
+        "write_bytes": 26918912
+      },
+      "signatures": {
+        "ALL_ORDERED_UNIQUE_PAIRS": {
+          "arrays_sha256": "eee73a1daf7960e95710d5ba518ba815fdf78584d99ef30d41ce903e83b3bfed",
+          "directed_rows_sha256": "a47dd6ad6800c601b89934b8e75d2710d342d4e87495dc3e20d87040c55842cd",
+          "model_sum": 29758541.227999307,
+          "nnz": 7358336,
+          "rows_sha256": "d3d6423ce4fe26b3daae611d9f96ba96bee03616839c240dc648956e21007878",
+          "variables": 200000
+        },
+        "EXACT_TWO_HITS": {
+          "arrays_sha256": "cbb6bbeb753b528048e53cfe7c7f9e4ed862634a08b2667a25794b0629fabf62",
+          "directed_rows_sha256": "459841d8fbd7d575df86d1e193b75086b1a01028c551239782f2d45d0414bf4d",
+          "model_sum": 109352.04799999925,
+          "nnz": 27152,
+          "rows_sha256": "086f03550a94dbc4e15783d10ba538eb7887f9778654e16e4b4ef5fa9b138fd4",
+          "variables": 200000
+        }
+      },
+      "source_sqlite_bytes": 47083520,
+      "status": {
+        "apply_permitted": false,
+        "assignment_executed": false,
+        "cache_action": "CACHE_HIT_VERIFIED",
+        "cpu_s": 3.8439038059999997,
+        "derived_bytes_read": 52224664,
+        "derived_bytes_written": 0,
+        "elapsed_wall_s": 3.8468967929998144,
+        "geometry_key": "937bc603ed163bf2ec23d249a1dc8b8f30dd1086ba90e59a57143408d330e3a7",
+        "geometry_redecode_count": 0,
+        "hash_byte_counter_scope": "PERF01_VALIDATOR_SUCCESSFUL_BYTES_EXCLUDES_COLD_ORACLE_INTERNAL_HASHING",
+        "hit": true,
+        "implementation": "PERF01_1.0_20261023",
+        "incidence_key": "524f24c7c9f53851401e7a5663240699393952fb09a2c178b99c4347aea9c8cc",
+        "live_calibration_verified": false,
+        "load_wall_s": 2.4752856700001757,
+        "manifest_schema": "CORDON_PERF01_DERIVED_V1",
+        "miss_reason": null,
+        "native_com_read_count": 0,
+        "origin": "SYNTHETIC_TEST_FIXTURE",
+        "peak_rss_mib": 829.31640625,
+        "schema": "CORDON_PERF01_CACHE_STATUS_V1",
+        "source_bytes_hashed": 218588952,
+        "source_id": "e5ff767f1ba240ae9f361fdc64ae384283cee96a6308c7edbab62331c146ce3e",
+        "source_identities": {
+          "assignment_freshness": "NOT_CERTIFIED",
+          "basis": "RPDI",
+          "category": "OA",
+          "completed": true,
+          "demand_sha256": "8f91a4c7ff00cc49d3804cf2cb648f3b66f72c98f846bc584fda3e3a0331679a",
+          "dseg_inventory": [
+            "EXOG_EE_CF",
+            "EXOG_EE_CL",
+            "EXOG_EE_CS",
+            "EXOG_EE_CS_NOT",
+            "EXOG_EE_CW",
+            "EXOG_EE_CW_NOT",
+            "NATIVE_CF",
+            "NATIVE_CL",
+            "NATIVE_CS",
+            "NATIVE_CS_NOT",
+            "NATIVE_CW",
+            "NATIVE_CW_NOT"
+          ],
+          "files": {
+            "SNAPSHOT_EVIDENCE.json": {
+              "bytes": 62210956,
+              "sha256": "1cf1d146c39b05bd36dd6d98bf7509f74d3e53d7ae088ca382665abb7cf27e67"
+            },
+            "p.sqlite": {
+              "bytes": 47083520,
+              "sha256": "87a3bcc927ccc1d86d3a1d40a8b71cc6cf96315f6cffd4f27281017938c044aa"
+            }
+          },
+          "geometry_full_identity_proven": true,
+          "model_year": 2025,
+          "network_sha256": "c59155ef82ccfd91d6c7157e72ae9dc253e0f4f1f05ab73c0bc4820fd2f2cb00",
+          "new_assignment_verified": false,
+          "origin": "SYNTHETIC_TEST_FIXTURE",
+          "schema": "CORDON_PERF01_DERIVED_V1",
+          "survey_year": 2026
+        },
+        "source_validation_reuse": "SAME_BYTES_SAME_ALGORITHM_NOT_NEW_ASSIGNMENT",
+        "source_verification_wall_s": 1.2886362720000761,
+        "sqlite_geometry_scans": 0,
+        "station_hit_visits": 0,
+        "status_write_result": {
+          "optional": true,
+          "published": true
+        },
+        "validation_status": "SOURCE_AND_DERIVED_CONTENT_VERIFIED"
+      },
+      "wall_s": 23.811168125999757
+    }
+  ],
+  "warm_runs_separate_processes": 4,
+  "numerical_signature_match": true,
+  "median_warm_s": 23.471991841499857,
+  "speedup": 3.797410218395188,
+  "derived_cache_bytes": 18940571,
+  "full_source_sha_validation": true,
+  "native_real_acceptance": "NOT_RUN_MISSING_FINAL_CACHE",
+  "benchmark_scope": "Preserved FIX3 cold oracle + legacy reports vs PERF01 cold build/warm load + compact reports; numerically same output, intentionally different metadata serialization.",
+  "os_page_cache_flushed": false,
+  "warnings": [
+    "Synthetic fixture, NOT full native R1 reference.",
+    "Four warm runs each in a separate fresh process. Full source and derived SHA enabled.",
+    "Warm includes downstream aggregation and writing numeric NPZ/run reports.",
+    "Initial failed measurement is separate; no OOM result counted as PASS.",
+    "No claim of speeding up native COM capture or live calibration.",
+    "Source bytes counters cover PERF01 verifier, not every inherited internal read; process IO counters also included."
+  ],
+  "cgroup_memory_limit_bytes": 4294967296,
+  "new_assignment_verified": false
+}

@@ -1,0 +1,38 @@
+.F.............                                                          [100%]
+=================================== FAILURES ===================================
+_________________ test_oracle_and_legacy_core_numerical_parity _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-3/test_oracle_and_legacy_core_nu0')
+
+    def test_oracle_and_legacy_core_numerical_parity(tmp_path):
+        p,m,e,c=fixture(tmp_path);r=build_from_snapshot(p,m,c,e)
+        oraclepath=ROOT/'docs/readonly_reference/R1_2025_CORDON_READONLY_V1/r1_cordon_2025.py'
+        spec=importlib.util.spec_from_file_location('oracle_2025',oraclepath);oracle=importlib.util.module_from_spec(spec);spec.loader.exec_module(oracle)
+        ref=oracle.route_diagnostic(p,m,selected_dsegs=c['selected_dsegs'])
+        for method,inc in r.items():
+            for i,row in enumerate(inc.rows):
+                key='%d>%d'%(row['origin_station'],row['destination_station'])
+                assert inc.model[i]==ref['counts'][method].get(key,0)
+        # Independent existing core oracle with actual path records (not our own formula).
+        import struct
+        db=sqlite3.connect(p);ed={r[0]:tuple(r[1:]) for r in db.execute('SELECT * FROM edges')};paths=[];links=[]
+        for mode,o,d,pi,blob,code,v in db.execute('SELECT g.mode,g.orig,g.dest,g.path_index,g.edge_ids,v.dseg,v.volume FROM geometry g JOIN volumes v USING(gid)'):
+            paths.append(dict(dseg_code=code,OrigZoneNo=o,DestZoneNo=d,Index=pi,**{'Vol(AP)':v}))
+            for seq,eid in enumerate(struct.unpack('<%dI'%(len(blob)//4),blob),1):
+                ln,fr,to=ed[eid];links.append(dict(dseg_code=code,OrigZoneNo=o,DestZoneNo=d,PathIndex=pi,Index=seq,LinkNo=ln,FromNodeNo=fr,ToNodeNo=to))
+        db.close()
+        pair_auth=[dict(origin_station=str(row['origin_station']),destination_station=str(row['destination_station']),observed=1) for row in r['ALL_ORDERED_UNIQUE_PAIRS'].rows]
+        old=parent_core().build_actual_path_incidence(paths,links,[],mutable_dsegs=c['mutable_dsegs'],mutable_relation_policy='ALL_MUTABLE_RELATIONS',station_link_to_labels={k:[str(v)] for k,v in m.items()},pair_authority=pair_auth)
+>       assert np.array_equal(old['pair_observations']['full_model'],r['ALL_ORDERED_UNIQUE_PAIRS'].model)
+E       AssertionError: assert False
+E        +  where False = <function array_equal at 0x7f289dff4870>(array([], dtype=float64), array([140.,  90.,   0.,  55., 140.,   0.,  55.,  55.,   0.,   0.,   0.,\n         0.]))
+E        +    where <function array_equal at 0x7f289dff4870> = np.array_equal
+E        +    and   array([140.,  90.,   0.,  55., 140.,   0.,  55.,  55.,   0.,   0.,   0.,\n         0.]) = Incidence(rows=[{'observation_type': 'KORDON_PAIR', 'category': 'OA', 'origin_station': 1, 'destination_station': 2, '...}, {'dseg': 'NATIVE_CW_NOT', 'orig': 10, 'dest': 20, 'volume': 50.0}], 'method': 'ALL_ORDERED_UNIQUE_PAIRS', 'nnz': 7}).model
+
+tests/test_incidence.py:62: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_incidence.py::test_oracle_and_legacy_core_numerical_parity - AssertionError: assert False
+ +  where False = <function array_equal at 0x7f289dff4870>(array([], dtype=float64), array([140.,  90.,   0.,  55., 140.,   0.,  55.,  55.,   0.,   0.,   0.,\n         0.]))
+ +    where <function array_equal at 0x7f289dff4870> = np.array_equal
+ +    and   array([140.,  90.,   0.,  55., 140.,   0.,  55.,  55.,   0.,   0.,   0.,\n         0.]) = Incidence(rows=[{'observation_type': 'KORDON_PAIR', 'category': 'OA', 'origin_station': 1, 'destination_station': 2, '...}, {'dseg': 'NATIVE_CW_NOT', 'orig': 10, 'dest': 20, 'volume': 50.0}], 'method': 'ALL_ORDERED_UNIQUE_PAIRS', 'nnz': 7}).model
+1 failed, 14 passed in 0.35s

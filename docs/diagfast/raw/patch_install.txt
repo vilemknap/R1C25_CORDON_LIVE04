@@ -1,0 +1,5 @@
+{
+  "status": "PATCH_INSTALLED_TO_NEW_RELEASE",
+  "output": "/mnt/data/diagfast_dev/patched_release",
+  "base_modified": false
+}

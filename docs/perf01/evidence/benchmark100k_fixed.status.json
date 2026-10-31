@@ -1,0 +1,14 @@
+{
+  "name": "benchmark100k_fixed",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "tools/perf01_benchmark.py",
+    "--dataset",
+    "/mnt/data/perf01_work/benchmark100k_fixed",
+    "--paths",
+    "100000"
+  ],
+  "cwd": "/mnt/data/perf01_work/R1C25_PERF01",
+  "returncode": 0,
+  "wall_s": 266.102813404
+}

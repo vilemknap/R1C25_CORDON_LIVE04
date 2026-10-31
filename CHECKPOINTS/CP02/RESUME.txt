@@ -1,0 +1,7 @@
+Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate.
+{
+  "status": "DIAGNOSTIC_PASS",
+  "tests": "15 passed, rc=0; parity with historical readonly V1 and parent core",
+  "implemented": "streaming two-method incidence, fixed/mutable split, mode identity, parent opt-in hook",
+  "next": "CP03 C17 budget"
+}

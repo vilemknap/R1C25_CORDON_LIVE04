@@ -1,0 +1,288 @@
+{
+  "actual_visum_rerun": false,
+  "apply_permitted": false,
+  "cache_promoted_or_resealed": false,
+  "inputs_sha256": {
+    "cache": "840c8f2ccaf6368912edcf73098eeaa55125e6512f87df9cbbe06bd0eab91d43",
+    "matrix": "5ac16319363937f4aceeba76fa7f2168bbe02cace8d524e33613d0392678c478"
+  },
+  "inputs_unchanged": true,
+  "new_parity": {
+    "aggregate_check_basis": "RESIDUAL_BEYOND_VERIFIED_PATH_QUANTIZATION_ENVELOPE",
+    "aggregate_checks_applied": true,
+    "aggregate_limits": {
+      "l1_absolute": 294.95829489583656,
+      "net_absolute": 29.495829489583656,
+      "zero_flow_mass": 29.495829489583656
+    },
+    "apply_permitted": false,
+    "basis": "EACH_INTERZONAL_OD_MATRIX_CELL_VS_SUM_SAVED_PATH_VOLUMES",
+    "diagonal_error_not_hidden": 87478.46321989622,
+    "dseg": "NATIVE_CW",
+    "effective_path_volume_quantum": 0.001,
+    "failures": [],
+    "matrix_interzonal_sum": 294958.29489583656,
+    "max_abs_interzonal_error": 0.0010619048288198485,
+    "missing_or_inconsistent_od_count": 0,
+    "net_path_minus_matrix": -4.196895836581411,
+    "observed_lattice_max_abs_error": 5.684341886080802e-14,
+    "policy": {
+      "aggregate_abs_floor": 0.01,
+      "atol": 1e-05,
+      "lattice_atol": 1e-09,
+      "max_l1_relative_error": 0.001,
+      "max_net_relative_error": 0.0001,
+      "max_zero_flow_relative_mass": 0.0001,
+      "missing_path_cell_atol": 0.0005,
+      "path_volume_quantum": 0.001,
+      "rtol": 1e-05,
+      "schema": "CORDON_PATH_MATRIX_PARITY_V3"
+    },
+    "policy_sha256": "dcd178096e9390b8078f24471b26755cb5d13f0e685bb5b2c32910f4d2e5e288",
+    "positive_matrix_no_path_rows_count": 0,
+    "positive_matrix_no_path_rows_mass": 0.0,
+    "positive_matrix_zero_path_flow_count": 90852,
+    "positive_matrix_zero_path_flow_mass": 7.393154689935518,
+    "quantization_absolute_error_bound_sum": 219.40850000000006,
+    "quantization_compatible": true,
+    "quantum_is_export_resolution_not_survey_tolerance": true,
+    "raw_errors_above_residual_limits": false,
+    "raw_matrix_and_paths_modified": false,
+    "rounding_explained_l1_error": 92.87853685215909,
+    "rounding_only_cells_accepted": 405657,
+    "sample_errors": [],
+    "saved_path_interzonal_sum": 294954.098,
+    "status": "PASS",
+    "strict_legacy_inconsistent_od_count": 405657,
+    "sum_absolute_od_error": 92.87853685215909,
+    "unexplained_l1_error": 0.0,
+    "unexplained_signed_net_error": 0.0,
+    "unexplained_zero_flow_demand_mass": 0.0,
+    "warnings": [
+      "NUMERIC_EXPORT_RESIDUAL_WITHIN_BUDGET"
+    ]
+  },
+  "null_geometries": 438817,
+  "old_parity": {
+    "aggregate_check_basis": "RESIDUAL_BEYOND_VERIFIED_PATH_QUANTIZATION_ENVELOPE",
+    "aggregate_checks_applied": true,
+    "aggregate_limits": {
+      "l1_absolute": 2.949582948958366,
+      "net_absolute": 0.2949582948958365,
+      "zero_flow_mass": 0.2949582948958365
+    },
+    "apply_permitted": false,
+    "basis": "EACH_INTERZONAL_OD_MATRIX_CELL_VS_SUM_SAVED_PATH_VOLUMES",
+    "diagonal_error_not_hidden": 87478.46321989622,
+    "dseg": "NATIVE_CW",
+    "effective_path_volume_quantum": 0.0,
+    "failures": [
+      "LOCAL_OD_RESIDUAL_EXCEEDS_PRECISION_ENVELOPE",
+      "AGGREGATE_NET_VOLUME_MISMATCH",
+      "AGGREGATE_GROSS_VOLUME_MISMATCH",
+      "ZERO_FLOW_DEMAND_BUDGET_EXCEEDED"
+    ],
+    "matrix_interzonal_sum": 294958.29489583656,
+    "max_abs_interzonal_error": 0.0010619048288198485,
+    "missing_or_inconsistent_od_count": 405657,
+    "net_path_minus_matrix": -4.196895836581411,
+    "observed_lattice_max_abs_error": null,
+    "policy": {
+      "aggregate_abs_floor": 1e-05,
+      "atol": 1e-06,
+      "lattice_atol": 1e-09,
+      "max_l1_relative_error": 1e-05,
+      "max_net_relative_error": 1e-06,
+      "max_zero_flow_relative_mass": 1e-06,
+      "missing_path_cell_atol": 0.0,
+      "path_volume_quantum": 0.0,
+      "rtol": 1e-06,
+      "schema": "CORDON_PATH_MATRIX_PARITY_V3"
+    },
+    "policy_sha256": "86a3e8d299ab5fe57937f03872e7db3bfbfa49026f5b928e2c942991adc44a45",
+    "positive_matrix_no_path_rows_count": 0,
+    "positive_matrix_no_path_rows_mass": 0.0,
+    "positive_matrix_zero_path_flow_count": 90852,
+    "positive_matrix_zero_path_flow_mass": 7.393154689935518,
+    "quantization_absolute_error_bound_sum": 0.0,
+    "quantization_compatible": false,
+    "quantum_is_export_resolution_not_survey_tolerance": true,
+    "raw_errors_above_residual_limits": true,
+    "raw_matrix_and_paths_modified": false,
+    "rounding_explained_l1_error": 0.0,
+    "rounding_only_cells_accepted": 0,
+    "sample_errors": [
+      {
+        "allowed_abs_error": 1.0000164236465823e-06,
+        "destination": 7,
+        "matrix": 1.6423646582451034e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.000003167425083e-06,
+        "destination": 9,
+        "matrix": 3.1674250830768974e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000052230143508e-06,
+        "destination": 10,
+        "matrix": 5.223014350770101e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000031861304753e-06,
+        "destination": 11,
+        "matrix": 3.186130475411875e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000117212442782e-06,
+        "destination": 12,
+        "matrix": 1.1721244278169666e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000069306302693e-06,
+        "destination": 14,
+        "matrix": 6.930630269227509e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000038225003553e-06,
+        "destination": 15,
+        "matrix": 3.822500355415055e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000169868640447e-06,
+        "destination": 16,
+        "matrix": 1.6986864044793077e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000024579281748e-06,
+        "destination": 17,
+        "matrix": 2.4579281747315063e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000029104328295e-06,
+        "destination": 18,
+        "matrix": 2.9104328294853724e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000503352229142e-06,
+        "destination": 19,
+        "matrix": 5.033522291430019e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000272426259771e-06,
+        "destination": 21,
+        "matrix": 2.7242625977131283e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000061715232277e-06,
+        "destination": 22,
+        "matrix": 6.171523227676575e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000043548420813e-06,
+        "destination": 23,
+        "matrix": 4.354842081259468e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000086507246665e-06,
+        "destination": 25,
+        "matrix": 8.6507246666424e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000217284264743e-06,
+        "destination": 28,
+        "matrix": 2.1728426474428183e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000137998576532e-06,
+        "destination": 29,
+        "matrix": 1.3799857653251408e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000566658354e-06,
+        "destination": 31,
+        "matrix": 5.666583540001745e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000036484596067e-06,
+        "destination": 32,
+        "matrix": 3.6484596068304507e-06,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      },
+      {
+        "allowed_abs_error": 1.0000292026306406e-06,
+        "destination": 33,
+        "matrix": 2.9202630640656974e-05,
+        "origin": 1,
+        "path_count": 1,
+        "paths": 0.0
+      }
+    ],
+    "saved_path_interzonal_sum": 294954.098,
+    "status": "FAIL",
+    "strict_legacy_inconsistent_od_count": 405657,
+    "sum_absolute_od_error": 92.87853685215909,
+    "unexplained_l1_error": 92.87853685215909,
+    "unexplained_signed_net_error": -4.196895836581411,
+    "unexplained_zero_flow_demand_mass": 7.393154689935518,
+    "warnings": []
+  },
+  "original_capture_complete": false,
+  "sqlite_integrity": "ok",
+  "status": "FORENSIC_PARITY_REPLAY_COMPLETE"
+}

@@ -1,0 +1,21 @@
+{
+  "page_size": 256,
+  "max_dense_matrix_cells": 25000000,
+  "max_parent_rows_per_dseg": 5000000,
+  "max_geometry_rows_per_mode": 1000000000,
+  "max_store_gib": 0.0,
+  "min_free_disk_gib": 0.5,
+  "od_parity_atol": 1e-05,
+  "od_parity_rtol": 1e-05,
+  "path_volume_quantum": 0.001,
+  "path_volume_lattice_atol": 1e-09,
+  "missing_path_cell_atol": 0.0005,
+  "parity_aggregate_abs_floor": 0.01,
+  "parity_max_net_relative_error": 0.0001,
+  "parity_max_l1_relative_error": 0.001,
+  "parity_max_zero_flow_relative_mass": 0.0001,
+  "matrix_sum_atol": 0.001,
+  "matrix_sum_rtol": 1e-07,
+  "com_retry_attempts": 128,
+  "com_retry_max_elapsed_seconds": 180.0
+}

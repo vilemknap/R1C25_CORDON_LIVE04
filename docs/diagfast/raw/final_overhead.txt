@@ -1,0 +1,17 @@
+{
+  "origin": "SYNTHETIC_NO_NATIVE_COM",
+  "status": "PASS",
+  "routes_per_mode": 3000,
+  "zones": 681,
+  "repetitions": 3,
+  "medians_s": {
+    "RAW_LEGACY": 11.531876292999868,
+    "TIMED_LEGACY": 12.054177957000093
+  },
+  "instrumented_minus_raw_s": 0.5223016640002243,
+  "relative_overhead": 0.04529199331745115,
+  "order": "ALTERNATING_FRESH_PROCESSES_OS_CACHE_UNCONTROLLED",
+  "native_overhead": "NOT_MEASURED",
+  "python": "3.13.5 (main, Jul 15 2026, 20:25:40) [GCC 14.2.0]",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41"
+}

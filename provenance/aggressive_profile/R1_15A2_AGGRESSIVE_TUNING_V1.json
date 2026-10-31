@@ -1,0 +1,82 @@
+{
+  "schema": "R1_15A2_AGGRESSIVE_TGTD_TUNING_V1",
+  "purpose": "Larger generation search, smaller positive GEH materiality gate, bounded severity relaxation; TD soft-fit backtracking without relaxing native IPF",
+  "mode": "NEW_FRESH_LINEAGE_FROM_CURRENTLY_OPENED_ACCEPTED_VER",
+  "generation_stages": [
+    {
+      "name": "SIGNED_EXPLORE",
+      "through_outer_cycle": 6,
+      "max_od_relative_up": 0.2,
+      "max_od_relative_down": 0.2,
+      "max_add_log_up": 0.12,
+      "max_add_log_down": 0.12,
+      "salary_max_abs_delta_per_block": 0.1,
+      "signed_max_family_global_log_up": 0.1,
+      "signed_max_family_global_log_down": 0.1,
+      "signed_soft_outward_step_factor": 0.5
+    },
+    {
+      "name": "SIGNED_REFINE",
+      "through_outer_cycle": 18,
+      "max_od_relative_up": 0.14,
+      "max_od_relative_down": 0.14,
+      "max_add_log_up": 0.08,
+      "max_add_log_down": 0.08,
+      "salary_max_abs_delta_per_block": 0.08,
+      "signed_max_family_global_log_up": 0.06,
+      "signed_max_family_global_log_down": 0.06,
+      "signed_soft_outward_step_factor": 0.4
+    },
+    {
+      "name": "DISTRIBUTION_FOCUS",
+      "through_outer_cycle": 100,
+      "max_od_relative_up": 0.08,
+      "max_od_relative_down": 0.08,
+      "max_add_log_up": 0.05,
+      "max_add_log_down": 0.05,
+      "salary_max_abs_delta_per_block": 0.05,
+      "signed_max_family_global_log_up": 0.03,
+      "signed_max_family_global_log_down": 0.03,
+      "signed_soft_outward_step_factor": 0.3
+    }
+  ],
+  "generation_backtracking_scales": [
+    1.0,
+    0.75,
+    0.5,
+    0.25,
+    0.125,
+    0.0625
+  ],
+  "generation_max_trials_per_block": 6,
+  "generation_min_cal_relative_improvement": 1e-05,
+  "generation_max_cal_relative_degradation_in_early_exploration": 0.0,
+  "generation_geh20_max_material_new": 5,
+  "generation_geh20_max_single_profile_increase": 4.0,
+  "generation_geh20_max_total_new_excess": 8.0,
+  "all_demand_max_new_geh30": 1,
+  "td_realization_backtracking_scales": [
+    1.0,
+    0.5,
+    0.25,
+    0.125,
+    0.0625,
+    0.03125,
+    0.015625
+  ],
+  "td_min_aggregate_selected_relative_improvement": 0.0005,
+  "td_max_selected_component_relative_degradation": 0.1,
+  "td_max_nonselected_component_relative_degradation": 0.1,
+  "strict_guards_unchanged": [
+    "FRESH_VISUM_ASSIGNMENT_AND_12D_11D_READBACK",
+    "SOURCE_VER_UNCHANGED",
+    "ROLLBACK_TO_ACCEPTED_PARENT",
+    "P_A_BALANCE",
+    "HARD_COEFFICIENT_DOMAIN",
+    "NATIVE_IPF_TOLERANCE",
+    "LONG_FOREIGN_FIXED_MARGINAL_CONTRACT",
+    "NO_DIRECT_OD_MATRIX_WRITES",
+    "NO_SUPPLY_BEFORE_DEMAND_CONVERGENCE"
+  ],
+  "td_early_min_selected_relative_improvement": 0.0005
+}

@@ -1,0 +1,39 @@
+{
+  "native_substage_times": "NOT_MEASURED",
+  "native_visum_available": false,
+  "real_final_cache_available": false,
+  "matrix_reads_per_capture": 36,
+  "full_geometry_streams": 12,
+  "reference_geometry_streams": 2,
+  "legacy_scratch_proof_stores": 10,
+  "default_page_size": 256,
+  "synthetic_legacy_256": {
+    "backend": "LEGACY",
+    "page_size": 256,
+    "times": [
+      12.382809497000153,
+      11.214685433000113,
+      11.808281708999857
+    ],
+    "median_s": 11.808281708999857,
+    "p95_s": 12.325356718200123,
+    "variance_s2": 0.34115875782687427,
+    "provider_calls": [
+      3696,
+      3696,
+      3696
+    ],
+    "peak_process_rss_mib": [
+      192.28515625,
+      193.4453125,
+      190.68359375
+    ],
+    "speedup_vs_legacy": 1.0,
+    "getvalues_each": 36,
+    "full_same_mode_proofs_each": 10,
+    "representative_modes_each": 2,
+    "scratch_databases_each": 10,
+    "median_process_write_bytes": 41652224
+  },
+  "native_phase_times": "NOT_MEASURED"
+}

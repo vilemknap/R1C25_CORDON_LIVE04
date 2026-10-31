@@ -1,0 +1,20 @@
+{
+  "file": "cordon2025/visum_startup.py",
+  "source_sha256": "37d6c2b7ccfd1b4cd9f0318893d09f91e54b9ccdb0d9597b74b54c3ac7b43074",
+  "function": "capture",
+  "source_lines": [
+    282,
+    395
+  ],
+  "preserved_stages": [
+    "parents",
+    "two_representatives",
+    "final_matrices",
+    "final_parent_volumes",
+    "network",
+    "dseg",
+    "source_version",
+    "seal"
+  ],
+  "replaced_stage": "ten_temporary_same_mode_proof_SQLite_stores"
+}

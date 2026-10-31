@@ -1,0 +1,11 @@
+{
+  "status": "FAILED_OOM_DURING_COLD_PERF01",
+  "dataset_geometry_count": 100000,
+  "cgroup_memory_limit_bytes": 4294967296,
+  "cgroup_oom_kill_observed": 1,
+  "phase": "run_01_build",
+  "reference_wall_s": 96.54,
+  "reference_measured_under_concurrent_regression_load": true,
+  "not_used_as_final_speedup": true,
+  "fix": "dictionary-coded repeated segment/family strings; typed arrays via fromiter; eliminate duplicate synthetic evidence parse; release cold objects before load"
+}

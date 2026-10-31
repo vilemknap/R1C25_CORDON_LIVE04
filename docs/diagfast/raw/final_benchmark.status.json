@@ -1,0 +1,18 @@
+{
+  "name": "final_benchmark",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "tools/diagfast_benchmark.py",
+    "--output",
+    "/mnt/data/diagfast_dev/final_benchmark",
+    "--routes",
+    "3000",
+    "--zones",
+    "681",
+    "--repetitions",
+    "3"
+  ],
+  "cwd": "/mnt/data/diagfast_dev/final_benchmark_frozen/R1C25_DIAGFAST",
+  "returncode": 0,
+  "wall_seconds": 147.75529408454895
+}

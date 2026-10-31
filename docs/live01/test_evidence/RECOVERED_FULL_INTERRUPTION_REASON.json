@@ -1,0 +1,4 @@
+{
+  "status": "INTERRUPTED_NOT_A_TEST_PASS",
+  "reason": "Duplicate recovered CP03 baseline replaced by complete regression of final patched code; originals and logs preserved."
+}

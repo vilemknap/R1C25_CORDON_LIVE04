@@ -1,0 +1,9 @@
+{
+  "removed_in_cp03": [
+    "r1_15a2_fresh_baseline_live_preflight_v24916p2c.py",
+    "r1_15a2_safety_v24915p2c3.py"
+  ],
+  "reason": "Run-bound live preflight/extension dependency. Excluded launchers are intentionally not imported into offline 2025. Original bytes remain in CP00 donor archive.",
+  "remaining_libraries": 52,
+  "upstream_io_activate_never_called": true
+}

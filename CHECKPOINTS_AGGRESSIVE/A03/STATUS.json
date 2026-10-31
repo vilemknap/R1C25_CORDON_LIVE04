@@ -1,0 +1,13 @@
+{
+  "apply_permitted": false,
+  "at": "2026-10-22T22:49:42.688573+00:00",
+  "checkpoint": "A03",
+  "cordon_passed": 253,
+  "live_visum_tested": false,
+  "parent_compat_passed": 879,
+  "parent_compat_skipped": 4,
+  "parent_full_expected_identity_failures": 1,
+  "parent_identity_explicit_deselection": 1,
+  "protected_unchanged": 807,
+  "scope": "Final source, tests, synthetic evidence, clean release pending external verification"
+}

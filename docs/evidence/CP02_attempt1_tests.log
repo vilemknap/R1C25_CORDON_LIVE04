@@ -1,0 +1,49 @@
+.F.............                                                          [100%]
+=================================== FAILURES ===================================
+_________________ test_oracle_and_legacy_core_numerical_parity _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_oracle_and_legacy_core_nu0')
+
+    def test_oracle_and_legacy_core_numerical_parity(tmp_path):
+        p,m,e,c=fixture(tmp_path);r=build_from_snapshot(p,m,c,e)
+        oraclepath=ROOT/'docs/readonly_reference/R1_2025_CORDON_READONLY_V1/r1_cordon_2025.py'
+        spec=importlib.util.spec_from_file_location('oracle_2025',oraclepath);oracle=importlib.util.module_from_spec(spec);spec.loader.exec_module(oracle)
+>       ref=oracle.route_diagnostic(p,m,selected_dsegs=c['selected_dsegs'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_incidence.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+db_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_oracle_and_legacy_core_nu0/snapshot.sqlite')
+link_map = {(101, 1, 2): 1, (101, 2, 1): 1, (102, 2, 3): 2, (102, 3, 2): 2, ...}
+
+    def route_diagnostic(db_path, link_map, *, selected_dsegs=None, max_geometry_routes=0):
+        """Read ordered source BLOBs and independently stored segment volumes, no COM export.
+    
+        This is a diagnostic, not an approved calibration incidence operator.
+        Streaming SQL ordering keeps memory proportional to one route and 16x16 counts.
+        """
+        if not selected_dsegs:
+            raise EvidenceError("EXPLICIT_DSEG_SCOPE_REQUIRED")
+        if any(not (isinstance(s,str) and s and (s.startswith("NATIVE_") or s.startswith("EXOG_EE_"))) for s in selected_dsegs):
+            raise EvidenceError("UNVERIFIED_VEHICLE_CATEGORY_SCOPE")
+        if len(set(selected_dsegs))!=len(selected_dsegs):
+            raise EvidenceError("DUPLICATE_DSEG_SCOPE")
+        db=_read_only_sqlite(db_path)
+        counts={method:defaultdict(float) for method in METHODS}
+        raw_hits=Counter()
+        status=Counter()
+        by_dseg=defaultdict(lambda:defaultdict(float))
+        try:
+            tables={v[0] for v in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if not set(REQUIRED_TABLES).issubset(tables):
+                raise EvidenceError("NOT_A_TWO_MODE_15A2_SQLITE_STORE")
+            meta=dict(db.execute("SELECT key,value FROM metadata"))
+            if not str(meta.get("geometry_identity", "")).startswith(("PROVISIONAL", "VERIFIED", "PROVEN", "FULL")):
+>               raise EvidenceError("UNKNOWN_GEOMETRY_STATUS")
+E               oracle_2025.EvidenceError: UNKNOWN_GEOMETRY_STATUS
+
+docs/readonly_reference/R1_2025_CORDON_READONLY_V1/r1_cordon_2025.py:169: EvidenceError
+=========================== short test summary info ============================
+FAILED tests/test_incidence.py::test_oracle_and_legacy_core_numerical_parity - oracle_2025.EvidenceError: UNKNOWN_GEOMETRY_STATUS
+1 failed, 14 passed in 0.30s

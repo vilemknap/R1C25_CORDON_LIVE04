@@ -1,0 +1,23 @@
+{
+  "methods": {
+    "ALL_ORDERED_UNIQUE_PAIRS": {
+      "authority_family": "CORDON_SDP",
+      "calibration": 120,
+      "diagnostic": 0,
+      "identity_sha256": "b476fdb4f0fb78f3c887be1cfb0a62b36ade060da549171d509612b74f94c021",
+      "rows": 120,
+      "uses_2022_profile_count": false,
+      "validation": 0
+    },
+    "EXACT_TWO_HITS": {
+      "authority_family": "CORDON_SDP",
+      "calibration": 120,
+      "diagnostic": 0,
+      "identity_sha256": "b476fdb4f0fb78f3c887be1cfb0a62b36ade060da549171d509612b74f94c021",
+      "rows": 120,
+      "uses_2022_profile_count": false,
+      "validation": 0
+    }
+  },
+  "policy": "WHOLE_FINAL_SYMMETRIC_RPDI_MATRIX"
+}

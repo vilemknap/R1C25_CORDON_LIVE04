@@ -1,0 +1,164 @@
+{
+  "apply_permitted": false,
+  "basis_sha256": "982f426676d67c9a92c326f448d7a85639bdf7f99c90dc6a5ace5b57b8c19b00",
+  "native_ipf_tolerance_relaxed": false,
+  "native_ipf_verified": false,
+  "source_policy_sha256": "c41e28c1ecbaa3bbdef43b259458f6407bfbef6af240d9312282e47e6b83e10f",
+  "status": "OFFLINE_TD_BACKTRACK_PLAN_NOT_VISUM_RESULT",
+  "trials": [
+    {
+      "apply_permitted": false,
+      "c17": {
+        "global_credits_consumed": 0,
+        "physical_pair_allocation": "PRODUCTION_DISABLED",
+        "policy": "DISABLED"
+      },
+      "component_gate": {
+        "passes_soft_fit_only": false,
+        "status": "NATIVE_TD_COMPONENT_LOSSES_NOT_SUPPLIED"
+      },
+      "native_accept_permitted": false,
+      "native_ipf_verified": false,
+      "objective": 0.7736307692307693,
+      "parameter_step": [
+        0.2
+      ],
+      "passes_shadow_cal_gate": true,
+      "relative_cal_improvement": 0.8882533333333333,
+      "scale": 1.0,
+      "status": "OFFLINE_LOCAL_TD_PREDICTION"
+    },
+    {
+      "apply_permitted": false,
+      "c17": {
+        "global_credits_consumed": 0,
+        "physical_pair_allocation": "PRODUCTION_DISABLED",
+        "policy": "DISABLED"
+      },
+      "component_gate": {
+        "passes_soft_fit_only": false,
+        "status": "NATIVE_TD_COMPONENT_LOSSES_NOT_SUPPLIED"
+      },
+      "native_accept_permitted": false,
+      "native_ipf_verified": false,
+      "objective": 3.0781230769230774,
+      "parameter_step": [
+        0.1
+      ],
+      "passes_shadow_cal_gate": true,
+      "relative_cal_improvement": 0.5553822222222223,
+      "scale": 0.5,
+      "status": "OFFLINE_LOCAL_TD_PREDICTION"
+    },
+    {
+      "apply_permitted": false,
+      "c17": {
+        "global_credits_consumed": 0,
+        "physical_pair_allocation": "PRODUCTION_DISABLED",
+        "policy": "DISABLED"
+      },
+      "component_gate": {
+        "passes_soft_fit_only": false,
+        "status": "NATIVE_TD_COMPONENT_LOSSES_NOT_SUPPLIED"
+      },
+      "native_accept_permitted": false,
+      "native_ipf_verified": false,
+      "objective": 4.8080423076923084,
+      "parameter_step": [
+        0.05
+      ],
+      "passes_shadow_cal_gate": true,
+      "relative_cal_improvement": 0.3055050000000001,
+      "scale": 0.25,
+      "status": "OFFLINE_LOCAL_TD_PREDICTION"
+    },
+    {
+      "apply_permitted": false,
+      "c17": {
+        "global_credits_consumed": 0,
+        "physical_pair_allocation": "PRODUCTION_DISABLED",
+        "policy": "DISABLED"
+      },
+      "component_gate": {
+        "passes_soft_fit_only": false,
+        "status": "NATIVE_TD_COMPONENT_LOSSES_NOT_SUPPLIED"
+      },
+      "native_accept_permitted": false,
+      "native_ipf_verified": false,
+      "objective": 5.817420192307693,
+      "parameter_step": [
+        0.025
+      ],
+      "passes_shadow_cal_gate": true,
+      "relative_cal_improvement": 0.1597059722222224,
+      "scale": 0.125,
+      "status": "OFFLINE_LOCAL_TD_PREDICTION"
+    },
+    {
+      "apply_permitted": false,
+      "c17": {
+        "global_credits_consumed": 0,
+        "physical_pair_allocation": "PRODUCTION_DISABLED",
+        "policy": "DISABLED"
+      },
+      "component_gate": {
+        "passes_soft_fit_only": false,
+        "status": "NATIVE_TD_COMPONENT_LOSSES_NOT_SUPPLIED"
+      },
+      "native_accept_permitted": false,
+      "native_ipf_verified": false,
+      "objective": 6.358213701923079,
+      "parameter_step": [
+        0.0125
+      ],
+      "passes_shadow_cal_gate": true,
+      "relative_cal_improvement": 0.08159135416666666,
+      "scale": 0.0625,
+      "status": "OFFLINE_LOCAL_TD_PREDICTION"
+    },
+    {
+      "apply_permitted": false,
+      "c17": {
+        "global_credits_consumed": 0,
+        "physical_pair_allocation": "PRODUCTION_DISABLED",
+        "policy": "DISABLED"
+      },
+      "component_gate": {
+        "passes_soft_fit_only": false,
+        "status": "NATIVE_TD_COMPONENT_LOSSES_NOT_SUPPLIED"
+      },
+      "native_accept_permitted": false,
+      "native_ipf_verified": false,
+      "objective": 6.637636598557695,
+      "parameter_step": [
+        0.00625
+      ],
+      "passes_shadow_cal_gate": true,
+      "relative_cal_improvement": 0.041230269097222175,
+      "scale": 0.03125,
+      "status": "OFFLINE_LOCAL_TD_PREDICTION"
+    },
+    {
+      "apply_permitted": false,
+      "c17": {
+        "global_credits_consumed": 0,
+        "physical_pair_allocation": "PRODUCTION_DISABLED",
+        "policy": "DISABLED"
+      },
+      "component_gate": {
+        "passes_soft_fit_only": false,
+        "status": "NATIVE_TD_COMPONENT_LOSSES_NOT_SUPPLIED"
+      },
+      "native_accept_permitted": false,
+      "native_ipf_verified": false,
+      "objective": 6.779604582331733,
+      "parameter_step": [
+        0.003125
+      ],
+      "passes_shadow_cal_gate": true,
+      "relative_cal_improvement": 0.0207237825520833,
+      "scale": 0.015625,
+      "status": "OFFLINE_LOCAL_TD_PREDICTION"
+    }
+  ]
+}

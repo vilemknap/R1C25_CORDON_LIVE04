@@ -1,0 +1,13 @@
+{
+  "source_stage_port": "PASS",
+  "offline_search": "PASS",
+  "signed_TG_design": "PASS_SYNTHETIC",
+  "TD_parameter_trial_API": "PASS_SYNTHETIC_LOCAL_ONLY",
+  "C17_no_enlargement": "PASS",
+  "heldout_not_used_for_optimization": "PASS",
+  "running_2022_untouched": "NO_CONNECTION_OR_WRITES",
+  "actual_2025_cache": "NOT_SUPPLIED",
+  "native_TG_TD": "NOT_RUN",
+  "real_model_calibration": "BLOCKED",
+  "native_Windows_COM": "NOT_TESTED"
+}

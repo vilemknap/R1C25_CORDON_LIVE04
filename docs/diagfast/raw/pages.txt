@@ -1,0 +1,98 @@
+........................................FF...........                    [100%]
+=================================== FAILURES ===================================
+______________________ test_busy_retries_exact_same_range ______________________
+
+setup = (PosixPath('/tmp/pytest-of-root/pytest-1/test_busy_retries_exact_same_r0/out'), <cordon2025.visum_startup.ReadControl ...True, 'com_retry_initial_delay_seconds': 0.0, ...}, <cordon2025.diagfast_telemetry.Telemetry object at 0x7f74bc4dc5f0>)
+
+    def test_busy_retries_exact_same_range(setup):
+        p=Provider([[1,2,1,10.]]);p.busy=2
+>       assert read(p,512,setup)==p.data
+               ^^^^^^^^^^^^^^^^^
+
+tests/test_diagfast_pages.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_diagfast_pages.py:40: in read
+    return list(fast.rows(SimpleNamespace(_oleobj_=p),columns or two.PARENT_COLUMNS,
+cordon2025/diagfast_pages.py:66: in rows
+    yield from two.bounded_rows(measured,columns,current,control,phase,**details)
+parent/r1_15a2_two_mode_v238.py:242: in bounded_rows
+    raw = com.bounded_ole_invoke_with_retry(
+parent/r1_15a2_com_compat.py:255: in bounded_ole_invoke_with_retry
+    return com_call_with_retry(
+parent/r1_15a2_com_compat.py:170: in com_call_with_retry
+    return call()
+           ^^^^^^
+parent/r1_15a2_com_compat.py:256: in <lambda>
+    lambda: ole.Invoke(memid, 0, kind, True, first, last),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/diagfast_pages.py:38: in Invoke
+    result=self.target.Invoke(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/com_busy.py:116: in Invoke
+    return self.obj.Invoke(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_diagfast_pages.Provider object at 0x7f74bc208550>, mid = 11
+lcid = 0, kind = 1, method = True, first = 1, last = 512
+
+    def Invoke(self,mid,lcid,kind,method,first,last):
+        self.calls.append((first,last))
+        if self.stop:self.stop.touch()
+        if self.busy:
+            self.busy-=1
+>           raise BusyError()
+E           fake_visum_startup.BusyError
+
+tests/test_diagfast_pages.py:22: BusyError
+____________________ test_busy_exhaustion_never_downshifts _____________________
+
+setup = (PosixPath('/tmp/pytest-of-root/pytest-1/test_busy_exhaustion_never_dow0/out'), <cordon2025.visum_startup.ReadControl ...True, 'com_retry_initial_delay_seconds': 0.0, ...}, <cordon2025.diagfast_telemetry.Telemetry object at 0x7f74aff99c70>)
+
+    def test_busy_exhaustion_never_downshifts(setup):
+        p=Provider([]);p.busy=100
+        with pytest.raises(BusyError):read(p,512,setup)
+>       assert p.calls==[(1,512)]*3
+E       assert [(1, 512)] == [(1, 512), (1, 512), (1, 512)]
+E         
+E         Right contains 2 more items, first extra item: (1, 512)
+E         
+E         Full diff:
+E           [
+E               (
+E                   1,
+E                   512,
+E               ),
+E         -     (
+E         -         1,
+E         -         512,
+E         -     ),
+E         -     (
+E         -         1,
+E         -         512,
+E         -     ),
+E           ]
+
+tests/test_diagfast_pages.py:76: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_diagfast_pages.py::test_busy_retries_exact_same_range - fake_visum_startup.BusyError
+FAILED tests/test_diagfast_pages.py::test_busy_exhaustion_never_downshifts - assert [(1, 512)] == [(1, 512), (1, 512), (1, 512)]
+  
+  Right contains 2 more items, first extra item: (1, 512)
+  
+  Full diff:
+    [
+        (
+            1,
+            512,
+        ),
+  -     (
+  -         1,
+  -         512,
+  -     ),
+  -     (
+  -         1,
+  -         512,
+  -     ),
+    ]
+2 failed, 51 passed in 0.90s

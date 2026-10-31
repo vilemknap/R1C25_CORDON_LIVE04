@@ -1,0 +1,14 @@
+{
+  "name": "parent_full",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--junitxml=/mnt/data/diagfast_dev/evidence/parent_full.xml"
+  ],
+  "cwd": "/mnt/data/diagfast_dev/test_frozen/R1C25_DIAGFAST/parent",
+  "returncode": 1,
+  "wall_seconds": 23.813119649887085
+}

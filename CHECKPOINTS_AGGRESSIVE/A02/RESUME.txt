@@ -1,0 +1,1 @@
+Restore isolated source from this snapshot. Read docs/aggressive/IMPLEMENTATION_PLAN.json and checkpoint status. Do not attach Visum or change 2022.

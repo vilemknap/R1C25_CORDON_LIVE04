@@ -1,0 +1,43 @@
+{
+  "apply_permitted": false,
+  "baseline_state": {
+    "apply_permitted": false,
+    "capture_policy": "FRESH_CAPTURE_THIS_INVOCATION",
+    "current_model_fingerprint": "366be9ec7383e2aacfd7d03e221eebf412060029f30c8cb135a655fe19b861e5",
+    "demand_sha256": "13f99a67fcea270e3fce953eea3c787beea9af56bb53ce65eb5af913012546ab",
+    "historical_2022_cache_used": false,
+    "network_sha256": "91e5d5a3dcac7ac3e0388950525f8c2e9d5e319de135ade5b509a50519ff687c",
+    "new_assignment_verified": false,
+    "production_ready": false,
+    "saved_paths_read_from_current_injected_model": true,
+    "schema": "LIVE01_CAPTURE_BINDING_V1",
+    "source_snapshot_sha256": "dcd788e7af63b0f2e89d45a102ddd8efc842f92a9dcf7e03d77bcb232c5ddc2b"
+  },
+  "calibration_ready": false,
+  "candidate_effect_verified": false,
+  "checkpoint_manifest": "RUN_CHECKPOINT.json",
+  "current_model_fingerprint": "366be9ec7383e2aacfd7d03e221eebf412060029f30c8cb135a655fe19b861e5",
+  "execution_kind": "MOCK",
+  "fresh_assignment_required_after_candidate": true,
+  "fresh_live_readback_required_before_any_write": true,
+  "native_candidate_accepted": false,
+  "preflight_authority": "MODEL_READBACK.json",
+  "proposed_tg_candidate": {
+    "ALL_ORDERED_UNIQUE_PAIRS": {
+      "candidate_count": 64,
+      "proposal_path": "ALL_ORDERED_UNIQUE_PAIRS/PROPOSED_TG_CANDIDATES.json",
+      "proposal_sha256": "1e5ff6e3e5d0393c9f37782c2b0b61378e7f0baf25cfacb51a1ac58096dca6ce",
+      "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED"
+    },
+    "EXACT_TWO_HITS": {
+      "candidate_count": 64,
+      "proposal_path": "EXACT_TWO_HITS/PROPOSED_TG_CANDIDATES.json",
+      "proposal_sha256": "e9e8b06fe0f6399e6fda50f4e7c4a14f489590607ef16e05742c6702a76eceaa",
+      "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED"
+    }
+  },
+  "restore_proof_needed": true,
+  "schema": "CORDON_LIVE02_HANDOFF_V1",
+  "source_state_scope": "SAME_INVOCATION_CAPTURE_AND_FINAL_READBACK_NOT_FUTURE_EPOCH",
+  "variant_selection": "NOT_ACCEPTED_DIAGNOSTIC_ALTERNATIVES"
+}

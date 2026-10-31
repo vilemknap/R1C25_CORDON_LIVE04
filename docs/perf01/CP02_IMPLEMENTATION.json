@@ -1,0 +1,20 @@
+{
+  "status": "IMPLEMENTED_BASIC_BUILD_HIT_SMOKE_PASS_FULL_NEGATIVES_RUNNING",
+  "modules": [
+    "perf01_identity.py",
+    "perf01_codec.py",
+    "perf01_cache.py"
+  ],
+  "cli": [
+    "--reuse-cache-dir",
+    "--reuse-policy",
+    "--reuse-context",
+    "--source-checkpoint",
+    "--legacy-incidence-output"
+  ],
+  "cold_oracle_retained": true,
+  "one_shared_od_audit": true,
+  "new_assignment_reuse": false,
+  "initial_full_test_attempt": "INTERRUPTED_AT_200_SECONDS_NOT_PASS",
+  "next": "CP03 full tests and fixes"
+}

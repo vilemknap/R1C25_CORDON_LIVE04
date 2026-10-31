@@ -1,0 +1,29 @@
+{
+  "name": "recovered_baseline_nonstart",
+  "cwd": "/mnt/data/cordon_recovery_20261023/recovered/R1_CORDON_AGGRESSIVE_STARTUP_FIX1_20261023",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--disable-warnings",
+    "--junitxml=/mnt/data/cordon_recovery_20261023/evidence/recovered_baseline_nonstart.xml",
+    "tests",
+    "--ignore=tests/test_visum_startup.py",
+    "--ignore=tests/test_visum_bootstrap.py"
+  ],
+  "native_visum": false,
+  "platform": "linux",
+  "returncode": 0,
+  "status": "PASS",
+  "elapsed_seconds": 24.03564531500001,
+  "counts": {
+    "tests": 270,
+    "passed": 270,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

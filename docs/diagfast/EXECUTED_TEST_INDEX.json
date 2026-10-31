@@ -1,0 +1,82 @@
+{
+  "final_full_tests": {
+    "name": "final_full_tests",
+    "command": [
+      "/opt/pyvenv/bin/python",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "--junitxml=/mnt/data/diagfast_dev/evidence/final_full_tests.xml"
+    ],
+    "cwd": "/mnt/data/diagfast_dev/final_test_frozen/R1C25_DIAGFAST",
+    "returncode": 0,
+    "wall_seconds": 455.516553401947
+  },
+  "final_benchmark": {
+    "name": "final_benchmark",
+    "command": [
+      "/opt/pyvenv/bin/python",
+      "tools/diagfast_benchmark.py",
+      "--output",
+      "/mnt/data/diagfast_dev/final_benchmark",
+      "--routes",
+      "3000",
+      "--zones",
+      "681",
+      "--repetitions",
+      "3"
+    ],
+    "cwd": "/mnt/data/diagfast_dev/final_benchmark_frozen/R1C25_DIAGFAST",
+    "returncode": 0,
+    "wall_seconds": 147.75529408454895
+  },
+  "final_overhead": {
+    "name": "final_overhead",
+    "command": [
+      "/opt/pyvenv/bin/python",
+      "tools/diagfast_timing_overhead.py",
+      "--output",
+      "/mnt/data/diagfast_dev/final_overhead",
+      "--routes",
+      "3000",
+      "--zones",
+      "681",
+      "--repetitions",
+      "3"
+    ],
+    "cwd": "/mnt/data/diagfast_dev/final_overhead_frozen/R1C25_DIAGFAST",
+    "returncode": 0,
+    "wall_seconds": 81.17481660842896
+  },
+  "parent_full": {
+    "name": "parent_full",
+    "command": [
+      "/opt/pyvenv/bin/python",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "--junitxml=/mnt/data/diagfast_dev/evidence/parent_full.xml"
+    ],
+    "cwd": "/mnt/data/diagfast_dev/test_frozen/R1C25_DIAGFAST/parent",
+    "returncode": 1,
+    "wall_seconds": 23.813119649887085
+  },
+  "parent_compat": {
+    "name": "parent_compat",
+    "command": [
+      "/opt/pyvenv/bin/python",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "--junitxml=/mnt/data/diagfast_dev/evidence/parent_compat.xml",
+      "-k",
+      "not test_v24915_config_runtime_bundle_and_lineage_are_hash_locked"
+    ],
+    "cwd": "/mnt/data/diagfast_dev/test_frozen/R1C25_DIAGFAST/parent",
+    "returncode": 0,
+    "wall_seconds": 23.742719173431396
+  }
+}

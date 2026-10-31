@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/mnt/data/cordon_aggressive_work/R1_2025_CORDON_AGGRESSIVE_V1_20261023/tools/benchmark_aggressive.py", line 64, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/mnt/data/cordon_aggressive_work/R1_2025_CORDON_AGGRESSIVE_V1_20261023/tools/benchmark_aggressive.py", line 30, in main
+    aggressive=effective_config(aggressive,1)
+  File "/mnt/data/cordon_aggressive_work/R1_2025_CORDON_AGGRESSIVE_V1_20261023/cordon2025/aggressive_policy.py", line 76, in effective_config
+    assert_offline_contract(cfg)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/mnt/data/cordon_aggressive_work/R1_2025_CORDON_AGGRESSIVE_V1_20261023/cordon2025/aggressive_policy.py", line 55, in assert_offline_contract
+    require(cfg.get('mode') == 'OFFLINE_PROPOSAL' and cfg.get('apply') is False,
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            'AGGRESSIVE_OFFLINE_ONLY')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/cordon_aggressive_work/R1_2025_CORDON_AGGRESSIVE_V1_20261023/cordon2025/common.py", line 40, in require
+    raise ContractError(message)
+cordon2025.common.ContractError: AGGRESSIVE_OFFLINE_ONLY

@@ -1,0 +1,208 @@
+{
+  "profile": "PRACTICAL_V1",
+  "settings": [
+    {
+      "setting": "max_dense_matrix_cells",
+      "before": 10000000,
+      "after": 25000000,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "max_parent_rows_per_dseg",
+      "before": 1500000,
+      "after": 5000000,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "max_geometry_rows_per_mode",
+      "before": 100000000,
+      "after": 1000000000,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "max_store_gib",
+      "before": 12.0,
+      "after": 0.0,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "min_free_disk_gib",
+      "before": 1.0,
+      "after": 0.5,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "od_parity_atol",
+      "before": 1e-06,
+      "after": 1e-05,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "od_parity_rtol",
+      "before": 1e-06,
+      "after": 1e-05,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "matrix_sum_atol",
+      "before": 1e-06,
+      "after": 0.001,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "matrix_sum_rtol",
+      "before": 1e-08,
+      "after": 1e-07,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "com_retry_attempts",
+      "before": 64,
+      "after": 128,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "com_retry_max_elapsed_seconds",
+      "before": 75.0,
+      "after": 180.0,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "page_size",
+      "before": 256,
+      "after": 256,
+      "scope": "capture startup",
+      "unit": "see setting name"
+    },
+    {
+      "setting": "internal_sum_atol",
+      "before": 1e-08,
+      "after": 1e-06,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "internal_sum_rtol",
+      "before": 1e-10,
+      "after": 1e-08,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "c17_solver_tolerance",
+      "before": 1e-09,
+      "after": 1e-07,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "c17_projection_tolerance",
+      "before": 1e-11,
+      "after": 1e-08,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "feasibility_atol",
+      "before": 1e-05,
+      "after": 0.001,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "feasibility_rtol",
+      "before": 0.0,
+      "after": 1e-06,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "feasibility_solver_tolerance",
+      "before": 1e-14,
+      "after": 1e-10,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "feasibility_kkt_tolerance",
+      "before": 1e-06,
+      "after": 1e-05,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "objective_comparison_atol",
+      "before": 1e-10,
+      "after": 1e-08,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "objective_comparison_rtol",
+      "before": 0.0,
+      "after": 1e-10,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "generation_min_relative_improvement",
+      "before": 1e-05,
+      "after": 1e-06,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "td_min_relative_improvement",
+      "before": 0.0005,
+      "after": 5e-05,
+      "scope": "offline optimizer / numerical contract"
+    },
+    {
+      "setting": "solver_tolerance",
+      "before": 1e-12,
+      "after": 1e-09,
+      "scope": "solver configuration"
+    },
+    {
+      "setting": "kkt_tolerance",
+      "before": 1e-06,
+      "after": 1e-05,
+      "scope": "solver configuration"
+    },
+    {
+      "setting": "per_OD_quantization_envelope",
+      "before": "disabled; hard ceiling 1e-6",
+      "after": "atol+rtol*Q+0.5*quantum*actual_path_count only on measured compatible lattice",
+      "scope": "capture AND external sealed cache"
+    },
+    {
+      "setting": "outer_cycle_above_100",
+      "before": "blocked",
+      "after": "continue bounded DISTRIBUTION_FOCUS for explicit offline proposal",
+      "scope": "PRACTICAL_V1 only"
+    }
+  ],
+  "new_precision_policy": {
+    "aggregate_abs_floor": 0.01,
+    "atol": 1e-05,
+    "lattice_atol": 1e-09,
+    "max_l1_relative_error": 0.001,
+    "max_net_relative_error": 0.0001,
+    "max_zero_flow_relative_mass": 0.0001,
+    "missing_path_cell_atol": 0.0005,
+    "path_volume_quantum": 0.001,
+    "rtol": 1e-05,
+    "schema": "CORDON_PATH_MATRIX_PARITY_V3"
+  },
+  "preserved": [
+    "C17 physical accounts",
+    "OD and parameter step bounds",
+    "ridge and L1",
+    "survey epsilon",
+    "CAL/VALID separation",
+    "source and cache integrity",
+    "full geometry identity",
+    "no live writes",
+    "original native IPF"
+  ]
+}

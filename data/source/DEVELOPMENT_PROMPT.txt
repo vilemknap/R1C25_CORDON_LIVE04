@@ -1,0 +1,478 @@
+R1 2025 – VÝVOJOVÝ PROMPT PRO REŽIM PRO
+KORDÓNOVÁ KALIBRACE NAD SKUTEČNÝMI CESTAMI VISUMU / 15A2
+Verze zadání: 2026-10-19 | Typ práce: implementace samostatné vývojové větve, offline ověření, bezpečný handoff
+
+======================================================================
+0. TVOJE ROLE A ZÁVAZNÝ CÍL
+======================================================================
+
+Jsi hlavní vývojový agent projektu R1. Já jsem systémový architekt. Pracuj samostatně: forenzní audit zdrojů, návrh přesných kontraktů, implementace, regresní testy, checkpointy a finální balík. Nestačí pouze další obecný návrh. Kde nelze něco věcně rozhodnout z dostupných důkazů, vytvoř explicitní blokující gate a vyznač varianty; nedoplňuj chybějící data domněnkami.
+
+Zadání: připrav NOVOU, ODDĚLENOU větev kalibrátoru pro MODEL R1 2025, jejíž první observační vrstvou budou kordónové průzkumy SDP1–SDP16 z roku 2026. Kalibrátor má porovnávat a později optimalizovat intenzity VOZIDEL na skutečných, uložených modelových cestách mezi stanovišti proti pozorovaným vztahům kordónové OD matice. Toleranci/nejistotu relací odvozuj primárně z dopravy s neznámým druhým koncem evidované ve virtuální zóně C17, s konzistentní bilanční kontrolou bez dvojího čerpání. Do dalších etap se přidají profily a dvě křižovatky; v této etapě nezaváděj jejich plnou kalibraci.
+
+Zachovej vývojovou kontinuitu s R1_15A2 V2.4.9.15 (nebo doloženým aktuálnějším, kompatibilním snapshotem), zejména jeho optimalizovaný COM přístup, reprezentaci skutečných cest v SQLite, TG/TD realizaci poptávky, checkpointy, rollback a acceptance mechanismy. NEVYVÍJEJ druhý nezávislý produkční exportér tras ani nový kalibrační controller od nuly.
+
+ZÁSADNÍ BEZPEČNOST: ZATÍM PARALELNĚ BĚŽÍ KALIBRACE MODELU 2022. NIKDY NEZASAHUJ DO JEJÍHO BĚHU, otevřené instance Visumu, checkpointů, konfigurací, zdrojů, sdílených cache ani výstupních složek. Tato práce musí být od počátku 2025-only fork, s izolovaným pracovním adresářem, oddělenými názvy, identitami a výstupy. Žádný produkční APPLY ani spuštění Visumu na živé instanci bez mého výslovného souhlasu. Výchozí režim je READ-ONLY/OFFLINE_PROPOSAL a apply=false.
+
+======================================================================
+1. KONKRÉTNÍ VSTUPY A PRIORITA ZDROJŮ
+======================================================================
+
+Nejdříve skutečně otevři, inventarizuj a hashuj dostupné zdroje; nespoléhej jen na starší slovní shrnutí. K dispozici v této konverzaci/projektu jsou zejména:
+
+A. AKTUÁLNÍ PARENT ENGINE
+- R1_15A2_V2_4_9_15_COM_BUSY_RETRY_SAFE_FINALIZER_20261019(1).zip
+- Konfigurace v ZIP: R1_15A2_CONFIG_V2_4_9_15.json.
+- Moduly v ZIP: r1_15a2_core.py, r1_15a2_two_mode_v238.py,
+  r1_15a2_two_mode_adapter_v238.py, r1_15a2_runtime_v1.py,
+  r1_15a2_com_compat.py, r1_15a2_overnight_controller_v240.py a v242.py.
+- Relevantní dokumentace: README_R1_15A2_V2_4_9_15_COM_BUSY_RETRY_SAFE_FINALIZER_CZ.md,
+  V24915_IMPLEMENTATION_AND_TEST_REPORT.md a testy.
+- Závěrečný známý důkaz balíku: 783 passed / 4 skipped / 0 failed v jeho evidenci;
+  real_visum_tested=false a production_ready=false pro tehdejší V24915 hotfix.
+  To není důkaz, že nová větev 2025 byla někdy živě otestována.
+- CP86_V24916_FLOWBUNDLE_SKIM_INTEGRATION_DESIGN_20261019(2).zip:
+  POUZE DESIGN navazujícího FlowBundle/skim targetingu; není to hotová
+  kordónová kalibrace ani automatická náhrada V24915.
+
+B. JIŽ PŘIPRAVENÁ PŘEDBĚŽNÁ VĚTEV 2025 (POUZE EVIDENCE)
+- R1_2025_CORDON_READONLY_V1_20261019.zip
+  Obsahuje r1_cordon_2025.py, 8 syntetických/offline testů, statické
+  authority CSV, stanovištní C17 audit a audit starších výstupů.
+  V1 rozlišuje režimy ALL_ORDERED_UNIQUE_PAIRS vs EXACT_TWO_HITS, ani jeden
+  však zatím NENÍ SCHVÁLEN jako definice pozorování. 2025 skutečná
+  TWO_MODE_PATH_STORE.sqlite zde nebyla dodána. V1 NEOPTIMALIZUJE.
+- R1_2025_CORDON_OLDER_OUTPUTS_AUDIT_20261019/OLDER_OUTPUTS_AUDIT_REPORT.md.
+
+C. KORDÓNOVÉ AUTORITY A KONTROLY
+- D1 - empirické OD matice + dopočet SDP a nerozpoznaných vozidel.xlsx
+- D2 - finálne OD matice + symetrizácia.xlsx
+- D3 - OD matice prepočítané Lohseho metódou.xlsx
+- Sprievodná správa_Final.docx (zejména definice směrů, EČV, C17,
+  kap. 6.4–6.8; sekce o výpadku SDP4 jsou separátní metodika).
+- R1_2026_KORDON_OD_RPDI_PRIMARY_ALL_NONVIRTUAL(4).csv
+  [případně ekvivalentní verze (3)].
+- R1_2026_KORDON_STATION_LINK_MAPPING_CONFIRMED_V1(4).csv
+  a odpovídající *_FOR_FLOWBUNDLE_CONFIRMED_V1(4).json.
+- R1_KORDON_D1_D2_D3_RELATION_AUDIT_V2_20261016.csv
+  a R1_KORDON_D1_D2_D3_AUDIT_SUMMARY_20261016.json.
+- R1_2025_CORDON_READONLY_V1/data/C17_STATION_BY_CATEGORY_RPDI.csv
+  a C17_CLASS_SUMMARY_RPDI.csv.
+
+D. STARŠÍ TECHNICKÉ DŮKAZY (INFORMAČNÍ, NIKOLIV NUMERICKÁ AUTORITA)
+- R1_15L_KORDON_STATION_PAIR_FLOWBUNDLE_EXPORT_V1_1.py, README a jeho výstupy.
+- R1_15M_ACTUAL_ASSIGNMENT_PATH_COM_PROBE_V1_1_SCRIPTDIR_OUT.py.
+- R1_15N_EXPORT_ALL_PRT_PATH_LISTS_V1.py, 00_SUMMARY, 99_ERRORS,
+  04_PRT_PATHLINKS_ALL.csv a případná diagnostika 17A.
+- R1_15A2 V2.4.5 jako starší zdroj nápadů, NE jako nový parent.
+- Projektové vývojové kontexty Bilevel-vyvoj-kontext*.txt, pokud něco chybí.
+
+Použij konkrétní přílohy a případně projektový Google Drive. Pokud některý
+soubor není k dispozici, dohledej ho v projektu, pak zaznamenej chybějící
+artefakt a pokračuj tam, kde je to bezpečné; neinventuj jeho obsah.
+
+======================================================================
+2. FAKTA A ZJIŠTĚNÍ, KTERÁ MUSÍŠ OVĚŘIT
+======================================================================
+
+- Fyzická kordónová síť má 16 schválených stanovišť a 32 směrových linkových
+  klíčů (LinkNo, FromNodeNo, ToNodeNo). Samotné LinkNo nestačí k rozlišení
+  směru. Zvláštní manuálně potvrzené mapování SDP16 je link 2004231.
+  Každé mapování ověř proti identitě konkrétní sítě 2025.
+- Kordónové OD cíle existují pro OA/LNA/STNA/TNA/BUS. První etapa optimalizace
+  je výhradně OA. Pětikategoriální 16x16 tabulka má 1 280 buněk včetně
+  diagonál; u OA 240 orientovaných mimodiagonálních dvojic.
+- Finální D3 = SYMETRIZOVANÉ a Lohseho metodou expandované RPDI z D2/D1.
+  D1 FINAL EMPIRICKÉ = D2 FINAL a D2 SYM = D3 M0 byly v předchozím auditu
+  ověřeny po pěti kategoriích. Zkontroluj znovu podle vstupních hashů.
+- Referenční auditní čísla (NE univerzální hardcode):
+  OA známé fyzické relace v D3 ALL_RPDI: 76 522 voz./den;
+  všech 5 kategorií známé relace: 97 312 voz./den;
+  OA jeden C17 symetrický marginál: 48 645;
+  všech 5 kategorií jeden C17 marginál: 56 804.
+  Speciální „vjazd-výjazd“ ponechat odděleně.
+- V D1 je evidováno 1 218 klasifikačně „Nerozpoznané“ detekcí; podle
+  předchozího auditu bylo 848 přiřazeno fyzickým relacím SDP1–16.
+  To NENÍ totéž jako obsáhlá skupina jednostranně identifikovaných
+  jízd C17. Nelze tvrdit, že všech 1 218 je pouze v C17, ani je k RPDI
+  přičítat podruhé. Ujasni skutečnou evidenční vazbu z D1.
+- C17 NENÍ sedmnácté fyzické stanoviště. Znamená chybějící/neznámý druhý
+  konec. Je to rozpočet nejistoty, NE automaticky rozdělitelná doprava
+  mezi všemi dvojicemi fyzických SDP.
+- D3 obsahuje symetrii dodanou zpracováním. Směrově asymetrické D1/D2
+  před-sym hodnoty nesmí být automaticky nahrazeny tvrzením „měření bylo
+  symetrické“. Nejprve ověř původní význam řádků/sloupců (VÝSTUP/VSTUP)
+  vzhledem k orientaci fyzických linků ve Visumu.
+- Dopravní průzkum je 2026, modelová poptávka má označení 2025, verze
+  dopravní sítě má SAMOSTATNOU identitu. Rok a síť nikdy nesměšuj.
+  Dokud není schválený 2026->2025 referenční most, výsledky jsou scénář,
+  nikoli certifikovaná kalibrace 2025.
+
+======================================================================
+3. NEPŘEKROČITELNÉ METODICKÉ A TECHNICKÉ PODMÍNKY
+======================================================================
+
+A) SKUTEČNÉ CESTY, ŽÁDNÉ NÁHRADY
+Predikci SDP->SDP postav POUZE na skutečných uložených PrT assignment
+paths/routes dané verze Visumu a jejich skutečných Vol(AP), nikoli na
+Dijkstrově náhradní nejkratší trase. FlowBundle se dvěma linkovými
+podmínkami sám negarantuje pořadí jejich průjezdu. Je pomocná diagnostika,
+ne produkční orientovaná incidence. Starý 15N používá nedávkovaný
+SaveToArray() a osobní path-link exporty v minulosti selhaly.
+
+B) VYUŽIJ 15A2 SQLITE A NEMĚŇ BĚŽÍCÍ 2022
+V24915 ukládá skutečně seřazené směrové linky v geometry.edge_ids,
+čísla/linkové klíče v edges a objemy po segmentu v volumes. Novou
+kordónovou incidenci stav nad touto SQLite cache s streaming/agregací;
+neprováděj opět plný COM export tras, pokud není nezbytný nový
+schválený 2025 baseline. Existující cache z jiné sítě/roku NENÍ autorita.
+Při zpracování 2025 používej pouze kopii stabilního dokončeného snapshotu.
+
+C) KORDÓNOVÉ RELACE ZŮSTÁVAJÍ METODICKY OTEVŘENÉ
+Starý r1_15a2_core.py má build_actual_path_incidence() a umí
+ALL_ORDERED_UNIQUE_PAIRS; starší 17A diagnostikovala EXACT_TWO_HITS.
+Tyto způsoby dávají odlišné výsledky. Délka sekvence průchodů či
+opakování SDP mohou vytvářet překryvy a mnohonásobná započtení.
+NEPŘEVÁDĚJ příklad SDP16->SDP4->SDP7 z metodiky DOPLŇOVÁNÍ
+VÝPADKU SDP4 na obecné pravidlo enumerace nebo jednu cestu=jedna OD
+kordónová relace. Je to oddělené téma; uživatel tento omyl výslovně
+opravil. Zachovej pořadí průchodů; bez metodické autority vykazuj obě
+hypotézy odděleně jako DIAGNOSTIC_ONLY. Každé opakované/oscilační
+stanoviště musí mít flag a kontrolovanou politiku, ne tiché odfiltrování.
+
+D) DEMAND SCOPE
+OA modelový celkový proud musí obsahovat všechny skutečně přispívající
+NATIVE_* a EXOG_EE_* OA segmenty (zvlášť WORK/SERVICE/LONG/FOREIGN a
+varianty C/C_noT podle skutečného DSeg inventáře). Neměnitelné segmenty
+patří do PREDIKCE, ale nesmějí se dostat mezi AKTUÁTORY bez oprávnění.
+Současný 2022 config obsahuje jen NATIVE_CW/CW_noT/CS/CS_noT,
+include_exog_ee_paths=false a enable_kordon_pairs=false; není to úplný
+2025 OA observační scope. Všechny změny těchto voleb pouze v kopii 2025.
+Nelze předpokládat, že shodný parent path key v C a C_noT znamená shodnou
+geometrii. Současná shared-geometry cache je u některých autorit PROVISIONAL.
+Výsledky proto označ conditional/unapproved, dokud není geometrická
+identita pro požadované segmenty prokázána.
+
+E) PROMÍTNUTÍ ZMĚN DO MODELU
+Nikdy nemanipuluj pouze s uloženým Vol(AP) a netvrď, že jsi změnil
+Visum assignment. Výstup řídké OD optimalizace je požadovaná korekce,
+kterou je nutné převést přes stávající legitimní TG/TD aktuátory;
+později teprve znovu spočítat assignment Visumu. Případný nový
+přímý OD aktuátor může vzniknout jen jako samostatně schválená etapa
+s vlastními guardy. Respektuj zmrazené foreign/long/mode components,
+což aktuální parent engine již explicitně rozlišuje.
+
+F) FAIL CLOSED
+Chybějící rok, druh dopravy, směr, geom. identita, segment, path parity,
+C17 lineage nebo chybějící schválení definice relace nemají vést k
+„optimistickému PASS“. Systém musí přesně odlišovat
+STATIC_PASS / DIAGNOSTIC_PASS / OFFLINE_SOLVER_PASS /
+UNAPPROVED_OBSERVATION_SEMANTICS / NO_2025_PATH_CACHE /
+NOT_LIVE_TESTED / APPLY_BLOCKED.
+
+======================================================================
+4. CÍLOVÁ MATEMATIKA: KORDÓNOVÁ INCIDENCE Z CEST
+======================================================================
+
+Použij následující formální model a zpřesni jej podle skutečného 15A2 API.
+
+Pro uloženou geometrii g určuj uspořádané station hits S(g), vždy přes
+PŘESNÝ směrový klíč (link_no, from_node_no, to_node_no). Zvolené a
+ZDŮVODNĚNÉ pravidlo mapování na observační řádek r=(i,j) dává koeficient
+I[r,g] (binární nebo explicitní multiplicita – podle auditované sémantiky).
+
+Segment m a Visum OD pár k=(o,d) mají trasové objemy v[g,m].
+Modelová predikce r je:
+
+  qhat[r] = SUM_m SUM_g ( I[r,g] * v[g,m] ).
+
+Pro každé měnitelné OD k,m je Q[k,m]=SUM_g v[g,m] a při Q>0 fixovaný
+podíl tras p[g|k,m]=v[g,m]/Q[k,m]. Řídká citlivost je:
+
+  H[r,k,m] = SUM_g ( I[r,g] * p[g|k,m] )
+  qhat_trial[r] ~= qhat_base[r] + SUM_mutable(k,m) H[r,k,m]*delta_Q[k,m].
+
+Nepřepisuj existující sparse operátor 15A2. Rozšiř standardní incidence
+kontrakt o profil řádků KORDON_PAIR a jejich přímou predikci, mutable/fixed
+část, řádkový metadata a explicitní validitu metody.
+
+Požadované diagnostiky: all routes, hit counts, ambiguous repeats,
+zero-link, geometry coverage, unknown SDP links, per-DSeg VOL(AP) parity,
+per-OD share sums, fixed vs mutable share, případné zdvojení relací
+na jedné trase, porovnání historických dvou konvencí, reverse pairs,
+rozdíl modelovaných směrů a survey symetrie.
+
+Výkonnost: projektuj z jedné geometry dekódované ze SQLite maximálně
+jednou; station postings/index a agregované sparse matice. Vyhni se
+O(Npaths * 240) a vytvoření obřího Python objektu na každou path x pair.
+Při opětovném použití epochy musí nová živá OD poptávka projít stávajícím
+PATH_EPOCH_NEW_POSITIVE_OD_REQUIRES_REENUMERATION gate a pravidly
+zero-share residual; měnící se trasy nelze maskovat lineárním přepočtem.
+
+======================================================================
+5. CÍLE A NEJISTOTA C17 – PŘESNÝ BEZPEČNÝ KONTRAKT
+======================================================================
+
+Primární známé cíle OA: fyzické SDP1–SDP16, bez virtuálních řádků,
+v RPDI úrovni odpovídající modelovým vozidlům za stejnou časovou bázi.
+V první etapě zvaž jako hlavní kalibrační observable neorientovaný
+DVOUSMĚRNÝ SOUČET (i,j)+(j,i), protože D3 je zpracovatelsky symetrická.
+Současně povinně reportuj oba směry samostatně a porovnávej je s
+před-symetrickými D1/D2 jako DIAGNOSTIC, dokud není schválen jejich
+převod do RPDI. Nevydávej směrové D3 buňky za surově naměřené směry.
+
+C17 není další požadovaný modelový fyzický proud. Je to zdroj sdílené,
+stanovištní a kategoriální NEJISTOTY; její individuální fyzické relace
+neznáme. Zejména NEDĚLEJ toto:
+- nepřičítej C17 plošně k již zpracovaným známým hodnotám D3;
+- nevytvářej pro každou dvojici nezávislé ±B_i nebo ±B_j;
+- neodečítej celou C17 od známých vztahů;
+- nepoužívej součet řádku a sloupce symetrické D3 jako dva na sobě
+  nezávislé fyzické balíky vozidel;
+- nemíchej klasifikačně nerozpoznaných 1 218 detekcí s objemem
+  jednostranně známé dopravy C17 ani je nepočítej dvakrát.
+
+Implementuj MODUL C17 budget s přesným provenienčním účtováním:
+1. zdroj D2 pre-sym pro původní směrově odlišné řádky/sloupce,
+2. zdroj D3 RPDI pro odpovídající expandované marginály,
+3. propojení přepočtů a vyloučení speciální „vjazd-výjazd“,
+4. stanoviště/kategorie/časová báze/počáteční dostupný budget,
+5. zůstatek po případné alokaci, agregované bilanční testy.
+
+KANDIDÁTNÍ optimalizační formulace (podmíněná metodickým schválením):
+
+  min_{delta_Q,u}  SUM_r w_r * rho_eps(
+                        qhat_base[r] + H[r,:]*delta_Q - y[r] - u[r])
+                     + lambda_2*||delta_Q||_2^2
+                     + lambda_1*||delta_Q||_1
+                     + lambda_u*Psi(u)
+
+  u[r] >= 0,  u není povinné čerpat;
+  SUM_j u_ij <= B_out_i,
+  SUM_i u_ij <= B_in_j;
+  navíc globální kompatibilita jedné fyzické evidence C17,
+  aby jedna nespárovaná událost nemohla být čerpána vícekrát.
+
+POZOR: Tyto nerovnosti jsou zatím STRUKTURNÍ NÁVRH, nikoli důkaz, že
+každou jednotku C17 lze fyzicky přidělit ke dvěma konkrétním SDP.
+Prozkoumej identifikovatelnost (co lze zjistit z jednostranné detekce),
+směrovou/symetrickou interpretaci a možnou jednostrannou horní odchylku.
+Pokud neexistuje dostatečný průkazný mechanismus alokace mezi páry,
+zaveď místo neobhajitelné pseudoalokace konzervativní rozpočtově
+omezenou diagnostickou/toleranční relaxaci a explicitně drž
+pairwise u[r] PRODUCTION_DISABLED. Navrhni i oddělenou malou
+oboustrannou epsilon složku pro chybu měření/expanze – nesmíš ji
+bez dat vydávat za statistický interval spolehlivosti.
+
+Uvnitř schváleného tolerančního pásma penalizace může být nulová
+(deadband / interval loss). Penalizace čerpání u musí bránit tomu, aby
+optimalizátor vysvětlil vše C17 namísto změny modelu. Rozpočet C17
+nikdy nesmí zničit identitu a směrovou konzistenci pozorování.
+
+Používej CAL/VALID split bez úniku protisměrů jedné dvojice do
+opačných skupin; v prvním běhu pouze interní diagnostiku a jasný
+holdout. V budoucnu se budou na profily a dvě křižovatky aplikovat
+společné kontroly, takže aktuální návrh musí mít rozšiřitelný kontrakt
+observation type / category / role / weight / bounds / source hashes.
+
+======================================================================
+6. OPTIMALIZACE A REÁLNÁ REALIZOVATELNOST
+======================================================================
+
+Zachovej existující R1_15A2 solver (sparse least squares / signed
+guidance, jeho aktuální regularizaci, limity a trust region). Nesnaž
+se zbytečně zavést miliony trasových decision variables ani nezávislé
+násobiče linků. Kordónové ztráty připoj jako nový typ observačních
+řádků; pro společnou C17 alokaci můžeš využít projekci na omezený
+polytope, blokovou aktualizaci nebo menší konvexní podproblém.
+Vyber nejjednodušší reprodukovatelnou implementaci, dolož konvergenci,
+přípustnost a rychlost. Nevol implicitně solver s neověřenou
+velkoobjemovou materializací.
+
+Zásadně odděl tři vrstvy:
+  (i) modelový target diagnostika / skutečné saved paths;
+  (ii) shadow OD correction guidance delta_Q;
+  (iii) skutečně realizovatelné změny stávajícími 15A2 TG/TD aktuátory.
+
+Pro (iii) využij existující projection-to-marginals, generaci a
+TD/FineCDF mechanismus. Dolož pro každý návrh jeho dosažitelnost nebo
+residual nedosažitelnosti. Pokud Q korekce nelze provést legálními
+aktuátory, vrať INFEASIBLE_TG_TD, ne falešné zlepšení přiřazení.
+Nikdy neprováděj přímé zápisy zmrazených OD matic a nevydávej
+shadow predikci za skutečný přepočet Visumu.
+
+V1 development musí vracet nejen navržený delta_Q, ale:
+- before/after LINEARIZED qhat pro každou relaci;
+- skutečnou hodnotu cíle + rozpad objective a tolerance;
+- relativní změny a omezení po segmentech a zónách;
+- matici citlivostí/sparse metadata;
+- souhrnný C17 budget consumed/remaining, případně DISABLED;
+- dostupnost TG/TD projekce;
+- flags unmet targets, blocked variables, large fixed share;
+- explicitní rozlišení MODELLED_PREDICTION a VISUM_VERIFIED_RESULT.
+
+ŽÁDNÝ skutečný trial assignment ani candidate ACCEPT/ROLLBACK v rámci
+V1 offline větve. Připrav integrační API a samostatný plán LIVE_GATE_V2,
+ale live fázi nespouštěj.
+
+======================================================================
+7. REALIZAČNÍ PLÁN – PROVEĎ, NEPOUZE POPIŠ
+======================================================================
+
+CP00 – AUDIT A ZMRAZENÍ SOURCE
+- Udělej seznam souborů, SHA-256, verzi parent V24915, aktuální engine API,
+  test baseline a technické rizikové body.
+- Najdi konkrétní existing hooks (např. build_actual_path_incidence,
+  prepare_guidance_problem, optimized two-mode incidence, controller).
+- Zaznamenej aktuální explicitní blokaci
+  TWO_MODE_CORDON_INCIDENCE_NOT_IMPLEMENTED.
+- Ověř, že nová větev nemá žádné write path do běžící 2022 složky.
+- Ulož CHECKPOINT_00_BASELINE.{md,json} a neměnný source manifest.
+
+CP01 – DATOVÉ AUTORITY, MAPOVÁNÍ, SEMANTIKA
+- Implementuj import a validační kontrakt D1/D2/D3, OA targets, C17
+  a 16/32 mappingu. Každý řádek opatři provenance a source hash.
+- Ověř auditní vazby D1->D2->D3 a správný výklad C17.
+- Zvlášť audituj row/column/směr, D3 symetrizaci, princip známých
+  relací, návratové průjezdy, více SDP na jedné trase a rok 2026 vs 2025.
+- Vytvoř OBSERVATION_SEMANTICS_DECISION.md s navrženou volbou,
+  evidencí PRO/PROTI, neuzavřenými otázkami a gate pro schválení.
+- Výchozí stav nevyřešených bodů MUSÍ BLOKOVAT produkční kalibraci.
+
+CP02 – VÝKONNÝ KORDÓNOVÝ OPERÁTOR
+- Integruj samostatný modul typu r1_15a2_cordon_incidence_v2025.py
+  nad istnieující V24915 SQLite store; znovu využij původní 2025
+  readonly r1_cordon_2025.py jen jako diagnostický/reference oracle.
+- Ulož pořadí skutečných SDP hits, ambiguity audit, neriď se Dijkstrou.
+- Obsahuj mutable i fixed objemy, unikátní DSeg, mode a OD keys.
+- Dvě neekvivalentní historické incidence pouze v explicitním režimu.
+- Přidej přesný test typu brute force na malé syntetické síti a
+  streaming/sparse referenční test na výrazně větší umělé cache.
+
+CP03 – C17 SHARED UNCERTAINTY CONTRACT
+- Vyrob station-by-category RPDI budget a pre-sym audit, bez jakéhokoli
+  dvojího čerpání a bez přiřazení celé C17 každé relaci.
+- Rozliš c17_alocation_policy UNAPPROVED / DISABLED / BOUNDED_SCENARIO.
+- Zkoušej pouze dokazatelně realizovatelné varianty a zaveď jejich
+  přesné acceptance conditions.
+- Připrav testy pro conservation, nulové rozpočty, chybějící směry,
+  velmi vysokou C17 a nesymetrické empirické hodnoty.
+
+CP04 – OFFLINE SOLVER + TG/TD FEASIBILITY
+- Nový modul typu r1_15a2_cordon_optimizer_v2025.py a adaptor
+  do existing sparse guidance/projection, nezávislý od 2022.
+- Proveď fungující offline scénář s kontrolovanými syntetickými
+  cestami: baseline -> lineární návrh -> omezení -> feasible/blocked.
+- Pokud skutečná 2025 path SQLite chybí, nesmíš tvrdit, že jsi
+  spočetl skutečné kordónové intenzity; syntetická acceptance je stále
+  hodnotná. Neodkládej implementaci pouze kvůli nepřítomnému Visumu.
+
+CP05 – TESTY, PERF A HANDOFF
+- Spusť compile/import smoke; focused testy; vybrané parent regrese;
+  kompletní parent pytest, pokud čas/zdroje umožňují. Jasně označ
+  přerušený nebo neúplný test, nevydávej partial za PASS.
+- Testuj opakované stanoviště, opačné směry stejného LinkNo, jednu
+  trasu přes >2 SDP, různou geometrii C vs C_noT, nulové OD,
+  missing/frozen demand, invalid cache, path parity, C17 budget,
+  rychlost a rollback-free read-only režim.
+- Změř paměť a throughput pro realistický syntetický počet tras.
+- Vygeneruj úplný self-contained, SHA-hashovaný ZIP a český README
+  s přesnými kroky pro OFFLINE a pozdější LIVE_SMOKE, bez live apply.
+
+Po KAŽDÉM CP zapiš stav, detail testů, souborový manifest a plán
+pokračování, aby šlo obnovit vývoj bez ztráty práce. Pozdější opravy
+navazuj inkrementálně, nevymazávej starší evidence.
+
+======================================================================
+8. MINIMÁLNÍ ACCEPTANCE TESTY
+======================================================================
+
+Před předáním musí existovat automatické testy dokazující zejména:
+
+01: stanice SDP1–SDP16 tvoří přesně 16 station IDs / 32 directed link keys;
+    obrácený směr téhož LinkNo se nezaměňuje.
+02: pro trasu procházející 3 různými SDP algoritmus ukáže dvě různé
+    historické incidence; bez SEMANTICS_APPROVED není produkční objective.
+03: opakovaný průjezd stejného SDP je explicitně auditován.
+04: identické geometry edge keys pod různými DSeg dávají oddělené Vol(AP);
+    neověřená identita geometrií nesmí povolit APPLY.
+05: při neaktivním nebo zmrazeném DSeg je jeho doprava součástí modelové
+    predikce, ne součástí mutable decision variable.
+06: součet cestových podílů pro aktivní OD je konzistentní s OD objemem;
+    žádné doplnění fiktivní cesty pro offdiag OD bez podpory.
+07: D1/D2/D3 a C17 consistency podle přesných souborů/hashi; neprůkazná
+    sémantika se nezmění na PASS.
+08: alokovaná nejistota z C17 nepřekročí stanovištní, kategoriální ani
+    globální rozpočet; jeden záznam se nesmí čerpat opakovaně.
+09: C17 není použitá jako bezmezné ± procento pro každou dvojici.
+10: syntetický offline optimizer snižuje penalizaci na kalibračních
+    vztazích, ale zachová bounds, fixed OD a regularizaci.
+11: nereálné korekce pro TG/TD skončí jako výslovně nerealizovatelné.
+12: CAL/VALID jsou odděleny; žádné protisměry téhož unordered páru
+    v různých rolích bez explicitní výjimky.
+13: druh dopravy OA a rok RPDI jsou kontrolovány a chybějící year bridge
+    zabrání tvrzení o production readiness.
+14: NO_2025_PATH_CACHE -> korektní static/solver status, žádné „live PASS“.
+15: žádná write operace do modelu 2022 ani do stávajících 15A2 checkpointů.
+
+Dodej i dvě protichůdná syntetická regresní zadání, kde jednoduché
+násobení tras mylně předpoví zlepšení, ale TG/TD realizace nemůže
+předepsané OD splnit. Zabráníš tím falešnému "calibrated" statusu.
+
+======================================================================
+9. POŽADOVANÉ VÝSTUPY
+======================================================================
+
+Připrav V JEDNOM ODDĚLENÉM 2025 RELEASE adresáři minimálně:
+
+- README_CZ.md: jaký problém řeší, co je otestováno, co není a spuštění.
+- SOURCE_MANIFEST.json a SHA256SUMS.txt všech použitých autorit a kódu.
+- OBSERVATION_SEMANTICS_DECISION.md a C17_ACCOUNTING_SPEC.md.
+- 2025-only konfigurační JSON s apply=false a explicitními schvalovacími
+  gaty (model/rok/síť/DSeg/geometry/semantics/C17 policy).
+- Funkční moduly pro import autorit, přesnou kordónovou incidenci z
+  V24915 SQLite cache, C17 budget, offline solver a TG/TD realizovatelnost.
+- Test suite, TEST_REPORT.md, PERFORMANCE_REPORT.md.
+- 2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md: co musí splnit budoucí
+  skutečný model 2025 a jak vygenerovat jeho bezpečnou path cache.
+- OFFLINE_RESULTS/ s testovatelnými syntetickými numerickými výsledky.
+- LIVE_VISUM_NEXT_GATE_CZ.md s prvními JEN READ-ONLY úkony pro budoucí
+  otevřený model 2025 a přísnými podmínkami pozdějšího APPLY.
+- CHECKPOINTS/CP00..CP05 s evidence a resume instrukcí.
+- Samostatné ZIP a jeho SHA256; ve finální odpovědi dej klikací soubory.
+
+Nevydávej pseudo-výstupy, pokud schází vstupní cesta, model 2025 nebo
+schválené observation semantics. Každá nehotová položka má být
+výslovně BLOCKED / PROVISIONAL s důvodem a konkrétním dalším důkazem.
+
+======================================================================
+10. JAK KOMUNIKOVAT A CO TEĎ NECHCI
+======================================================================
+
+Nechci znovu diskuzi o tom, zda by šel vytvořit alternativní kalibrátor.
+Rozhodnutí je dané: zachováme 15A2 a rozšíříme jej pro skutečné
+SDP->SDP proudy; nejprve OA, potom další měření. Přistup k tomu jako
+k vývojovému úkolu. Pracuj po checkpointech, audituj skutečný zdroj,
+implementuj a testuj. V mezivýstupech uváděj konkrétní provedené
+změny, jejich důkazy a nedořešené gate, nikoli marketingové PASS.
+
+Nedělej: změny 2022, vytěžení starých tras jako 2025 kalibračních dat,
+Dijkstra náhrady skutečných cest, nedávkovaný export, FlowBundle jako
+výlučný směrový důkaz, přímé násobení Vol(AP) místo poptávky,
+směrovou D3 symetrii vydávanou za originální měření, paušální ±C17,
+a záměnu metodiky oprav výpadku SDP4 za princip kordónové incidence.
+
+Pokud nebude k dispozici skutečná kompletní path cache pro model 2025,
+zpracuj veškerou nezávislou infrastrukturu a její testy a přesně řekni,
+co je třeba později získat z Visumu. Nespouštěj ani neměň právě běžící
+kalibraci 2022. Neptej se mě na dílčí implementační volby, které lze
+rozhodnout z auditovaných souborů; polož pouze konkrétní otázky tam,
+kde by nesprávná volba měnila význam naměřených relací nebo hrozila
+kontaminace produkčního modelu.
+
+ZAČNI HNED: audit parent source V24915 + 2025 read-only V1, CP00 baseline,
+po něm průběžně implementuj CP01–CP05. První zpráva ať je stručný
+skutečně provedený audit a seznam gate, pak pokračuj do funkčního
+balíku bez nutnosti dalšího pobízení.
+
+KONEC VÝVOJOVÉHO PROMPTU

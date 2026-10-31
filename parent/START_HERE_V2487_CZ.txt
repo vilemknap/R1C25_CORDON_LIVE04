@@ -1,0 +1,15 @@
+R1 15A2 V2.4.8.7 - START HERE
+
+1. Rozbal cely ZIP do nove kratke slozky R1_15A2_V2487.
+2. Otevri posledni bezpecny accepted .ver checkpoint.
+3. Nemaz %LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248.
+4. Ve Visumu spust Scripts -> Execute script file:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_8_7.py
+5. Novy run musi vzniknout primo pod ...\2022\R1_15A2_V2487_RUNS\RUN_...
+6. V GENERATION_DESIGN.json over:
+   - generation_coefficient_authority.mode = LIVE_CURRENT_VALUE_RELATIVE_LOG_STEP
+   - legacy_absolute_upper_bounds_enforced = false
+   - zadny globalni clamp na 3 nebo 10
+7. Hodnoty koeficientu nad 3/10 jsou dovolene. Musi vsak byt konecne a projit
+   cerstvym Visum assignmentem, 12D/11D a puvodnimi acceptance gates.
+8. Nepouzivej V2485 ani V2486 jako novy launcher.

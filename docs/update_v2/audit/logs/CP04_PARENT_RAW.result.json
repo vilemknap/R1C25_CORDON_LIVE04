@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--disable-warnings"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/release/parent",
+  "returncode": 1,
+  "elapsed_seconds": 34.43699359893799
+}

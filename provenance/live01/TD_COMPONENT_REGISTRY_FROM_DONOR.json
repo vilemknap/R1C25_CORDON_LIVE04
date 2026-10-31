@@ -1,0 +1,82 @@
+{
+  "WORK_E_C": {
+    "family": "WORK",
+    "dstrat_code": "1_WORK_E_C",
+    "matrix_no": 9101
+  },
+  "WORK_E_noC": {
+    "family": "WORK",
+    "dstrat_code": "1_WORK_E_noC",
+    "matrix_no": 9102
+  },
+  "WORK_noE_C": {
+    "family": "WORK",
+    "dstrat_code": "1_WORK_noE_C",
+    "matrix_no": 9103
+  },
+  "WORK_noE_noC": {
+    "family": "WORK",
+    "dstrat_code": "1_WORK_noE_noC",
+    "matrix_no": 9104
+  },
+  "WORK_stud": {
+    "family": "WORK",
+    "dstrat_code": "1_WORK_stud",
+    "matrix_no": 9105
+  },
+  "SERV_E_C": {
+    "family": "SERVICE",
+    "dstrat_code": "2_SERV_E_C",
+    "matrix_no": 9106
+  },
+  "SERV_E_noC": {
+    "family": "SERVICE",
+    "dstrat_code": "2_SERV_E_noC",
+    "matrix_no": 9107
+  },
+  "SERV_noE_C": {
+    "family": "SERVICE",
+    "dstrat_code": "2_SERV_noE_C",
+    "matrix_no": 9108
+  },
+  "SERV_noE_noC": {
+    "family": "SERVICE",
+    "dstrat_code": "2_SERV_noE_noC",
+    "matrix_no": 9109
+  },
+  "SERV_stud": {
+    "family": "SERVICE",
+    "dstrat_code": "2_SERV_stud",
+    "matrix_no": 9110
+  },
+  "LONG_E_C": {
+    "family": "LONG",
+    "dstrat_code": "3_LONG_E_C",
+    "matrix_no": 9111
+  },
+  "LONG_E_noC": {
+    "family": "LONG",
+    "dstrat_code": "3_LONG_E_noC",
+    "matrix_no": 9112
+  },
+  "LONG_noE_C": {
+    "family": "LONG",
+    "dstrat_code": "3_LONG_noE_C",
+    "matrix_no": 9113
+  },
+  "LONG_noE_noC": {
+    "family": "LONG",
+    "dstrat_code": "3_LONG_noE_noC",
+    "matrix_no": 9114
+  },
+  "LONG_stud": {
+    "family": "LONG",
+    "dstrat_code": "3_LONG_stud",
+    "matrix_no": 9115
+  },
+  "SCHOOL": {
+    "family": "SCHOOL",
+    "dstrat_code": "5_SCHOOL",
+    "matrix_no": 9117
+  }
+}

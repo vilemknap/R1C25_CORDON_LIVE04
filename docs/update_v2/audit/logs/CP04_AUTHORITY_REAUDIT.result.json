@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "cordon2025",
+    "audit-inputs",
+    "--output-root",
+    "/mnt/data/R1_CORDON_UPDATE_20261022/validation_runs",
+    "--run-name",
+    "AUTHORITY_REAUDIT"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/release",
+  "returncode": 0,
+  "elapsed_seconds": 2.604818344116211
+}

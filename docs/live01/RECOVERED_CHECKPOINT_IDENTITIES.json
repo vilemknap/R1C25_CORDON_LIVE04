@@ -1,0 +1,118 @@
+[
+  {
+    "stage": "CP00_SOURCE_PIN_AND_MERGE_MAP",
+    "file": "CP00_SOURCE_PIN_AND_MERGE_MAP_20261024.zip",
+    "drive_id": "1H-wYcg24Oy_89zSPShg9rZ8CT7xfAyHS",
+    "bytes": 41575212,
+    "sha256": "07722087e727efe10ad4f207b3a7132da4ffe7715edcfc0a6dfcf860f74d0dd7",
+    "CRC": "PASS",
+    "members": 1625,
+    "manifest_paths": [
+      "R1C25_LIVE01/CHECKPOINTS/CP00/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/code_snapshot.zip"
+    ],
+    "origin": "RECOVERED_PREVIOUS_ATTEMPT",
+    "embedded_source_manifest": {
+      "status": "PASS",
+      "checked": 1616,
+      "failures": []
+    }
+  },
+  {
+    "stage": "CP01_WHOLE_MATRIX_OBSERVATION_PATCH",
+    "file": "CP01_WHOLE_MATRIX_OBSERVATION_PATCH_20261024.zip",
+    "drive_id": "1wJu7QLYIptI8-xdTa__xplBOAfUoFxTp",
+    "bytes": 41587899,
+    "sha256": "c4ce03096c0a49af823b517e3b8c371161fc880fcef24a1ea66c7704d726205a",
+    "CRC": "PASS",
+    "members": 1632,
+    "manifest_paths": [
+      "R1C25_LIVE01/CHECKPOINTS/CP00/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/code_snapshot.zip"
+    ],
+    "origin": "RECOVERED_PREVIOUS_ATTEMPT",
+    "embedded_source_manifest": {
+      "status": "PASS",
+      "checked": 1621,
+      "failures": []
+    }
+  },
+  {
+    "stage": "CP02_DONOR_RUNTIME_BINDING_AND_PREFLIGHT",
+    "file": "CP02_DONOR_RUNTIME_BINDING_AND_PREFLIGHT_20261024.zip",
+    "drive_id": "1p3uoF8OP4YptLbapC4nZuKVRSzYBvV52",
+    "bytes": 41673466,
+    "sha256": "104979d3fd2267849cd94c718e4004f9f46a963e599b3a8e614544f4c6bbebca",
+    "CRC": "PASS",
+    "members": 1667,
+    "manifest_paths": [
+      "R1C25_LIVE01/CHECKPOINTS/CP00/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/code_snapshot.zip"
+    ],
+    "origin": "RECOVERED_PREVIOUS_ATTEMPT",
+    "embedded_source_manifest": {
+      "status": "PASS",
+      "checked": 1630,
+      "failures": []
+    }
+  },
+  {
+    "stage": "CP03_ZONE_AUTHORITY_AND_BASELINE_SOLVE",
+    "file": "CP03_ZONE_AUTHORITY_AND_BASELINE_SOLVE_20261024.zip",
+    "drive_id": "1BdqyTqoToiYcv3-ivq6g3s1g3g4VAgmQ",
+    "bytes": 41694764,
+    "sha256": "04322b22e07d86eef86bd64b61478cba7d64a281ddd2f99bff966012ea28a45b",
+    "CRC": "PASS",
+    "members": 1673,
+    "manifest_paths": [
+      "R1C25_LIVE01/CHECKPOINTS/CP00/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/code_snapshot.zip.sha256",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/file_manifest.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP00A/status.json",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/RESUME.txt",
+      "R1C25_LIVE01/CHECKPOINTS/CP01/code_snapshot.zip"
+    ],
+    "origin": "RECOVERED_PREVIOUS_ATTEMPT",
+    "embedded_source_manifest": {
+      "status": "PASS",
+      "checked": 1630,
+      "failures": []
+    }
+  }
+]

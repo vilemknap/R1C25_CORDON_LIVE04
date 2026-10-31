@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="13" time="9.665" timestamp="2026-10-23T06:38:48.421856+00:00" hostname="e013c2f5b98e"><testcase classname="tests.test_combusy_entry_fix2" name="test_stop_during_native_message_pump_prevents_next_page_RPC" time="0.124" /><testcase classname="tests.test_combusy_entry_fix2" name="test_capture_geometry_metadata_busy_recovers_after_preflight[GetTypeInfo]" time="1.259" /><testcase classname="tests.test_combusy_entry_fix2" name="test_capture_geometry_metadata_busy_recovers_after_preflight[GetTypeAttr]" time="1.074" /><testcase classname="tests.test_combusy_entry_fix2" name="test_capture_geometry_metadata_busy_recovers_after_preflight[GetFuncDesc]" time="1.100" /><testcase classname="tests.test_combusy_entry_fix2" name="test_capture_geometry_metadata_busy_recovers_after_preflight[GetNames]" time="1.087" /><testcase classname="tests.test_combusy_entry_fix2" name="test_recovered_COM_cannot_mask_assignment_state_corruption[matrix_drift-MATRIX_CHANGED]" time="0.968" /><testcase classname="tests.test_combusy_entry_fix2" name="test_recovered_COM_cannot_mask_assignment_state_corruption[path_drift-PATH_VOLUMES_CHANGED]" time="0.946" /><testcase classname="tests.test_combusy_entry_fix2" name="test_recovered_COM_cannot_mask_assignment_state_corruption[path_distribution_wrong-PER_OD_PATH_MATRIX_PARITY_FAIL]" time="0.348" /><testcase classname="tests.test_combusy_entry_fix2" name="test_complete_boot_retries_and_restores_existing_2022_modules[PREFLIGHT]" time="0.002"><failure message="cordon2025.common.ContractError: PARENT_MODULE_COLLISION:r1_15a2_supply_visum">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-5/test_complete_boot_retries_and0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7fe999599480&gt;
+mode = 'PREFLIGHT'
+
+    @pytest.mark.parametrize('mode',['PREFLIGHT','CAPTURE_DIAGNOSTICS'])
+    def test_complete_boot_retries_and_restores_existing_2022_modules(tmp_path,monkeypatch,mode):
+        monkeypatch.setenv('LOCALAPPDATA',str(tmp_path/'local'))
+        # Deliberately insert a conflicting loaded parent snapshot module.
+        # The test proves it is not used and remains unmodified after return.
+        name='r1_15a2_supply_visum'
+        old=ModuleType(name);old.__file__='/old/2022/'+name+'.py';old.identity=object()
+        old.data={'immutable':True};token=old.identity
+        monkeypatch.setitem(sys.modules,name,old)
+        before_path=list(sys.path);before_cordon=sys.modules.get('cordon2025')
+&gt;       v=FakeVisum(tmp_path/'model');v.Net=OnceMember(v.Net,'Links',2,Later)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_combusy_entry_fix2.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/fake_visum_startup.py:126: in __init__
+    idx,_=mapping(ROOT/'data/audited/STATION_MAPPING.csv')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/authority.py:16: in mapping
+    for r in read_csv(path):
+             ^^^^^^^^^^^^^^
+cordon2025/common.py:60: in read_csv
+    return secure_read_csv(path)
+           ^^^^^^^^^^^^^^^^^^^^^
+cordon2025/io.py:63: in read_csv
+    return retry(read)
+           ^^^^^^^^^^^
+cordon2025/io.py:32: in retry
+    return operation()
+           ^^^^^^^^^^^
+cordon2025/io.py:59: in read
+    with open(native_path(path), encoding='utf-8-sig', newline='') as stream:
+              ^^^^^^^^^^^^^^^^^
+cordon2025/io.py:25: in native_path
+    return donor()._native_path(path, os_name=os_name)
+           ^^^^^^^
+cordon2025/io.py:21: in donor
+    return parent_module('r1_15a2_runtime_io_hotfix_profile488')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'r1_15a2_runtime_io_hotfix_profile488'
+
+    def parent_module(name):
+        """Only import library modules from this isolated 2025 parent tree."""
+        require(name.startswith('r1_15a2_') and name.replace('_', '').isalnum(), 'INVALID_PARENT_MODULE')
+        expected = (PARENT / (name + '.py')).resolve()
+        require(expected.is_file(), 'PARENT_MODULE_MISSING:' + name)
+        # Reject already-imported dependencies from a running/different 2022 source.
+        for key, module in tuple(sys.modules.items()):
+            if key.startswith('r1_15a2_') and getattr(module, '__file__', None):
+                origin = Path(module.__file__).resolve()
+                if origin.parent != PARENT.resolve():
+&gt;                   raise ContractError('PARENT_MODULE_COLLISION:' + key)
+E                   cordon2025.common.ContractError: PARENT_MODULE_COLLISION:r1_15a2_supply_visum
+
+cordon2025/common.py:23: ContractError</failure></testcase><testcase classname="tests.test_combusy_entry_fix2" name="test_complete_boot_retries_and_restores_existing_2022_modules[CAPTURE_DIAGNOSTICS]" time="0.003"><failure message="cordon2025.common.ContractError: PARENT_MODULE_COLLISION:r1_15a2_supply_visum">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-5/test_complete_boot_retries_and1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7fe9995bb2f0&gt;
+mode = 'CAPTURE_DIAGNOSTICS'
+
+    @pytest.mark.parametrize('mode',['PREFLIGHT','CAPTURE_DIAGNOSTICS'])
+    def test_complete_boot_retries_and_restores_existing_2022_modules(tmp_path,monkeypatch,mode):
+        monkeypatch.setenv('LOCALAPPDATA',str(tmp_path/'local'))
+        # Deliberately insert a conflicting loaded parent snapshot module.
+        # The test proves it is not used and remains unmodified after return.
+        name='r1_15a2_supply_visum'
+        old=ModuleType(name);old.__file__='/old/2022/'+name+'.py';old.identity=object()
+        old.data={'immutable':True};token=old.identity
+        monkeypatch.setitem(sys.modules,name,old)
+        before_path=list(sys.path);before_cordon=sys.modules.get('cordon2025')
+&gt;       v=FakeVisum(tmp_path/'model');v.Net=OnceMember(v.Net,'Links',2,Later)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_combusy_entry_fix2.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/fake_visum_startup.py:126: in __init__
+    idx,_=mapping(ROOT/'data/audited/STATION_MAPPING.csv')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/authority.py:16: in mapping
+    for r in read_csv(path):
+             ^^^^^^^^^^^^^^
+cordon2025/common.py:60: in read_csv
+    return secure_read_csv(path)
+           ^^^^^^^^^^^^^^^^^^^^^
+cordon2025/io.py:63: in read_csv
+    return retry(read)
+           ^^^^^^^^^^^
+cordon2025/io.py:32: in retry
+    return operation()
+           ^^^^^^^^^^^
+cordon2025/io.py:59: in read
+    with open(native_path(path), encoding='utf-8-sig', newline='') as stream:
+              ^^^^^^^^^^^^^^^^^
+cordon2025/io.py:25: in native_path
+    return donor()._native_path(path, os_name=os_name)
+           ^^^^^^^
+cordon2025/io.py:21: in donor
+    return parent_module('r1_15a2_runtime_io_hotfix_profile488')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+name = 'r1_15a2_runtime_io_hotfix_profile488'
+
+    def parent_module(name):
+        """Only import library modules from this isolated 2025 parent tree."""
+        require(name.startswith('r1_15a2_') and name.replace('_', '').isalnum(), 'INVALID_PARENT_MODULE')
+        expected = (PARENT / (name + '.py')).resolve()
+        require(expected.is_file(), 'PARENT_MODULE_MISSING:' + name)
+        # Reject already-imported dependencies from a running/different 2022 source.
+        for key, module in tuple(sys.modules.items()):
+            if key.startswith('r1_15a2_') and getattr(module, '__file__', None):
+                origin = Path(module.__file__).resolve()
+                if origin.parent != PARENT.resolve():
+&gt;                   raise ContractError('PARENT_MODULE_COLLISION:' + key)
+E                   cordon2025.common.ContractError: PARENT_MODULE_COLLISION:r1_15a2_supply_visum
+
+cordon2025/common.py:23: ContractError</failure></testcase><testcase classname="tests.test_combusy_entry_fix2" name="test_actual_entry_reports_exhausted_unprintable_failure_and_boot_log" time="0.843" /><testcase classname="tests.test_combusy_entry_fix2" name="test_new_retry_does_not_import_profile_launchers" time="1.588" /><testcase classname="tests.test_combusy_entry_fix2" name="test_default_retry_does_not_change_active_scope_and_science" time="0.056" /></testsuite></testsuites>

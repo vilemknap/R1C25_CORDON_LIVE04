@@ -1,0 +1,10 @@
+{
+  "new_focused_tests": 68,
+  "source_derived_signed_generation_design": "ACTIVE_AND_TESTED_OFFLINE_WITH_EXPLICIT_ZONE_SNAPSHOT",
+  "backtracking": "6_TG_7_TD_SCALES",
+  "C17_fair_baseline": "TESTED_NO_CHANGE_NO_FAKE_IMPROVEMENT",
+  "full_suite_before_TG_design_followup": 234,
+  "final_suite": "PENDING_A03",
+  "live_visum_tested": false,
+  "apply_permitted": false
+}

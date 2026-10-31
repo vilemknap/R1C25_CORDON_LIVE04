@@ -1,0 +1,28 @@
+{
+  "name": "recovered_baseline_start",
+  "cwd": "/mnt/data/cordon_recovery_20261023/recovered/R1_CORDON_AGGRESSIVE_STARTUP_FIX1_20261023",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--disable-warnings",
+    "--junitxml=/mnt/data/cordon_recovery_20261023/evidence/recovered_baseline_start.xml",
+    "tests/test_visum_startup.py",
+    "tests/test_visum_bootstrap.py"
+  ],
+  "native_visum": false,
+  "platform": "linux",
+  "returncode": 0,
+  "status": "PASS",
+  "elapsed_seconds": 20.324626041999863,
+  "counts": {
+    "tests": 68,
+    "passed": 68,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

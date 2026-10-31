@@ -1,0 +1,12 @@
+Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate.
+{
+  "status": "STATIC_PASS",
+  "tests": "5 passed, rc=0",
+  "data": "D1/D2/D3 15 blocks verified; 1280 targets; 32 directed keys; C17 one-margin audited",
+  "next": "CP02 sparse SQLite incidence",
+  "blockers": [
+    "UNAPPROVED_OBSERVATION_SEMANTICS",
+    "DIRECTION_MAPPING_UNAPPROVED",
+    "YEAR_BRIDGE_UNAPPROVED"
+  ]
+}

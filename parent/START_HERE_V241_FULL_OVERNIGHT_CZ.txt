@@ -1,0 +1,13 @@
+R1 15A2 V2.4.1 FULL OVERNIGHT HIERARCHICAL
+
+SPUSTIT:
+R1_15A2_FULL_OVERNIGHT_HIERARCHICAL_V2_4_1.py
+
+POŘADÍ JE TVRDĚ ZAMČENÉ:
+1) TRIP GENERATION do konvergence
+2) TRIP DISTRIBUTION do konvergence
+3) ADDVAL1 / ROUTE CHOICE až nakonec
+
+V2.4.0 NEPOUŽÍVAT PRO NOVÝ BĚH - mělo supply blok jako první.
+
+Spouštět jen Scripts -> Execute script file, NE jako Procedure Sequence.

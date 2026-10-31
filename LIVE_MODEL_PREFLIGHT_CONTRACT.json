@@ -1,0 +1,70 @@
+{
+  "schema": "LIVE01_PREFLIGHT_CONTRACT_V1",
+  "execution_kind": "SPECIFICATION_IMPLEMENTED_MOCK_TESTED_NATIVE_PENDING",
+  "native": "NOT_RUN",
+  "injection": "Visum only, same thread, no attach/discovery",
+  "zone_count": 681,
+  "zone_identity": "actual unique Zone.NO with per-column binding",
+  "personal_od_bindings": {
+    "NATIVE_CW": 9301,
+    "NATIVE_CW_NOT": 9302,
+    "NATIVE_CS": 9303,
+    "NATIVE_CS_NOT": 9304,
+    "NATIVE_CL": 9305,
+    "NATIVE_CF": 9306,
+    "EXOG_EE_CW": 9401,
+    "EXOG_EE_CW_NOT": 9402,
+    "EXOG_EE_CS": 9403,
+    "EXOG_EE_CS_NOT": 9404,
+    "EXOG_EE_CL": 9405,
+    "EXOG_EE_CF": 9406
+  },
+  "tg_attributes": [
+    "ADD_PROD_W",
+    "ADD_ATT_W",
+    "ADD_SALARY",
+    "ADD_PROD_S",
+    "ADD_ATT_S",
+    "ZAHR_PROD_WORK",
+    "ZAHR_ATR_WORK",
+    "ZAHR_PROD_SERV",
+    "ZAHR_ATR_SERV"
+  ],
+  "tg_dependency_source": "provenance/live01/TG_DEPENDENCY_CONTRACT_FROM_DONOR.json",
+  "procedure_read_contract": {
+    "TG": {
+      "position": 5,
+      "type": 45
+    },
+    "TD": {
+      "position": 6,
+      "type": 46,
+      "domestic_components": 16,
+      "source_strata_allowed": [
+        16,
+        17
+      ],
+      "protected_FOREIGN_matrix": 9116
+    },
+    "assignment_positions": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "final_assignment_type": 101,
+    "assignment_segments": 14
+  },
+  "source_checks": [
+    "source .ver path and SHA",
+    "zone axis and directed network keys/TSysSet",
+    "12 OA matrix identities and full values",
+    "TG dependencies and controls",
+    "TD A/B/C",
+    "operation inventory and referenced scripts",
+    "FOREIGN, freight, current 9001 and 9697"
+  ],
+  "freshness_scope": "same invocation, full saved-path capture and final state readback; not a future assignment identity",
+  "writes_enabled": false,
+  "assignment_enabled": false
+}

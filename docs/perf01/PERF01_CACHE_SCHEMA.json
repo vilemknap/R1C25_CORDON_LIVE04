@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:r1:cordon:perf01:manifest:v1",
+  "title": "CORDON_PERF01_DERIVED_V1 manifest",
+  "type": "object",
+  "required": [
+    "schema",
+    "implementation",
+    "key",
+    "geometry_key",
+    "source_id",
+    "source",
+    "identities",
+    "source_validation",
+    "files",
+    "apply_permitted",
+    "assignment_executed",
+    "live_calibration_verified"
+  ],
+  "properties": {
+    "schema": {
+      "const": "CORDON_PERF01_DERIVED_V1"
+    },
+    "implementation": {
+      "const": "PERF01_1.0_20261023"
+    },
+    "key": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "geometry_key": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source": {
+      "type": "object"
+    },
+    "identities": {
+      "type": "object",
+      "required": [
+        "geometry",
+        "incidence"
+      ]
+    },
+    "source_validation": {
+      "type": "object",
+      "required": [
+        "sqlite_schema",
+        "sqlite_integrity",
+        "metadata",
+        "mode_dseg_inventory",
+        "oracle",
+        "full_geometry_proof",
+        "per_od_parity"
+      ]
+    },
+    "files": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "bytes",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      }
+    },
+    "apply_permitted": {
+      "const": false
+    },
+    "assignment_executed": {
+      "const": false
+    },
+    "live_calibration_verified": {
+      "const": false
+    }
+  },
+  "description": "COMPLETE.json seals this MANIFEST.json by its SHA; verify_entry additionally enforces allowed paths, exact file set, all content hashes, semantic identities and finite typed arrays."
+}

@@ -1,0 +1,328 @@
+{
+  "status": "NUMERICAL_PARITY_PASS",
+  "summary_identical": true,
+  "arrays_checked": 40,
+  "arrays": [
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "row",
+      "shape": [
+        28
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "col",
+      "shape": [
+        28
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "through",
+      "shape": [
+        28
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "share",
+      "shape": [
+        28
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "q",
+      "shape": [
+        8
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "model",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "mutable",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "array": "fixed",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "relative_change",
+      "shape": [
+        8
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "delta_q",
+      "shape": [
+        8
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "ALL_ORDERED_UNIQUE_PAIRS/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "row",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "col",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "through",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "share",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "q",
+      "shape": [
+        8
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "model",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "mutable",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "array": "fixed",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "relative_change",
+      "shape": [
+        8
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "delta_q",
+      "shape": [
+        8
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "EXACT_TWO_HITS/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_NEGATIVE/SOLUTION.npz",
+      "array": "relative_change",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_NEGATIVE/SOLUTION.npz",
+      "array": "delta_q",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_NEGATIVE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_NEGATIVE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_POSITIVE/SOLUTION.npz",
+      "array": "relative_change",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_POSITIVE/SOLUTION.npz",
+      "array": "delta_q",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_POSITIVE/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/CYCLE_POSITIVE/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "relative_change",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "delta_q",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "REALIZABILITY_CASES/FEASIBLE_CONTROL/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "shape": [
+        4
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "SYNTHETIC_C17_SHARED/SOLUTION.npz",
+      "array": "relative_change",
+      "shape": [
+        2
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "SYNTHETIC_C17_SHARED/SOLUTION.npz",
+      "array": "delta_q",
+      "shape": [
+        2
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "SYNTHETIC_C17_SHARED/SOLUTION.npz",
+      "array": "c17_relaxation",
+      "shape": [
+        2
+      ],
+      "bitwise_equal": true
+    },
+    {
+      "file": "SYNTHETIC_C17_SHARED/SOLUTION.npz",
+      "array": "linearized_prediction",
+      "shape": [
+        2
+      ],
+      "bitwise_equal": true
+    }
+  ],
+  "method": "Independent processes; original V1 and modified V2; identical synthetic paths and targets; exact array equality; no live Visum"
+}

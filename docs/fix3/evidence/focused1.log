@@ -1,0 +1,21 @@
+
+==================================== ERRORS ====================================
+___________________ ERROR collecting tests/test_optimizer.py ___________________
+tests/test_optimizer.py:6: in <module>
+    from cordon2025.optimizer import solve,deadzone
+cordon2025/optimizer.py:108: in <module>
+    def _optimize_u(residual,weights,eps,budget,start,ridge,tol=1e-9,max_iter=5000,projection_tolerance=projection_tolerance):
+                                                                                                        ^^^^^^^^^^^^^^^^^^^^
+E   NameError: name 'projection_tolerance' is not defined
+__________________ ERROR collecting tests/test_feasibility.py __________________
+tests/test_feasibility.py:5: in <module>
+    from cordon2025.optimizer import solve
+cordon2025/optimizer.py:108: in <module>
+    def _optimize_u(residual,weights,eps,budget,start,ridge,tol=1e-9,max_iter=5000,projection_tolerance=projection_tolerance):
+                                                                                                        ^^^^^^^^^^^^^^^^^^^^
+E   NameError: name 'projection_tolerance' is not defined
+=========================== short test summary info ============================
+ERROR tests/test_optimizer.py - NameError: name 'projection_tolerance' is not defined
+ERROR tests/test_feasibility.py - NameError: name 'projection_tolerance' is not defined
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 0.18s

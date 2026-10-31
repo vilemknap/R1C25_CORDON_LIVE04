@@ -1,0 +1,16 @@
+{
+  "checkpoint": "CP02",
+  "created_utc": "2026-10-19T20:25:21.031085+00:00",
+  "details": {
+    "status": "DIAGNOSTIC_PASS",
+    "tests": "15 passed, rc=0; parity with historical readonly V1 and parent core",
+    "implemented": "streaming two-method incidence, fixed/mutable split, mode identity, parent opt-in hook",
+    "next": "CP03 C17 budget"
+  },
+  "source_files": 790,
+  "manifest_sha256": "30cf5306d03ef81b281b3a0d64d6125d6c5a7d4914db9901bc8d0e10f4108084",
+  "predecessor_status_sha256": "72309f4148f4ae374d5fc18835e03343ec2548cb46d34b3b440c111d3a8d8aa6",
+  "apply": false,
+  "live_visum_tested": false,
+  "resume": "Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate."
+}

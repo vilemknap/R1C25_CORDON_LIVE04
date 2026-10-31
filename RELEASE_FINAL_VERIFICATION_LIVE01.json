@@ -1,0 +1,15 @@
+{
+  "schema": "LIVE01_RELEASE_READINESS_V1",
+  "status": "READY_FOR_NATIVE_READONLY_BASELINE",
+  "complete_source_testcases": 831,
+  "new_live01_testcases": 116,
+  "protected_files": 1606,
+  "native": "NOT_RUN",
+  "production_ready": false,
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "actual_candidate_effect_verified": false,
+  "clean_distribution_and_drive_readback": "See external R1_2025_CORDON_LIVE01_FINAL_VERIFICATION_20261024.json; archive cannot contain its own SHA256",
+  "restoration": "Recovered CP03 then state-readback and publication hardening",
+  "next_stage": "LIVE02_FIRST_NATIVE_TG_CYCLE"
+}

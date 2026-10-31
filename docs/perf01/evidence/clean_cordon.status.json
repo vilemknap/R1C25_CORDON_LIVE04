@@ -1,0 +1,15 @@
+{
+  "name": "clean_cordon",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--tb=short",
+    "--junitxml=/mnt/data/perf01_work/evidence/clean_cordon.xml"
+  ],
+  "cwd": "/mnt/data/perf01_work/clean/R1C25_PERF01",
+  "returncode": 0,
+  "wall_s": 328.345938378
+}

@@ -1,0 +1,27 @@
+{
+  "name": "hotfix_reference_full",
+  "cwd": "/mnt/data/cordon_recovery_20261023/hotfix",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--disable-warnings",
+    "--junitxml=/mnt/data/cordon_recovery_20261023/evidence/hotfix_reference_full.xml",
+    "tests"
+  ],
+  "native_visum": false,
+  "platform": "linux",
+  "returncode": 0,
+  "status": "PASS",
+  "elapsed_seconds": 27.191432307000014,
+  "counts": {
+    "tests": 971,
+    "passed": 967,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4
+  }
+}

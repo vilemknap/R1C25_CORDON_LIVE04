@@ -1,0 +1,67 @@
+F....................................................................... [ 14%]
+.......................................F................................ [ 29%]
+........................................................................ [ 44%]
+........................................................................ [ 58%]
+........................................................................ [ 73%]
+........................................................................ [ 88%]
+.........................................................                [100%]
+=================================== FAILURES ===================================
+_______ test_v2_bytes_preserved_except_explicit_reviewed_startup_patches _______
+
+    def test_v2_bytes_preserved_except_explicit_reviewed_startup_patches():
+        records=json.loads((ROOT/'docs/aggressive/PRESERVED_V2_FILES.json').read_text())
+        assert len(records)>700
+        changes=json.loads((ROOT/'docs/startup_fix1/REVIEWED_PARENT_CHANGES.json').read_text())
+        assert set(changes)=={'parent/R1_15A2_VISUM_COM_PREFLIGHT_V2_3_6_INLINE.py','parent/r1_15a2_com_compat.py','parent/r1_15a2_supply.py','parent/r1_15a2_two_mode_v238.py'}
+        for name,digest in records.items():
+            if name in changes:
+                assert changes[name]['before_sha256']==digest
+                digest=changes[name]['after_sha256']
+            fix3=json.loads((ROOT/'docs/fix3/REVIEWED_CHANGES.json').read_text())
+            if name in fix3:
+                assert fix3[name]['before_sha256']==digest
+                digest=fix3[name]['after_sha256']
+>           assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,name
+E           AssertionError: CORDON_2025_CONFIG.json
+E           assert '2753d75cc09e...d5b214fe63d11' == '16430fd30fee...9e4bed6b01fb8'
+E             
+E             - 16430fd30feefc93954aea8630e358f721a5adfee831601ec5f9e4bed6b01fb8
+E             + 2753d75cc09eac96975042c61bffeca61cb41008de51d916f22d5b214fe63d11
+
+tests/test_aggressive_integration.py:29: AssertionError
+_________ test_default_retry_does_not_change_active_scope_and_science __________
+
+    def test_default_retry_does_not_change_active_scope_and_science():
+        cfg=json.loads((ROOT/'CORDON_2025_AGGRESSIVE_CONFIG.json').read_text())
+        assert cfg['apply'] is False and cfg['model_year']==2025 and cfg['survey_year']==2026
+        base=ROOT/'provenance/startup_fix2/STARTUP_FIX1_SOURCE_MANIFEST.json'
+        records=json.loads(base.read_text())['files']
+        import hashlib
+        protected=[r for r in records if r['path'].startswith(('data/','parent/')) or r['path'] in ('CORDON_2025_CONFIG.json','CORDON_2025_AGGRESSIVE_CONFIG.json')]
+        assert len(protected)>800
+        for rec in protected:
+            digest=rec['sha256']
+            review=json.loads((ROOT/'docs/fix3/REVIEWED_CHANGES.json').read_text())
+            if rec['path'] in review:
+                assert review[rec['path']]['before_sha256']==digest
+                digest=review[rec['path']]['after_sha256']
+>           assert hashlib.sha256((ROOT/rec['path']).read_bytes()).hexdigest()==digest,rec['path']
+E           AssertionError: CORDON_2025_AGGRESSIVE_CONFIG.json
+E           assert 'ac82c94aaec2...7d1566d838bb3' == '2dc81721112d...91c67fbd5118e'
+E             
+E             - 2dc81721112debe925161ede202d4d55571a1b3b8760c98dd2891c67fbd5118e
+E             + ac82c94aaec28cb24c384d929af9fc74ed09da3ec1572baaaa67d1566d838bb3
+
+tests/test_combusy_entry_fix2.py:120: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_aggressive_integration.py::test_v2_bytes_preserved_except_explicit_reviewed_startup_patches - AssertionError: CORDON_2025_CONFIG.json
+assert '2753d75cc09e...d5b214fe63d11' == '16430fd30fee...9e4bed6b01fb8'
+  
+  - 16430fd30feefc93954aea8630e358f721a5adfee831601ec5f9e4bed6b01fb8
+  + 2753d75cc09eac96975042c61bffeca61cb41008de51d916f22d5b214fe63d11
+FAILED tests/test_combusy_entry_fix2.py::test_default_retry_does_not_change_active_scope_and_science - AssertionError: CORDON_2025_AGGRESSIVE_CONFIG.json
+assert 'ac82c94aaec2...7d1566d838bb3' == '2dc81721112d...91c67fbd5118e'
+  
+  - 2dc81721112debe925161ede202d4d55571a1b3b8760c98dd2891c67fbd5118e
+  + ac82c94aaec28cb24c384d929af9fc74ed09da3ec1572baaaa67d1566d838bb3
+2 failed, 487 passed in 116.49s (0:01:56)

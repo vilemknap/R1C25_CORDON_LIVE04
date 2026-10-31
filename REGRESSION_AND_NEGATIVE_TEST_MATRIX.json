@@ -1,0 +1,717 @@
+{
+  "schema": "LIVE01_ACCEPTANCE_V1",
+  "cases": [
+    {
+      "case": "A01",
+      "requirement": "SOURCE_PINS_CRC",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [],
+      "evidence": [
+        "docs/live01/R1_2025_LIVE01_RECOVERY_RECEIPT_20261024.json",
+        "provenance/live01/SOURCE_PINS.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "A02",
+      "requirement": "COMPILE_IMPORT",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_launcher_import_does_not_touch_com"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "A03",
+      "requirement": "PROTECTED_AND_LEGACY_SUITE",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_donor_function_source_exact_hash"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json",
+        "docs/live01/PROTECTED_SOURCE_READBACK.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "A04",
+      "requirement": "DONOR_AND_COMBUSY",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_visum::test_read_retry_single_owner"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "A05",
+      "requirement": "FOREIGN_MODULE_COLLISION",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_launcher_refuses_foreign_profile_without_touching_it"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "A06",
+      "requirement": "NO_BLIND_OVERLAY",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_donor_function_source_exact_hash"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json",
+        "docs/live01/PROTECTED_SOURCE_READBACK.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "A07",
+      "requirement": "PATH_AND_CLEAN_ZIP",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_output_guards",
+        "tests.test_live01_hardening::test_windows_reparse_output_rejected_mock"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json",
+        "external RELEASE_FINAL_VERIFICATION clean unzip proof; native Windows NOT_RUN"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B01",
+      "requirement": "ALL_SOURCE_CELLS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_all_256_cells_120_cal_and_exact_legacy_transform"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B02",
+      "requirement": "ALL120_CAL",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_all_256_cells_120_cal_and_exact_legacy_transform"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B03",
+      "requirement": "INTERNAL_OBJECTIVE_ROWS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B04",
+      "requirement": "FORMER_HOLDOUT_AFFECTS_LOSS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair0]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair1]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair2]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair3]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair4]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair5]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair6]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair7]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair8]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair9]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair10]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair11]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B05",
+      "requirement": "NO_DOUBLE_OBJECTIVE",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_all_256_cells_120_cal_and_exact_legacy_transform"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B06",
+      "requirement": "EXACT_BIDIRECTIONAL_ZERO_RESIDUAL",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_all_256_cells_120_cal_and_exact_legacy_transform"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B07",
+      "requirement": "ZERO_RELATION_DIAGONAL",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_zero_pair_not_silently_filtered"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B08",
+      "requirement": "INVALID_AUTHORITY",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_invalid_cells_fail[duplicate]",
+        "tests.test_live01_observations::test_invalid_cells_fail[missing]",
+        "tests.test_live01_observations::test_invalid_cells_fail[nan]",
+        "tests.test_live01_observations::test_invalid_cells_fail[inf]",
+        "tests.test_live01_observations::test_invalid_cells_fail[negative]",
+        "tests.test_live01_observations::test_invalid_cells_fail[asymmetry]",
+        "tests.test_live01_observations::test_invalid_cells_fail[diagonal]",
+        "tests.test_live01_observations::test_invalid_cells_fail[year]",
+        "tests.test_live01_observations::test_invalid_cells_fail[unit]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B09",
+      "requirement": "ENUMERATION_UNCHANGED",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B10",
+      "requirement": "C17_NO_VALIDATION_EXCLUSIONS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "B11",
+      "requirement": "NO_HOLDOUT_IN_POLICY_OR_SOLVER",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair0]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair1]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair2]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair3]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair4]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair5]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair6]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair7]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair8]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair9]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair10]",
+        "tests.test_live01_observations::test_each_previous_holdout_changes_loss[pair11]",
+        "tests.test_live01_observations::test_old_aggressive_guards_unchanged"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C01",
+      "requirement": "CURRENT_NONCONSECUTIVE_AXIS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_visum::test_native_contract_over_realistic_fake"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C02",
+      "requirement": "MISSING_OR_NONFINITE_ATTRS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_same_data_different_zone_attribute_row_enumeration_is_bound_by_id",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ADD_PROD_W]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ADD_ATT_W]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ADD_PROD_S]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ADD_ATT_S]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ADD_SALARY]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ZAHR_PROD_WORK]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ZAHR_ATR_WORK]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ZAHR_PROD_SERV]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[ZAHR_ATR_SERV]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[POP_ZP]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[NOT_ZAHR]",
+        "tests.test_live01_visum::test_missing_required_zone_data_blocks[AV_INCOME]",
+        "tests.test_live01_visum::test_nonfinite_zone_data_blocks[None]",
+        "tests.test_live01_visum::test_nonfinite_zone_data_blocks[nan]",
+        "tests.test_live01_visum::test_nonfinite_zone_data_blocks[inf]",
+        "tests.test_live01_visum::test_wrong_model_contracts[matrix-OD_MATRIX_BINDING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[op-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[scope-ASSIGNMENT_SCOPE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[script-PROCEDURE_SCRIPT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[motorway-MOTORWAY_MODE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[axis-DUPLICATE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[type-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[td-TD_SOURCE_SET]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C03",
+      "requirement": "DONOR_SCOPE_EXCLUSIONS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_exclusions_strict[None]",
+        "tests.test_live01_hardening::test_exclusions_strict[value1]",
+        "tests.test_live01_hardening::test_exclusions_strict[value2]",
+        "tests.test_live01_hardening::test_exclusions_strict[value3]",
+        "tests.test_live01_hardening::test_exclusions_strict[value4]",
+        "tests.test_live01_hardening::test_exclusions_strict[value5]",
+        "tests.test_live01_visum::test_scope_respects_exclusions"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C04",
+      "requirement": "OD_MATRIX_BINDINGS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[oa_same_sum]",
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[oa_binding]",
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[network]",
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[source_pointer]",
+        "tests.test_live01_visum::test_wrong_model_contracts[matrix-OD_MATRIX_BINDING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[op-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[scope-ASSIGNMENT_SCOPE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[script-PROCEDURE_SCRIPT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[motorway-MOTORWAY_MODE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[axis-DUPLICATE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[type-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[td-TD_SOURCE_SET]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C05",
+      "requirement": "ASSIGNMENT14_READ_CONTRACT",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_visum::test_native_contract_over_realistic_fake"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C06",
+      "requirement": "PROCEDURES_AND_SCRIPT",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[zone]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[td]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[foreign]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[protected]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[freight]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[script]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[source]",
+        "tests.test_live01_visum::test_wrong_model_contracts[matrix-OD_MATRIX_BINDING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[op-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[scope-ASSIGNMENT_SCOPE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[script-PROCEDURE_SCRIPT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[motorway-MOTORWAY_MODE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[axis-DUPLICATE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[type-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[td-TD_SOURCE_SET]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C07",
+      "requirement": "MOTORWAY_MODE",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_visum::test_wrong_model_contracts[matrix-OD_MATRIX_BINDING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[op-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[scope-ASSIGNMENT_SCOPE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[script-PROCEDURE_SCRIPT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[motorway-MOTORWAY_MODE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[axis-DUPLICATE]",
+        "tests.test_live01_visum::test_wrong_model_contracts[type-TG_CONTRACT_MISSING]",
+        "tests.test_live01_visum::test_wrong_model_contracts[td-TD_SOURCE_SET]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C08",
+      "requirement": "STALE_SOURCE_BLOCK",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_source_binding_never_accepts_stale_or_partial",
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[oa_same_sum]",
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[oa_binding]",
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[network]",
+        "tests.test_live01_recovery::test_final_readback_covers_current_oa_network_and_source[source_pointer]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "C09",
+      "requirement": "FOREIGN_MODEL_BLOCK",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_extra_model_failures[missing_protected]",
+        "tests.test_live01_hardening::test_extra_model_failures[negative_distance]",
+        "tests.test_live01_hardening::test_extra_model_failures[td_nan]",
+        "tests.test_live01_hardening::test_extra_model_failures[td_duplicate]",
+        "tests.test_live01_hardening::test_extra_model_failures[wrong_dseg_mode]",
+        "tests.test_live01_hardening::test_extra_model_failures[wrong_year]",
+        "tests.test_live01_hardening::test_launcher_refuses_foreign_profile_without_touching_it"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D01",
+      "requirement": "FISTA_TO_DONOR",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D02",
+      "requirement": "NONZERO_TG_PLAN",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D03",
+      "requirement": "NO_DIRECT_OD_WRITES",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_same_data_different_zone_attribute_row_enumeration_is_bound_by_id",
+        "tests.test_live01_recovery::test_static_new_source_has_no_model_mutators"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D04",
+      "requirement": "FROZEN_SOURCE_GUARDS",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[zone]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[td]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[foreign]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[protected]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[freight]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[script]",
+        "tests.test_live01_hardening::test_independent_end_readback_detects_state_drift[source]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D05",
+      "requirement": "MUTABLE_OPERATOR_PRESENT",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D06",
+      "requirement": "NATIVE_EFFECT_NOT_CLAIMED",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_recovery::test_full_handoff_verifier_and_tampering"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D07",
+      "requirement": "SOURCE_EPOCH_BINDING",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_source_binding_never_accepts_stale_or_partial",
+        "tests.test_live01_recovery::test_change_after_solve_prevents_successful_publication[oa]",
+        "tests.test_live01_recovery::test_change_after_solve_prevents_successful_publication[zone]",
+        "tests.test_live01_recovery::test_change_after_solve_prevents_successful_publication[td]",
+        "tests.test_live01_recovery::test_change_after_solve_prevents_successful_publication[network]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D08",
+      "requirement": "READ_FAILURE_NO_COMPLETE",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_mid_read_failure_no_complete_seal"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "D09",
+      "requirement": "COMBUSY_AND_STOP",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_com_thread_and_stop_are_not_bypassed",
+        "tests.test_live01_visum::test_read_retry_single_owner"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E01",
+      "requirement": "NO_MODEL_MUTATION",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg",
+        "tests.test_live01_visum::test_read_facade_denies_mutators[SetAttValue]",
+        "tests.test_live01_visum::test_read_facade_denies_mutators[SetValues]",
+        "tests.test_live01_visum::test_read_facade_denies_mutators[SetMultiAttValues]",
+        "tests.test_live01_visum::test_read_facade_denies_mutators[Execute]",
+        "tests.test_live01_visum::test_read_facade_denies_mutators[SaveVersion]",
+        "tests.test_live01_visum::test_read_facade_denies_mutators[LoadVersion]",
+        "tests.test_live01_visum::test_read_facade_denies_mutators[CreateSomething]"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E02",
+      "requirement": "ROOT_LOCK_AND_INJECTION",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_output_guards",
+        "tests.test_live01_hardening::test_run_locked_and_unowned_root_blocks_without_writes",
+        "tests.test_live01_hardening::test_ambiguous_injection_refused"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E03",
+      "requirement": "PARTIAL_FAIL_CLOSED",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_mid_read_failure_no_complete_seal",
+        "tests.test_live01_recovery::test_completed_checkpoint_revoked_on_lock_cleanup_failure",
+        "tests.test_live01_recovery::test_primary_unprintable_failure_preserved"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E04",
+      "requirement": "LEGACY_PRESERVED",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_hardening::test_donor_function_source_exact_hash",
+        "tests.test_live01_observations::test_old_aggressive_guards_unchanged"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json",
+        "docs/live01/PROTECTED_SOURCE_READBACK.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E05",
+      "requirement": "PERF01_DIAGFAST_PRESERVED",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json",
+        "docs/live01/PROTECTED_SOURCE_READBACK.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E06",
+      "requirement": "IMPORT_RESTORATION",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_full_public_bootstrap_read_failure_restores_imports",
+        "tests.test_live01_hardening::test_original_import_scope_restores_on_failure_and_success"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E07",
+      "requirement": "FULL_AND_STANDALONE",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_full_public_bootstrap_mock_and_import_restoration"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    },
+    {
+      "case": "E08",
+      "requirement": "REALISTIC681_FIXTURE",
+      "offline_status": "PASS",
+      "execution_kind": "OFFLINE_MOCK_OR_STATIC",
+      "actual_tests": [
+        "tests.test_live01_baseline::test_end_to_end_baseline_681_zones_all120_and_nonzero_tg"
+      ],
+      "evidence": [
+        "docs/live01/ALL_COMPLETED_TESTCASES.json"
+      ],
+      "native_status": "NOT_RUN"
+    }
+  ],
+  "full_suite": {
+    "executed": 831,
+    "new_live01": 116,
+    "inherited": 715
+  },
+  "native_windows_visum": "NOT_RUN",
+  "real_final_snapshot_replay": "NOT_RUN_NOT_REQUIRED_FOR_MOCK_STATUS",
+  "new_assignment_epoch_reuse": "FORBIDDEN",
+  "note": "PASS means bounded offline/mock/static tests; no native approval. New runtime uses fresh capture. Legacy inherited suites exercise path parser/C17/perf integrity."
+}

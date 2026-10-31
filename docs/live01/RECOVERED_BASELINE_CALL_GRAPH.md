@@ -1,0 +1,4 @@
+# LIVE01 source integration
+New launcher -> original import isolation -> LIVE01 strict config / pinned whole-matrix authority -> injected read-only model preflight -> exact donor TG audit + zone scope + TD read + assignment scope -> original FIX3 preflight/capture -> original incidence (two methods) -> original BIDIRECTIONAL_SUM aggregation with all 120 CAL -> original FISTA -> original parent_projection(zone_rows) -> identical donor design_generation_candidates -> serialized LIVE02 handoff.
+
+No import of donor main/launcher, no writes, no assignment, no save/load. Parent files are retained byte-identical. Original offline 108/12 branch remains a legacy reference only. All observed cells retain their input values; existing bidirectional summation is traced explicitly, not silently replaced.

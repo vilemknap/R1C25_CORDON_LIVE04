@@ -1,0 +1,43 @@
+{
+  "recovered_source": "a33de1331de6540afb15ffbc3a84a1621c29be48647398c327853f28b9256b65",
+  "hotfix_source": "599d2e2e5ff537c93584e69e59de5c8ddabc8de733c48eebfc172087f1833c16",
+  "baseline_manifest_pass": 1298,
+  "recovery": "Recovered final STARTUP_FIX1 (B00-B03) from Drive; later than the visible interrupted message.",
+  "hotfix_diff": {
+    "changed": [],
+    "new": [
+      "00_START_HERE_COMBUSY_FIX_CZ.txt",
+      "COMBUSY_HOTFIX_TEST_REPORT_20261023.json",
+      "R1_15A2_AGGRESSIVE_TGTD_V1_FIX1_COMBUSY_RETRY.py",
+      "r1_15a2_com_busy_snapshot_hotfix_v1.py",
+      "tests/test_aggressive_fix1_combusy_read_retry_hotfix.py"
+    ],
+    "removed": []
+  },
+  "checkpoints": [
+    [
+      "R00",
+      "Source recovery and exact hotfix delta; reproduce uncovered COM property reads"
+    ],
+    [
+      "R01",
+      "Port original hotfix library unchanged, scoped read retries, properties, typeinfo, pages; preserve original exceptions"
+    ],
+    [
+      "R02",
+      "Fault injection, startup and capture end-to-end, snapshot parity and separation from 2022"
+    ],
+    [
+      "R03",
+      "Complete regression, clean extraction, SHA manifest, Drive verification and release"
+    ]
+  ],
+  "limits": [
+    "No Windows/PTV instance in this environment",
+    "Live TG/TD-assignment-accept/rollback loop not present in recovered source",
+    "Model year 2025, not a claim about Visum application version",
+    "No numerical TG/TD/LONG/IDP/IPF changes",
+    "No APPLY or source model changes"
+  ],
+  "baseline_tests": "First full recovered suite timed out at 120 s after >300 test indicators. NOT a PASS. Split reruns planned."
+}

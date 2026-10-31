@@ -1,0 +1,37 @@
+{
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "execution_kind": "MOCK",
+  "model_year": 2025,
+  "native_candidate_accepted": false,
+  "native_readonly_baseline_verified": false,
+  "next_stage": "LIVE02_FIRST_NATIVE_TG_CYCLE",
+  "objective_rows_per_method": 120,
+  "output_directory": "/mnt/data/live01_work/smoke_FINAL/runs/LIVE01_BASELINE_2a6c6df8f33a",
+  "production_ready": false,
+  "real_visum_verified": false,
+  "remaining_gates": [
+    "NATIVE_CANDIDATE_EFFECT_NOT_RUN",
+    "ROLLBACK_NOT_RUN",
+    "PRODUCTION_METHODOLOGY_NOT_CERTIFIED"
+  ],
+  "schema": "LIVE01_RESULT_V1",
+  "source_cells": 256,
+  "stage": "LIVE01_BASELINE_READ_ONLY",
+  "status": "MOCK_READONLY_BASELINE_PASS",
+  "validation_rows": 0,
+  "variants": {
+    "ALL_ORDERED_UNIQUE_PAIRS": {
+      "candidate_count": 64,
+      "proposal_path": "ALL_ORDERED_UNIQUE_PAIRS/PROPOSED_TG_CANDIDATES.json",
+      "proposal_sha256": "1e5ff6e3e5d0393c9f37782c2b0b61378e7f0baf25cfacb51a1ac58096dca6ce",
+      "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED"
+    },
+    "EXACT_TWO_HITS": {
+      "candidate_count": 64,
+      "proposal_path": "EXACT_TWO_HITS/PROPOSED_TG_CANDIDATES.json",
+      "proposal_sha256": "e9e8b06fe0f6399e6fda50f4e7c4a14f489590607ef16e05742c6702a76eceaa",
+      "status": "NONZERO_DONOR_TG_PROPOSAL_NATIVE_EFFECT_NOT_VERIFIED"
+    }
+  }
+}

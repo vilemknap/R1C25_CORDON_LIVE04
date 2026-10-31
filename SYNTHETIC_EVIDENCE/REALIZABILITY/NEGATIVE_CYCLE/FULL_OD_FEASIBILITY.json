@@ -1,0 +1,69 @@
+{
+  "actuator_step": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "apply_permitted": false,
+  "basis_kind": "EXACT_SYNTHETIC_LINEAR",
+  "basis_provenance": {
+    "basis_kind": "EXACT_SYNTHETIC_LINEAR",
+    "definition": {
+      "law": "EXACT_SYNTHETIC_MARGINAL_PARAMETER_MODEL_NOT_VISUM_TD",
+      "matrix": [
+        [
+          100.0,
+          0.0,
+          100.0,
+          0.0
+        ],
+        [
+          100.0,
+          0.0,
+          0.0,
+          100.0
+        ],
+        [
+          0.0,
+          100.0,
+          100.0,
+          0.0
+        ],
+        [
+          0.0,
+          100.0,
+          0.0,
+          100.0
+        ]
+      ]
+    },
+    "search_bound_policy": "CORDON_AGGRESSIVE_V1_PROFILE_FIX1_SEARCH_ONLY",
+    "source_sha256": "01dc5209defae14337f490a14d947dd58bde810f396120b6d44076039cddad77",
+    "state_hash": "b78062a24b0486f08cfc3051108e5b7805646a06c797f9e5f94ee20d696b05f0"
+  },
+  "desired_delta": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "full_od_max_abs_residual": 0.0,
+  "full_od_rmse": 0.0,
+  "global_nonlinear_infeasibility_claimed": false,
+  "kkt": 0.0,
+  "live_verified": false,
+  "realizable_delta": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "residual": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "status": "SYNTHETIC_FEASIBLE_TG_TD"
+}

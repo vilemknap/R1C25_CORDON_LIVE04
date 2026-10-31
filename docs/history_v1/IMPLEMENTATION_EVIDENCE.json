@@ -1,0 +1,55 @@
+{
+  "apply_permitted": false,
+  "live_visum_tested": false,
+  "modified_parent_modules": [
+    {
+      "after_sha256": "1c24b099a9f41b5c91474725ffe11a29772b609b33fb7bccf962d47eab51660d",
+      "before_sha256": "f817aa114eae5a924116b8f73f7d3f22ae6b26742942b74d189a3d75bf6e30ed",
+      "path": "r1_15a2_core.py"
+    },
+    {
+      "after_sha256": "78c902da66c3aa460dced9dd15c756ff63199b10f3131797845a4234d2bc7056",
+      "before_sha256": "f568c2f0e94b73f5e336a926c37df091b4af36d2c401a985d44eeff15579bf0a",
+      "path": "r1_15a2_two_mode_v238.py"
+    }
+  ],
+  "module_evidence": {
+    "C17": {
+      "file": "cordon2025/budget.py",
+      "physical_allocation": false,
+      "reference_oracle": "independent_SciPy_SLSQP",
+      "tests": "tests/test_budget.py"
+    },
+    "authority": {
+      "file": "cordon2025/authority.py",
+      "real_workbooks": true,
+      "tests": "tests/test_authority.py"
+    },
+    "optimizer": {
+      "backend": "existing_parent_solve_guidance_FISTA",
+      "file": "cordon2025/optimizer.py",
+      "tests": "tests/test_optimizer.py"
+    },
+    "path_operator": {
+      "actual_2025_cache": false,
+      "file": "cordon2025/incidence.py",
+      "reference_oracles": [
+        "original_15A2_core",
+        "readonly_2025_V1"
+      ],
+      "tests": "tests/test_incidence.py"
+    },
+    "realizability": {
+      "basis": "synthetic_or_explicit_audited_local",
+      "file": "cordon2025/feasibility.py",
+      "no_basis": "NOT_VERIFIED",
+      "tests": "tests/test_feasibility.py"
+    },
+    "safety": {
+      "file": "cordon2025/common.py",
+      "old_deployment_guard": "MUST_REJECT_FORK",
+      "tests": "tests/test_hardening.py"
+    }
+  },
+  "origin_prompt_sha256": "9652dd657c714e653a8ada51d1bd5776305bcbc12bf5ffaf5c912625b82d3f86"
+}

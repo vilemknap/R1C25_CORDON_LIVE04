@@ -1,0 +1,27 @@
+[
+  {
+    "file": "CURRENT_V24915_FULL_TEST.txt",
+    "size": 912,
+    "sha256": "7b95a26d0222f33257c6b07040bf503acf365eb6c3b06dbc549768ddb5df5471"
+  },
+  {
+    "file": "OLD_V249_FULL_TEST.txt",
+    "size": 837,
+    "sha256": "9153dae4745a99076d3affe82f7edb472e272595960ca4eb938d91e31e77b4ec"
+  },
+  {
+    "file": "V24916_FLOWBUNDLE_SKIM_INTEGRATION_AUDIT_AND_DESIGN_CZ.md",
+    "size": 6257,
+    "sha256": "cedad9ad9efc6695fd643f501c6a066a488dc1552c77271a1ad2386ec463d236"
+  },
+  {
+    "file": "V24916_IMPLEMENTATION_CHECKLIST.json",
+    "size": 2378,
+    "sha256": "b808089fbd27c16d3a209c427ad5b329874d8fd7ffc8813f615ccc6c04074540"
+  },
+  {
+    "file": "V24916_SOURCE_CONTRACT_MATRIX.csv",
+    "size": 3971,
+    "sha256": "dca190d90dadee74affab0b5e4d545cb295ab24e7c81015c200a3e82abf9de64"
+  }
+]

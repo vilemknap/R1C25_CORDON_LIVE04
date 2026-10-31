@@ -1,0 +1,25 @@
+{
+  "status": "SYNTHETIC_COM_BRIDGE_BENCHMARK_PASS",
+  "native_visum_tested": false,
+  "origin": "SYNTHETIC_PROVIDER_NOT_REAL_R1",
+  "zones": 201,
+  "dsegs": 12,
+  "parents_per_dseg": 10000,
+  "segment_path_rows": 120000,
+  "stored_mode_geometries": 20000,
+  "fully_checked_segment_geometry_rows": 480000,
+  "com_page_size": 256,
+  "bounded_calls": 2868,
+  "unbounded_calls": 0,
+  "model_writes": [],
+  "preflight_seconds": 0.4085374539999975,
+  "capture_with_full_geometry_proof_seconds": 6.597062391999998,
+  "both_incidence_seconds": 1.1806352140001763,
+  "cache_bytes": 6418432,
+  "process_peak_rss_kib": 177544,
+  "memory_note": "Includes the synthetic COM provider (materialized mock rows) and Python runtime; not a native COM forecast.",
+  "matrix_parity": [
+    "PASS",
+    "PASS"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--junitxml=/mnt/data/live01_recovery/recovery_evidence/DONOR_RECHECK.xml"
+  ],
+  "cwd": "/mnt/data/live01_work/donor_reference",
+  "environment_overrides": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "started_utc": "2026-10-24T09:08:17.578489+00:00",
+  "execution_kind": "LINUX_OFFLINE_OR_MOCK",
+  "exit_code": 0,
+  "elapsed_seconds": 58.75046181899995,
+  "finished_utc": "2026-10-24T09:09:16.329443+00:00"
+}

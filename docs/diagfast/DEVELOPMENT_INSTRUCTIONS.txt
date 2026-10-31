@@ -1,0 +1,771 @@
+VYVOJOVE ZADANI — R1 2025 CORDON COM DIAGFAST EXACT V1
+=======================================================
+Verze zadani: 2026-10-23
+Jazyk: cestina (nazvy API, identifikatory a error codes anglicky)
+Rezim: FORENZNÍ AUDIT -> IMPLEMENTACE -> TESTY -> LIVE HARNESS -> BENCHMARK -> RELEASE
+Vetev: R1_2025_CORDON_COM_DIAGFAST_EXACT_V1
+
+DULEZITE: Nejde o navrh. Proved veskery dostupny vyvoj, skutecne dostupne
+regresni a negativni testy, zabal funkcni kod a doloz vysledky. Kde neni
+pristupny nativni PTV Visum 2026 nebo kompletni referencni .ver, vytvor
+spustitelny read-only acceptance harness a stav oznac LIVE_PENDING. Nikdy
+nevydavej mock/synteticky COM test za provedene native overeni.
+
+========================================================================
+0. ROLE, CIL A JEDINE OPRAVNENE ZMENY
+========================================================================
+
+Jsi hlavni vyvojar a testovaci inzenyr R1BilevelPy / R1 2025 CORDON SDP.
+Uzivatel je systemovy architekt. Postupuj samostatne a dodavej kompletni
+znovu spustitelne vystupy, nikoli navod k rucnimu programovani.
+
+CIL: Zrychlit opakovany nebo novy native read-only CAPTURE_DIAGNOSTICS
+z ulozenych cest modelu 2025, se ZCELA TOTOZNOU numerickou a geometrickou
+semantikou jako verze FIX3/PERF-01. Prenes principy z profilove vetve
+R1_15A2 DIAGNOSTICS FAST EXACT: optimalizuj CTENI a kontrolni zapis,
+nevynechavej data, diagnostiky ani dukazy.
+
+Implementuj izolovane, vypinatelne a porovnatelne:
+  A. jemne mereni COM/cpu/SQLite/exportu pred zmenami;
+  B. benchmarkovane vetsi bounded COM stranky (256 -> 512 -> 1024,
+     volitelne dalsi hodnoty jen po kapacitnim testu);
+  C. presny streaming verifier dalsich 10 stejnomodovych geometrii,
+     pokud prokazes shodnou prijimaci/odmitaci semantiku puvodniho parseru;
+  D. omezeni duplicitniho zpracovani a I/O tam, kde neoslabi kontrolu;
+  E. navaznost na PERF-01, ktera nesmi byt regressovana.
+
+Toto neni port profilu 12D/11D doslovnym kopirovanim helperu. Kordonovy
+kalibrator tyto helpery nevola. Neposouvej scope do zivych TG/TD
+modifikaci, noveho assignmentu nebo uprav solveru.
+
+========================================================================
+1. PRESNE ZDROJE A PROVENIENCE (NEZACINEJ KODEM NASLEPO)
+========================================================================
+
+AUTORITATIVNI VYVOJOVY ZAKLAD (novejsi nez FIX3):
+  R1_2025_CORDON_PERF01_V1_20261023.zip
+  Root archivu: R1C25_PERF01/
+  SHA-256 celeho ZIP:
+    4f09428132925cda73994e5b7fb46613a4e21dee3287df1e83986fc49e5aaead
+
+NEZAVISLY COLD / NATIVE REFERENCE ORACLE:
+  R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX3_PRACTICAL_20261023.zip
+  Root archivu: R1C25_FIX3/
+  SHA-256 celeho ZIP:
+    f851651237d93a84f163749bafa6acd0c2edc3c2916d8791a5a7afbdde6f6d3f
+
+ZDROJ METODIKY PROFILOVEHO FAST EXACT (jen inspirace, bez modifikace):
+  R1_15A2_DIAGNOSTICS_FAST_EXACT_VYVOJOVY_PROMPT_20261023.md
+  R1_15A2_AGGRESSIVE_FIX1_COMBUSY_TD09C16_HOTFIX2_FULL_20261023.zip
+  SUMMARY telemetry HOTFIX2
+
+Nesmi se pouzit starsi nebo castecny FIX2 sqlite jako realny zaklad.
+Nesmi se nahradit zabaleny rodic vlastni zjednodusenou napodobeninou.
+Pokud vychozi archiv chybi, vyzadej si presny archiv; nepredstirej audit.
+Zdrojove archivy ponech byte-identical a vyvijej v nove slozce.
+
+SKUTECNA REFERENCNI NATIVE CAPTURE 2025 (uz probehla, neni to live test
+nove DIAGFAST vetve):
+  %LOCALAPPDATA%\R1C25\VISUM_CAPTURE_DIAGNOSTICS_9bd0a39f07fa
+  00_RESULT.status = VISUM_SAVED_PATH_DIAGNOSTICS_COMPLETE
+  RUN_CHECKPOINT.completed = true
+  SNAPSHOT_EVIDENCE.geometry_full_identity_proven = true
+  GEOMETRY_PROOF.full = true; 12/12 DSeg zkontrolovano
+  OD_PARITY: 12/12 PASS, politika Vol(AP) lattice 0.001
+  p.sqlite: 664272896 bytes
+  p.sqlite SHA-256:
+    7e35a96ac1bc4fb306049d410379e349fde5aa8a07b15bf11301ed858253fa9a
+  network_sha256:
+    be722118d050f37bf2aa77f93ecff07e08d786fb7d17413310bd2007793edc6e
+  681 zon, 8608 smerovanych linku, 12 DSeg, 2 geometry modes
+  16 SDP stanovist, 32 smerovanych fyzickych klicu (NO,FROM,TO)
+  120 pozorovanych relaci, 108 CALIBRATION + 12 VALIDATION
+  ALL_ORDERED_UNIQUE_PAIRS / EXACT_TWO_HITS: obe metody zachovat
+  868022 identit cest celkem:
+    C     : 438817 cest / 21500281 vyskytu linku
+    C_NOT : 429205 cest / 31040646 vyskytu linku
+
+Odvozena teoreticka zatez pri aktualnich skupinach 8x C a 4x C_NOT:
+  8*21500281 + 4*31040646 = 296164832 vyskytu linku
+  (nezahrnuje hierarchicke parent radky a readback).
+Toto je EXTRAPOLACE ze struktury kontrol, nikoli nezavisle namerena
+delka celeho COM cteni nebo cas. Neodvozuj z ni deklarovany speedup.
+
+PERF-01 jiz existuje: odvozena persistentni cache pro opakovany OFFLINE
+read-only vyhodnoceni stejneho sealed snapshotu, bez COM a noveho
+dekodovani geometrii. PERF-01 NEZRYCHLUJE native capture a neoveruje
+assignment epoch. Zachovej jeho schema, pravidla HIT/MISS a regresi.
+Jeho realny full 664MB replay byl pri vyvoji PERF-01 nedostupny a zustal
+WAITING_FOR_REAL_FINAL_CACHE, pokud jej nyni skutecne neprovedes.
+
+========================================================================
+2. FORENZNÍ MAPA SKUTECNEHO KODU
+========================================================================
+
+Pred zmenou projdi a zmapuj presny call graph:
+
+  RUN_CORDON_2025_CAPTURE.py
+    -> cordon_visum_bootstrap.launch(..., action='CAPTURE_DIAGNOSTICS')
+       -> isolated_imports, verify_release, injected Visum
+    -> cordon2025.visum_startup.run()
+       -> _run_scoped() / RunSession / ReadControl
+       -> preflight(): _network(), _segments(), _matrix() pro 12 DSeg,
+          24 vzorku z CreatePrTPathList a CreatePrTPathLinkList
+       -> capture():
+          - jeden parent/Vol(AP) scan kazdeho z 12 DSeg;
+          - dve reprezentativni cele geometrie (C a C_NOT);
+          - 10 FULL_SAME_MODE_MATCH kontrol dalsich DSeg;
+          - FINAL_PATH_READBACK u vsech 12 DSeg;
+          - finalni cteni 12 OD matic, site a DSeg inventory;
+          - uzavreni p.sqlite, matrix_authority/*.npz,
+            GEOMETRY_PROOF.json, OD_PARITY.json a SNAPSHOT_EVIDENCE.json
+       -> cordon2025.__main__.empirical_run(): offline evidence,
+          STATION_HITS, obe incidence, smerove diagnostiky, 120 relaci
+       -> RUN_CHECKPOINT, 00_RESULT, SHA a auditni vystupy.
+
+DULEZITE FUNKCE:
+  cordon2025/visum_startup.py:
+    DEFAULTS, settings(), ReadControl, _call(), _bounded_rows(),
+    _columns(), _network(), _segments(), _matrix(), _new_list(),
+    preflight(), _add_parents_with_precision(), _geometry_equal(),
+    _cleanup_store(), capture(), _run_scoped(), run().
+
+  parent/r1_15a2_two_mode_v238.py:
+    PARENT_COLUMNS, GEOMETRY_COLUMNS, bounded_rows(),
+    TwoModeRouteCollector.add_parents(), add_geometry(),
+    geometry / volumes / edges / edge_postings SQLite schema.
+
+  cordon2025/com_busy.py:
+    parent_hotfix_scope(), read_call(), BoundedReadTarget,
+    retry politika, evidence COMBUSY/STOP.
+
+  cordon2025/session.py, io.py:
+    zamykani, izolace 2025 root, checkpoint SHA, atomicke zapisy,
+    Windows kratke/extended path operace, vylouceni 2022.
+
+  cordon2025/incidence.py, perf01_cache.py, __main__.py,
+  state.py, external_parity.py, parity.py, authority.py.
+
+  tests/fake_visum_startup.py, tests/test_visum_startup.py,
+  tests/test_practical_limits_fix3.py, tests/test_combusy_*.py,
+  tests/test_perf01_cache.py, verify_release.py.
+
+NALEZY K OVERENI V DODANEM ZDROJI:
+  - page_size = 256; settings limit 1..4096;
+  - parent bounded_rows() ma vlastni downshift fallback list,
+    signature verification, retry a detekci opakovane stranky;
+  - kazdy dalsi mode-compatible DSeg se overuje pomoci docasneho
+    proof_<DSEG>.sqlite + originalni add_geometry() + _geometry_equal();
+  - _geometry_equal() porovnava (orig,dest,path_index,edge_count,
+    sequence_sha256) serazene za mode;
+  - proof scratch se po kontrole odstranuje;
+  - do p.sqlite se uklada geometry.edge_ids jako little-endian uint32;
+  - reprezentativni add_geometry() vytvari i edge_postings;
+  - _matrix() je zamerne opakovane volana v oddelenych fazich:
+    12x preflight, 12x capture, 12x final readback (nominalne 36x
+    GetValues() za uplny capture);
+  - COM busy default: max 128 pokusu / 180 sekund NA JEDNO CTENI,
+    nikoli na cely beh; stranku nelze nasilne prerusit uprostred COM.
+
+Najdes-li odlisny konkretni stav zdroje, zapsat presny rozdil do CP00.
+Nehadej API PTV Visum ani interni semantiku parseru.
+
+========================================================================
+3. NEPREKROCITELNE INVARIANTY A NEZASAHOVANE OBLASTI
+========================================================================
+
+- Kordon je model 2025, pruzkum 2026; RPDI/OA a vsechny puvodni autority.
+- Zachovej vsech 12 DSeg, jejich normalizaci, mode C a C_NOT,
+  rozliseni NATIVE a EXOG_EE; zadne implicitni prepnuti do profile488.
+- Stanoviste mapuj pouze pres presny (LinkNo,FromNodeNo,ToNodeNo),
+  ne podle samotneho LinkNo a ne automaticky pres protismer.
+- Obema metodam ALL_ORDERED_UNIQUE_PAIRS a EXACT_TWO_HITS zachovej
+  totozne naroky na poradi, opakovane navstevy a pocet SDP hits.
+- Zachovej puvodnich 120 relaci a CAL/VALID anti-leakage.
+- Zachovej presnou per-OD a agregatni politiku FIX3 pro 0.001
+  kvantovani Vol(AP): zadny navrat na prilis prisnou FIX2 paritu,
+  ani nove nesmyslne uvolneni kontrol.
+- Nesmi se menit hodnoty, zaokrouhlovani, poradi sum, C17,
+  frozen EXOG, TG/TD, FineCDF, FISTA, acceptance a priority solveru.
+- READ-ONLY: zadne SetValues/SetAttValue, ExecuteProcedures,
+  SaveVersion, LoadVersion, assignment, novy model, APPLY ci zmena
+  OD matic. Testuj pouze na oddelene kopii .ver.
+- Vystupy i metadata: apply_permitted=false,
+  assignment_executed=false, calibration_ready=false;
+  existence proofu neodblokovava zivotni / metodicke gates.
+- Zadne automaticke pripojeni pres ROT/Dispatch; musi byt injektovany
+  Visum z aktivniho PTV Visum Scripts menu v testovaci kopii.
+- Nemen rodicovsky 15A2 kod ani bezici profilovy kalibrator, 2022,
+  puvodni FIX3 a originalni PERF-01. Pouzij izolovany overlay/novou
+  verzi helperu s prokazatelnou integritou protected sourcu.
+- Zadna neomezena SaveToArray nebo GetAll nahrada pro cestove seznamy.
+- Zadne kraceni proofu na sample, prvnich N cest nebo jen nenulove
+  objemy. Nulove Vol(AP) i cesty bez linku zustanou soucasti identity.
+- Selhani COM, integrity, per-OD parity, topology nebo evidence
+  nesmi byt maskovano automatickym 'uspěšnym' fallbackem.
+- Zadna skryta wall-clock stop podminka celeho behu; pouze kontrolovane
+  per-read retry, diskove/memory budgety a explicitni STOP_REQUESTED.
+
+========================================================================
+4. FAZE A — PRESNE MERENI STAVAJICI LEGACY PRED ZMENOU
+========================================================================
+
+4.1 Zaloz merici wrapper / instrumentaci bez zmeny radku a hodnot.
+    Default historickeho launcheru ma zustat LEGACY.
+
+4.2 Vyrob agregovanou telemetry pro kazdou instanci a podfazi:
+    PREFLIGHT_TOTAL, PREFLIGHT_NETWORK, PREFLIGHT_DSEGS,
+    PREFLIGHT_MATRIX_GETVALUES, PREFLIGHT_LIST_SIGNATURES,
+    CAPTURE_PARENT_LIST, CAPTURE_PARENT_PARSE_SQLITE,
+    CAPTURE_OD_PARITY, CAPTURE_REPRESENTATIVE_GEOMETRY_COM,
+    CAPTURE_REPRESENTATIVE_GEOMETRY_PARSE_SQLITE,
+    CAPTURE_PROOF_GEOMETRY_COM, CAPTURE_PROOF_PARSE,
+    CAPTURE_PROOF_SQLITE_WRITE, CAPTURE_PROOF_EQUALITY,
+    CAPTURE_FINAL_MATRIX_READBACK, CAPTURE_FINAL_PATH_READBACK,
+    CAPTURE_FINAL_NETWORK_CHECK, CAPTURE_SEAL,
+    CAPTURE_EMPIRICAL_INCIDENCE, CAPTURE_REPORT_IO,
+    CHECKPOINT_HASH_IO, COMBUSY_RETRY_OVERHEAD.
+
+4.3 Mereni musi rozlisovat:
+    - wall clock a CPU; inclusive/exclusive pokud mohou byt vnoreny;
+    - skutecny pocet volani provider Invoke / GetValues / bulk atributy;
+    - parent rows, geometry raw rows, child rows, route count,
+      pocet page calls a effective_page_size po fallbacku;
+    - SHA bytes read, SQLite bytes written, temporary proof DB bytes,
+      peaks RAM/RSS a diskovy objem vysledku;
+    - retry attempts a cas backoff po kazde kategorii faze;
+    - cas vytvareni, baleni, hashovani a uklideni artefaktu.
+
+4.4 Telemetrii ukladej agregovane po DSeg/fazi, ne event na kazdy link.
+    Instrumentace sama musi mit namerenou reziji a nesmi prerusovat
+    ani prodluzovat COM v nesmyslne mire. Respektuj ReadControl.
+
+4.5 Samotny 00_PROGRESS.json je pouze periodic snapshot.
+    Nema-li puvodni export exaktní fazove casy, oznac baseline
+    substage jako NOT_MEASURED. Rozsah 296164832 link-child vysledku
+    neprekladej na zaznamenany cas.
+
+4.6 Dodavka: BASELINE_CALL_GRAPH.md, BASELINE_PROFILE.json/md,
+    COM_READ_PLAN_AUDIT.csv, TIMING_OVERHEAD.json.
+
+========================================================================
+5. FAZE B — BOUNDED COM PAGE SIZE FAST EXACT
+========================================================================
+
+5.1 Zachovej originalni PTV API:
+    CreatePrTPathList / CreatePrTPathLinkList pres Workbench.Lists,
+    SetObjects(0, code, all_routes), PARENT_COLUMNS / GEOMETRY_COLUMNS,
+    verified_bounded_signature a rozsah FirstObject/LastObject.
+
+5.2 Implementuj konfiguracni rezim, napr.:
+    diagnostics_backend = LEGACY | FAST_EXACT | PARITY_AUDIT
+    fast_geometry_page_size = 256 | 512 | 1024 | [dalsi 1..4096]
+    fast_parent_page_size = 256 | 512 | 1024 | [dalsi 1..4096]
+    fast_page_fallback_policy = VERIFIED_BOUNDED_DOWNSHIFT
+    auto_tune = OFF by default do uspesneho benchmarku.
+    Jde o navrh jmen; pouzij stabilni, explicitni schema.
+
+5.3 Benchmarkuj zejmena geometricky velke C a C_NOT:
+    256/512/1024. 2048/4096 zkousej az po uspechu nizsich
+    variant; nikoli jako neoverene nove vychozi nastaveni.
+
+5.4 Po navyseni stranky prokaz:
+    - identicke radky, poradi a presne hranice stranek;
+    - zadne preskocene/zdvojene stranky ani child/parent;
+    - posledni prazdna/kratsi stranka a presny nasobek page_size;
+    - fallback po PTV COM page-size chybe pouze pro stejne FirstObject;
+    - transient HRESULT -2147418111 opakuje STEJNY bounded range;
+    - nikdy nelze kompenzovat chybejici radky poklesem checksumu;
+    - nezmenena detekce hostitele ignorujiciho FirstObject;
+    - zachovany STOP, per-call retry 128/180s, typeinfo guard.
+
+5.5 Pri spojeni fallback s aktualizaci internich cursoru nesmi
+    dojit k posunu stavu pri nedokoncenem volani. Pokud je stav
+    COM listu necisty, opakuj jen bezpecne inicializovanou transakci.
+
+5.6 Vysledek 256/512/1024 musi mit hodnotove identicke PARENT a
+    GEOMETRY streams. Ze zmeny poctu COM volani nevyvozuj linearni
+    wall-clock zrychleni; namer realny throughput a COMBUSY cetnost.
+
+========================================================================
+6. FAZE C — STREAMING EXACT SAME-MODE GEOMETRY VERIFIER
+========================================================================
+
+6.1 LEGACY ponech nezavislym oraclem: docasne proof_<DSEG>.sqlite,
+    puvodni TwoModeRouteCollector.add_geometry() a _geometry_equal().
+    Zadne mazani tohoto stareho kodu pred prijetim parity.
+
+6.2 V FAST_EXACT nahrad jen dokazovani 10 dalsich kompatibilnich
+    geometrii SPECIALIZOVANYM stream parserem/verifierem. Dve
+    reprezentativni geometrie C a C_NOT stale plne zaznamenej do
+    hlavniho p.sqlite puvodnim parserem, vcetne edge_ids; nema
+    se menit format ani algoritmus puvodni geometricke authority.
+
+6.3 Streaming verifier nesmi vytvaret proof SQLite s kopii vsech
+    geometrii, volumes, edge_postings a pomocnych indexu, pokud
+    stejnou kontrolu lze dokazat prubeznym porovnanim proti
+    referencni SQL geometrii. Cilem je O(pocet cest) nebo mensi
+    pamet + O(max delka cesty), ne O(pocet linkovych radku).
+
+6.4 Over parser kontrakt PRESNE podle TwoModeRouteCollector.add_geometry:
+    - 7 PTV sloupcu v originalnim poradi;
+    - hierarchicke, ploche i castecne vyplnene parent radky;
+    - all/partial parent keys (OrigZoneNo,DestZoneNo,PathIndex),
+      jejich validni typy, pozitivitu a presne znovuotevreni;
+    - presny jednotkovy `Index` linku 1,2,... na kazde ceste;
+    - validni link (LinkNo,FromNodeNo,ToNodeNo) v zive siti;
+    - navaznost end-node -> next start-node;
+    - duplikovany/orphan link, orphan parent, neuplny child;
+    - zero-link intra/interzonal trasy a jejich geometry_kind;
+    - limity radku, cest, delky cesty a memory/disk budgety;
+    - EOF bez finalniho parentu, parent bez child a ruzne
+      prechody mezi plochym a hierarchickym PTV exportem;
+    - presna coverage VSECH parent klicu i s Vol(AP)=0.
+
+6.5 Kazdou trasu porovnej alespon dle:
+    mode, orig, dest, path_index, edge_count, geometry_kind,
+    little-endian uint32 packed edge_ids a sequence_sha256.
+    Hashuj stejne bajty a ve stejnem poradi jako puvodni kod;
+    originalni _geometry_equal() je minimalni oracle pro
+    (orig,dest,path_index,edge_count,sequence_sha256).
+    Nesrovnavej pouze agregatni soucty, per-mode hash nebo
+    pocty cest. Vyrob i vypocitatelny canonical aggregate digest.
+
+6.6 Pokud COM vypis neni lexikograficky serazeny, parser musi
+    stale spravne spojit konkretni (orig,dest,path_index) s jeho
+    referencnim SQL radkem. Nespoléhej na to, ze dve sekvence
+    COM objektu maji shodne incidentalni poradi. Dukaz musi
+    zachytit opakovani/missing/extra cesty i pri jinem poradi.
+
+6.7 Kontrola per-OD parity pro vsech 12 DSeg zustava povinna:
+    - po puvodnim parent importu nezavisla per-OD kontrola;
+    - behem proofu nesmi zmizet detekce rozdilnych parent keys;
+    - puvodni probe `_add_parents_with_precision` vychazi z
+      overenych volume zaznamu hlavni databaze, ne z noveho
+      nezavisleho COM scan; faktickou redundanci presne popis;
+    - finalni nezavisle precteni objemu ulozenych cest a OD matic
+      musi bezet dal, jako ochrana proti zmene stavu pri capture.
+
+6.8 Pri neshode libovolne trasy FAST_EXACT FAIL CLOSED s dseg,
+    mode, parent key, kategorii neshody a bounded samples.
+    Nesmi nasledovat sample-only ACCEPT. Technicky COM fallback
+    na LEGACY je povolen jen pred jakymkoli finálním publish a
+    jen pri presne vyjmenovane nekompatibilite backendu;
+    realna data/geometry mismatch = STOP a uchovani evidence.
+
+6.9 `GEOMETRY_PROOF.json` musi nyst per-DSeg doklady FULL exact,
+    pocty cest/radku/link-children, original source status,
+    algorithm_version, canonical digest a typ verifikace.
+    `geometry_full_identity_proven` nastav true JEN pri 12/12
+    plnem, uspesne dokoncenem overeni. Zadny prepis starsiho
+    FIX3 proofu; verzuj nove schema a zachovej citelnost V1.
+
+6.10 Ve FAST vystupech nesmi zbyt `proof_*.sqlite` ani
+     opustene temp soubory pri PASS. Pri ERROR zachovej auditni
+     chybove artefakty bez falešného seal. V hlavni p.sqlite
+     musi byt shodne rows/volumes/geometry/edges/metadata,
+     vyjma explicitne verzovanych proveniencnich poli.
+
+========================================================================
+7. FAZE D — MATRIX READBACK A DALSI DUPLICITY
+========================================================================
+
+7.1 11D profiloveho kalibratoru opakovalo GetValues v jedne
+    diagnostice. Cordon ma dle zdroje jiz JEDNO GetValues na DSeg
+    v ramci kazde ze tri ruznych validacnich fazi.
+
+7.2 Neopakuj 11D optimalizaci mechanicky. Prvnich 12 matic
+    v preflight, dalsich 12 pro capture a finalnich 12 pri
+    zpetne kontrole maji RUZNOU bezpecnostni roli.
+    Snizit 36 na 12 tim, ze se ponecha stary obsah mezi fazemi,
+    JE ZAKAZANO bez nezavisleho dukazu, ze se zmena modelu
+    stale odhali. Shodne SUM neni ekvivalent SHA obsahu.
+
+7.3 Lze odstranit jen skutecne nadbytecne GetValues uvnitr
+    stejne immutable stage a odvozovat sum/diag/hash/paritu
+    ze stejneho pole. Pri implementaci zachovej stavajici
+    floating-point akumulaci, dtype, shape/finite/nonnegative
+    kontrolu, Matrix.NO a Matrix.SUM guard.
+
+7.4 Zmer a pripadne optimalizuj:
+    - opakovane vytvareni COM listu a TypeInfo probe,
+      ale jen pokud nedochazi k neprokazatelnemu reuse
+      listu pres zmenu DSeg/source epoch;
+    - pomocne SQLite zapisove indexy v proof vetvi;
+    - archivaci a hash checkpointu;
+    - zbytecne vicekrat serializovany all_od_totals, kde lze
+      bezpecne pouzit existujici PERF-01 format.
+
+7.5 Oddelena VOLITELNA QA: selektivni live read intenzit na
+    32 smerovanych fyzickych klicich SDP. Tato QA muze kontrolovat
+    linkove intenzity, NENI nahradou parove OD/path incidence.
+    Pocita se az po dokoncenem hlavnim FAST EXACT, je default OFF
+    a musi mit vlastni parity/directional key/capability proof.
+    Nikdy neomezuj povinnou _network() identitu na 32 linku:
+    ta je podle stavajiciho kodu soucasti site fingerprintu
+    z 8608 linku a kontroly konzistence celeho exportu.
+
+========================================================================
+8. KOMPAKTNI VYSTUPY A KOMPATIBILITA S PERF-01
+========================================================================
+
+8.1 PERF-01 zustane beze zmeny jako specializovany offline
+    `build-offline` / `require-verified-hit`; jeho cache validni
+    jen pro stejne sealed source. DIAGFAST je jina vrstva.
+
+8.2 Novy native capture smi volitelne pouzit kompaktní vystup
+    incidence jen po prokazani shody ORIGINALNI metody i obou
+    kategorii diagnostik. Legacy volba musi zustat dostupna.
+    Nedel ze zrychleneho capture automaticky povoleni znovu
+    pouzit starou PERF-01 cache po novem assignmentu.
+
+8.3 Vysledny SNAPSHOT_EVIDENCE, matrix_authority, p.sqlite,
+    OD_PARITY a station mapping nesmi byt smichan s artefakty
+    jineho behu. Zmena libovolneho souboru musi zneplatnit
+    stare derived cache klice; zadne tiche cross-run adoption.
+
+8.4 Neupravuj defaultni rozhodovaci kordonove metody. Pro
+    stavajici diagnosticky run jsou `apply_permitted=false`
+    a observation semantics, year bridge a C17 stale neapproved.
+
+========================================================================
+9. BACKEND, PREPINACE, FALLBACK, ZAMEK A TRANSAKCE
+========================================================================
+
+9.1 Dodej explicitni backend:
+    LEGACY         = byte-identical cesta predesleho exportu;
+    FAST_EXACT     = namerene a parity-vysledkem schvalene cteni;
+    PARITY_AUDIT   = dve izolovane read-only exekuce nad STEJNYM
+                     nemennym testovacim stavem a hluboky diff.
+
+9.2 Historicky RUN_CORDON_2025_CAPTURE.py zachovej v rezimu
+    LEGACY, pokud nema explicitni novou volbu. Novy launcher
+    napr. RUN_CORDON_2025_CAPTURE_DIAGFAST.py explicitne aktivuje
+    FAST_EXACT a na spusteni ukaze effective_config + hashes.
+    Zachovej `cordon_visum_bootstrap.py` izolaci imports,
+    injected COM vlastnictvi a non-reentrant guard.
+
+9.3 Fallback BACKEND_UNSUPPORTED je mozne jen pri technickem
+    COM API/signature/page-size problemu a nepredanem finálním
+    vysledku; zajisti atomickou izolaci polovicnich vysledku,
+    clear FALLBACK_REASON a puvodni traceback. Prokaz rollback
+    do noveho prázdného run rootu; nikdy neprepisovat sealed
+    p.sqlite nebo reference FIX3. Chyby parity, identity, hodnot
+    a chyby integrity nikdy nepreved na LEGACY PASS.
+
+9.4 Fast i legacy zapis do RunSession-owned noveho adresare
+    (samostatne RUN_ROOT marker, lock, checkpointy, status).
+    Nedovol symlinky/junction, path traversal, cizi neoznacenou
+    slozku, overwrite jineho behu ani automaticky steal lock.
+    Windows IOFIX: kratke temp nazvy, dlouhe cesty, readback SHA,
+    fsync/atomic publish a bezpecny cleanup pri vypadu.
+
+9.5 Ponech scope puvodniho `com_busy.parent_hotfix_scope()`
+    a beze zmeny protected HOTFIX1 kod. Nesmej narusit
+    nested retry budzety nebo omylem vytvorit dvojitou
+    retry smycku. Transient RPC fail = stejny bounded page.
+
+========================================================================
+10. POVINNE TESTY (SPUSTIT OFFLINE; NATIVE OZNACIT POCTIVE)
+========================================================================
+
+A. SOURCE / STARTUP / INTEGRITY
+  A01. Znovu rozbaleni cisteho PERF-01 a porovnani expected SHA.
+  A02. Kompilace vsech novych `.py` a nezavislý import bez Visumu.
+  A03. `verify_release.py` PASS a test parent source byte identity.
+  A04. Default LEGACY neaktivuje FAST bez explicitni volby.
+  A05. FAST i parity launcher nevolaji COM po pouhem importu.
+  A06. Isolated imports vraci vsechny moduly i po selhani.
+  A07. Zadne model writes v fake injektovanem Visum.
+  A08. 2022 outputs/autority, profile488 a puvodni snapshot untouched.
+
+B. BOUNDED COM A RETRY
+  B01. 256, 512, 1024 vraci stejne uplne radky parent/geometry.
+  B02. Kratka stranka, prazdna stranka, presny nasobek N,
+       posledni parent/child pres hranici page.
+  B03. Invalidni COM TypeInfo, spatny memid, nejasny Invoke.
+  B04. Provider ignoruje FirstObject; detekovat NO_PROGRESS.
+  B05. Wrong width, duplicate, skipped a reordered page.
+  B06. COMBUSY HRESULT -2147418111 na prvnich N pokusu,
+       retry stejny range a PASS az po spravnem vraceni.
+  B07. COMBUSY exhaustion, traceback zachovan, bez complete seal.
+  B08. Page-size error -> downshift bez skip/dup a bez maskovani
+       skutecne integrity chyby; backoff eventy spravne.
+  B09. STOP_REQUESTED, COM thread identity, single in-flight
+       call nelze nasilim interrupt; bez globalniho timeoutu.
+
+C. GEOMETRY STREAM PARSER, 12 MODE SEGMENTU
+  C01. Dva mody + vsech 12 DSeg, odlisne Vol(AP) mezi DSeg.
+  C02. Se shodnou geometrii vsech 10 verifieru = PASS.
+  C03. C a C_NOT jsou odlisne; cross-mode sharing zamitni.
+  C04. Jiny link v jednom ze stejnomodovych segmentu -> FAIL.
+  C05. Stejny pocet linku, jina sekvence / order -> FAIL.
+  C06. Stejne LinkNo, jine FROM/TO -> FAIL.
+  C07. Paralelni linky, neexistujici directed edge -> FAIL.
+  C08. PathIndex swap, extra a missing path -> FAIL.
+  C09. Duplicate parent, orphan child, partial parent,
+       reopened parent, chybny hierarchicky/flat prechod.
+  C10. Nezapadajici Index, prerusena topology, dlouha trasa.
+  C11. Empty route, zero-volume path, intrazonal path,
+       repeated links a nulovy child count.
+  C12. Interzonalni cesta bez linku a pozitivni Vol(AP): zachovat
+       presne puvodni legacy akceptacni ci odmitaci semantiku,
+       nepredpokladat chybne, ze vsechny zero-link trasy selhavaji.
+  C13. Reordered legal COM path groups -> stejny set a vysledek.
+  C14. Plna coverage na realisticke fixture; na REALNEM vstupu
+       vsech 438817 + 429205 keys vcetne zero flow, je-li dostupny.
+  C15. Streaming verifier nevytvori proof SQLite, s logovanym
+       nulovym poctem scratch writes, nevynecha kontrolu.
+  C16. Per-DSeg digests a canonical summary odpovidaji oracle.
+
+D. NUMERIKA, EVIDENCE, SAFETY GATES
+  D01. 12/12 OD parita PASS na referencni synteticke fixture.
+  D02. FIX2-like numericky rounding se chova podle FIX3,
+       chybna OD presunuta mezi bunkami = FAIL.
+  D03. SUM stejny, jednotlivy matrix cell jiny -> final FAIL.
+  D04. Stejna OD matice, ale zmeneny Vol(AP) na ceste -> FAIL.
+  D05. Zmeneny parent key, mode, DSeg inventory, network key,
+       current .ver a mapping -> FAIL se stejnou třidou chyby.
+  D06. Negative/NaN/Inf/None na matici a saved volume -> FAIL.
+  D07. Hash p.sqlite/evidence beze zmeny pred/po offline replay.
+  D08. FULL geometry proof nesmi PASS po sample-only backendu.
+  D09. Snapshot capture metadata stale apply_permitted=false.
+  D10. WAL/shm/journal, incomplete result, cizi koren -> BLOCK.
+
+E. METODICKE A PERF-01 REGRESE
+  E01. Kompletni geometricke/objemove SQL porovnani obou runu:
+       geometry key, edge_ids (little-endian), geometry_kind,
+       sequence_sha256, volumes, segment audits, edges, metadata.
+  E02. Shodne `STATION_HITS.csv` per path / SDP / order.
+  E03. Shodne `INCIDENCE.npz` u obou metod a obou directed
+       diagnostics, stejne q, variables, sparse arrays.
+  E04. Shodne per-Dseg / per-SDP predikce a 120 agregaci.
+  E05. Shodne CAL/VALID role 108/12, zadny reverse leakage.
+  E06. Stejne vsechny fail-closed gates a C17 frozen stav.
+  E07. PERF-01 build-offline a require-verified-hit funguje
+       nad korektne dokoncenym DIAGFAST snapshotem; invalidace
+       po zmene source SHA, mode mapping a derived parametru.
+  E08. Plna suite `tests/` vcetne puvodnich FIX3/PERF01 testu.
+  E09. Chranene parent moduly zustaly byte-identical.
+  E10. Export se spravne vrati k LEGACY bez intervence do
+       puvodniho modelu a bez non-atomic artefaktu.
+
+F. KRIZE, SOUBĚH A PORUCHY
+  F01. Krach po child page, pred finish_route, pred proof seal.
+  F02. Disk full pri SQLite, nedostupny output root, korektni
+       uzavreni DB a uvolneni COM referenci bez hadani Close API;
+       zachovani primarni vyjimky.
+  F03. Dva soubezne starty stejneho rootu -> lock fail.
+  F04. PTV COM odmitnuti behem parent / representative / proof
+       / final readback, jasne dohledatelny failure code.
+  F05. Zamerna source matrix/network zmena mezi fazemi -> FAIL.
+  F06. Opetovne spusteni po preruseni do NOVE slozky, zadne
+       predstirani kontinuace nebo adopce partial p.sqlite.
+  F07. Source tree/ZIP SHA, checkpointy a short-path Windows guard.
+
+Testy musi byt parametrizovane i realne vetsi mock COM fixture,
+nikoli jen 2 cesty. Nevynechavej testy pro zeleni; hlas presne
+PASS/FAIL/SKIP/NOT_RUN a duvod. Nesmi byt nove import-time COM.
+
+========================================================================
+11. EXAKTNI PARITY_AUDIT A STROJOVY DIF
+========================================================================
+
+PARITY_AUDIT musi umoznit dve sekvencni read-only exekuce
+LEGACY a FAST_EXACT na kopii TOTEZNEHO ulozeneho .ver,
+se stejnymi ulozenymi cestami, DSeg, options (krome backendu),
+a pre/post kontrolou identity vstupu. Idealne opakuj poradi
+FAST/LEGACY, LEGACY/FAST; nepouzivej sdileny vystupni adresar.
+
+Porovnavej na trech urovnich:
+  I. zdrojove vstupy: matrix SHA, network fingerprint, dseg/mode,
+     path-parent/Vol(AP) SHA, source version file a behavior;
+  II. vystupni cache: SQL semantika veskerych relevantnich
+      tabulek + geometricke blobs + external OD PARITY;
+  III. kordonove vysledky: STATION_HITS, oba method results,
+       120 directed/bidirectional rows, CAL/VALID, reporty.
+
+PARITY_REPORT.json musi uvest per-Dseg a per-mode:
+  - stage, pocty, typeinfo schema, SHA/digest, first mismatch;
+  - names/schema/row order/columns/dtypes/float values;
+  - canonical serializacni SHA a explicitni allowed normalization
+    jen pro timestamp, root cestu, backend verzi, runtime telemetry;
+  - pristrojovy rozhodovaci verdikt; zadna tolerancni vyjimka
+    nevytvori PASS bez explicitniho metodickeho zduvodneni.
+
+SQL souborove SHA celeho p.sqlite nemusi byt byte-identical
+kvuli fyzickemu ulozeni SQLite; semanticky stejna data MUSI
+byt presne stejna. Pokud se zmeni seal schema, pojmenuj
+stary/novy manifest, validuj operacni kompatibilitu a zakaz
+neautorizovany PERF-01 HIT ze stareho epoch.
+
+Pri libovolne materialni neshode musi byt status PARITY_FAIL
+s diagnostikou, nikoliv FAST_EXACT PASS s warningem.
+
+========================================================================
+12. LIVE PTV VISUM 2026 — ACCEPTANCE NA ODDĚLENÉ KOPII
+========================================================================
+
+Pokud je skutecne dostupne prostredi Windows a PTV Visum 2026:
+  - pouzij pouze oddelenou kopii referencniho .ver s ulozenymi
+    cestami; zadna zmena modelu, assignment, SaveVersion, TG/TD;
+  - alespon TRI parove opakovani LEGACY / FAST_EXACT,
+    stridave poradi a separate run roots;
+  - kontroluj zachovani site, matic i parent objemu pred/po;
+  - testuj 256, 512, 1024 na bounded range obou modu;
+  - ukladej presne COM-counts, bytes, durations, fallback/retry;
+  - proved nezavisle paritni kontrolu relevantnich SQL dat;
+  - otestuj 1 kontrolovany fallback COM a 1 read-only error;
+  - kontroluj 12/12 geometry proof, 12/12 OD parity a 120 SDP;
+  - pokus o zmenu stare sealed database musi byt blokovan.
+
+Bez Windows/Python s realnym COM vytvor `LIVE_VISUM_ACCEPTANCE.py`
+ci samostatny launcher s dokumentovanym postupem Scripts -> Execute
+script file a priloz `LIVE_VISUM_ACCEPTANCE_CZ.md`. Stav oznac
+OFFLINE_TESTED_LIVE_PENDING / READY_FOR_LIVE_PARITY (dle dukazu),
+nikoliv PRODUCTION_VERIFIED. Stary FIX3 live PASS neni live PASS noveho
+DIAGFAST algoritmu.
+
+========================================================================
+13. BENCHMARK, METRIKY A INTERPRETACE ZRYCHLENI
+========================================================================
+
+Musi byt skutecne zmereno (ne pouze deklarovano):
+  1. LEGACY 256 capture TOTAL, s rozkladem fazi;
+  2. FAST 256 streaming verifier — izoluje efekt SQLite;
+  3. FAST 512 streaming verifier;
+  4. FAST 1024 streaming verifier;
+  5. volitelne FAST 2048/4096 po probe;
+  6. kazda varianta opakovane, stejne .ver, stejny disk/hardware,
+     warm/cold oddelene, minimalne 3 pary pro native acceptance.
+
+Zaznamenej:
+  - wall, cpu, median, p95, rozptyl, peak RSS;
+  - COM pages / calls / rows / bytes / retries / retry delays;
+  - parent vs geometry vs proof vs final-readback vs offline
+    incidence/metadata vs checkpoint hashing vs ZIP/archive;
+  - pocet provedenych full geometry proofu; zadny sample cheat;
+  - velikost hlavni p.sqlite, temporary SQLite peak, write volume;
+  - rozdil C a C_NOT, per DSeg, source SHA a effective options.
+
+Hlavnim KPI je zrychleni CELEHO `CAPTURE_DIAGNOSTICS`
+(s kompletni originalni diagnostikou). Vedlejsi KPI je
+zrychleni jeho geometrickeho proofu. Cilem je pri pozitivnim
+native mereni minimalne 1.5x cely capture a 2x proof cast,
+ale bez realnych opakovani to NENI prokazane tvrzeni ani
+garantovany vysledek. Pokud nevyjde, nezvetsuj rychlost za cenu
+ztraty parity: reportuj NO_PERFORMANCE_CLAIM a nalezene bottleneck.
+
+Nedeklaruj 4x rychlejsi beh jen proto, ze 1024/256 = 4;
+mensi pocet COM page calls neni stejny jako wall-clock gain.
+Nerozepisuj namerene 17409 s profilove 12D/11D jako cas kordonu.
+Tyto 73.4% profile HOTFIX2 NEJSOU casovy rozpad kordonoveho capture.
+
+========================================================================
+14. CHECKPOINTY, OBNOVA A VOLITELNE GOOGLE DRIVE
+========================================================================
+
+Checkpointy po kazde ukoncene etape, vcetne archivovanych zdroju,
+metadat, spusteneho test prikazu, exit codes a SHA souctu:
+  CP00: SOURCE_PIN_AND_CALL_GRAPH
+  CP01: LEGACY_PROFILE_AND_EXACT_CONTRACT
+  CP02: BOUNDED_PAGE_OPTIMIZATION
+  CP03: STREAMING_GEOMETRY_PROOF
+  CP04: NEGATIVE_PARITY_AND_PARENT_REGRESSION
+  CP05: SYNTHETIC_BENCHMARK_AND_NATIVE_HARNESS
+  CP06: RELEASE_READBACK_AND_ROLLBACK
+
+Checkpoint obnovitelny bez nedokoncenych in-memory objektu.
+Nevydavej nedokonceny checkpoint za success. Rooty 2025/2022
+se nikdy nemichaji. Pokud je pripojeny Google Drive s pravem
+zapisu, vytvor oddelenou vetvu pod dosavadni zadany projektovy
+adresar:
+  https://drive.google.com/drive/folders/1bIrSGG6qr3Wy9PFV04VyLdxu1vBf6Jum
+  jmeno vetve R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_20261023
+Nahraj checkpointy prubezne a po uploadu over metadata/readback.
+Nedeklaruj upload, pokud neprobehla overena transakce.
+Jestlize konektor neni dostupny, dodej lokalni CP archivy a
+CHECKPOINT_INDEX.json; neblokuj samotny vyvoj.
+
+========================================================================
+15. POVINNE VYSTUPY
+========================================================================
+
+A. FULL:
+   R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_FULL_20261023.zip
+   Kompletni, plne spustitelny release na baze PERF-01,
+   vsechny zavislosti a nove moduly, kompatibilni LEGACY entry,
+   novy FAST_EXACT entry, PARITY_AUDIT harness, tests, docs.
+
+B. PATCH ONLY:
+   R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_PATCH_20261023.zip
+   Minimalni patch, ktery se aplikuje POUZE na presne pinovany
+   PERF-01 ZIP/source tree, s guard originalnich SHA a moznosti
+   bezpecneho rollbacku. Zadny tichy overlay na starsi FIX2.
+
+C. REPORTS:
+   - IMPLEMENTATION_REPORT_CZ.md
+   - BASELINE_PROFILE.json a BASELINE_PROFILE.md
+   - COM_READ_PLAN_AUDIT.csv
+   - FAST_EXACT_GEOMETRY_PROOF_SCHEMA.json
+   - PARITY_REPORT.json a PARITY_REPORT.md
+   - TEST_RESULTS.xml a TEST_RESULTS.txt
+   - PERFORMANCE_BENCHMARK.json/csv/md
+   - LIVE_VISUM_ACCEPTANCE_CZ.md + runnable harness
+   - ROLLBACK_AND_DISABLE_CZ.md
+   - CHANGELOG.md
+   - SHA256SUMS.txt
+   - ACCEPTANCE_MATRIX.json
+   - CHECKPOINT_INDEX.json
+   - RELEASE_FINAL_VERIFICATION.json
+
+D. USER RUNBOOK:
+   Jasne postupy pro:
+   1) vypnute/legacy cteni;
+   2) FAST_EXACT start na KOPII R1 2025 .ver;
+   3) PARITY_AUDIT a vystupni slozky;
+   4) konzistentni chybu, STOP a logy;
+   5) potvrzeni no model writes;
+   6) integraci PERF-01 s dokoncenym novym snapshotem;
+   7) presny navrat k puvodnimu LEGACY bez reinstalace 2022.
+
+E. FINAL STATUS:
+   READY_FOR_LIVE_PARITY (offline testy PASS, real native cekaji),
+   PRODUCTION_VERIFIED (jen po skutecnem paired native acceptance),
+   NOT_RELEASED (materialni parity, safety, source hash nebo
+                 runtime/capture failure).
+   Odlis TESTED_OFFLINE, TESTED_NATIVE, NOT_RUN a NOT_APPLICABLE.
+
+========================================================================
+16. DEFINITION OF DONE A PORADI PRACE
+========================================================================
+
+POVINNE PORADI:
+  1) Prokaz source SHA a aktualni call graph.
+  2) Instrumentuj LEGACY a zmer bazalni faze, kde lze.
+  3) Implementuj page-size branch a mock COM parity.
+  4) Implementuj streaming exact verifier s nezavislym
+     legacy oraclem, ne jen checksumem celku.
+  5) Proved cilenou negativni matici a plnou regresi.
+  6) Proved skutecne dostupne benchmarky a priprav native
+     parity harness (native jen pri pristupu).
+  7) Dodej obnovitelne checkpointy, spustitelny full release,
+     patch s base SHA guard a hashovane prokazatelne vystupy.
+  8) Proved clean unzip, verify_release, smoke, readback sha.
+
+HARD GATES:
+  - 100% hodnotova parita vsech vyzadovanych vystupu pro
+    identicky vstup a vsechny testovane COM velikosti;
+  - 12/12 OD a FULL geometry proof bez sample-only substituce;
+  - nezmenene readonly / no APPLY / no model writes;
+  - nezmenene protected source hashes a stavajici PERF-01;
+  - bezpecne COM retry, fallback, STOP, atomicity a rollback;
+  - bez vymyslenych live vysledku ci zrychleni.
+
+Pokud je rychlejsi varianta numericky odlisna nebo neupne
+validovana, STOP / NOT_RELEASED. Pokud je offline funkcne
+spravna, ale chybi native, oznac LIVE_PENDING, nikoli PASS live.
+
+IMPLEMENTUJ, OTESTUJ, OPRAV, OPAKUJ TESTY, ZABAL, OVER A DODEJ.
+Zachovej rozpracovanou nezavislou profilovou DIAGFAST vetev
+nedotcenou. Zadne zrychleni nema pravo menit metodiku kordonu.

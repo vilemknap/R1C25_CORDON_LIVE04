@@ -1,0 +1,1886 @@
+[
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 28,
+    "guard": "require(len(target)==256,'OA_TARGET_GRID_INCOMPLETE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 33,
+    "guard": "require(cache is not None and Path(cache).is_file(),'NO_2025_PATH_CACHE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 34,
+    "guard": "require(evidence_path is not None and Path(evidence_path).is_file(),'SNAPSHOT_EVIDENCE_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 36,
+    "guard": "require(evidence.get('origin')=='VISUM_SAVED_PATHS','EMPIRICAL_RUN_REQUIRES_VISUM_SAVED_PATHS_NOT_SYNTHETIC')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 24,
+    "guard": "require(int(row['survey_year'])==2026 and row['basis']=='RPDI','TARGET_BASIS_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 26,
+    "guard": "require(key not in target,'DUPLICATE_TARGET_CELL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 41,
+    "guard": "require(len(zone_ids)==len(set(zone_ids)), 'DUPLICATE_ZONE_PARAMETER_ROW')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 65,
+    "guard": "require(allow_scenario,'UNAPPROVED_OBSERVATION_SEMANTICS_EXPLICIT_SCENARIO_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 107,
+    "guard": "require(args.run_directory is not None,'RUN_DIRECTORY_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/__main__.py",
+    "line": 133,
+    "guard": "require(not args.bounded_c17_scenario or args.allow_unapproved_scenario,'C17_SCENARIO_OPT_IN_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 30,
+    "guard": "require(basis.evidence.get('state_hash') == incidence_state_hash(inc), 'AGGRESSIVE_ACTUATOR_STATE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 33,
+    "guard": "require(lo.shape == hi.shape == (n,) and len(basis.column_meta) == n, 'AGGRESSIVE_ACTUATOR_SHAPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 34,
+    "guard": "require(np.all(np.isfinite(lo)) and np.all(np.isfinite(hi)) and np.all(lo <= 0) and np.all(hi >= 0),\n            'AGGRESSIVE_ACTUATOR_HARD_BOUNDS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 58,
+    "guard": "require(x.shape == (len(inc.variables),) and np.all(np.isfinite(x)), 'AGGRESSIVE_INVALID_STEP')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 59,
+    "guard": "require(np.all(x >= problem.lower - 1e-10) and np.all(x <= problem.upper + 1e-10), 'AGGRESSIVE_STEP_OUTSIDE_BOUNDS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 68,
+    "guard": "require(gap <= float(cfg.get('kkt_tolerance', 1e-6)), 'AGGRESSIVE_C17_SCORE_NOT_CONVERGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 76,
+    "guard": "require(np.all(np.isfinite(predicted)) and np.min(predicted, initial=0) >= -1e-7, 'AGGRESSIVE_NONPHYSICAL_PREDICTION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 137,
+    "guard": "require(all(m['dseg_code'] in cfg['mutable_dsegs'] for m in inc.variables), 'AGGRESSIVE_VARIABLE_SCOPE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 138,
+    "guard": "require(np.all(np.isfinite(inc.q_current)) and np.all(inc.q_current > 0), 'AGGRESSIVE_INVALID_OD_TOTAL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 213,
+    "guard": "require(basis is not None, 'TD_ACTUATOR_BASIS_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 215,
+    "guard": "require(all(m.get('type') == 'TD_PARAMETER' for m in basis.column_meta), 'TD_PLAN_REQUIRES_TD_ONLY_BASIS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 217,
+    "guard": "require(direction.shape == (basis.operator.n_cols,) and np.all(np.isfinite(direction)), 'TD_INVALID_DIRECTION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 41,
+    "guard": "require(m.get('allowed') is True and m.get('family') in ('WORK', 'SERVICE'), 'AGGRESSIVE_ILLEGAL_ACTUATOR')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 62,
+    "guard": "require(budget.pairs == [(r['origin_station'], r['destination_station']) for r in inc.rows], 'C17_OBSERVATION_ORDER_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 43,
+    "guard": "require(m.get('step_kind') in caps, 'AGGRESSIVE_TG_STEP_KIND_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 46,
+    "guard": "require(m.get('type') == 'TD_PARAMETER', 'AGGRESSIVE_NO_DIRECT_OD_ACTUATOR')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive.py",
+    "line": 239,
+    "guard": "require(scale in component_losses, 'TD_SCALED_COMPONENT_EVIDENCE_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 24,
+    "guard": "require(path.is_file() and sha256(path) == SOURCE_SHA256, 'AGGRESSIVE_SOURCE_POLICY_HASH_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 26,
+    "guard": "require(result.get('schema') == 'R1_15A2_AGGRESSIVE_TGTD_TUNING_V1', 'AGGRESSIVE_SOURCE_SCHEMA')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 32,
+    "guard": "require(path.is_file() and sha256(path) == DESIGN_SOURCE_SHA256, 'AGGRESSIVE_DESIGN_SOURCE_HASH_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 55,
+    "guard": "require(cfg.get('mode') == 'OFFLINE_PROPOSAL' and cfg.get('apply') is False,\n            'AGGRESSIVE_OFFLINE_ONLY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 57,
+    "guard": "require(cfg.get('model_year') == 2025 and cfg.get('survey_year') == 2026, 'AGGRESSIVE_YEAR_CONTRACT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 58,
+    "guard": "require(cfg.get('category') == 'OA' and cfg.get('basis') == 'RPDI', 'AGGRESSIVE_OA_RPDI_ONLY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 62,
+    "guard": "require(len(norm) == len(set(norm)) and set(norm).issubset(MUTABLE), 'AGGRESSIVE_FROZEN_SCOPE_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 63,
+    "guard": "require(cfg.get('pair_role_policy') == 'PAIRED_HOLDOUT_NO_REVERSE_LEAKAGE', 'AGGRESSIVE_ROLE_POLICY_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 64,
+    "guard": "require(cfg.get('c17_allocation_policy') in ('UNAPPROVED', 'DISABLED', 'BOUNDED_SCENARIO'), 'AGGRESSIVE_C17_POLICY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 77,
+    "guard": "require(enabled(cfg), 'AGGRESSIVE_POLICY_NOT_ENABLED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 79,
+    "guard": "require(policy.get('policy_id') == POLICY_ID and policy.get('source_sha256') == SOURCE_SHA256,\n            'AGGRESSIVE_POLICY_IDENTITY_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 81,
+    "guard": "require(policy.get('lineage') == 'NEW_OFFLINE_LINEAGE_FROM_EXPLICIT_SNAPSHOT', 'AGGRESSIVE_NEW_LINEAGE_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 99,
+    "guard": "require(type(cycle) is int and 1 <= cycle and (cycle <= 100 or cfg.get('limit_profile')=='PRACTICAL_V1'), 'AGGRESSIVE_OUTER_CYCLE_OUT_OF_RANGE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 162,
+    "guard": "require(META in cfg and cfg[META]['effective_science_sha256'] == science_hash(cfg), 'AGGRESSIVE_EFFECTIVE_CONFIG_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 163,
+    "guard": "require(set(before) == set(after) and bool(before), 'TD_COMPONENT_SCOPE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 164,
+    "guard": "require(bool(selected) and set(selected).issubset(before), 'TD_SELECTED_SCOPE_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 165,
+    "guard": "require(len(selected) == len(set(selected)), 'TD_DUPLICATE_SELECTED_COMPONENT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 166,
+    "guard": "require(all(not isinstance(v, bool) and isinstance(v, (int, float)) and math.isfinite(v) and v >= 0\n                for v in list(before.values()) + list(after.values())), 'TD_INVALID_COMPONENT_LOSS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 60,
+    "guard": "require(cfg.get(key) is False, 'AGGRESSIVE_FORBIDDEN_FLAG:' + key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 67,
+    "guard": "require(key not in cfg, 'PROFILE_SETTING_IN_CORDON:' + key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 83,
+    "guard": "require(cfg[META].get('effective_science_sha256') == science_hash(cfg), 'AGGRESSIVE_EFFECTIVE_CONFIG_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 84,
+    "guard": "require(outer_cycle is None or outer_cycle == cfg[META]['outer_cycle'], 'AGGRESSIVE_STAGE_REBASE_REQUIRES_BASE_CONFIG')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 87,
+    "guard": "require(type(cycle) is int and 1 <= cycle and (cycle <= 100 or cfg.get('limit_profile')=='PRACTICAL_V1'), 'AGGRESSIVE_OUTER_CYCLE_OUT_OF_RANGE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 90,
+    "guard": "require(meta.get('stage') == expected_stage and meta.get('outer_cycle') == cycle\n                and meta.get('policy_id') == POLICY_ID\n                and meta.get('source_policy_sha256') == SOURCE_SHA256\n                and meta.get('design_source_sha256') == DESIGN_SOURCE_SHA256\n                and meta.get('apply_permitted') is False\n                and meta.get('live_visum_tested') is False,\n                'AGGRESSIVE_EFFECTIVE_METADATA_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/aggressive_policy.py",
+    "line": 104,
+    "guard": "require(key not in out or out[key] == value, 'AGGRESSIVE_BASE_DESIGN_OVERRIDE_REQUIRES_NEW_POLICY:' + key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 24,
+    "guard": "require(set(idx.values()) == set(range(1,station_count+1)), 'INCOMPLETE_STATION_MAPPING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 25,
+    "guard": "require(len(idx) == station_count*2 and all(list(idx.values()).count(s)==2 for s in range(1,station_count+1)), 'EXPECTED_TWO_DIRECTIONS_PER_STATION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 34,
+    "guard": "require(list(header[1:17])==['SDP%d'%i for i in range(1,17)],'COLUMN_LABEL_MISMATCH:'+label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 36,
+    "guard": "require(normalize(header[17])=='VJAZD(bezp\u00e1ru)','C17_COLUMN_LABEL_MISMATCH:'+label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 37,
+    "guard": "require(normalize(rows[start+15][0]) in ('VJAZD(bezp\u00e1ru)','V\u00ddJAZD(bezp\u00e1ru)'), 'C17_ROW_LABEL_MISMATCH:'+label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 38,
+    "guard": "require(normalize(rows[start+16][0])=='vjazd-v\u00fdjazd','RETURN_ROW_LABEL_MISMATCH:'+label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 39,
+    "guard": "require(normalize(header[18]) in ('vjazd-v\u00fdjazd','v\u00fdjazd-vjazd'),'RETURN_COLUMN_LABEL_MISMATCH:'+label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 19,
+    "guard": "require(1 <= sid <= station_count, 'INVALID_STATION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 20,
+    "guard": "require(key not in idx, 'DUPLICATE_DIRECTED_MAPPING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 21,
+    "guard": "require(key[1] != key[2], 'SELF_LOOP_STATION_LINK')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 112,
+    "guard": "require(len(input_rows)==len(by_input)==1280,'PHYSICAL_TARGET_COUNT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 119,
+    "guard": "require(len(records)==len(idx) and dict(records)==idx,'MAPPING_CSV_JSON_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 120,
+    "guard": "require(all(k[0]==2004231 for k,v in idx.items() if v==16),'SDP16_MANUAL_OVERRIDE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 145,
+    "guard": "require(report['source_files_unchanged'],'AUTHORITY_SOURCE_CHANGED_DURING_AUDIT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 43,
+    "guard": "require(row[0] == 'SDP%d' % (i+1), 'ROW_LABEL_MISMATCH:' + label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 61,
+    "guard": "require('Riadok' in header, 'MISSING_DIRECTION_LABEL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 114,
+    "guard": "require(by_input[(r['category'],r['matrix_row_station'],r['matrix_column_station'])]==r['observed_rpdi'],'PHYSICAL_CSV_VS_D3_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 66,
+    "guard": "require(str(d3rows[2][0]).startswith('O\\\\D (M0'), 'D3_LAYOUT_UNRECOGNIZED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 67,
+    "guard": "require(str(d3rows[24][0]).startswith('VYSLEDOK'), 'D3_RESULT_LAYOUT_UNRECOGNIZED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 75,
+    "guard": "require(all(checks.values()), 'AUTHORITY_LINEAGE_FAIL:' + str((cat,typ,checks)))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/authority.py",
+    "line": 109,
+    "guard": "require(np.array_equal(arrays[f'{cat}_ALL_{label}'],arrays[f'{cat}_Transit_{label}']+arrays[f'{cat}_NonTransit_{label}']), 'ALL_COMPOSITION_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 93,
+    "guard": "require(category=='OA','V1_C17_OA_ONLY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 94,
+    "guard": "require(np.isfinite(eligible_fraction) and 0<=eligible_fraction<=1,'C17_ELIGIBLE_FRACTION_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 105,
+    "guard": "require(set(accounts)==set(range(1,17)),'C17_STATION_COVERAGE_INCOMPLETE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 24,
+    "guard": "require(self.policy in ('UNAPPROVED','DISABLED','BOUNDED_SCENARIO'),'INVALID_C17_POLICY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 25,
+    "guard": "require(len(set(self.station_ids))==len(self.station_ids),'DUPLICATE_C17_STATION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 27,
+    "guard": "require(self.station_caps.shape==(len(self.station_ids),),'C17_CAP_SHAPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 28,
+    "guard": "require(np.all(np.isfinite(self.station_caps)) and np.all(self.station_caps>=0),'INVALID_C17_CAPS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 29,
+    "guard": "require(np.isfinite(self.global_cap) and 0<=self.global_cap<=self.station_caps.sum()+1e-8,'INVALID_GLOBAL_C17_CAP')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 30,
+    "guard": "require(len(set(self.pairs))==len(self.pairs),'DUPLICATE_C17_PAIR')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 39,
+    "guard": "require(self.policy!='BOUNDED_SCENARIO' or self.scenario_authorized is True,'C17_SCENARIO_OPT_IN_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 47,
+    "guard": "require(np.isfinite(tolerance) and tolerance>0 and max_cycles>=1,'INVALID_PROJECTION_TOLERANCE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 49,
+    "guard": "require(x.shape==(len(self.pairs),) and np.all(np.isfinite(x)),'C17_VECTOR_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 78,
+    "guard": "require(u.shape==(len(self.pairs),) and np.all(np.isfinite(u)) and np.min(u,initial=0)>=-1e-8,'INVALID_C17_ALLOCATION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 79,
+    "guard": "require(self.enabled or np.max(np.abs(u),initial=0)<=1e-10,'C17_ALLOCATION_WHEN_DISABLED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 81,
+    "guard": "require(np.max(used-self.limits,initial=0)<=1e-7,'C17_BUDGET_OVERDRAWN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 98,
+    "guard": "require(s not in accounts,'DUPLICATE_C17_STATION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 99,
+    "guard": "require(r.get('basis')=='RPDI' and int(r.get('survey_year',0))==2026,'C17_TIME_BASIS_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 101,
+    "guard": "require(abs(a-b)<1e-8,'C17_SYMMETRY_SOURCE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 103,
+    "guard": "require(r.get('D2_sha256') and r.get('D3_sha256'),'C17_PROVENANCE_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 34,
+    "guard": "require(a in sid and b in sid and a!=b,'C17_PAIR_ENDPOINT_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/budget.py",
+    "line": 67,
+    "guard": "require(np.max(used-self.limits,initial=0)<=10*tolerance,'C17_PROJECTION_NOT_FEASIBLE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/com_busy.py",
+    "line": 145,
+    "guard": "require(sha256(source) == SOURCE_SHA256, 'COMBUSY_PARENT_SOURCE_HASH_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/com_busy.py",
+    "line": 150,
+    "guard": "require(not hotfix._ACTIVE, 'COMBUSY_PARENT_PATCH_ALREADY_ACTIVE_OUTSIDE_SCOPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 15,
+    "guard": "require(name.startswith('r1_15a2_') and name.replace('_', '').isalnum(), 'INVALID_PARENT_MODULE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 17,
+    "guard": "require(expected.is_file(), 'PARENT_MODULE_MISSING:' + name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 28,
+    "guard": "require(Path(module.__file__).resolve() == expected, 'PARENT_MODULE_COLLISION:' + name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 43,
+    "guard": "require(not isinstance(value, bool), 'INVALID_NUMBER:' + label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 48,
+    "guard": "require(math.isfinite(val) and (not nonnegative or val >= 0), 'INVALID_NUMBER:' + label)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 87,
+    "guard": "require(cfg.get('apply') is False, 'V1_APPLY_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 88,
+    "guard": "require(cfg.get('mode') == 'OFFLINE_PROPOSAL', 'OFFLINE_MODE_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 89,
+    "guard": "require(cfg.get('model_year') == 2025 and cfg.get('survey_year') == 2026, 'YEAR_CONTRACT_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 90,
+    "guard": "require(cfg.get('category') == 'OA', 'V1_OA_ONLY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 91,
+    "guard": "require(cfg.get('basis') == 'RPDI', 'V1_RPDI_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 92,
+    "guard": "require(not any(cfg.get(k) for k in ('run_procseq','run_assignment','write_od','supply_enabled')), 'LIVE_SWITCH_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 98,
+    "guard": "require(outer_cycle is None, 'OUTER_CYCLE_REQUIRES_AGGRESSIVE_CONFIG')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/common.py",
+    "line": 102,
+    "guard": "require(name and name.replace('_','').replace('-','').isalnum(), 'UNSAFE_OUTPUT_NAME')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 15,
+    "guard": "require(len(codes)==len(set(codes)) and set(codes)==set(selected_codes),'EXTERNAL_MATRIX_SCOPE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 27,
+    "guard": "require(set(codes).issubset(original),'EXTERNAL_MATRIX_SCOPE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 32,
+    "guard": "require(all(path_counts.get(k)==n for k,n in counts.items() if k[0] in selected_codes),'PARITY_PATH_COUNT_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 35,
+    "guard": "require(not rel.is_absolute() and '..' not in rel.parts and '\\\\' not in str(rel),'EXTERNAL_MATRIX_PATH_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 37,
+    "guard": "require(root in path.resolve().parents and not any((root/Path(*rel.parts[:i])).is_symlink() for i in range(1,len(rel.parts)+1)),'EXTERNAL_MATRIX_PATH_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 38,
+    "guard": "require(path.is_file() and sha256(path)==rec['sha256'],'EXTERNAL_MATRIX_SHA_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 41,
+    "guard": "require(zones.ndim==1 and np.issubdtype(zones.dtype,np.integer) and len(zones)==len(set(zones)) and (zones>0).all(),'EXTERNAL_MATRIX_ZONE_IDENTITY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 42,
+    "guard": "require(values.shape==(len(zones),len(zones)) and np.isfinite(values).all() and (values>=0).all(),'EXTERNAL_MATRIX_VALUES_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 54,
+    "guard": "require(report['status']=='PASS','EXTERNAL_MATRIX_PER_OD_PARITY_FAIL:'+code+':'+','.join(report['failures']))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 55,
+    "guard": "require(sha256(path)==rec['sha256'],'EXTERNAL_MATRIX_CHANGED_DURING_READ')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 22,
+    "guard": "require(canonical_hash(record)==evidence.get('path_matrix_parity_policy_sha256'), 'PARITY_POLICY_SHA_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 23,
+    "guard": "require(json.loads(meta.get('path_matrix_parity_policy','null'))==record,'PARITY_POLICY_CACHE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 25,
+    "guard": "require('path_matrix_parity_policy' not in meta,'PARITY_POLICY_EVIDENCE_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 46,
+    "guard": "require(o in ix and d in ix,'EXTERNAL_MATRIX_PATH_ZONE_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/external_parity.py",
+    "line": 51,
+    "guard": "require(o in ix and d in ix,'EXTERNAL_MATRIX_PATH_ZONE_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 56,
+    "guard": "require(np.isfinite(tolerance) and tolerance>0,'INVALID_FEASIBILITY_TOLERANCE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 57,
+    "guard": "require(np.all(np.isfinite(op.values)),'INVALID_ACTUATOR_RESPONSE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 58,
+    "guard": "require(len(basis.row_keys)==op.n_rows and len(set(basis.row_keys))==op.n_rows,'ACTUATOR_ROW_KEY_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 59,
+    "guard": "require(len(basis.column_meta)==op.n_cols,'ACTUATOR_COLUMN_META_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 60,
+    "guard": "require(basis.evidence.get('basis_kind') in ('EXACT_SYNTHETIC_LINEAR','AUDITED_LOCAL_JACOBIAN'), 'UNPROVEN_ACTUATOR_BASIS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 61,
+    "guard": "require(basis.evidence.get('state_hash') and basis.evidence.get('source_sha256'),'ACTUATOR_BASIS_PROVENANCE_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 62,
+    "guard": "require(all(m.get('type') in ('TG_PARAMETER','TD_PARAMETER') and m.get('family') in ('WORK','SERVICE') and m.get('allowed') is True for m in basis.column_meta),'ILLEGAL_ACTUATOR_BASIS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 69,
+    "guard": "require(universe.issubset(keys),'COLLATERAL_OD_SCOPE_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 72,
+    "guard": "require(all(int(r) not in forbidden or abs(v)<1e-12 for r,v in zip(op.row_idx,op.values)), 'ACTUATOR_BASIS_CHANGES_FROZEN_OD')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 74,
+    "guard": "require(lo.shape==hi.shape==(op.n_cols,) and np.all(np.isfinite(lo)) and np.all(np.isfinite(hi)) and np.all(lo<=0) and np.all(hi>=0),'ACTUATOR_BOUNDS_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/feasibility.py",
+    "line": 66,
+    "guard": "require(k in keys,'GUIDED_OD_MISSING_FROM_ACTUATOR_BASIS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 62,
+    "guard": "require(repeat_policy in ('EXCLUDE_FLAGGED','FIRST_OCCURRENCE_DIAGNOSTIC'), 'UNKNOWN_REPEAT_POLICY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 72,
+    "guard": "require(p.is_file(),'NO_2025_PATH_CACHE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 73,
+    "guard": "require(not any(Path(str(p)+ext).exists() for ext in ('-wal','-shm','-journal')), 'LIVE_SQLITE_SIDECAR_PRESENT_COPY_COMPLETED_SNAPSHOT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 74,
+    "guard": "require(evidence.get('completed') is True,'CACHE_SNAPSHOT_NOT_COMPLETE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 75,
+    "guard": "require(evidence.get('model_year')==2025,'CACHE_MODEL_YEAR_NOT_2025')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 76,
+    "guard": "require(evidence.get('basis')=='RPDI' and evidence.get('category')=='OA','CACHE_BASIS_OR_CATEGORY_UNPROVEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 77,
+    "guard": "require(evidence.get('origin') in ('SYNTHETIC_TEST_FIXTURE','VISUM_SAVED_PATHS'), 'CACHE_ORIGIN_UNPROVEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 78,
+    "guard": "require(evidence.get('network_sha256') and evidence.get('demand_sha256'), 'CACHE_NETWORK_OR_DEMAND_ID_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 79,
+    "guard": "require(digest==evidence.get('cache_sha256'),'CACHE_SHA256_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 111,
+    "guard": "require(cfg.get('apply') is False,'V1_APPLY_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 112,
+    "guard": "require(cfg.get('category')=='OA','V1_OA_ONLY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 114,
+    "guard": "require(requested,'EXPLICIT_DSEG_SCOPE_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 116,
+    "guard": "require(len(set(codes))==len(codes),'DUPLICATE_DSEG_SCOPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 118,
+    "guard": "require(all(core.family_from_dseg(c) in valid_families and c.startswith(('NATIVE_','EXOG_EE_')) for c in codes),'UNVERIFIED_OA_DSEG_SCOPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 120,
+    "guard": "require(mut.issubset(codes),'MUTABLE_DSEG_OUTSIDE_OBSERVATION_SCOPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 121,
+    "guard": "require(all(c.startswith('NATIVE_') and core.family_from_dseg(c) in ('WORK','SERVICE') for c in mut),'FROZEN_DSEG_ACTUATOR_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 123,
+    "guard": "require(policy in ('ALL_MUTABLE_RELATIONS','BOTH_ENDPOINTS_ACTUATABLE'),'UNSUPPORTED_MUTABLE_RELATION_POLICY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 125,
+    "guard": "require(not mut or policy!='BOTH_ENDPOINTS_ACTUATABLE' or zones is not None,'ACTUATABLE_ZONE_AUTHORITY_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 83,
+    "guard": "require(con.execute('PRAGMA quick_check').fetchone()[0]=='ok','SQLITE_INTEGRITY_FAIL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 89,
+    "guard": "require(dict(con.execute('SELECT key,value FROM metadata')).get('schema')==SCHEMA,'SQLITE_SCHEMA_VERSION_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 90,
+    "guard": "require(not list(con.execute('PRAGMA foreign_key_check')), 'ORPHAN_SQLITE_REFERENCES')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 91,
+    "guard": "require(con.execute('SELECT 1 FROM volumes v LEFT JOIN geometry g ON g.gid=v.gid LEFT JOIN segments s ON s.dseg=v.dseg WHERE g.gid IS NULL OR s.dseg IS NULL LIMIT 1').fetchone() is None, 'ORPHAN_SQLITE_REFERENCES')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 101,
+    "guard": "require(role in ('CALIBRATION','VALIDATION','DIAGNOSTIC'), 'UNKNOWN_OBSERVATION_ROLE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 102,
+    "guard": "require(pair not in seen or seen[pair]==role,'REVERSE_PAIR_CAL_VALID_LEAKAGE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 107,
+    "guard": "require(Path(hits_output).resolve() != Path(path).resolve(), 'OUTPUT_INPUT_COLLISION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 136,
+    "guard": "require(len(segments)==db.execute('SELECT COUNT(*) FROM segments').fetchone()[0],'CANONICAL_DSEG_COLLISION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 137,
+    "guard": "require(set(codes).issubset(segments),'REQUIRED_DSEG_MISSING_FROM_CACHE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 139,
+    "guard": "require(all(c in EXPECTED_MODE_DSEGS.get(segments[c][1],()) for c in codes),'DSEG_MODE_AUTHORITY_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 141,
+    "guard": "require(not known_oa-set(codes),'OA_CACHE_SEGMENTS_OMITTED_FROM_SCOPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 152,
+    "guard": "require(len(edges)==len(set(edges.values())),'DUPLICATE_DIRECTIONAL_EDGE_IDENTITY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 153,
+    "guard": "require(set(station_map).issubset(set(edges.values())),'MAPPING_EDGES_MISSING_FROM_CACHE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 203,
+    "guard": "require(expected_totals is not None,'DSEG_VOLUME_PARITY_AUTHORITY_MISSING')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 205,
+    "guard": "require(len(normalized_totals)==len(expected_totals),'DUPLICATE_CANONICAL_DSEG_TOTAL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 206,
+    "guard": "require(set(codes).issubset(normalized_totals),'DSEG_TOTAL_AUTHORITY_INCOMPLETE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 279,
+    "guard": "require(not isinstance(value, (bool, np.bool_)), 'INVALID_OBSERVATION_TARGET:' + str(key))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 284,
+    "guard": "require(valid, 'INVALID_OBSERVATION_TARGET:' + str(key))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 296,
+    "guard": "require(present or role=='DIAGNOSTIC','MISSING_OBSERVATION_CANNOT_BE_CAL_OR_VALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 317,
+    "guard": "require(np.isfinite(val) and val>=0,'INVALID_LIVE_OD')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 88,
+    "guard": "require(cols.issubset({x[1] for x in con.execute('PRAGMA table_info('+name+')')}),'SQLITE_SCHEMA_MISMATCH:'+name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 134,
+    "guard": "require(cfg['actual_network_sha256']==evidence['network_sha256'],'CACHE_NETWORK_IDENTITY_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 146,
+    "guard": "require(all(not isinstance(v, bool) and float(v).is_integer() and v >= 0 for v in counts), 'INVALID_SEGMENT_COUNT_AUTHORITY:' + code)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 147,
+    "guard": "require(len(set(counts)) <= 1, 'CONFLICTING_SEGMENT_COUNT_AUTHORITY:' + code)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 171,
+    "guard": "require(blob is not None and count is not None,'INCOMPLETE_NULL_GEOMETRY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 172,
+    "guard": "require(len(blob)%4==0 and len(blob)//4==count,'INVALID_GEOMETRY_LENGTH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 173,
+    "guard": "require(seqhash==hashlib.sha256(blob).hexdigest(),'GEOMETRY_HASH_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 175,
+    "guard": "require(all(e in edges for e in eids),'UNKNOWN_GEOMETRY_EDGE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 176,
+    "guard": "require(all(edges[a][2]==edges[b][1] for a,b in zip(eids,eids[1:])),'DISCONNECTED_SAVED_PATH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 208,
+    "guard": "require(np.isfinite(normalized_totals[c]) and normalized_totals[c]>=0,'INVALID_EXPECTED_VOLUME')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 209,
+    "guard": "require(abs(dseg_vol[c]-normalized_totals[c])<=max(numeric['internal_sum_atol'],numeric['internal_sum_rtol']*normalized_totals[c]),'DSEG_VOLUME_PARITY_FAIL:'+c)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 213,
+    "guard": "require(len(em)==len(od_expected),'DUPLICATE_OD_AUTHORITY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 214,
+    "guard": "require(set(em)==set(q),'OD_AUTHORITY_SUPPORT_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 215,
+    "guard": "require(all(np.isfinite(em[k]) and abs(em[k]-v)<=max(numeric['internal_sum_atol'],numeric['internal_sum_rtol']*v) for k,v in q.items()),'OD_VOLUME_PARITY_FAIL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 251,
+    "guard": "require(np.all(share.values>=0) and np.all(share.values<=1+1e-10),'PAIR_SHARE_OUT_OF_BOUNDS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 252,
+    "guard": "require(np.allclose(op.forward(np.ones(len(var_keys))),mtotals[meth],atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']),'MUTABLE_PREDICTION_PARITY_FAIL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 150,
+    "guard": "require(int(expected)==db.execute('SELECT COUNT(*) FROM volumes WHERE dseg=?',(original,)).fetchone()[0], 'INCOMPLETE_SEGMENT_VOLUME_ROWS:'+code)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 186,
+    "guard": "require(np.isfinite(v) and v>=0,'INVALID_SAVED_VOLUME')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 187,
+    "guard": "require(code in segments and segments[code][1]==mode,'SEGMENT_GEOMETRY_MODE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 266,
+    "guard": "require(not any(Path(str(p)+ext).exists() for ext in ('-wal','-shm','-journal')), 'SOURCE_CACHE_SIDECAR_APPEARED_DURING_READ')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/incidence.py",
+    "line": 267,
+    "guard": "require(sha256(p)==digest,'SOURCE_CACHE_CHANGED_DURING_READ')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/limits.py",
+    "line": 29,
+    "guard": "require(profile in ('LEGACY_STRICT', 'PRACTICAL_V1'), 'UNKNOWN_LIMIT_PROFILE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/limits.py",
+    "line": 32,
+    "guard": "require(isinstance(overrides, dict) and not set(overrides)-set(result), 'UNKNOWN_NUMERICAL_LIMIT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/limits.py",
+    "line": 37,
+    "guard": "require(all(result[key]>0 for key in ('c17_solver_tolerance','c17_projection_tolerance',\n            'feasibility_atol','feasibility_solver_tolerance','feasibility_kkt_tolerance')),\n            'ZERO_CONVERGENCE_TOLERANCE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/limits.py",
+    "line": 35,
+    "guard": "require(type(value) in (int,float) and math.isfinite(value) and value>=0,\n                'INVALID_NUMERICAL_LIMIT:' + key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 56,
+    "guard": "require(valid, 'INVALID_SOLVER_SETTING:solver_tolerance')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 63,
+    "guard": "require(np.all(inc.q_current > 0), 'INVALID_INCIDENCE:positive_OD_required')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 65,
+    "guard": "require(op.n_rows == nr and op.n_cols == nc, 'INVALID_INCIDENCE:operator_shape')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 66,
+    "guard": "require(op.row_idx.ndim == op.col_idx.ndim == op.values.ndim == 1 and len(op.row_idx) == len(op.col_idx) == len(op.values), 'INVALID_INCIDENCE:sparse_shape')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 67,
+    "guard": "require(np.all(np.isfinite(op.values)) and np.all(op.values >= 0), 'INVALID_INCIDENCE:operator_values')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 70,
+    "guard": "require(np.allclose(inc.fixed + inc.mutable, inc.model, atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']), 'INVALID_INCIDENCE:fixed_mutable_parity')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 71,
+    "guard": "require(np.allclose(op.forward(np.ones(nc)), inc.mutable, atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']), 'INVALID_INCIDENCE:operator_parity')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 75,
+    "guard": "require(cfg.get('apply') is False,'V1_APPLY_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 79,
+    "guard": "require(selected.size>0,'NO_CALIBRATION_OBSERVATIONS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 82,
+    "guard": "require(np.all(np.isfinite(y)) and np.all(y>=0),'INVALID_CAL_TARGET')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 86,
+    "guard": "require(np.all(np.isfinite(weights)) and np.all(weights>0),'INVALID_OBJECTIVE_WEIGHT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 88,
+    "guard": "require(np.all(np.isfinite(eps)) and np.all(eps>=0),'INVALID_DEADBAND')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 91,
+    "guard": "require(np.isfinite(lo) and np.isfinite(hi) and -1<lo<=0<=hi,'INVALID_RELATIVE_OD_BOUNDS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 92,
+    "guard": "require(np.isfinite(ridge) and np.isfinite(l1) and ridge>=0 and l1>=0,'INVALID_REGULARIZATION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 123,
+    "guard": "require(allow_unapproved_scenario or inc.audit['origin']=='SYNTHETIC_TEST_FIXTURE',\n            'UNAPPROVED_OBSERVATION_SEMANTICS_EXPLICIT_SCENARIO_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 130,
+    "guard": "require(np.isfinite(ridgeu) and ridgeu>0,'C17_CONSUMPTION_PENALTY_REQUIRED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 131,
+    "guard": "require(np.isfinite(tol) and tol>0,'INVALID_KKT_TOLERANCE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 143,
+    "guard": "require(maximum>=1,'INVALID_BLOCK_MAX_ITER')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 165,
+    "guard": "require(np.all(np.isfinite(x)) and np.all(x>=problem.lower-1e-10) and np.all(x<=problem.upper+1e-10),'SOLVER_BOUNDS_FAIL')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 50,
+    "guard": "require(valid, 'INVALID_SOLVER_SETTING:' + name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 62,
+    "guard": "require(values.shape == (size,) and np.all(np.isfinite(values)) and np.all(values >= -1e-8), 'INVALID_INCIDENCE:' + name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 69,
+    "guard": "require(np.issubdtype(idx.dtype, np.integer) and np.all(idx >= 0) and np.all(idx < size), 'INVALID_INCIDENCE:sparse_index')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 127,
+    "guard": "require(budget.pairs==[(r['origin_station'],r['destination_station']) for r in inc.rows], 'C17_OBSERVATION_ORDER_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/optimizer.py",
+    "line": 154,
+    "guard": "require(np.isfinite(total) and total<=previous+1e-7*max(1.,abs(previous)),'NONMONOTONE_SOLVER_BLOCK')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 77,
+    "guard": "require(zones.ndim == 1 and np.issubdtype(zones.dtype, np.integer)\n            and (zones > 0).all() and len(zones) == len(set(zones.tolist())), 'PARITY_ZONE_IDENTITY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 81,
+    "guard": "require(expected.shape == (len(zones), len(zones)), 'PARITY_MATRIX_SHAPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 100,
+    "guard": "require(values.shape == reconstructed.shape == counts.shape == (len(zone_nos), len(zone_nos)), 'PARITY_SHAPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 101,
+    "guard": "require(np.isfinite(values).all() and (values >= 0).all(), 'PARITY_INVALID_MATRIX')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 102,
+    "guard": "require(np.isfinite(reconstructed).all() and (reconstructed >= 0).all(), 'PARITY_INVALID_PATH_VOLUME')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 103,
+    "guard": "require(np.issubdtype(counts.dtype, np.integer) and (counts >= 0).all(), 'PARITY_INVALID_PATH_COUNTS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 104,
+    "guard": "require(not np.any((counts == 0) & (reconstructed > 0)), 'PARITY_VOLUME_WITHOUT_ROWS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 37,
+    "guard": "require(isinstance(record, dict) and record.get('schema') == SCHEMA, 'PARITY_POLICY_SCHEMA')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 38,
+    "guard": "require(set(record) == {'schema', *cls.__dataclass_fields__}, 'PARITY_POLICY_FIELDS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 88,
+    "guard": "require(o in index and d in index, 'PATH_ZONE_NOT_IN_LIVE_MATRIX')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 106,
+    "guard": "require(math.isfinite(max_lattice_error) and max_lattice_error >= 0, 'PARITY_INVALID_LATTICE_EVIDENCE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/parity.py",
+    "line": 29,
+    "guard": "require(type(value) in (int, float) and math.isfinite(value) and value >= 0,\n                    'INVALID_PARITY_POLICY:' + key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 46,
+    "guard": "require(not any(p.is_symlink() for p in (path, *path.parents)), 'SYMLINK_OUTPUT_PATH_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 50,
+    "guard": "require(isinstance(name, str) and bool(re.fullmatch(r'[A-Za-z0-9_-]+', name)), 'UNSAFE_OUTPUT_NAME')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 156,
+    "guard": "require(context.get('model_year') == 2025 and context.get('authority_family') == 'CORDON_SDP', 'CHECKPOINT_WRONG_MODEL_SCOPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 157,
+    "guard": "require(code_identity() == context.get('code_sha256'), 'CHECKPOINT_CODE_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 158,
+    "guard": "require(authority_identity() == context.get('authority_sha256'), 'CHECKPOINT_AUTHORITY_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 167,
+    "guard": "require(state.get('schema') == 'CORDON_OFFLINE_CHECKPOINT_V2', 'INVALID_RUN_CHECKPOINT_SCHEMA')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 168,
+    "guard": "require(state.get('apply_permitted') is False and state.get('live_visum_tested') is False, 'INVALID_OFFLINE_CHECKPOINT_FLAGS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 177,
+    "guard": "require(actual == seen, 'CHECKPOINT_UNSEALED_ARTIFACTS')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 74,
+    "guard": "require('2022' not in self.root.parts, 'MODEL_2022_OUTPUT_ROOT_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 76,
+    "guard": "require(self.root != ROOT and not any(self.root == p or p in self.root.parents for p in protected), 'PROTECTED_SOURCE_OUTPUT_ROOT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 137,
+    "guard": "require(self.folder is not None and self.context is not None, 'RUN_NOT_STARTED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 160,
+    "guard": "require(Path(rec['path']).is_file() and sha256(rec['path']) == rec['sha256'], 'CHECKPOINT_INPUT_CHANGED:' + name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 173,
+    "guard": "require(not rel.is_absolute() and '..' not in rel.parts and rec['path'] not in seen, 'INVALID_CHECKPOINT_ARTIFACT_PATH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 175,
+    "guard": "require(p.is_file() and p.stat().st_size == rec['bytes'] and sha256(p) == rec['sha256'], 'CHECKPOINT_ARTIFACT_CHANGED:' + rec['path'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 37,
+    "guard": "require(path.is_file(), 'CHECKPOINT_INPUT_MISSING:' + name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 81,
+    "guard": "require(legacy_default or not any(self.root.iterdir()), 'UNOWNED_NONEMPTY_OUTPUT_ROOT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 93,
+    "guard": "require(val.get('model_year') == 2025 and val.get('authority_family') == 'CORDON_SDP', 'OUTPUT_ROOT_OWNER_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/session.py",
+    "line": 117,
+    "guard": "require(f.read() == self.token, 'RUN_LOCK_OWNER_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 22,
+    "guard": "require(cfg.get('persistent_path_cache_enabled', False) is False, 'CROSS_RUN_CACHE_REUSE_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 23,
+    "guard": "require(cfg.get('automatic_cache_discovery', False) is False, 'AUTOMATIC_CACHE_DISCOVERY_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 24,
+    "guard": "require(cfg.get('automatic_live_reload', False) is False, 'OFFLINE_LOADVERSION_FORBIDDEN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 25,
+    "guard": "require(cfg.get('flowbundle_count_authority', False) is False, 'FLOWBUNDLE_CANNOT_BE_CORDON_AUTHORITY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 26,
+    "guard": "require(cfg.get('wallclock_limit_seconds') in (None, 0), 'WALLCLOCK_STOP_NOT_AUTHORIZED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 27,
+    "guard": "require(cfg.get('authority_family', 'CORDON_SDP') == 'CORDON_SDP', 'CSD_AUTHORITY_NOT_ALLOWED_IN_CORDON_BRANCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 49,
+    "guard": "require(isinstance(actual, dict), 'INVALID_SEMANTIC_SNAPSHOT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 78,
+    "guard": "require(len(identities) == len(set(identities)), 'DUPLICATE_OBSERVATION_ROSTER_ROW')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 46,
+    "guard": "require(not expected, 'EXPECTED_SEMANTICS_WITHOUT_SNAPSHOT_EVIDENCE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 51,
+    "guard": "require(valid_hash(actual.get(key)), 'SEMANTIC_HASH_MISSING_OR_INVALID:' + key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 53,
+    "guard": "require(isinstance(expected, dict) and all(valid_hash(expected.get(k)) for k in SEMANTIC_FIELDS), 'EXPECTED_SEMANTICS_INCOMPLETE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 56,
+    "guard": "require(not differences, 'CACHE_SEMANTIC_STATE_MISMATCH:' + ','.join(sorted(differences)))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 58,
+    "guard": "require(metadata['parent_hash'] == actual['state_hash'], 'CACHE_PARENT_SEMANTIC_HASH_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 61,
+    "guard": "require(valid_hash(evidence.get(evidence_key)), 'SOURCE_HASH_MISSING_OR_INVALID:' + evidence_key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 85,
+    "guard": "require(isinstance(expected, dict), 'INVALID_EXPECTED_ROSTER')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 43,
+    "guard": "require(valid_hash(cfg[config_key]), ('CACHE_NETWORK_IDENTITY_HASH_INVALID' if evidence_key == 'network_sha256' else 'EXPECTED_SOURCE_HASH_INVALID:' + config_key))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 44,
+    "guard": "require(evidence.get(evidence_key) == cfg[config_key], 'CACHE_SOURCE_IDENTITY_MISMATCH:' + evidence_key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 63,
+    "guard": "require(evidence[evidence_key] == cfg[config_key], 'CACHE_SOURCE_IDENTITY_MISMATCH:' + evidence_key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/state.py",
+    "line": 87,
+    "guard": "require(key in expected and expected[key] == result[key], 'OBSERVATION_ROSTER_GATE_MISMATCH:' + key)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/targeting.py",
+    "line": 17,
+    "guard": "require(isinstance(max_zones, int) and max_zones >= 0, 'INVALID_TARGET_ZONE_LIMIT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/targeting.py",
+    "line": 23,
+    "guard": "require(np.isfinite(observed) and observed >= 0, 'INVALID_CAL_TARGET')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 44,
+    "guard": "require(not set(options or {})-set(DEFAULTS),'UNKNOWN_VISUM_STARTUP_OPTION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 46,
+    "guard": "require(type(value['full_geometry_check']) is bool,'INVALID_GEOMETRY_CHECK_OPTION')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 47,
+    "guard": "require(type(value['com_retry_enabled']) is bool,'INVALID_STARTUP_SETTING:com_retry_enabled')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 56,
+    "guard": "require(value['com_retry_backoff_factor']>=1,'INVALID_STARTUP_SETTING:com_retry_backoff_factor')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 57,
+    "guard": "require(value['com_retry_max_delay_seconds']>=value['com_retry_initial_delay_seconds'],'INVALID_STARTUP_RETRY_DELAY_ORDER')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 58,
+    "guard": "require(value['max_store_gib']==0 or 0.001<=value['max_store_gib']<=1024,\n            'INVALID_STARTUP_SETTING:max_store_gib')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 111,
+    "guard": "require(all(set(col)==keys for col in cols.values()),'COM_ATTRIBUTE_ROW_COVERAGE_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 119,
+    "guard": "require(zones and all(z>0 for z in zones),'INVALID_ZONE_IDENTITY')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 128,
+    "guard": "require(links,'EMPTY_NETWORK')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 144,
+    "guard": "require(wanted == set().union(*EXPECTED_MODE_DSEGS.values()),'CORDON_REQUIRES_APPROVED_12_OA_SCOPE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 145,
+    "guard": "require(wanted.issubset(roster),'LIVE_OA_SEGMENTS_MISSING:'+','.join(sorted(wanted-set(roster))))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 147,
+    "guard": "require(not extra,'UNDECLARED_LIVE_OA_SEGMENT:'+','.join(sorted(extra)))",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 160,
+    "guard": "require(zone_count*zone_count<=opt['max_dense_matrix_cells'],'DENSE_MATRIX_MEMORY_BUDGET_EXCEEDED_BEFORE_COM_READ')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 164,
+    "guard": "require(arr.shape==(zone_count,zone_count) and np.isfinite(arr).all() and (arr>=0).all(),'INVALID_DSEG_MATRIX_AUTHORITY:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 168,
+    "guard": "require(abs(total-declared)<=max(opt['matrix_sum_atol'],abs(total)*opt['matrix_sum_rtol']),'MATRIX_SUM_MISMATCH:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 195,
+    "guard": "require(not re.search(r'(?<![0-9])2022(?![0-9])',str(source)),'MODEL_2022_SOURCE_REFUSED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 201,
+    "guard": "require(not missing,'STATION_LINK_MAPPING_DOES_NOT_MATCH_CURRENT_NETWORK')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 399,
+    "guard": "require(action in ACTIONS,'UNSUPPORTED_VISUM_ACTION_APPLY_NOT_IMPLEMENTED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 438,
+    "guard": "require(action in ACTIONS,'UNSUPPORTED_VISUM_ACTION_APPLY_NOT_IMPLEMENTED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 52,
+    "guard": "require(type(v) is int and 1 <= v <= maximum,'INVALID_STARTUP_SETTING:'+k)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 55,
+    "guard": "require(type(v) in (int,float) and np.isfinite(v) and v>=0,'INVALID_STARTUP_SETTING:'+k)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 70,
+    "guard": "require(threading.get_ident()==self.thread,'COM_THREAD_CHANGED')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 108,
+    "guard": "require(len({i for i,v in pairs})==len(pairs),'DUPLICATE_COM_ROW_INDEX:'+name)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 125,
+    "guard": "require(min(key)>0 and key not in links,'DUPLICATE_OR_INVALID_DIRECTIONAL_LINK')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 141,
+    "guard": "require(norm not in roster,'DUPLICATE_CANONICAL_LIVE_DSEG')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 153,
+    "guard": "require(norm in EXPECTED_MODE_DSEGS.get(mode,()),'LIVE_DSEG_MODE_MISMATCH:'+norm)",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 264,
+    "guard": "require(left==right,'FULL_SAME_MODE_GEOMETRY_DIFFERS_USE_PER_DSEG_GEOMETRY_DESIGN')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 363,
+    "guard": "require(nh2==report['network_sha256'] and zones2==zones,'NETWORK_CHANGED_DURING_CAPTURE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 365,
+    "guard": "require([(d['code'],d['mode']) for d in dsegs2]==[(d['code'],d['mode']) for d in dsegs],'DSEG_SCOPE_CHANGED_DURING_CAPTURE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 367,
+    "guard": "require(_call(lambda:api.current_version_file(visum),control,opt,'FINAL_CURRENT_VERSION')==source,\n                'OPEN_MODEL_CHANGED_DURING_CAPTURE')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 213,
+    "guard": "require(len(raw)<=8 and all(len(row)==len(cols) for row in raw),'PREFLIGHT_LIST_SCHEMA_MISMATCH')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 214,
+    "guard": "require(raw or info['matrix_interzonal']<=1e-9,'NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 251,
+    "guard": "require(ds['norm_code'] in collector.parents,'INCOMPLETE_INHERITED_PARENT_AUDIT')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 351,
+    "guard": "require(authority==report['matrix_audit'][ds['norm_code']],'MATRIX_CHANGED_DURING_CAPTURE:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 361,
+    "guard": "require(hh.hexdigest()==collector.parents[ds['norm_code']]['keys_and_volumes_sha256'],'PATH_VOLUMES_CHANGED_DURING_CAPTURE:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 317,
+    "guard": "require(authority==report['matrix_audit'][ds['norm_code']],'MATRIX_CHANGED_SINCE_PREFLIGHT:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 323,
+    "guard": "require(parity['status']=='PASS','PER_OD_PATH_MATRIX_PARITY_FAIL:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 357,
+    "guard": "require(key not in returned and vol>=0,'FINAL_PATH_KEYS_OR_VOLUMES_INVALID')",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "cordon2025/visum_startup.py",
+    "line": 341,
+    "guard": "require(proof_parity['status']=='PASS','PROOF_STORE_PER_OD_PARITY_FAIL:'+ds['code'])",
+    "classification": "CORDON_REVIEWED_NUMERIC_OR_STRUCTURAL_CONTRACT"
+  },
+  {
+    "file": "parent/run_v247_path_epoch_benchmark.py",
+    "line": 41,
+    "guard": "ensure(\"GENERATION\")",
+    "classification": "UNCHANGED_PARENT_CONTRACT"
+  },
+  {
+    "file": "parent/run_v247_path_epoch_benchmark.py",
+    "line": 45,
+    "guard": "ensure(\"SUPPLY\")",
+    "classification": "UNCHANGED_PARENT_CONTRACT"
+  }
+]

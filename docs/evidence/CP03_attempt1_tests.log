@@ -1,0 +1,24 @@
+....F......                                                              [100%]
+=================================== FAILURES ===================================
+____________________ test_projection_independent_qp_oracle _____________________
+
+    def test_projection_independent_qp_oracle():
+        from scipy.optimize import minimize,LinearConstraint,Bounds
+        b=make();v=np.array([12.,3.,15.]);u=b.project(v)
+        r=minimize(lambda x:0.5*np.sum((x-v)**2),np.zeros(3),jac=lambda x:x-v,method='SLSQP',
+          constraints=[LinearConstraint(b.constraint_matrix,-np.inf,b.limits)],bounds=Bounds(0,np.inf),options={'ftol':1e-10})
+>       assert r.success and np.allclose(u,r.x,atol=1e-5)
+E       assert (True and False)
+E        +  where True =      message: Optimization terminated successfully\n     success: True\n      status: 0\n         fun: 90.74999999999704\n...e+00 -1.000e+00 -9.500e+00]\n        nfev: 2\n        njev: 2\n multipliers: [ 1.000e+00  8.500e+00  0.000e+00  0.000e+00].success
+E        +  and   False = <function allclose at 0x7fbdb25e85f0>(array([2.5       , 0.66666667, 5.5       ]), array([2.5, 2. , 5.5]), atol=1e-05)
+E        +    where <function allclose at 0x7fbdb25e85f0> = np.allclose
+E        +    and   array([2.5, 2. , 5.5]) =      message: Optimization terminated successfully\n     success: True\n      status: 0\n         fun: 90.74999999999704\n...e+00 -1.000e+00 -9.500e+00]\n        nfev: 2\n        njev: 2\n multipliers: [ 1.000e+00  8.500e+00  0.000e+00  0.000e+00].x
+
+tests/test_budget.py:33: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_budget.py::test_projection_independent_qp_oracle - assert (True and False)
+ +  where True =      message: Optimization terminated successfully\n     success: True\n      status: 0\n         fun: 90.74999999999704\n...e+00 -1.000e+00 -9.500e+00]\n        nfev: 2\n        njev: 2\n multipliers: [ 1.000e+00  8.500e+00  0.000e+00  0.000e+00].success
+ +  and   False = <function allclose at 0x7fbdb25e85f0>(array([2.5       , 0.66666667, 5.5       ]), array([2.5, 2. , 5.5]), atol=1e-05)
+ +    where <function allclose at 0x7fbdb25e85f0> = np.allclose
+ +    and   array([2.5, 2. , 5.5]) =      message: Optimization terminated successfully\n     success: True\n      status: 0\n         fun: 90.74999999999704\n...e+00 -1.000e+00 -9.500e+00]\n        nfev: 2\n        njev: 2\n multipliers: [ 1.000e+00  8.500e+00  0.000e+00  0.000e+00].x
+1 failed, 10 passed in 0.44s

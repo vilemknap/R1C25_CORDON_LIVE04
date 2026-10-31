@@ -1,0 +1,17 @@
+{
+  "schema": "LIVE01_SCOPE_CONTRACT_V1",
+  "runtime_source": "CURRENT_INJECTED_2025_VISUM",
+  "donor_implementation": "cordon2025/live01_donor_scope.py",
+  "domestic": "NOT_ZAHR >= 0.5",
+  "foreign": "NOT_ZAHR < 0.5 and ZAHR_SUSED > 0 and POP_ZP > 0",
+  "guidance": "BOTH_ENDPOINTS_ACTUATABLE",
+  "exclusions": "explicit_excluded_zone_nos",
+  "native_counts": "NOT_RUN",
+  "mock_example": {
+    "execution_kind": "MOCK_681_ZONES",
+    "eligible_zones": 650,
+    "all_zones": 681,
+    "axis": "nonconsecutive_actual_Zone.NO",
+    "candidate_count_per_method": 64
+  }
+}

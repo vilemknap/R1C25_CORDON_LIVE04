@@ -1,0 +1,118 @@
+[
+  {
+    "paragraph_index_0based": 37,
+    "text": "6.6.\tPridelenie nerozpoznaných vozidiel do O/D matíc\t137"
+  },
+  {
+    "paragraph_index_0based": 38,
+    "text": "6.7.\tSymetrizácia O/D matíc\t139"
+  },
+  {
+    "paragraph_index_0based": 39,
+    "text": "6.8.\tPrepočet O/D matíc na formát koeficientov RPDI — Lohseho metóda\t139"
+  },
+  {
+    "paragraph_index_0based": 1339,
+    "text": "Vypočítaný koeficient bol použitý pri prepočte O/D matíc a je popísaný v kapitole 6.8, kde je popísaný prepočet O/D matíc Lohseho metódou."
+  },
+  {
+    "paragraph_index_0based": 1377,
+    "text": "Tieto vozidlá sa neskôr priradili do OD matíc špecifickým postupom popísaným nižšie v kapitole 6. Nerozpoznané vozidlá nevstupovali do výpočtov RPDI, ktoré sú úzko spojené s kategorizáciou vozidiel a teda nebolo možné ich do prepočtov zakomponovať. Počet nerozpoznaných záznamom (1 218) je v porovnaní s celkovým počtom záznamov (314 182) zanedbateľný a pri prepočtoch RPDI nespôsobuje badateľný rozdiel."
+  },
+  {
+    "paragraph_index_0based": 1459,
+    "text": "Krok 2 — Kategorizácia ciest a význam virtuálnej zóny C17"
+  },
+  {
+    "paragraph_index_0based": 1460,
+    "text": "Notebook 2. Kategorizace_cest.ipynb rozlišuje, aký typ informácie jednotlivé logické jazdy poskytujú. Z 185 431 jázd je 81 028 zaradených ako bežné známe OD vzťahy, 100 001 ako jednostranne známe vzťahy s C17, 1 678 ako návratové jazdy cez rovnaké stanovište a 701 ako známe slučkové jazdy. Ďalších 2 023 prípadov patrí do skupín vyžadujúcich osobitné preverenie."
+  },
+  {
+    "paragraph_index_0based": 1463,
+    "text": "Na zachovanie týchto údajov sa používa virtuálna zóna C17. V súlade s upresnením z kontrolných rokovaní nepredstavuje ďalšie fyzické stanovište, ale neznámy druhý koniec jednostranne identifikovanej cesty. Pri zaznamenanom vjazde cez stanovište vzniká vzťah  ,pri zaznamenanom výjazde vzťah  .Jedna udalosť sa môže započítať iba raz a do jedného z týchto smerov. Relácia  je zakázaná"
+  },
+  {
+    "paragraph_index_0based": 1464,
+    "text": "C17 tak zachováva informáciu, ktorú skutočne máme — konkrétne stanovište a smer prejazdu — bez dopĺňania nedoloženého druhého konca. To je významný rozdiel oproti postupu, pri ktorom by sa všetka nespárovaná doprava rozdelila medzi známe OD dvojice."
+  },
+  {
+    "paragraph_index_0based": 1466,
+    "text": "Druhý krok pripravuje aj vstupy pre lokálny pravdepodobnostný model. Pre každú skupinu vozidiel a smer sa vytvorí katalóg známych ciest a explicitná možnosť C17. Z 3 741 tréningových prejazdov je 2 650 priradených známym cestám a 1 091 výsledkom s C17. Jednostranne známa doprava tvorí približne 29,2 % tejto tréningovej populácie"
+  },
+  {
+    "paragraph_index_0based": 1467,
+    "text": "Ak by sa C17 z modelu vynechala, pravdepodobnosti by sa normalizovali iba medzi známymi cestami. Podiel, ktorý v údajoch patrí jednostranne známym výsledkom, by sa tým prerozdelil medzi uzavreté relácie. Zahrnutie C17 preto nie je len požiadavkou na formát výslednej matice; mení samotnú štatistickú otázku a zabraňuje tomuto konkrétnemu mechanizmu nadhodnotenia."
+  },
+  {
+    "paragraph_index_0based": 1469,
+    "text": "Lokálny model, implementovaný v notebooku 3. Odhad cest přes cílové SDP.ipynb, odhaduje, ako sa prejazdy cez SDP4 rozdeľujú medzi známe cesty a jednostranné výsledky s C17. Osem samostatných komponentov zodpovedá štyrom skupinám vozidiel a dvom smerom."
+  },
+  {
+    "paragraph_index_0based": 1473,
+    "text": "Index k označuje modelový výsledok prejazdu, teda známu cestu alebo C17. Pri danej skupine vozidiel a smere model odhaduje relatívne zastúpenie týchto výsledkov, nie celkovú profilovú intenzitu."
+  },
+  {
+    "paragraph_index_0based": 1474,
+    "text": "Pravdepodobnosti známych ciest sa vyjadrujú voči C17:"
+  },
+  {
+    "paragraph_index_0based": 1478,
+    "text": "C17 má nulový referenčný logit. To neznamená nulovú pravdepodobnosť C17; ide o spôsob parametrizácie, ktorý umožňuje vyjadriť ostatné výsledky relatívne k nej. Súčet všetkých pravdepodobností zostáva rovný jednej."
+  },
+  {
+    "paragraph_index_0based": 1494,
+    "text": "C17 nemá konkrétny SHADOW ekvivalent, preto je jej faktor cesty rovný jednej. Korekcia roly sa priraďuje podľa smeru jednostranného prejazdu a C17 zostáva súčasťou spoločnej normalizácie. Ak sa pre známu lokálnu cestu nenájde presná reprezentácia v SHADOW katalógu, faktor cesty sa tiež ponechá rovný jednej."
+  },
+  {
+    "paragraph_index_0based": 1501,
+    "text": "Keďže pravdepodobnosti vrátane C17 tvoria úplné rozdelenie, súčet očakávaných početností v každom reze zodpovedá nameranej intenzite. Posledný interval zahŕňa iba čas 11:15–11:18 a jeho skutočne zaznamenaných 20 prejazdov, nie odhad celej štvrťhodiny."
+  },
+  {
+    "paragraph_index_0based": 1506,
+    "text": "Pred zapracovaním rekonštrukcie sa vytvorí empirická základňa 17 × 17. Zahŕňa známe relácie, návratové jazdy aj jednostranne známe vzťahy s C17. Prípady vyžadujúce preverenie zostávajú dohľadateľné na úrovni pôvodných udalostí a ich skupín."
+  },
+  {
+    "paragraph_index_0based": 1509,
+    "text": "Konkrétne bilančné situácie možno vyjadriť príkladmi. Ak sa z pôvodne evidovaného vzťahu  rekonštruuje jazda , odpočíta sa jedna jednotka z bunky  a pridá sa do bunky . Pri jazde , pôvodne evidovanej ako , sa analogicky vykoná odpočet z  a pripočítanie do . Ak bol SDP4 iba medziľahlým bodom už evidovanej jazdy , koncový OD vzťah sa nemení. Pri spresnení vzťahu  na  sa pôvodná jednotka odpočíta z C17 a pridá do známej relácie. Známy koniec 15 zostáva zachovaný."
+  },
+  {
+    "paragraph_index_0based": 1523,
+    "text": "Výsledná matica sa zvýšila zo 187 648 na 188 340 jednotiek. Tento čistý prírastok je menší než počet fyzických prejazdov počas výpadku aj než počet rekonštruovaných logických jednotiek. Časť dopravy už bola zachytená inde a vyžadovala iba spresnenie. Súčasné zvýšenie objemu známych relácií a zníženie vzťahov s C17 ukazuje, že rekonštrukcia mení predovšetkým informačnú úplnosť a zaradenie časti dopravy."
+  },
+  {
+    "paragraph_index_0based": 1563,
+    "text": "Pre potreby dopravného plánovania a výpočtu prepočtových koeficientov bolo nevyhnutné tieto matice symetrizovať — teda zabezpečiť, aby produkcia každej zóny zodpovedala jej atrakcii."
+  },
+  {
+    "paragraph_index_0based": 1565,
+    "text": "Tento postup zaručuje symetriu matice (F_sym(i,j) = F_sym(j,i)) a zachováva celkový objem dopravných pohybov v území."
+  },
+  {
+    "paragraph_index_0based": 1566,
+    "text": "Prepočet O/D matíc na formát koeficientov RPDI — Lohseho metóda"
+  },
+  {
+    "paragraph_index_0based": 1567,
+    "text": "Vstupom prepočtu popísaného v tomto dokumente je symetrizovaná empirická OD matica (samostatne pre kategórie OA, LNA, STNA, TNA, BUS a pre typy jazdy Transit, NonTransit, ALL), vzniknutá predchádzajúcimi krokmi dopočtu SDP4, dopočtu nerozpoznaných vozidiel a symetrizácie. Prepočet podľa Lohseho metódy je posledným krokom spracovania a jeho výstupom sú finálne expandované OD matice na úrovni priemernej dennej (PDI), týždennej priemernej dennej (TPDI) a ročnej priemernej dennej (RPDI) intenzity."
+  },
+  {
+    "paragraph_index_0based": 1591,
+    "text": "Prepočet Lohseho metódou zahŕňa aj virtuálnu zónu (17. zóna), ktorá je súčasťou tranzitných matíc. V netranzitných maticiach, ako už bolo spomenuté, virtuálna zóna zastúpená nie je. "
+  },
+  {
+    "paragraph_index_0based": 1599,
+    "text": "Pracovné hárky rozdelenia nerozpoznaných vozidiel podľa smeru a podľa kategórie vrátane kontrolných súčtov, finálne empirické OD matice pre každú kategóriu po všetkých troch krokoch dopočtu (vstup do symetrizácie)."
+  },
+  {
+    "paragraph_index_0based": 1600,
+    "text": "Príloha D2 - finálne OD matice + symetrizácia obsahuje finálne empirické OD matice prevzaté z prílohy D1, samostatne pre 5 kategórií vozidiel,  k nim priradené symetrizované matice s aplikovaným pravidlom striedavého zaokrúhľovania, ktoré sú vstupom do prepočtu podľa Lohseho metódy."
+  },
+  {
+    "paragraph_index_0based": 1601,
+    "text": "Príloha D3 – OD matice prepočítané Lohseho metódou obsahuje zdrojové (symetrizované) matice prevzaté z prílohy D2, vstupné koeficienty PDI, TPDI a RPDI pre jednotlivé stanovištia a kategórie vozidiel, ich kumulované hodnoty (k_PDI, k_TPDI, k_RPDI) a 45 samostatných výpočtových hárkov (5 kategórií × 3 typy jazdy × 3 úrovne prepočtu) obsahujúcich celý iteračný postup vrátane finálnych zaokrúhlených OD matíc na úrovni priemernej dennej (PDI), týždennej priemernej dennej (TPDI) a ročnej priemernej dennej (RPDI) intenzity – ide o konečný výstup celého postupu spracovania OD matíc."
+  },
+  {
+    "paragraph_index_0based": 1604,
+    "text": "Virtuálna zóna (C17), ktorej označenie bolo použité pri prepočte a znázorňuje jazdy, pri ktorých nevieme cieľ, alebo zdroj cesty, ale vieme vždy jednu z týchto miest a smer jazdy, je označená v OD matici ako „VÝJAZD“, alebo „VJAZD“ podľa smerovania jazdy. V označení bunky v OD matici ostalo pôvodné označenie (Vjazd / výjazd) s rovnakou logikou a definíciou pohybu vozidla."
+  }
+]

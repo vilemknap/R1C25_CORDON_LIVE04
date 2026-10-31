@@ -1,0 +1,67 @@
+{
+  "schema": "AGGRESSIVE_V1_FIX1_REBASE_AUDIT",
+  "source_archives": {
+    "base_iofix4": {
+      "archive": "R1_15A2_V24915_PERF2C_PROFILE488_A0004_CYCLE3_TD_RESUME_IOFIX4_GATEFIX2_SEMRELOAD1_PATHFIX1_NO_WALLCLOCK_20261022(3).zip",
+      "sha256": "b468435e6803ac6a591ee02251e35dd1dec8d2d2f692fc21f411451bdf956a4d"
+    },
+    "base_iofix3": {
+      "archive": "R1_15A2_V24915_PERF2C_PROFILE488_A0004_CYCLE3_TD_RESUME_IOFIX3_PATHFIX3_NO_WALLCLOCK_20261022(6).zip",
+      "sha256": "d9a87036bb182c160d7b8e72fd7268659d10010feb309837dceb7325bbd9c682"
+    },
+    "old_aggressive": {
+      "archive": "R1_15A2_PROFILE488_AGGRESSIVE_TGTD_V1_FROM_ACCEPTED_20261022.zip",
+      "sha256": "1c1e02b430a0fae157b61725f1d285e11591b696fdaa917d4e449c9849dab681"
+    }
+  },
+  "old_aggressive_vs_supplied_iofix3": {
+    "base_files": 956,
+    "base_modified_or_missing": [],
+    "added_files": [
+      "AGGRESSIVE_TGTD_V1_TEST_SUMMARY.txt",
+      "CHANGELOG_AGGRESSIVE_TGTD_V1_CZ.md",
+      "R1_15A2_AGGRESSIVE_TGTD_FROM_ACCEPTED_V1.py",
+      "R1_15A2_AGGRESSIVE_TUNING_V1.json",
+      "SHA256SUMS_AGGRESSIVE_TGTD_V1.txt",
+      "START_HERE_AGGRESSIVE_TGTD_FROM_ACCEPTED_CZ.txt",
+      "tests/test_aggressive_tuning_v1.py"
+    ]
+  },
+  "new_vs_supplied_iofix4": {
+    "base_files": 947,
+    "unchanged": 947,
+    "modified_or_missing": []
+  },
+  "diagnosis": {
+    "reported_error": "12D authority row gate failed: rows=488/498 CAL=488/462 VALID=0/36",
+    "old_launcher_missing": [
+      "expected_12d_rows=488",
+      "expected_calibration_rows=488",
+      "expected_validation_rows=0",
+      "11D count-roster patch",
+      "rollback reuse expected_profiles=488",
+      "runtime I/O activation",
+      "telemetry fail-open activation",
+      "short run-root / cache namespace"
+    ],
+    "failed_run_completed_cycles": 0,
+    "failed_run_accepted_count": 0
+  },
+  "new_entrypoint": "R1_15A2_AGGRESSIVE_TGTD_V1_FIX1.py",
+  "policy_sha256": "c41e28c1ecbaa3bbdef43b259458f6407bfbef6af240d9312282e47e6b83e10f",
+  "scope": {
+    "aggressive_v1_parameters_preserved": true,
+    "starts_new_lineage_cycle": 1,
+    "rewinds_to_A0004": false,
+    "profile_counts": [
+      488,
+      488,
+      0
+    ],
+    "native_ipf_relaxed": false,
+    "long_generation_volume_added": false,
+    "base_calibration_code_modified": false,
+    "additional_path_compat_source": "base_iofix3",
+    "windows_visum_executed": false
+  }
+}

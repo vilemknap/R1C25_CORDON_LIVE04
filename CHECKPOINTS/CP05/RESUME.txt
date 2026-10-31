@@ -1,0 +1,15 @@
+Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate.
+{
+  "status": "OFFLINE_IMPLEMENTATION_TESTS_AND_HANDOFF_PREPARED",
+  "new_tests_passed": 86,
+  "parent_compatibility_passed": 782,
+  "parent_skipped": 4,
+  "parent_identity_test_explicitly_deselected": 1,
+  "full_unmodified_parent_suite_failed_on_legacy_identity": 1,
+  "minimum_acceptance_cases_passed": 15,
+  "real_2025_path_cache": false,
+  "apply": false,
+  "next_gate": "VERIFY_SELF_CONTAINED_ZIP_IN_CLEAN_DIRECTORY",
+  "tests": "TEST_REPORT.md",
+  "performance": "PERFORMANCE_REPORT.md"
+}

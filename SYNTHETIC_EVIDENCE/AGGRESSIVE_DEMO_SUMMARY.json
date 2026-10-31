@@ -1,0 +1,79 @@
+{
+  "apply_permitted": false,
+  "bounded_backtrack_selected_scale": 0.25,
+  "c17_no_op_status": "OFFLINE_AGGRESSIVE_NO_IMPROVING_CANDIDATE",
+  "cache_variants": [
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "objective_after": 0.0335919645656316,
+      "objective_before": 0.5097991141407889,
+      "selected_scale": 1.0,
+      "status": "OFFLINE_AGGRESSIVE_SHADOW_PROPOSAL_READY"
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "objective_after": 0.030115806626833126,
+      "objective_before": 0.4228951656708311,
+      "selected_scale": 1.0,
+      "status": "OFFLINE_AGGRESSIVE_SHADOW_PROPOSAL_READY"
+    }
+  ],
+  "comparison": {
+    "aggressive_objective": 2.8615397744586146,
+    "aggressive_prediction": [
+      139.97064113492203,
+      90.0,
+      110.98825645396882
+    ],
+    "aggressive_relative_changes": [
+      0.1997064113492204,
+      -0.2
+    ],
+    "fixed_contribution": [
+      20.0,
+      10.0,
+      15.0
+    ],
+    "origin": "SYNTHETIC_TEST_FIXTURE",
+    "stage": "SIGNED_EXPLORE",
+    "standard_objective": 4.556121428571429,
+    "standard_prediction": [
+      135.0,
+      95.0,
+      112.0
+    ],
+    "standard_relative_changes": [
+      0.15,
+      -0.15
+    ],
+    "validation_used_for_optimization": false
+  },
+  "live_visum_tested": false,
+  "production_ready": false,
+  "realizability_cases": [
+    {
+      "case": "POSITIVE_CYCLE",
+      "selected_scale": 0.0,
+      "status": "OFFLINE_AGGRESSIVE_NO_IMPROVING_CANDIDATE",
+      "undamped_full_od_rmse": 19.979021813961882,
+      "undamped_full_od_status": "INFEASIBLE_TG_TD"
+    },
+    {
+      "case": "NEGATIVE_CYCLE",
+      "selected_scale": 0.0,
+      "status": "OFFLINE_AGGRESSIVE_NO_IMPROVING_CANDIDATE",
+      "undamped_full_od_rmse": 19.979021813961882,
+      "undamped_full_od_status": "INFEASIBLE_TG_TD"
+    },
+    {
+      "case": "FEASIBLE_CONTROL",
+      "selected_scale": 1.0,
+      "status": "OFFLINE_AGGRESSIVE_SHADOW_PROPOSAL_READY",
+      "undamped_full_od_rmse": 1.2680567707057436e-10,
+      "undamped_full_od_status": "SYNTHETIC_FEASIBLE_TG_TD"
+    }
+  ],
+  "scope": "SYNTHETIC_ONLY",
+  "status": "SYNTHETIC_AGGRESSIVE_DEMO_PASS",
+  "td_parameter_trial_count": 7
+}

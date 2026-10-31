@@ -1,0 +1,396 @@
+{
+  "result": {
+    "status": "VISUM_SAVED_PATH_DIAGNOSTICS_COMPLETE",
+    "variants": [
+      {
+        "method": "ALL_ORDERED_UNIQUE_PAIRS",
+        "status": "DIAGNOSTIC_PASS",
+        "gate": {
+          "blockers": [
+            "OBSERVATION_SEMANTICS_UNAPPROVED",
+            "DIRECTION_MAPPING_UNAPPROVED",
+            "YEAR_BRIDGE_UNAPPROVED",
+            "NETWORK_MAPPING_UNAPPROVED",
+            "DSEG_SCOPE_UNAPPROVED",
+            "GEOMETRY_IDENTITY_UNAPPROVED",
+            "PATH_VOLUME_PARITY_UNAPPROVED",
+            "C17_POLICY_UNAPPROVED",
+            "NOT_LIVE_TESTED",
+            "AGGRESSIVE_OFFLINE_ONLY"
+          ],
+          "apply_permitted": false,
+          "production_ready": false,
+          "live_visum_tested": false
+        },
+        "observation_semantics_approved": false,
+        "survey_year": 2026,
+        "model_year": 2025,
+        "prediction_kind": "SAVED_PATH_HYPOTHESIS_NOT_CALIBRATED_RESULT"
+      },
+      {
+        "method": "EXACT_TWO_HITS",
+        "status": "DIAGNOSTIC_PASS",
+        "gate": {
+          "blockers": [
+            "OBSERVATION_SEMANTICS_UNAPPROVED",
+            "DIRECTION_MAPPING_UNAPPROVED",
+            "YEAR_BRIDGE_UNAPPROVED",
+            "NETWORK_MAPPING_UNAPPROVED",
+            "DSEG_SCOPE_UNAPPROVED",
+            "GEOMETRY_IDENTITY_UNAPPROVED",
+            "PATH_VOLUME_PARITY_UNAPPROVED",
+            "C17_POLICY_UNAPPROVED",
+            "NOT_LIVE_TESTED",
+            "AGGRESSIVE_OFFLINE_ONLY"
+          ],
+          "apply_permitted": false,
+          "production_ready": false,
+          "live_visum_tested": false
+        },
+        "observation_semantics_approved": false,
+        "survey_year": 2026,
+        "model_year": 2025,
+        "prediction_kind": "SAVED_PATH_HYPOTHESIS_NOT_CALIBRATED_RESULT"
+      }
+    ],
+    "gate": {
+      "blockers": [
+        "OBSERVATION_SEMANTICS_UNAPPROVED",
+        "DIRECTION_MAPPING_UNAPPROVED",
+        "YEAR_BRIDGE_UNAPPROVED",
+        "NETWORK_MAPPING_UNAPPROVED",
+        "DSEG_SCOPE_UNAPPROVED",
+        "GEOMETRY_IDENTITY_UNAPPROVED",
+        "PATH_VOLUME_PARITY_UNAPPROVED",
+        "C17_POLICY_UNAPPROVED",
+        "NOT_LIVE_TESTED",
+        "AGGRESSIVE_OFFLINE_ONLY"
+      ],
+      "apply_permitted": false,
+      "production_ready": false,
+      "live_visum_tested": false
+    },
+    "config_sha256": "9b76bf937bdf3d564984c220495ef4621ed72d8ff3b9d5d00a125283670cb8d7",
+    "cache_sha256": "6f6c6e2a1520017baeaec543afd669f774ffdc993c02b8fc53c616f3935d3f6d",
+    "snapshot_evidence_sha256": "cef6640324554f0a1d5dc231f545b696b14fc9c713e740c68f346271137a823e",
+    "authority_audit_sha256": "d3be0aa4d059fb92e54d81c7ae158c1eab519ec00719db12ead832c3a305164c",
+    "directional_axis_mapping": "UNAPPROVED_BIDIRECTIONAL_HYPOTHESIS_ONLY",
+    "mutable_actuators_enabled": false,
+    "apply_permitted": false,
+    "live_visum_tested": false,
+    "production_ready": false,
+    "assignment_executed": false,
+    "calibration_ready": false,
+    "live_calibration_verified": false,
+    "geometry_full_identity_proven": true,
+    "output_directory": "/tmp/tmpqiul_tsj/runs/VISUM_CAPTURE_DIAGNOSTICS_ff3e134af6f8",
+    "action": "CAPTURE_DIAGNOSTICS",
+    "telemetry_write_errors": [],
+    "com_busy_retry": {
+      "release": "CORDON_2025_STARTUP_FIX3_PRACTICAL_20261023",
+      "parent_hotfix_sha256": "2488191e97c17a072fd161c5645e17fa1fe0ac8c35412b92282d9737f0f76366",
+      "policy": {
+        "enabled": true,
+        "max_attempts": 128,
+        "initial_delay_seconds": 0.15,
+        "backoff_factor": 1.5,
+        "max_delay_seconds": 1.5,
+        "max_elapsed_seconds": 180.0
+      },
+      "scope": "ONE_READ_OR_ONE_BOUNDED_PAGE",
+      "not_a_whole_run_deadline": true,
+      "cannot_interrupt_an_inflight_native_COM_call": true,
+      "event_counts": {},
+      "events": [],
+      "events_retained_limit": 1000,
+      "apply_permitted": false,
+      "native_visum_tested_here": false
+    },
+    "diagnostics_backend": "FAST_EXACT",
+    "diagfast_release": "R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_20261023",
+    "diagfast_native_acceptance": "LIVE_PENDING",
+    "diagfast_effective_options": {
+      "fast_geometry_page_size": 256,
+      "fast_parent_page_size": 256,
+      "auto_tune": false,
+      "instrumentation": true
+    }
+  },
+  "timing": {
+    "apply_permitted": false,
+    "assignment_executed": false,
+    "backend": "FAST_EXACT",
+    "bounded_samples": [],
+    "calibration_ready": false,
+    "counters": {
+      "FINAL_PATH_READBACK.provider_invoke_attempts": 12,
+      "FINAL_PATH_READBACK.requested_page_size.256": 12,
+      "FINAL_PATH_READBACK.returned_rows": 24,
+      "FINAL_PATH_READBACK.successful_page_calls": 12,
+      "FULL_GEOMETRY_CHECK.provider_invoke_attempts": 10,
+      "FULL_GEOMETRY_CHECK.requested_page_size.256": 10,
+      "FULL_GEOMETRY_CHECK.returned_rows": 80,
+      "FULL_GEOMETRY_CHECK.successful_page_calls": 10,
+      "GEOMETRY.provider_invoke_attempts": 2,
+      "GEOMETRY.requested_page_size.256": 2,
+      "GEOMETRY.returned_rows": 16,
+      "GEOMETRY.successful_page_calls": 2,
+      "PARENTS.provider_invoke_attempts": 12,
+      "PARENTS.requested_page_size.256": 12,
+      "PARENTS.returned_rows": 24,
+      "PARENTS.successful_page_calls": 12,
+      "explicit_file_sha256_bytes": 22842551,
+      "full_stream_proofs": 10,
+      "matrix_getvalues_attempts": 36,
+      "proof_geometry_rows": 80,
+      "proof_link_children": 60,
+      "proof_routes": 20,
+      "provider_invoke_attempts": 36,
+      "scratch_sqlite_bytes_written": 0
+    },
+    "cpu_s": 2.446398671,
+    "effective_options": {
+      "auto_tune": false,
+      "fast_geometry_page_size": 256,
+      "fast_parent_page_size": 256,
+      "instrumentation": true
+    },
+    "failure_context": null,
+    "instrumentation_enabled": true,
+    "native_measurement_claim": false,
+    "native_transport_bytes": "NOT_MEASURED_PROVIDER_DOES_NOT_EXPOSE_WIRE_BYTES",
+    "nested_times_are_not_additive": true,
+    "origin": "RUNTIME_COUNTERS_TRANSPORT_NOT_CERTIFIED",
+    "peak_process_rss_mib": 106.97265625,
+    "rss_scope": "PROCESS_LIFETIME_PEAK_NOT_PER_STAGE",
+    "schema": "CORDON_DIAGFAST_TIMING_V1",
+    "stages": {
+      "CAPTURE.COM_HELPER_TRANSACTION": {
+        "calls": 141,
+        "cpu_exclusive_s": 0.039180024000002645,
+        "cpu_inclusive_s": 0.039180024000002645,
+        "errors": 0,
+        "wall_exclusive_s": 0.03924656700064588,
+        "wall_inclusive_s": 0.03924656700064588
+      },
+      "CAPTURE.MATRIX_GETVALUES": {
+        "calls": 24,
+        "cpu_exclusive_s": 0.00037027999999961203,
+        "cpu_inclusive_s": 0.00037027999999961203,
+        "errors": 0,
+        "wall_exclusive_s": 0.00038062200007971114,
+        "wall_inclusive_s": 0.00038062200007971114
+      },
+      "CAPTURE_DIAGNOSTICS_TOTAL": {
+        "calls": 1,
+        "cpu_exclusive_s": 0.10412875500000007,
+        "cpu_inclusive_s": 2.446035801,
+        "errors": 0,
+        "wall_exclusive_s": 0.10640324099904319,
+        "wall_inclusive_s": 2.518629328999964
+      },
+      "CAPTURE_EMPIRICAL_INCIDENCE": {
+        "calls": 1,
+        "cpu_exclusive_s": 0.17325235600000033,
+        "cpu_inclusive_s": 0.17325235600000033,
+        "errors": 0,
+        "wall_exclusive_s": 0.18216059099995618,
+        "wall_inclusive_s": 0.18216059099995618
+      },
+      "CAPTURE_OD_PARITY": {
+        "calls": 12,
+        "cpu_exclusive_s": 0.005255409999999738,
+        "cpu_inclusive_s": 0.005255409999999738,
+        "errors": 0,
+        "wall_exclusive_s": 0.005244424000125036,
+        "wall_inclusive_s": 0.005244424000125036
+      },
+      "CAPTURE_PROOF_PARSE": {
+        "calls": 10,
+        "cpu_exclusive_s": 0.05277679200000018,
+        "cpu_inclusive_s": 0.10675921599999993,
+        "errors": 0,
+        "wall_exclusive_s": 0.052775678999864795,
+        "wall_inclusive_s": 0.11272163200021623
+      },
+      "CAPTURE_PROOF_REFERENCE_INDEX": {
+        "calls": 2,
+        "cpu_exclusive_s": 0.0019584590000001345,
+        "cpu_inclusive_s": 0.0019584590000001345,
+        "errors": 0,
+        "wall_exclusive_s": 0.001956848000077116,
+        "wall_inclusive_s": 0.001956848000077116
+      },
+      "CAPTURE_REPORT_IO": {
+        "calls": 31,
+        "cpu_exclusive_s": 0.14376513799999946,
+        "cpu_inclusive_s": 0.14376513799999946,
+        "errors": 0,
+        "wall_exclusive_s": 0.16045506300088164,
+        "wall_inclusive_s": 0.16045506300088164
+      },
+      "CAPTURE_TOTAL": {
+        "calls": 1,
+        "cpu_exclusive_s": 0.22507592999999915,
+        "cpu_inclusive_s": 0.7613955390000002,
+        "errors": 0,
+        "wall_exclusive_s": 0.2512919429998419,
+        "wall_inclusive_s": 0.8155952349999325
+      },
+      "CHECKPOINT_TOTAL_INCLUDING_HASH_IO": {
+        "calls": 4,
+        "cpu_exclusive_s": 0.05624727400000651,
+        "cpu_inclusive_s": 0.8676126359999999,
+        "errors": 0,
+        "wall_exclusive_s": 0.05992621099881035,
+        "wall_inclusive_s": 0.8707848980000108
+      },
+      "DSEG_INVENTORY": {
+        "calls": 2,
+        "cpu_exclusive_s": 0.04691926099999988,
+        "cpu_inclusive_s": 0.04704976399999983,
+        "errors": 0,
+        "wall_exclusive_s": 0.04690215200014336,
+        "wall_inclusive_s": 0.04705071399996541
+      },
+      "FILE_SHA256_IO": {
+        "calls": 1187,
+        "cpu_exclusive_s": 0.9822503759999927,
+        "cpu_inclusive_s": 0.9822503759999927,
+        "errors": 0,
+        "wall_exclusive_s": 0.981676718002177,
+        "wall_inclusive_s": 0.981676718002177
+      },
+      "FINAL_PATH_READBACK.PROVIDER_INVOKE": {
+        "calls": 12,
+        "cpu_exclusive_s": 0.0003453340000003635,
+        "cpu_inclusive_s": 0.0003453340000003635,
+        "errors": 0,
+        "wall_exclusive_s": 0.0003532219999442532,
+        "wall_inclusive_s": 0.0003532219999442532
+      },
+      "FINAL_PATH_READBACK.TYPEINFO": {
+        "calls": 12,
+        "cpu_exclusive_s": 0.009935686000001276,
+        "cpu_inclusive_s": 0.009935686000001276,
+        "errors": 0,
+        "wall_exclusive_s": 0.00994636799998716,
+        "wall_inclusive_s": 0.00994636799998716
+      },
+      "FULL_GEOMETRY_CHECK.PROVIDER_INVOKE": {
+        "calls": 10,
+        "cpu_exclusive_s": 0.00044147800000038373,
+        "cpu_inclusive_s": 0.00044147800000038373,
+        "errors": 0,
+        "wall_exclusive_s": 0.0004477650001035727,
+        "wall_inclusive_s": 0.0004477650001035727
+      },
+      "FULL_GEOMETRY_CHECK.TYPEINFO": {
+        "calls": 10,
+        "cpu_exclusive_s": 0.008231856999999287,
+        "cpu_inclusive_s": 0.008231856999999287,
+        "errors": 0,
+        "wall_exclusive_s": 0.008234447999825534,
+        "wall_inclusive_s": 0.008234447999825534
+      },
+      "GEOMETRY.PROVIDER_INVOKE": {
+        "calls": 2,
+        "cpu_exclusive_s": 8.652899999983532e-05,
+        "cpu_inclusive_s": 8.652899999983532e-05,
+        "errors": 0,
+        "wall_exclusive_s": 8.812299995497597e-05,
+        "wall_inclusive_s": 8.812299995497597e-05
+      },
+      "GEOMETRY.TYPEINFO": {
+        "calls": 2,
+        "cpu_exclusive_s": 0.0015944049999998544,
+        "cpu_inclusive_s": 0.0015944049999998544,
+        "errors": 0,
+        "wall_exclusive_s": 0.0015951629999335637,
+        "wall_inclusive_s": 0.0015951629999335637
+      },
+      "LIST_CREATE": {
+        "calls": 60,
+        "cpu_exclusive_s": 0.1463800069999983,
+        "cpu_inclusive_s": 0.21561644399999924,
+        "errors": 0,
+        "wall_exclusive_s": 0.14651914199998828,
+        "wall_inclusive_s": 0.21576929699972425
+      },
+      "MATRIX_AUTHORITY": {
+        "calls": 36,
+        "cpu_exclusive_s": 0.15798834999999767,
+        "cpu_inclusive_s": 0.15930130199999915,
+        "errors": 0,
+        "wall_exclusive_s": 0.15793431700001292,
+        "wall_inclusive_s": 0.15932109300001684
+      },
+      "NETWORK_IDENTITY": {
+        "calls": 2,
+        "cpu_exclusive_s": 0.01314477800000069,
+        "cpu_inclusive_s": 0.013305946000000346,
+        "errors": 0,
+        "wall_exclusive_s": 0.013140247000023919,
+        "wall_inclusive_s": 0.013306068000019877
+      },
+      "PARENTS.PROVIDER_INVOKE": {
+        "calls": 12,
+        "cpu_exclusive_s": 0.0005365589999997145,
+        "cpu_inclusive_s": 0.0005365589999997145,
+        "errors": 0,
+        "wall_exclusive_s": 0.0005458020000332908,
+        "wall_inclusive_s": 0.0005458020000332908
+      },
+      "PARENTS.TYPEINFO": {
+        "calls": 12,
+        "cpu_exclusive_s": 0.01046444000000002,
+        "cpu_inclusive_s": 0.01046444000000002,
+        "errors": 0,
+        "wall_exclusive_s": 0.010464466999792421,
+        "wall_inclusive_s": 0.010464466999792421
+      },
+      "PREFLIGHT.COM_HELPER_TRANSACTION": {
+        "calls": 118,
+        "cpu_exclusive_s": 0.03245146299999924,
+        "cpu_inclusive_s": 0.03245146299999924,
+        "errors": 0,
+        "wall_exclusive_s": 0.03250095499879535,
+        "wall_inclusive_s": 0.03250095499879535
+      },
+      "PREFLIGHT.MATRIX_GETVALUES": {
+        "calls": 12,
+        "cpu_exclusive_s": 0.0001807600000003351,
+        "cpu_inclusive_s": 0.0001807600000003351,
+        "errors": 0,
+        "wall_exclusive_s": 0.00018527800000356365,
+        "wall_inclusive_s": 0.00018527800000356365
+      },
+      "PREFLIGHT_TOTAL": {
+        "calls": 1,
+        "cpu_exclusive_s": 0.16161240600000093,
+        "cpu_inclusive_s": 0.3510749470000001,
+        "errors": 0,
+        "wall_exclusive_s": 0.16159704199969838,
+        "wall_inclusive_s": 0.3530175139999301
+      },
+      "REPRESENTATIVE_ADD_GEOMETRY": {
+        "calls": 2,
+        "cpu_exclusive_s": 0.009783187000000693,
+        "cpu_inclusive_s": 0.0208674590000002,
+        "errors": 0,
+        "wall_exclusive_s": 0.011752148000027773,
+        "wall_inclusive_s": 0.023789644999965276
+      },
+      "REPRESENTATIVE_ADD_PARENTS": {
+        "calls": 12,
+        "cpu_exclusive_s": 0.06167850700000077,
+        "cpu_inclusive_s": 0.1276426530000001,
+        "errors": 0,
+        "wall_exclusive_s": 0.07490478300019277,
+        "wall_inclusive_s": 0.14657672400016963
+      }
+    },
+    "status": "MEASURED_COMPLETE",
+    "wall_s": 2.5189943079999466
+  }
+}

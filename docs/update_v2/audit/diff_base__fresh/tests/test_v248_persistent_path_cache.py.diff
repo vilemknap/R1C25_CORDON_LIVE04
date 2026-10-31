@@ -1,0 +1,32 @@
+--- base/tests/test_v248_persistent_path_cache.py
++++ fresh/tests/test_v248_persistent_path_cache.py
+@@ -378,3 +378,29 @@
+         assert collector.read_only is True
+     finally:
+         adapter.close()
++
++
++def test_read_only_reopen_allows_temp_schema_but_main_database_stays_read_only(tmp_path):
++    """Persistent cache main file is immutable; Supply may use local TEMP joins."""
++    from r1_15a2_supply_temp_sqlite_hotfix_v24915p2c2 import activate_supply_temp_sqlite_hotfix
++    activate_supply_temp_sqlite_hotfix()
++    conf, manager, rows, snap, policy, manifest, publication = publish(tmp_path)
++    cache_dir = Path(manifest["cache_dir"])
++    reopened = TwoModeRouteCollector.open_existing(
++        rows, policy, links(), cache_dir / STORE_NAME, DEFAULT_SETTINGS,
++        QuietControl(),
++        duplicate_scope_policy="DIAGNOSTIC_EXCLUDE_CONFLICTED_DRIVERS",
++        read_only=True, require_profile_metadata=True)
++    try:
++        assert reopened.read_only is True
++        # URI mode=ro must still protect the persistent main database.
++        with pytest.raises(sqlite3.OperationalError, match="readonly|read-only"):
++            reopened.db.execute("DELETE FROM metadata")
++        # Supply impact() requires only a connection-local scratch table.
++        reopened.db.execute("CREATE TEMP TABLE r1_supply_temp_test(gid INTEGER PRIMARY KEY, delta REAL)")
++        reopened.db.execute("INSERT INTO r1_supply_temp_test VALUES(1, 2.5)")
++        assert reopened.db.execute(
++            "SELECT gid,delta FROM r1_supply_temp_test").fetchone() == (1, 2.5)
++        reopened.db.execute("DROP TABLE temp.r1_supply_temp_test")
++    finally:
++        reopened.close()

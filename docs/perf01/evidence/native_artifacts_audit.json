@@ -1,0 +1,64 @@
+{
+  "status": "PARTIAL_NATIVE_ARTIFACTS_VERIFIED_NOT_FULL_CACHE_ACCEPTANCE",
+  "full_real_acceptance": "WAITING_FOR_REAL_FINAL_CACHE",
+  "files": [
+    {
+      "uploaded_name": "SNAPSHOT_EVIDENCE.json",
+      "original_path": "SNAPSHOT_EVIDENCE.json",
+      "bytes": 5142,
+      "sha256": "8ac6b93e85cbb1f1b3cba3ec8801941c294b41de17b5a44febc844adc6882ce9",
+      "matches_checkpoint": true
+    },
+    {
+      "uploaded_name": "GEOMETRY_PROOF.json",
+      "original_path": "GEOMETRY_PROOF.json",
+      "bytes": 1044,
+      "sha256": "32152245106baf5e023a63962a29bcc0699713a4d0c7468af0d10aedc1e640a4",
+      "matches_checkpoint": true
+    },
+    {
+      "uploaded_name": "OD_PARITY(2).json",
+      "original_path": "OD_PARITY.json",
+      "bytes": 28809,
+      "sha256": "a498cd646f50f5011dc7e13dfdb54b05e91771e2dfd643843c1d4e5d77a75a9e",
+      "matches_checkpoint": true
+    },
+    {
+      "uploaded_name": "STATION_HITS.csv",
+      "original_path": "STATION_HITS.csv",
+      "bytes": 27751495,
+      "sha256": "f28c585d57a11910c18a5bc4bf8cfb14832bf560c5e30a558937469bd85606e7",
+      "matches_checkpoint": true
+    },
+    {
+      "uploaded_name": "INCIDENCE.npz",
+      "original_path": "ALL_ORDERED_UNIQUE_PAIRS/INCIDENCE.npz",
+      "bytes": 3068,
+      "sha256": "d3e14253522fa10c996ec362afe8e3cb708230ec5594b135386121a69c7f266d",
+      "matches_checkpoint": true,
+      "model_sum": 188009.68000000517,
+      "rows": 120,
+      "operator_nnz": 0
+    },
+    {
+      "uploaded_name": "INCIDENCE(1).npz",
+      "original_path": "EXACT_TWO_HITS/INCIDENCE.npz",
+      "bytes": 2332,
+      "sha256": "1dd906d7e472b496423c94df1cfd099a3e035bea5360f2585a1af477e76097ac",
+      "matches_checkpoint": true,
+      "model_sum": 62500.212999999494,
+      "rows": 120,
+      "operator_nnz": 0
+    }
+  ],
+  "local_sqlite": {
+    "size": 30425088,
+    "sha256": "840c8f2ccaf6368912edcf73098eeaa55125e6512f87df9cbbe06bd0eab91d43",
+    "matches_completed_reference": false
+  },
+  "reference_required": {
+    "bytes": 664272896,
+    "path": "p.sqlite",
+    "sha256": "7e35a96ac1bc4fb306049d410379e349fde5aa8a07b15bf11301ed858253fa9a"
+  }
+}

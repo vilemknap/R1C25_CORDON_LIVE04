@@ -1,0 +1,227 @@
+{
+  "status": "PASS",
+  "execution_kind": "MOCK_NOT_NATIVE",
+  "npz_fields_exact_equal": 24,
+  "all_candidate_rows_exact_equal": true,
+  "fields": [
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "row",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "col",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "through",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "share",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "q",
+      "shape": [
+        960
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "model",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "mutable",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "INCIDENCE.npz",
+      "field": "fixed",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        960
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        960
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "ALL_ORDERED_UNIQUE_PAIRS",
+      "file": "SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "row",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "col",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "through",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "share",
+      "shape": [
+        744
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "q",
+      "shape": [
+        960
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "model",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "mutable",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "INCIDENCE.npz",
+      "field": "fixed",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "SOLUTION.npz",
+      "field": "relative_change",
+      "shape": [
+        960
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "SOLUTION.npz",
+      "field": "delta_q",
+      "shape": [
+        960
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "SOLUTION.npz",
+      "field": "c17_relaxation",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    },
+    {
+      "method": "EXACT_TWO_HITS",
+      "file": "SOLUTION.npz",
+      "field": "linearized_prediction",
+      "shape": [
+        120
+      ],
+      "exact_equal": true
+    }
+  ],
+  "model_writes_final": [],
+  "source": "Recovered CP03 versus patched LIVE01 on deterministic 681-zone fixture",
+  "not_a_performance_benchmark": true
+}

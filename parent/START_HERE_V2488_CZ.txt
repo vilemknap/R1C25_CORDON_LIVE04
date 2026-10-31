@@ -1,0 +1,34 @@
+R1 15A2 V2.4.8.8 — START HERE
+================================
+
+Duvod verze:
+V2.4.8.7 skoncila jeste pred Generation designem na
+PERSISTENT_PATH_CACHE_CONTRACT_MISMATCH:config_sha256.
+Proto zustala GENERATION_CACHE prazdna. Nebyla to chyba Generation matematiky.
+
+V2.4.8.8 oddeluje:
+- plny config SHA = provenance,
+- explicitni path-data kontrakt = autorita pro reuse persistentni path cache.
+
+Spusteni:
+1. Otevri posledni bezpecny accepted checkpoint .ver.
+2. NEMAZ %LOCALAPPDATA%\R1_15A2_PATH_CACHE_V248.
+3. Ve Visumu: Scripts -> Execute script file.
+4. Spust pouze:
+   R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_8_8.py
+
+Novy run musi vzniknout primo v:
+C:\Users\vilem_knap\Documents\VISUM\v45\2022\R1_15A2_V2488_RUNS\RUN_...
+
+Prvni rozhodujici evidence:
+CALIBRATION\DEMAND_CYCLE_01_GENERATION\DESIGN\GENERATION_CACHE\PERSISTENT_PATH_CACHE_RESTORE.json
+
+Ocekavany uspesny restore stare cache:
+contract_validation.mode = EXPLICIT_PREDECESSOR_PATH_SEMANTIC_COMPATIBILITY
+nebo PATH_SEMANTIC_CONFIG_DIGEST_COMPATIBILITY.
+
+Pokud nalezena cache opravdu neni semanticky kompatibilni, V2488 ji oznaci v
+PERSISTENT_PATH_CACHE_REJECTED.json a pokracuje pres legacy exact-state import
+nebo fresh enumeration. Korupce SQLite/SHA/bindingu zustava hard fail.
+
+Skutecny Visum acceptance V2488 zatim neprobehla; production_ready=false.

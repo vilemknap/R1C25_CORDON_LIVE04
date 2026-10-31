@@ -1,0 +1,127 @@
+........................................................................ [ 12%]
+........................................................................ [ 25%]
+........................................................................ [ 38%]
+........................................................................ [ 50%]
+........................................................................ [ 63%]
+........................................................................ [ 76%]
+........................................................................ [ 88%]
+..FFF..FF.......................................................         [100%]
+=================================== FAILURES ===================================
+________________ test_no_native_model_write_from_complete_entry ________________
+tests/test_visum_bootstrap.py:49: in test_no_native_model_write_from_complete_entry
+    assert r['status']=='VISUM_READONLY_PREFLIGHT_PASS',r
+E   AssertionError: {'apply_permitted': False, 'assignment_executed': False, 'boot_log_directory': '/tmp/pytest-of-root/pytest-4/test_no_native_model_write_fro0/local/R1C25_BOOT/3a69a3e540c1', 'error_type': 'RuntimeError', ...}
+E   assert 'STARTUP_BLOCKED' == 'VISUM_READON...REFLIGHT_PASS'
+E     
+E     - VISUM_READONLY_PREFLIGHT_PASS
+E     + STARTUP_BLOCKED
+----------------------------- Captured stdout call -----------------------------
+{
+  "status": "STARTUP_BLOCKED",
+  "reason": "RELEASE_INTEGRITY_FAIL:[{\"path\": \"tools/perf01_real_acceptance.py\", \"reason\": \"UNMANIFESTED_PYTHON_SOURCE\"}]",
+  "error_type": "RuntimeError",
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "live_calibration_verified": false,
+  "boot_log_directory": "/tmp/pytest-of-root/pytest-4/test_no_native_model_write_fro0/local/R1C25_BOOT/3a69a3e540c1"
+}
+______________ test_repeat_entry_does_not_reuse_old_module_or_run ______________
+tests/test_visum_bootstrap.py:57: in test_repeat_entry_does_not_reuse_old_module_or_run
+    assert a['status']==b['status']=='VISUM_READONLY_PREFLIGHT_PASS'
+E   AssertionError: assert 'STARTUP_BLOCKED' == 'VISUM_READON...REFLIGHT_PASS'
+E     
+E     - VISUM_READONLY_PREFLIGHT_PASS
+E     + STARTUP_BLOCKED
+----------------------------- Captured stdout call -----------------------------
+{
+  "status": "STARTUP_BLOCKED",
+  "reason": "RELEASE_INTEGRITY_FAIL:[{\"path\": \"tools/perf01_real_acceptance.py\", \"reason\": \"UNMANIFESTED_PYTHON_SOURCE\"}]",
+  "error_type": "RuntimeError",
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "live_calibration_verified": false,
+  "boot_log_directory": "/tmp/pytest-of-root/pytest-4/test_repeat_entry_does_not_reu0/local/R1C25_BOOT/d9cbabae94ef"
+}
+{
+  "status": "STARTUP_BLOCKED",
+  "reason": "RELEASE_INTEGRITY_FAIL:[{\"path\": \"tools/perf01_real_acceptance.py\", \"reason\": \"UNMANIFESTED_PYTHON_SOURCE\"}]",
+  "error_type": "RuntimeError",
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "live_calibration_verified": false,
+  "boot_log_directory": "/tmp/pytest-of-root/pytest-4/test_repeat_entry_does_not_reu0/local/R1C25_BOOT/53f1e4aabbbe"
+}
+______________ test_missing_numpy_has_clear_diagnostic_no_install ______________
+tests/test_visum_bootstrap.py:68: in test_missing_numpy_has_clear_diagnostic_no_install
+    assert r['status']=='STARTUP_BLOCKED' and 'NUMPY_UNAVAILABLE' in r['reason']
+E   assert ('STARTUP_BLOCKED' == 'STARTUP_BLOCKED'
+E     
+E       STARTUP_BLOCKED and 'NUMPY_UNAVAILABLE' in 'RELEASE_INTEGRITY_FAIL:[{"path": "tools/perf01_real_acceptance.py", "reason": "UNMANIFESTED_PYTHON_SOURCE"}]')
+----------------------------- Captured stdout call -----------------------------
+{
+  "status": "STARTUP_BLOCKED",
+  "reason": "RELEASE_INTEGRITY_FAIL:[{\"path\": \"tools/perf01_real_acceptance.py\", \"reason\": \"UNMANIFESTED_PYTHON_SOURCE\"}]",
+  "error_type": "RuntimeError",
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "live_calibration_verified": false,
+  "boot_log_directory": "/tmp/pytest-of-root/pytest-4/test_missing_numpy_has_clear_d0/local/R1C25_BOOT/5f69d9d76a27"
+}
+_______________ test_run_from_different_cwd_without_file_global ________________
+/mnt/data/perf01_work/R1C25_PERF01/tests/test_visum_bootstrap.py:87: in test_run_from_different_cwd_without_file_global
+    assert namespace['RESULT']['status']=='VISUM_READONLY_PREFLIGHT_PASS'
+E   AssertionError: assert 'STARTUP_BLOCKED' == 'VISUM_READON...REFLIGHT_PASS'
+E     
+E     - VISUM_READONLY_PREFLIGHT_PASS
+E     + STARTUP_BLOCKED
+----------------------------- Captured stdout call -----------------------------
+{
+  "status": "STARTUP_BLOCKED",
+  "reason": "RELEASE_INTEGRITY_FAIL:[{\"path\": \"tools/perf01_real_acceptance.py\", \"reason\": \"UNMANIFESTED_PYTHON_SOURCE\"}]",
+  "error_type": "RuntimeError",
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "live_calibration_verified": false,
+  "boot_log_directory": "/tmp/pytest-of-root/pytest-4/test_run_from_different_cwd_wi0/local/R1C25_BOOT/54bc49a7329f"
+}
+____________ test_capture_entry_no_system_exit_or_argument_parsing _____________
+/mnt/data/perf01_work/R1C25_PERF01/tests/test_visum_bootstrap.py:96: in test_capture_entry_no_system_exit_or_argument_parsing
+    assert ns['RESULT']['status']=='VISUM_SAVED_PATH_DIAGNOSTICS_COMPLETE',ns['RESULT']
+E   AssertionError: {'apply_permitted': False, 'assignment_executed': False, 'boot_log_directory': '/tmp/pytest-of-root/pytest-4/test_capture_entry_no_system_e0/local/R1C25_BOOT/99fceee66c9d', 'error_type': 'RuntimeError', ...}
+E   assert 'STARTUP_BLOCKED' == 'VISUM_SAVED_...TICS_COMPLETE'
+E     
+E     - VISUM_SAVED_PATH_DIAGNOSTICS_COMPLETE
+E     + STARTUP_BLOCKED
+----------------------------- Captured stdout call -----------------------------
+{
+  "status": "STARTUP_BLOCKED",
+  "reason": "RELEASE_INTEGRITY_FAIL:[{\"path\": \"tools/perf01_real_acceptance.py\", \"reason\": \"UNMANIFESTED_PYTHON_SOURCE\"}]",
+  "error_type": "RuntimeError",
+  "apply_permitted": false,
+  "assignment_executed": false,
+  "live_calibration_verified": false,
+  "boot_log_directory": "/tmp/pytest-of-root/pytest-4/test_capture_entry_no_system_e0/local/R1C25_BOOT/99fceee66c9d"
+}
+=========================== short test summary info ============================
+FAILED tests/test_visum_bootstrap.py::test_no_native_model_write_from_complete_entry - AssertionError: {'apply_permitted': False, 'assignment_executed': False, 'boot_log_directory': '/tmp/pytest-of-root/pytest-4/test_no_native_model_write_fro0/local/R1C25_BOOT/3a69a3e540c1', 'error_type': 'RuntimeError', ...}
+assert 'STARTUP_BLOCKED' == 'VISUM_READON...REFLIGHT_PASS'
+  
+  - VISUM_READONLY_PREFLIGHT_PASS
+  + STARTUP_BLOCKED
+FAILED tests/test_visum_bootstrap.py::test_repeat_entry_does_not_reuse_old_module_or_run - AssertionError: assert 'STARTUP_BLOCKED' == 'VISUM_READON...REFLIGHT_PASS'
+  
+  - VISUM_READONLY_PREFLIGHT_PASS
+  + STARTUP_BLOCKED
+FAILED tests/test_visum_bootstrap.py::test_missing_numpy_has_clear_diagnostic_no_install - assert ('STARTUP_BLOCKED' == 'STARTUP_BLOCKED'
+  
+    STARTUP_BLOCKED and 'NUMPY_UNAVAILABLE' in 'RELEASE_INTEGRITY_FAIL:[{"path": "tools/perf01_real_acceptance.py", "reason": "UNMANIFESTED_PYTHON_SOURCE"}]')
+FAILED tests/test_visum_bootstrap.py::test_run_from_different_cwd_without_file_global - AssertionError: assert 'STARTUP_BLOCKED' == 'VISUM_READON...REFLIGHT_PASS'
+  
+  - VISUM_READONLY_PREFLIGHT_PASS
+  + STARTUP_BLOCKED
+FAILED tests/test_visum_bootstrap.py::test_capture_entry_no_system_exit_or_argument_parsing - AssertionError: {'apply_permitted': False, 'assignment_executed': False, 'boot_log_directory': '/tmp/pytest-of-root/pytest-4/test_capture_entry_no_system_e0/local/R1C25_BOOT/99fceee66c9d', 'error_type': 'RuntimeError', ...}
+assert 'STARTUP_BLOCKED' == 'VISUM_SAVED_...TICS_COMPLETE'
+  
+  - VISUM_SAVED_PATH_DIAGNOSTICS_COMPLETE
+  + STARTUP_BLOCKED
+5 failed, 563 passed in 271.87s (0:04:31)

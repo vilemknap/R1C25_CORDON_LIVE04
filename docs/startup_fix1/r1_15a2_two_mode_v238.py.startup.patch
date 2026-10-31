@@ -1,0 +1,50 @@
+--- aggressive_v1/r1_15a2_two_mode_v238.py
++++ startup_fix1/r1_15a2_two_mode_v238.py
+@@ -309,10 +309,10 @@
+     """Reuses branch solver algebra, not the old expanded per-DSeg route tables."""
+     def __init__(self, profiles, policy, parent_hash, links, db_path,
+                  settings=None, control=None, duplicate_scope_policy='FAIL',
+-                 max_unique_sequences=100000, max_pairs_per_market=64):
++                 max_unique_sequences=100000, max_pairs_per_market=64, geometry_only=False):
+         ActualRouteCollector.__init__(self, profiles, policy, parent_hash,
+             [k for k, v in links.items() if v.get('eligible')],
+-            duplicate_scope_policy=duplicate_scope_policy)
++            duplicate_scope_policy=duplicate_scope_policy, geometry_only=geometry_only)
+         self.epoch_profiles = [dict(x) for x in self.profiles]
+         self.settings = validated_settings(settings)
+         self.control = control or QuietControl()
+@@ -351,6 +351,7 @@
+             self.db.execute('INSERT INTO metadata VALUES(?,?)', ('parent_hash', parent_hash))
+             self.db.execute('INSERT INTO metadata VALUES(?,?)', ('geometry_identity', PROVISIONAL))
+             self.db.execute('INSERT INTO metadata VALUES(?,?)', ('apply_permitted', 'false'))
++            self.db.execute('INSERT INTO metadata VALUES(?,?)', ('geometry_only', str(bool(geometry_only)).lower()))
+             self.edge_keys = (None,) + tuple(sorted(links))
+             self.edge_ids = {key: i for i, key in enumerate(self.edge_keys) if key is not None}
+             self.db.executemany('INSERT INTO edges VALUES(?,?,?,?)',
+@@ -967,6 +968,8 @@
+         return result
+ 
+     def prepare_incidence_evidence(self):
++        if getattr(self, "geometry_only", False):
++            raise SupplyContractError("GEOMETRY_ONLY_HAS_NO_PROFILE_OBJECTIVE")
+         """Finalize export/parity state needed by TG without building branch pairs."""
+         if self.incidence_ready:
+             return self.summary
+@@ -1031,6 +1034,8 @@
+         return self.summary
+ 
+     def prepare_sequence_evidence(self):
++        if getattr(self, "geometry_only", False):
++            raise SupplyContractError("GEOMETRY_ONLY_HAS_NO_PROFILE_OBJECTIVE")
+         """Build the expensive ON/OFF branch-pair evidence only when Supply starts."""
+         if self.sequence_ready:
+             return self.summary
+@@ -1086,6 +1091,8 @@
+         return self.prepare_sequence_evidence()
+ 
+     def finish(self):
++        if getattr(self, "geometry_only", False):
++            raise SupplyContractError("GEOMETRY_ONLY_HAS_NO_PROFILE_OBJECTIVE")
+         if not self.sequence_ready:
+             raise SupplyContractError('MODE_CACHE_NOT_READY')
+         if self._finished_proof is None:

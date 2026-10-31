@@ -1,0 +1,6 @@
+{
+  "execution_kind": "MOCK_NOT_NATIVE",
+  "do_not_use_as_real_model_authority": true,
+  "full_run_artifacts_retained_in_development_evidence": true,
+  "not_a_resumable_native_model": true
+}

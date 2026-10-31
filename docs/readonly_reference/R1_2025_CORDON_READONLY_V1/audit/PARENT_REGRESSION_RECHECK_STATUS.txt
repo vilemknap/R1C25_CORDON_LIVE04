@@ -1,0 +1,6 @@
+Historical package CP79 gate: 783 passed / 4 skipped / 0 failed.
+Independent full rerun in this Linux environment was attempted on 2026-10-19.
+It exceeded the execution time budget at approximately 36 percent completion.
+This is NOT a PASS result, and is NOT a demonstrated test failure.
+The available partial output is retained in V24915_PARENT_PYTEST_RECHECK.log.
+Separate new read-only cordon V1 suite: 8 passed / 0 skipped / 0 failed.

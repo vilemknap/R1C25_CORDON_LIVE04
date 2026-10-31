@@ -1,0 +1,167 @@
+cordon2025/aggressive.py:12:from .common import require, canonical_hash, parent_core, write_json, write_csv
+cordon2025/aggressive.py:30:    require(basis.evidence.get('state_hash') == incidence_state_hash(inc), 'AGGRESSIVE_ACTUATOR_STATE_MISMATCH')
+cordon2025/aggressive.py:33:    require(lo.shape == hi.shape == (n,) and len(basis.column_meta) == n, 'AGGRESSIVE_ACTUATOR_SHAPE')
+cordon2025/aggressive.py:34:    require(np.all(np.isfinite(lo)) and np.all(np.isfinite(hi)) and np.all(lo <= 0) and np.all(hi >= 0),
+cordon2025/aggressive.py:37:    caps = {'ADD_LOG': (stage['max_add_log_down'], stage['max_add_log_up']),
+cordon2025/aggressive.py:38:            'FAMILY_GLOBAL_LOG': (stage['signed_max_family_global_log_down'], stage['signed_max_family_global_log_up']),
+cordon2025/aggressive.py:39:            'SALARY_ABSOLUTE': (stage['salary_max_abs_delta_per_block'], stage['salary_max_abs_delta_per_block'])}
+cordon2025/aggressive.py:41:        require(m.get('allowed') is True and m.get('family') in ('WORK', 'SERVICE'), 'AGGRESSIVE_ILLEGAL_ACTUATOR')
+cordon2025/aggressive.py:43:            require(m.get('step_kind') in caps, 'AGGRESSIVE_TG_STEP_KIND_REQUIRED')
+cordon2025/aggressive.py:46:            require(m.get('type') == 'TD_PARAMETER', 'AGGRESSIVE_NO_DIRECT_OD_ACTUATOR')
+cordon2025/aggressive.py:56:    require(x.shape == (len(inc.variables),) and np.all(np.isfinite(x)), 'AGGRESSIVE_INVALID_STEP')
+cordon2025/aggressive.py:57:    require(np.all(x >= problem.lower - 1e-10) and np.all(x <= problem.upper + 1e-10), 'AGGRESSIVE_STEP_OUTSIDE_BOUNDS')
+cordon2025/aggressive.py:60:        require(budget.pairs == [(r['origin_station'], r['destination_station']) for r in inc.rows], 'C17_OBSERVATION_ORDER_MISMATCH')
+cordon2025/aggressive.py:61:        bcal = budget.subset(selected.tolist())
+cordon2025/aggressive.py:65:    require(gap <= float(cfg.get('kkt_tolerance', 1e-6)), 'AGGRESSIVE_C17_SCORE_NOT_CONVERGED')
+cordon2025/aggressive.py:73:    require(np.all(np.isfinite(predicted)) and np.min(predicted, initial=0) >= -1e-7, 'AGGRESSIVE_NONPHYSICAL_PREDICTION')
+cordon2025/aggressive.py:94:        candidate_is_full_solver_optimum=bool(np.allclose(x, raw.x, atol=1e-12, rtol=0)),
+cordon2025/aggressive.py:103:        if target is not None and abs(pred[i]-target-unc[i]) > row['epsilon_abs']+1e-7:
+cordon2025/aggressive.py:132:    require(all(m['dseg_code'] in cfg['mutable_dsegs'] for m in inc.variables), 'AGGRESSIVE_VARIABLE_SCOPE_MISMATCH')
+cordon2025/aggressive.py:133:    require(np.all(np.isfinite(inc.q_current)) and np.all(inc.q_current > 0), 'AGGRESSIVE_INVALID_OD_TOTAL')
+cordon2025/aggressive.py:143:        rel = decrease / max(baseline['objective'], 1e-12)
+cordon2025/aggressive.py:144:        losses_ok = (decrease > 0 and rel >= cfg['generation_min_cal_relative_improvement']
+cordon2025/aggressive.py:145:            and state['parts']['cordon_data_loss'] <= baseline['parts']['cordon_data_loss']+1e-10)
+cordon2025/aggressive.py:154:            'max_abs_relative_od_step': float(np.max(abs(state['x']), initial=0)),
+cordon2025/aggressive.py:195:                'station_ids': budget.station_ids, 'caps': budget.station_caps.tolist(),
+cordon2025/aggressive.py:208:    require(basis is not None, 'TD_ACTUATOR_BASIS_REQUIRED')
+cordon2025/aggressive.py:210:    require(all(m.get('type') == 'TD_PARAMETER' for m in basis.column_meta), 'TD_PLAN_REQUIRES_TD_ONLY_BASIS')
+cordon2025/aggressive.py:212:    require(direction.shape == (basis.operator.n_cols,) and np.all(np.isfinite(direction)), 'TD_INVALID_DIRECTION')
+cordon2025/aggressive.py:223:        if np.any(step < basis.lower-1e-12) or np.any(step > basis.upper+1e-12):
+cordon2025/aggressive.py:228:        if np.any(x < cfg['relative_od_lower']-1e-10) or np.any(x > cfg['relative_od_upper']+1e-10):
+cordon2025/aggressive.py:231:        rel = (zero_state['objective'] - state['objective']) / max(zero_state['objective'], 1e-12)
+cordon2025/aggressive.py:234:            require(scale in component_losses, 'TD_SCALED_COMPONENT_EVIDENCE_MISSING')
+cordon2025/aggressive.py:237:        rows.append(dict(rec, status='OFFLINE_LOCAL_TD_PREDICTION', parameter_step=step.tolist(),
+cordon2025/aggressive.py:239:            passes_shadow_cal_gate=bool(rel >= cfg['generation_min_cal_relative_improvement']),
+cordon2025/aggressive.py:244:            'native_ipf_tolerance_relaxed': False, 'native_ipf_verified': False}
+cordon2025/optimizer.py:8:from .common import parent_core,require,write_json,write_csv
+cordon2025/optimizer.py:43:    for name, default in (('solver_max_iter',6000),('solver_check_every',10),
+cordon2025/optimizer.py:44:                          ('power_iterations',50),('block_max_iter',100)):
+cordon2025/optimizer.py:50:        require(valid, 'INVALID_SOLVER_SETTING:' + name)
+cordon2025/optimizer.py:51:    value = cfg.get('solver_tolerance',1e-13)
+cordon2025/optimizer.py:56:    require(valid, 'INVALID_SOLVER_SETTING:solver_tolerance')
+cordon2025/optimizer.py:60:        require(values.shape == (size,) and np.all(np.isfinite(values)) and np.all(values >= -1e-8), 'INVALID_INCIDENCE:' + name)
+cordon2025/optimizer.py:61:    require(np.all(inc.q_current > 0), 'INVALID_INCIDENCE:positive_OD_required')
+cordon2025/optimizer.py:63:    require(op.n_rows == nr and op.n_cols == nc, 'INVALID_INCIDENCE:operator_shape')
+cordon2025/optimizer.py:64:    require(op.row_idx.ndim == op.col_idx.ndim == op.values.ndim == 1 and len(op.row_idx) == len(op.col_idx) == len(op.values), 'INVALID_INCIDENCE:sparse_shape')
+cordon2025/optimizer.py:65:    require(np.all(np.isfinite(op.values)) and np.all(op.values >= 0), 'INVALID_INCIDENCE:operator_values')
+cordon2025/optimizer.py:67:        require(np.issubdtype(idx.dtype, np.integer) and np.all(idx >= 0) and np.all(idx < size), 'INVALID_INCIDENCE:sparse_index')
+cordon2025/optimizer.py:68:    require(np.allclose(inc.fixed + inc.mutable, inc.model, atol=1e-8,rtol=1e-10), 'INVALID_INCIDENCE:fixed_mutable_parity')
+cordon2025/optimizer.py:69:    require(np.allclose(op.forward(np.ones(nc)), inc.mutable, atol=1e-8,rtol=1e-10), 'INVALID_INCIDENCE:operator_parity')
+cordon2025/optimizer.py:73:    core=parent_core();require(cfg.get('apply') is False,'V1_APPLY_FORBIDDEN')
+cordon2025/optimizer.py:77:    require(selected.size>0,'NO_CALIBRATION_OBSERVATIONS')
+cordon2025/optimizer.py:80:    require(np.all(np.isfinite(y)) and np.all(y>=0),'INVALID_CAL_TARGET')
+cordon2025/optimizer.py:84:    require(np.all(np.isfinite(weights)) and np.all(weights>0),'INVALID_OBJECTIVE_WEIGHT')
+cordon2025/optimizer.py:86:    require(np.all(np.isfinite(eps)) and np.all(eps>=0),'INVALID_DEADBAND')
+cordon2025/optimizer.py:89:    require(np.isfinite(lo) and np.isfinite(hi) and -1<lo<=0<=hi,'INVALID_RELATIVE_OD_BOUNDS')
+cordon2025/optimizer.py:90:    require(np.isfinite(ridge) and np.isfinite(l1) and ridge>=0 and l1>=0,'INVALID_REGULARIZATION')
+cordon2025/optimizer.py:106:def _optimize_u(residual,weights,eps,budget,start,ridge,tol=1e-9,max_iter=5000):
+cordon2025/optimizer.py:108:    L=max(1e-12,float(np.max(weights**2,initial=0))+ridge);u=np.array(start,copy=True)
+cordon2025/optimizer.py:109:    for it in range(1,max_iter+1):
+cordon2025/optimizer.py:111:        nxt=budget.project(u-grad/L,tolerance=1e-11)
+cordon2025/optimizer.py:113:        if gap<tol:return u,it,gap
+cordon2025/optimizer.py:114:    return u,max_iter,gap
+cordon2025/optimizer.py:119:    require(allow_unapproved_scenario or inc.audit['origin']=='SYNTHETIC_TEST_FIXTURE',
+cordon2025/optimizer.py:123:        require(budget.pairs==[(r['origin_station'],r['destination_station']) for r in inc.rows], 'C17_OBSERVATION_ORDER_MISMATCH')
+cordon2025/optimizer.py:124:        bcal=budget.subset(selected.tolist())
+cordon2025/optimizer.py:126:    ridgeu=float(cfg.get('c17_ridge',0.02));require(np.isfinite(ridgeu) and ridgeu>0,'C17_CONSUMPTION_PENALTY_REQUIRED')
+cordon2025/optimizer.py:127:    tol=float(cfg.get('kkt_tolerance',1e-6));require(np.isfinite(tol) and tol>0,'INVALID_KKT_TOLERANCE')
+cordon2025/optimizer.py:129:    inner_cfg={k:cfg[k] for k in ('solver_max_iter','solver_tolerance','solver_check_every','power_iterations') if k in cfg}
+cordon2025/optimizer.py:130:    inner_cfg.setdefault('solver_max_iter',6000);inner_cfg.setdefault('solver_tolerance',1e-13)
+cordon2025/optimizer.py:138:    maximum=int(cfg.get('block_max_iter',100)) if bcal is not None and bcal.enabled else 1
+cordon2025/optimizer.py:139:    require(maximum>=1,'INVALID_BLOCK_MAX_ITER')
+cordon2025/optimizer.py:149:        require(np.isfinite(total) and total<=previous+1e-7*max(1.,abs(previous)),'NONMONOTONE_SOLVER_BLOCK')
+cordon2025/optimizer.py:156:        if max(gapx,gapu)<tol:converged=True;break
+cordon2025/optimizer.py:160:    require(np.all(np.isfinite(x)) and np.all(x>=problem.lower-1e-10) and np.all(x<=problem.upper+1e-10),'SOLVER_BOUNDS_FAIL')
+cordon2025/optimizer.py:170:        if residual is not None and abs(residual)>epsilon+1e-7:flags.append('UNMET_TARGET_OUTSIDE_RELAXATION')
+cordon2025/budget.py:11:from .common import require,finite,read_csv,sha256
+cordon2025/budget.py:24:        require(self.policy in ('UNAPPROVED','DISABLED','BOUNDED_SCENARIO'),'INVALID_C17_POLICY')
+cordon2025/budget.py:25:        require(len(set(self.station_ids))==len(self.station_ids),'DUPLICATE_C17_STATION')
+cordon2025/budget.py:27:        require(self.station_caps.shape==(len(self.station_ids),),'C17_CAP_SHAPE')
+cordon2025/budget.py:28:        require(np.all(np.isfinite(self.station_caps)) and np.all(self.station_caps>=0),'INVALID_C17_CAPS')
+cordon2025/budget.py:29:        require(np.isfinite(self.global_cap) and 0<=self.global_cap<=self.station_caps.sum()+1e-8,'INVALID_GLOBAL_C17_CAP')
+cordon2025/budget.py:30:        require(len(set(self.pairs))==len(self.pairs),'DUPLICATE_C17_PAIR')
+cordon2025/budget.py:34:            require(a in sid and b in sid and a!=b,'C17_PAIR_ENDPOINT_INVALID')
+cordon2025/budget.py:38:        self.limits=np.r_[self.station_caps,self.global_cap]
+cordon2025/budget.py:39:        require(self.policy!='BOUNDED_SCENARIO' or self.scenario_authorized is True,'C17_SCENARIO_OPT_IN_REQUIRED')
+cordon2025/budget.py:45:    def project(self, vector, tolerance=1e-10, max_cycles=20000):
+cordon2025/budget.py:47:        require(np.isfinite(tolerance) and tolerance>0 and max_cycles>=1,'INVALID_PROJECTION_TOLERANCE')
+cordon2025/budget.py:49:        require(x.shape==(len(self.pairs),) and np.all(np.isfinite(x)),'C17_VECTOR_INVALID')
+cordon2025/budget.py:53:        correction=np.zeros((len(self.limits)+1,len(x)))
+cordon2025/budget.py:55:        for _ in range(max_cycles):
+cordon2025/budget.py:58:            for i,(a,b,norm) in enumerate(zip(self.constraint_matrix,self.limits,norms),1):
+cordon2025/budget.py:62:            violation=max(0.,float(np.max(self.constraint_matrix@x-self.limits,initial=0)),float(np.max(-x,initial=0)))
+cordon2025/budget.py:63:            if (np.max(np.abs(x-old),initial=0)<=tolerance and violation<=tolerance
+cordon2025/budget.py:64:                    and np.max(np.abs(correction-old_correction),initial=0)<=tolerance):
+cordon2025/budget.py:66:                require(np.max(self.constraint_matrix@x-self.limits,initial=0)<=10*tolerance,'C17_PROJECTION_NOT_FEASIBLE')
+cordon2025/budget.py:72:        require(u.shape==(len(self.pairs),) and np.all(np.isfinite(u)) and np.min(u,initial=0)>=-1e-8,'INVALID_C17_ALLOCATION')
+cordon2025/budget.py:73:        require(self.enabled or np.max(np.abs(u),initial=0)<=1e-10,'C17_ALLOCATION_WHEN_DISABLED')
+cordon2025/budget.py:75:        require(np.max(used-self.limits,initial=0)<=1e-7,'C17_BUDGET_OVERDRAWN')
+cordon2025/budget.py:87:    require(category=='OA','V1_C17_OA_ONLY')
+cordon2025/budget.py:88:    require(np.isfinite(eligible_fraction) and 0<=eligible_fraction<=1,'C17_ELIGIBLE_FRACTION_INVALID')
+cordon2025/budget.py:92:        s=int(r['station_id']);require(s not in accounts,'DUPLICATE_C17_STATION')
+cordon2025/budget.py:93:        require(r.get('basis')=='RPDI' and int(r.get('survey_year',0))==2026,'C17_TIME_BASIS_INVALID')
+cordon2025/budget.py:95:        require(abs(a-b)<1e-8,'C17_SYMMETRY_SOURCE_MISMATCH')
+cordon2025/budget.py:97:        require(r.get('D2_sha256') and r.get('D3_sha256'),'C17_PROVENANCE_MISSING')
+cordon2025/budget.py:99:    require(set(accounts)==set(range(1,17)),'C17_STATION_COVERAGE_INCOMPLETE')
+cordon2025/incidence.py:23:from .common import require, ContractError, sha256, parent_core, write_json, canonical_hash
+cordon2025/incidence.py:62:    require(repeat_policy in ('EXCLUDE_FLAGGED','FIRST_OCCURRENCE_DIAGNOSTIC'), 'UNKNOWN_REPEAT_POLICY')
+cordon2025/incidence.py:72:    require(p.is_file(),'NO_2025_PATH_CACHE')
+cordon2025/incidence.py:73:    require(not any(Path(str(p)+ext).exists() for ext in ('-wal','-shm','-journal')), 'LIVE_SQLITE_SIDECAR_PRESENT_COPY_COMPLETED_SNAPSHOT')
+cordon2025/incidence.py:74:    require(evidence.get('completed') is True,'CACHE_SNAPSHOT_NOT_COMPLETE')
+cordon2025/incidence.py:75:    require(evidence.get('model_year')==2025,'CACHE_MODEL_YEAR_NOT_2025')
+cordon2025/incidence.py:76:    require(evidence.get('basis')=='RPDI' and evidence.get('category')=='OA','CACHE_BASIS_OR_CATEGORY_UNPROVEN')
+cordon2025/incidence.py:77:    require(evidence.get('origin') in ('SYNTHETIC_TEST_FIXTURE','VISUM_SAVED_PATHS'), 'CACHE_ORIGIN_UNPROVEN')
+cordon2025/incidence.py:78:    require(evidence.get('network_sha256') and evidence.get('demand_sha256'), 'CACHE_NETWORK_OR_DEMAND_ID_MISSING')
+cordon2025/incidence.py:79:    digest=sha256(p);require(digest==evidence.get('cache_sha256'),'CACHE_SHA256_MISMATCH')
+cordon2025/incidence.py:83:        require(con.execute('PRAGMA quick_check').fetchone()[0]=='ok','SQLITE_INTEGRITY_FAIL')
+cordon2025/incidence.py:84:        required={'metadata':{'key','value'},'edges':{'eid','link_no','from_no','to_no'},
+cordon2025/incidence.py:87:        for name,cols in required.items():
+cordon2025/incidence.py:88:            require(cols.issubset({x[1] for x in con.execute('PRAGMA table_info('+name+')')}),'SQLITE_SCHEMA_MISMATCH:'+name)
+cordon2025/incidence.py:89:        require(dict(con.execute('SELECT key,value FROM metadata')).get('schema')==SCHEMA,'SQLITE_SCHEMA_VERSION_MISMATCH')
+cordon2025/incidence.py:90:        require(not list(con.execute('PRAGMA foreign_key_check')), 'ORPHAN_SQLITE_REFERENCES')
+cordon2025/incidence.py:91:        require(con.execute('SELECT 1 FROM volumes v LEFT JOIN geometry g ON g.gid=v.gid LEFT JOIN segments s ON s.dseg=v.dseg WHERE g.gid IS NULL OR s.dseg IS NULL LIMIT 1').fetchone() is None, 'ORPHAN_SQLITE_REFERENCES')
+cordon2025/incidence.py:101:        require(role in ('CALIBRATION','VALIDATION','DIAGNOSTIC'), 'UNKNOWN_OBSERVATION_ROLE')
+cordon2025/incidence.py:102:        require(pair not in seen or seen[pair]==role,'REVERSE_PAIR_CAL_VALID_LEAKAGE')
+cordon2025/incidence.py:107:        require(Path(hits_output).resolve() != Path(path).resolve(), 'OUTPUT_INPUT_COLLISION')
+cordon2025/incidence.py:109:    require(cfg.get('apply') is False,'V1_APPLY_FORBIDDEN')
+cordon2025/incidence.py:110:    require(cfg.get('category')=='OA','V1_OA_ONLY')
+cordon2025/incidence.py:112:    require(requested,'EXPLICIT_DSEG_SCOPE_REQUIRED')
+cordon2025/incidence.py:114:    require(len(set(codes))==len(codes),'DUPLICATE_DSEG_SCOPE')
+cordon2025/incidence.py:116:    require(all(core.family_from_dseg(c) in valid_families and c.startswith(('NATIVE_','EXOG_EE_')) for c in codes),'UNVERIFIED_OA_DSEG_SCOPE')
+cordon2025/incidence.py:118:    require(mut.issubset(codes),'MUTABLE_DSEG_OUTSIDE_OBSERVATION_SCOPE')
+cordon2025/incidence.py:119:    require(all(c.startswith('NATIVE_') and core.family_from_dseg(c) in ('WORK','SERVICE') for c in mut),'FROZEN_DSEG_ACTUATOR_FORBIDDEN')
+cordon2025/incidence.py:121:    require(policy in ('ALL_MUTABLE_RELATIONS','BOTH_ENDPOINTS_ACTUATABLE'),'UNSUPPORTED_MUTABLE_RELATION_POLICY')
+cordon2025/incidence.py:123:    require(not mut or policy!='BOTH_ENDPOINTS_ACTUATABLE' or zones is not None,'ACTUATABLE_ZONE_AUTHORITY_MISSING')
+cordon2025/incidence.py:132:            require(cfg['actual_network_sha256']==evidence['network_sha256'],'CACHE_NETWORK_IDENTITY_MISMATCH')
+cordon2025/incidence.py:134:        require(len(segments)==db.execute('SELECT COUNT(*) FROM segments').fetchone()[0],'CANONICAL_DSEG_COLLISION')
+cordon2025/incidence.py:135:        require(set(codes).issubset(segments),'REQUIRED_DSEG_MISSING_FROM_CACHE')
+cordon2025/incidence.py:137:        require(all(c in EXPECTED_MODE_DSEGS.get(segments[c][1],()) for c in codes),'DSEG_MODE_AUTHORITY_MISMATCH')
+cordon2025/incidence.py:139:        require(not known_oa-set(codes),'OA_CACHE_SEGMENTS_OMITTED_FROM_SCOPE')
+cordon2025/incidence.py:144:            require(all(not isinstance(v, bool) and float(v).is_integer() and v >= 0 for v in counts), 'INVALID_SEGMENT_COUNT_AUTHORITY:' + code)
+cordon2025/incidence.py:145:            require(len(set(counts)) <= 1, 'CONFLICTING_SEGMENT_COUNT_AUTHORITY:' + code)
+cordon2025/incidence.py:148:                require(int(expected)==db.execute('SELECT COUNT(*) FROM volumes WHERE dseg=?',(original,)).fetchone()[0], 'INCOMPLETE_SEGMENT_VOLUME_ROWS:'+code)
+cordon2025/incidence.py:150:        require(len(edges)==len(set(edges.values())),'DUPLICATE_DIRECTIONAL_EDGE_IDENTITY')
+cordon2025/incidence.py:151:        require(set(station_map).issubset(set(edges.values())),'MAPPING_EDGES_MISSING_FROM_CACHE')
+cordon2025/incidence.py:169:            require(blob is not None and count is not None,'INCOMPLETE_NULL_GEOMETRY')
+cordon2025/incidence.py:170:            require(len(blob)%4==0 and len(blob)//4==count,'INVALID_GEOMETRY_LENGTH')
+cordon2025/incidence.py:171:            require(seqhash==hashlib.sha256(blob).hexdigest(),'GEOMETRY_HASH_MISMATCH')
+cordon2025/incidence.py:173:            require(all(e in edges for e in eids),'UNKNOWN_GEOMETRY_EDGE')
+cordon2025/incidence.py:174:            require(all(edges[a][2]==edges[b][1] for a,b in zip(eids,eids[1:])),'DISCONNECTED_SAVED_PATH')
+cordon2025/incidence.py:184:                require(np.isfinite(v) and v>=0,'INVALID_SAVED_VOLUME')
+cordon2025/incidence.py:185:                require(code in segments and segments[code][1]==mode,'SEGMENT_GEOMETRY_MODE_MISMATCH')
+cordon2025/incidence.py:201:        require(expected_totals is not None,'DSEG_VOLUME_PARITY_AUTHORITY_MISSING')
+cordon2025/incidence.py:203:        require(len(normalized_totals)==len(expected_totals),'DUPLICATE_CANONICAL_DSEG_TOTAL')
+cordon2025/incidence.py:204:        require(set(codes).issubset(normalized_totals),'DSEG_TOTAL_AUTHORITY_INCOMPLETE')
+cordon2025/incidence.py:206:            require(np.isfinite(normalized_totals[c]) and normalized_totals[c]>=0,'INVALID_EXPECTED_VOLUME')
+cordon2025/incidence.py:207:            require(abs(dseg_vol[c]-normalized_totals[c])<=max(1e-8,1e-10*normalized_totals[c]),'DSEG_VOLUME_PARITY_FAIL:'+c)
+cordon2025/incidence.py:211:            require(len(em)==len(od_expected),'DUPLICATE_OD_AUTHORITY')
+cordon2025/incidence.py:212:            require(set(em)==set(q),'OD_AUTHORITY_SUPPORT_MISMATCH')
+cordon2025/incidence.py:213:            require(all(np.isfinite(em[k]) and abs(em[k]-v)<=max(1e-8,1e-10*v) for k,v in q.items()),'OD_VOLUME_PARITY_FAIL')
+cordon2025/incidence.py:249:            require(np.all(share.values>=0) and np.all(share.values<=1+1e-10),'PAIR_SHARE_OUT_OF_BOUNDS')
+cordon2025/incidence.py:250:            require(np.allclose(op.forward(np.ones(len(var_keys))),mtotals[meth],atol=1e-8,rtol=1e-10),'MUTABLE_PREDICTION_PARITY_FAIL')
+cordon2025/incidence.py:264:                require(not any(Path(str(p)+ext).exists() for ext in ('-wal','-shm','-journal')), 'SOURCE_CACHE_SIDECAR_APPEARED_DURING_READ')
+cordon2025/incidence.py:265:                require(sha256(p)==digest,'SOURCE_CACHE_CHANGED_DURING_READ')
+cordon2025/incidence.py:277:        require(not isinstance(value, (bool, np.bool_)), 'INVALID_OBSERVATION_TARGET:' + str(key))
+cordon2025/incidence.py:282:        require(valid, 'INVALID_OBSERVATION_TARGET:' + str(key))
+cordon2025/incidence.py:294:        require(present or role=='DIAGNOSTIC','MISSING_OBSERVATION_CANNOT_BE_CAL_OR_VALID')
+cordon2025/incidence.py:315:        val=float(row['volume']);require(np.isfinite(val) and val>=0,'INVALID_LIVE_OD')

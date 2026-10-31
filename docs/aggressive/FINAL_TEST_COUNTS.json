@@ -1,0 +1,37 @@
+{
+  "base_cordon": {
+    "tests": 170,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 170
+  },
+  "profile_policy": {
+    "tests": 34,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 34
+  },
+  "A03B_all_cordon": {
+    "tests": 253,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "passed": 253
+  },
+  "A03_parent_full": {
+    "tests": 884,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 4,
+    "passed": 879
+  },
+  "A03_parent_compat": {
+    "tests": 883,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 4,
+    "passed": 879
+  }
+}

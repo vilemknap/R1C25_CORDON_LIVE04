@@ -1,0 +1,24 @@
+{
+  "checkpoint": "CP04",
+  "created_utc": "2026-10-19T20:35:02.398816+00:00",
+  "details": {
+    "status": "OFFLINE_SOLVER_AND_REALIZABILITY_TESTED",
+    "focused_passed": 49,
+    "tests_log": "docs/evidence/CP04_all_focused.log",
+    "next_gate": "CP05_HARDENING_PERFORMANCE_REGRESSION_HANDOFF",
+    "synthetic_demo": "OFFLINE_RESULTS/CP04_SYNTHETIC_DEMO/DEMO_SUMMARY.json",
+    "production_ready": false,
+    "unresolved": [
+      "NO_2025_PATH_CACHE",
+      "SEMANTICS_UNAPPROVED",
+      "C17_PHYSICAL_ALLOCATION_DISABLED",
+      "REAL_TG_TD_RESPONSE_MISSING"
+    ]
+  },
+  "source_files": 856,
+  "manifest_sha256": "0177467152172c22a7c2f8dbdec84902c5cbe0a02be457332e4d18ac4753097c",
+  "predecessor_status_sha256": "e9fc43f6048cba259272050ed184cd110eaf65c1b64018fb38bc634760b9611c",
+  "apply": false,
+  "live_visum_tested": false,
+  "resume": "Read status.json and file_manifest.json. Restore this checkpoint source ZIP on top of the full immutable parent only. Continue with the next unmet gate."
+}

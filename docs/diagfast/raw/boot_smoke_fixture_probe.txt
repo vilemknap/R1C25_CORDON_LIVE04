@@ -1,0 +1,6 @@
+{"path_equal": false, "module_equal": true, "added_path": ["/mnt/data/diagfast_dev/boot_frozen/R1C25_DIAGFAST/parent", "/mnt/data/diagfast_dev/boot_frozen/R1C25_DIAGFAST/parent"]}
+Traceback (most recent call last):
+  File "/mnt/data/diagfast_dev/boot_smoke_probe.py", line 14, in <module>
+    print(json.dumps({'path_equal':sys.path==old_path,'module_equal':sys.modules['cordon2025.visum_startup'] is old_module,'added_path':[p for p in sys.path if p not in old_path]}));assert sys.path==old_path and sys.modules['cordon2025.visum_startup'] is old_module
+                                                                                                                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

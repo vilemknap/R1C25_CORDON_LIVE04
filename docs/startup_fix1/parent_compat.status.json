@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "elapsed_seconds": 20.469093561172485,
+  "args": [
+    "-q",
+    "tests",
+    "--deselect=tests/test_v24915_release.py::test_v24915_config_runtime_bundle_and_lineage_are_hash_locked"
+  ],
+  "root": "/mnt/data/R1_CORDON_AGGRESSIVE_STARTUP_FIX1_20261023/parent"
+}

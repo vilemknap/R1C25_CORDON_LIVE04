@@ -1,0 +1,1 @@
+Restore the base aggressive V1 archive identified by SHA256, overlay this checkpoint, inspect docs/startup_fix1 and evidence. Do not replace a running 2022 release. Continue deep startup audit; native Visum/Windows and live APPLY remain unverified. Rebuild SOURCE_MANIFEST after completed changes before packaging.

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "/mnt/data/R1_CORDON_UPDATE_20261022/release/tools/benchmark.py",
+    "--count",
+    "100000",
+    "--phase",
+    "measure",
+    "--work-dir",
+    "/mnt/data/R1_CORDON_UPDATE_20261022/performance_scratch"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/release",
+  "returncode": 0,
+  "elapsed_seconds": 38.45311260223389
+}

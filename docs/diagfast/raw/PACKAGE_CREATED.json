@@ -1,0 +1,17 @@
+{
+  "archives": [
+    {
+      "path": "/mnt/data/R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_FULL_20261023.zip",
+      "bytes": 41312429,
+      "sha256": "f4af6b442c5fbd1982d1fa2250f93847bdffc36f9da7c88e938bcac4d94bfdfc"
+    },
+    {
+      "path": "/mnt/data/R1_2025_CORDON_COM_DIAGFAST_EXACT_V1_PATCH_20261023.zip",
+      "bytes": 365745,
+      "sha256": "6962096f8c04f4e4d00a8714ed9336d126365acc4fc4f6ad94c2ebf58768e473"
+    }
+  ],
+  "source_manifest_count": 1583,
+  "protected_original_count": 1496,
+  "patch_files": 89
+}

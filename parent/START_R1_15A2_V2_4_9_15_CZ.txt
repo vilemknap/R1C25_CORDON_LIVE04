@@ -1,0 +1,9 @@
+R1 15A2 V2.4.9.15 — START
+
+1) Otevřít ACCEPTED_A_0009_cebb9c7a9349.ver z RUN_20261019_095727_260953.
+2) Scripts > Execute script file.
+3) Vybrat R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_15.py.
+4) Neumisťovat launcher do Procedure Sequence.
+5) Kontrolovat V24915_DEPLOYMENT_PREFLIGHT.json, V24915_RUNTIME_BUNDLE_PREFLIGHT.json a 00_PROGRESS.json.
+
+Offline kontrola balíku: python verify_v24915_package.py

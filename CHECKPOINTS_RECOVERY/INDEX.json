@@ -1,0 +1,27 @@
+{
+  "directory": "https://drive.google.com/drive/folders/1KxOigaDePO1y7S6DyvkqoDvwlcJpBiPD",
+  "checkpoints": [
+    {
+      "file": "CP_R00_RECOVERY_AUDIT_COMBUSY_20261023.zip",
+      "sha256": "6ec2c0644005e680481d38003e6e69d8917f95bea977196559a97e0972e800ca",
+      "size": 2190,
+      "drive_file_id": "1geEqt1xlVoSzQQ2nnnW5r5z0kCWGeq6Z",
+      "drive_url": "https://drive.google.com/file/d/1geEqt1xlVoSzQQ2nnnW5r5z0kCWGeq6Z/view?usp=drivesdk"
+    },
+    {
+      "file": "CP_R01_COMBUSY_PORT_FAULT_RECOVERY_20261023.zip",
+      "sha256": "282b8bce9baa93a021d70ec04d0df799ee8a4ad1793b37ba553bf7ccd551c753",
+      "size": 179057,
+      "drive_file_id": "1nRfpWlJCrcQ8XJTvbUzW7WLudX3AKFe-",
+      "drive_url": "https://drive.google.com/file/d/1nRfpWlJCrcQ8XJTvbUzW7WLudX3AKFe-/view?usp=drivesdk"
+    },
+    {
+      "file": "CP_R02_FULL_REGRESSION_NUMERICAL_PARITY_20261023.zip",
+      "sha256": "0e38c7c81e9745cc1010828829734b21c8b0b28cac3c59e3b59088e1db24ec59",
+      "size": 461392,
+      "drive_file_id": "1Hi1WEtxYm8WN7pKtB_MYpyjkk1JP0IUG",
+      "drive_url": "https://drive.google.com/file/d/1Hi1WEtxYm8WN7pKtB_MYpyjkk1JP0IUG/view?usp=drivesdk"
+    }
+  ],
+  "R03": "Final self-contained release and external verification receipt; URL recorded only after verified upload."
+}

@@ -1,0 +1,6 @@
+{
+  "returncode": null,
+  "status": "INTERRUPTED_BY_TOOL_30_SECOND_LIMIT",
+  "not_a_pass": true,
+  "next_run": "CP05_OWN_FINAL_RERUN"
+}

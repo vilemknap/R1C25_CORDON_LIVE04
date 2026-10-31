@@ -1,0 +1,30 @@
+{
+  "schema": "R1_15A2_V24915_FINAL_MACHINE_STATUS_V1",
+  "release": "R1_15A2_V2_4_9_15_COM_BUSY_RETRY_SAFE_FINALIZER_20261019",
+  "status": "V24915_COM_BUSY_RETRY_SAFE_FINALIZER_OFFLINE_VERIFIED",
+  "overall_pass": true,
+  "blockers": [],
+  "fixed_failure": "V24914_REPRESENTATIVE_GEOMETRY_RPC_E_CALL_REJECTED_PLUS_FINALIZER_MISCLASSIFICATION",
+  "resume": {
+    "accepted_count": 9,
+    "next_outer_cycle": 6,
+    "recommended_checkpoint": "ACCEPTED_A_0009_cebb9c7a9349.ver"
+  },
+  "gates": {
+    "cp77_forensics": true,
+    "cp78_focused": true,
+    "cp79_full_regression": true,
+    "compileall": true,
+    "runtime_manifest": true,
+    "config_safety": true,
+    "package_manifest_and_offline_verifier_included": true
+  },
+  "tests": {
+    "passed": 783,
+    "skipped": 4,
+    "failed": 0
+  },
+  "real_visum_tested": false,
+  "production_ready": false,
+  "next_required_action": "RUN_V24915_FROM_LATEST_ACCEPTED_A0009_CHECKPOINT_IN_LIVE_VISUM"
+}

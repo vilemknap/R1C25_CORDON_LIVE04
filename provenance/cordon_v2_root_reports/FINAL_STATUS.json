@@ -1,0 +1,37 @@
+{
+  "release": "R1_2025_CORDON_OPTIMIZER_V2_BUGFIX_PORT_20261022",
+  "status": "OFFLINE_BUGFIX_PORT_TESTED_LIVE_BLOCKED",
+  "apply_permitted": false,
+  "production_ready": false,
+  "live_visum_tested": false,
+  "native_windows_tested": false,
+  "own_tests": {
+    "passed": 170,
+    "failed": 0
+  },
+  "parent_compatibility": {
+    "passed": 879,
+    "skipped": 4,
+    "deselected": 1
+  },
+  "raw_parent_suite": {
+    "passed": 879,
+    "skipped": 4,
+    "failed": 1,
+    "failure": "Legacy exact V24915 package identity refuses two intentional V1 core patches; original guard unchanged"
+  },
+  "unchanged_donor_regressions_in_merged_tree": 97,
+  "exact_byte_added_libraries": 52,
+  "numerical_parity_arrays": 40,
+  "protected_science_and_data": true,
+  "open_gates": [
+    "NO_REAL_2025_PATH_CACHE_IN_THIS_RUN",
+    "OBSERVATION_SEMANTICS_UNAPPROVED",
+    "YEAR_BRIDGE_2026_2025_UNAPPROVED",
+    "GEOMETRY_AND_NETWORK_APPROVAL_REQUIRED",
+    "C17_PRODUCTION_ALLOCATION_DISABLED",
+    "LIVE_TG_TD_NOT_VERIFIED",
+    "APPLY_FORBIDDEN"
+  ],
+  "clean_unzip_evidence": "Delivered separately in FINAL_VERIFICATION.json after final ZIP creation"
+}

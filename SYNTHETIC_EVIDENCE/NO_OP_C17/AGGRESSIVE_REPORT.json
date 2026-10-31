@@ -1,0 +1,197 @@
+{
+  "C17_no_model_change_cannot_create_improvement": true,
+  "TD_status": "SCALE_API_AVAILABLE_NATIVE_TD_NOT_RUN",
+  "TG_projection_kind": "PARENT_MARGINALS_NOT_FULL_OD_PROOF",
+  "TG_signed_design_kind": "AVAILABLE_IF_ZONE_AUTHORITY_SUPPLIED",
+  "actual_assignment_verified": false,
+  "apply_permitted": false,
+  "budget_accounting": "ALTERNATIVE_SCENARIOS_RESET_SAME_SHARED_BUDGET_NOT_CUMULATIVE",
+  "effective_policy": {
+    "apply_permitted": false,
+    "base_config_sha256": "bbe2a55cf8fd5ea7cd2a5982df6606a48208788bd2376ddadf3d6be2bf91d552",
+    "c17_budgets_unchanged": true,
+    "cycle_kind": "EXPLICIT_OFFLINE_STAGE_SELECTOR_NOT_LIVE_ITERATION",
+    "design_source_sha256": "6aad964325002c8d13c10412bce3f0242ee75fae3640214bc5ab8ec823edda56",
+    "effective_science_sha256": "78fd9c6dd3970aa89fb43dd473aec1bae19f41b9c965d8199064cd5d3c73f49d",
+    "live_visum_tested": false,
+    "new_science_lineage": true,
+    "no_2022_resume": true,
+    "outer_cycle": 1,
+    "policy_id": "CORDON_AGGRESSIVE_V1_PROFILE_FIX1_SEARCH_ONLY",
+    "profile_GEH_relaxations_imported": false,
+    "regularization_unchanged": true,
+    "source_policy_sha256": "c41e28c1ecbaa3bbdef43b259458f6407bfbef6af240d9312282e47e6b83e10f",
+    "stage": {
+      "max_add_log_down": 0.12,
+      "max_add_log_up": 0.12,
+      "max_od_relative_down": 0.2,
+      "max_od_relative_up": 0.2,
+      "name": "SIGNED_EXPLORE",
+      "salary_max_abs_delta_per_block": 0.1,
+      "signed_max_family_global_log_down": 0.1,
+      "signed_max_family_global_log_up": 0.1,
+      "signed_soft_outward_step_factor": 0.5,
+      "through_outer_cycle": 6
+    },
+    "validation_split_unchanged": true
+  },
+  "guidance_solver_converged": true,
+  "live_visum_tested": false,
+  "origin": "SYNTHETIC_TEST_FIXTURE",
+  "production_ready": false,
+  "profiled_baseline_c17": {
+    "accounting_unit": "POOLED_STATION_RPDI_TOLERANCE_CREDITS_NOT_IMPUTED_VEHICLES",
+    "apply_permitted": false,
+    "global_credits_available": 30.0,
+    "global_credits_consumed": 19.999999999999996,
+    "global_credits_remaining": 10.000000000000004,
+    "pair_relaxation_sum": 9.999999999999998,
+    "physical_pair_allocation": "PRODUCTION_DISABLED",
+    "policy": "BOUNDED_SCENARIO",
+    "source": {
+      "origin": "SYNTHETIC"
+    },
+    "station_accounts": [
+      {
+        "available": 10.0,
+        "consumed": 9.999999999999998,
+        "remaining": 1.7763568394002505e-15,
+        "station_id": 1
+      },
+      {
+        "available": 10.0,
+        "consumed": 3.3333333333333304,
+        "remaining": 6.66666666666667,
+        "station_id": 2
+      },
+      {
+        "available": 10.0,
+        "consumed": 6.666666666666668,
+        "remaining": 3.333333333333332,
+        "station_id": 3
+      }
+    ]
+  },
+  "profiled_baseline_objective": 16.66666666666667,
+  "ranking_uses_CAL_only": true,
+  "raw_guidance_objective": 16.66666666666667,
+  "realization_status": "TG_TD_REALIZATION_NOT_VERIFIED",
+  "selected_c17": {
+    "accounting_unit": "POOLED_STATION_RPDI_TOLERANCE_CREDITS_NOT_IMPUTED_VEHICLES",
+    "apply_permitted": false,
+    "global_credits_available": 30.0,
+    "global_credits_consumed": 19.999999999999996,
+    "global_credits_remaining": 10.000000000000004,
+    "pair_relaxation_sum": 9.999999999999998,
+    "physical_pair_allocation": "PRODUCTION_DISABLED",
+    "policy": "BOUNDED_SCENARIO",
+    "source": {
+      "origin": "SYNTHETIC"
+    },
+    "station_accounts": [
+      {
+        "available": 10.0,
+        "consumed": 9.999999999999998,
+        "remaining": 1.7763568394002505e-15,
+        "station_id": 1
+      },
+      {
+        "available": 10.0,
+        "consumed": 3.3333333333333304,
+        "remaining": 6.66666666666667,
+        "station_id": 2
+      },
+      {
+        "available": 10.0,
+        "consumed": 6.666666666666668,
+        "remaining": 3.333333333333332,
+        "station_id": 3
+      }
+    ]
+  },
+  "selected_objective": 16.66666666666667,
+  "selected_scale": 0.0,
+  "state_sha256": "636bb41fc36ca6e46ca994dfcf1e1b0ae3f5773b8c18d0c5a191d4011c47bcac",
+  "status": "OFFLINE_AGGRESSIVE_NO_IMPROVING_CANDIDATE",
+  "trials": [
+    {
+      "actual_visum_accept": false,
+      "c17_global_credits": 19.999999999999996,
+      "cordon_data_loss": 16.111111111111114,
+      "eligible_shadow_proposal": false,
+      "feasibility": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "max_abs_relative_od_step": 0.0,
+      "objective": 16.66666666666667,
+      "raw_cal_loss": 20.5,
+      "reason": "CAL_IMPROVEMENT_GATE",
+      "relative_improvement": 0.0,
+      "scale": 1.0
+    },
+    {
+      "actual_visum_accept": false,
+      "c17_global_credits": 19.999999999999996,
+      "cordon_data_loss": 16.111111111111114,
+      "eligible_shadow_proposal": false,
+      "feasibility": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "max_abs_relative_od_step": 0.0,
+      "objective": 16.66666666666667,
+      "raw_cal_loss": 20.5,
+      "reason": "CAL_IMPROVEMENT_GATE",
+      "relative_improvement": 0.0,
+      "scale": 0.75
+    },
+    {
+      "actual_visum_accept": false,
+      "c17_global_credits": 19.999999999999996,
+      "cordon_data_loss": 16.111111111111114,
+      "eligible_shadow_proposal": false,
+      "feasibility": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "max_abs_relative_od_step": 0.0,
+      "objective": 16.66666666666667,
+      "raw_cal_loss": 20.5,
+      "reason": "CAL_IMPROVEMENT_GATE",
+      "relative_improvement": 0.0,
+      "scale": 0.5
+    },
+    {
+      "actual_visum_accept": false,
+      "c17_global_credits": 19.999999999999996,
+      "cordon_data_loss": 16.111111111111114,
+      "eligible_shadow_proposal": false,
+      "feasibility": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "max_abs_relative_od_step": 0.0,
+      "objective": 16.66666666666667,
+      "raw_cal_loss": 20.5,
+      "reason": "CAL_IMPROVEMENT_GATE",
+      "relative_improvement": 0.0,
+      "scale": 0.25
+    },
+    {
+      "actual_visum_accept": false,
+      "c17_global_credits": 19.999999999999996,
+      "cordon_data_loss": 16.111111111111114,
+      "eligible_shadow_proposal": false,
+      "feasibility": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "max_abs_relative_od_step": 0.0,
+      "objective": 16.66666666666667,
+      "raw_cal_loss": 20.5,
+      "reason": "CAL_IMPROVEMENT_GATE",
+      "relative_improvement": 0.0,
+      "scale": 0.125
+    },
+    {
+      "actual_visum_accept": false,
+      "c17_global_credits": 19.999999999999996,
+      "cordon_data_loss": 16.111111111111114,
+      "eligible_shadow_proposal": false,
+      "feasibility": "TG_TD_REALIZATION_NOT_VERIFIED",
+      "max_abs_relative_od_step": 0.0,
+      "objective": 16.66666666666667,
+      "raw_cal_loss": 20.5,
+      "reason": "CAL_IMPROVEMENT_GATE",
+      "relative_improvement": 0.0,
+      "scale": 0.0625
+    }
+  ],
+  "validation_used_for_optimization": false
+}

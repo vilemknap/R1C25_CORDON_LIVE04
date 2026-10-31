@@ -1,0 +1,13 @@
+{
+  "matrix_total": 294958.29489583656,
+  "path_total": 294954.098,
+  "abs_error_sum": 92.87853685215909,
+  "max_error": 0.0010619048288198485,
+  "strict_bad": 405657,
+  "rounded_bad": 0,
+  "no_path_rows_count": 0,
+  "no_path_rows_mass": 0.0,
+  "zero_volume_count": 90852,
+  "zero_volume_mass": 7.393154689935518,
+  "missing_max": 0.0
+}

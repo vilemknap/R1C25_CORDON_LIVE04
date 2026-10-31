@@ -1,0 +1,62 @@
+[
+  {
+    "checkpoint": "CP00_AUDIT_BASELINE_20261022",
+    "file": "/mnt/data/R1_CORDON_UPDATE_20261022/checkpoints/CP00_AUDIT_BASELINE_20261022.zip",
+    "bytes": 68597223,
+    "sha256": "ac2d6f2d1a0402654ce1681384eb4d82ca8f90f04baca9f37c0701f9c4bbcf36",
+    "md5": "c6bb859051a37aff1fb8fb44b42467d1",
+    "zip_integrity": "PASS",
+    "drive_verified": true,
+    "drive_id": "1kfTx56OyDdRi6nwV2i2dppMjyDbCWw_r",
+    "drive_sha_sidecar_id": "1khGbzhN6leeAOVJvtjdd6N507_dIodX0",
+    "verification_level": "METADATA_NAME_SIZE_PARENT; CHECKSUM_NOT_RETURNED_BY_CONNECTOR"
+  },
+  {
+    "checkpoint": "CP01_ADDITIVE_PORT_20261022",
+    "file": "/mnt/data/R1_CORDON_UPDATE_20261022/checkpoints/CP01_ADDITIVE_PORT_20261022.zip",
+    "bytes": 8177918,
+    "sha256": "24ac8a97e9672a590f64338b6ac5e7e67a4a35c0dcbc773a4d85170af52e8c19",
+    "md5": "22e55ec4eb428b70e14476d65a82cdaa",
+    "zip_integrity": "PASS",
+    "drive_verified": true,
+    "drive_id": "17ivxvSH_P8aBoK06N58VUlhs0hxOWs0H",
+    "drive_sha_sidecar_id": "1CPtmwU_qiJAEmQz6XI4I59DmOLqdPtrA",
+    "verification_level": "METADATA_NAME_SIZE_PARENT"
+  },
+  {
+    "checkpoint": "CP02_CRITICAL_IO_FINALIZER_20261022",
+    "file": "/mnt/data/R1_CORDON_UPDATE_20261022/checkpoints/CP02_CRITICAL_IO_FINALIZER_20261022.zip",
+    "bytes": 8186158,
+    "sha256": "6b7212b923673438d9c8105ac3f63e2d65e1c6d4925e512f635e1aaa235a442e",
+    "md5": "0523b687f9b6dfd0304e95d8eadec375",
+    "zip_integrity": "PASS",
+    "drive_verified": true,
+    "drive_id": "14_eE5NDNRgo57wOjirO-52NfrrEjOv97",
+    "drive_sha_sidecar_id": "1U6M4c49pZDqXyWPXKbaMQyAweOFRJHDX",
+    "verification_level": "METADATA_NAME_SIZE_PARENT"
+  },
+  {
+    "checkpoint": "CP03B_STATE_CACHE_TARGETING_PASS_20261022",
+    "file": "/mnt/data/R1_CORDON_UPDATE_20261022/checkpoints/CP03B_STATE_CACHE_TARGETING_PASS_20261022.zip",
+    "bytes": 8190267,
+    "sha256": "f995ca67134528935ba2cc44002a78dca3edbbab396b741e7e3a12e2d8d04223",
+    "md5": "1ef7a48e240fc39318ffd2d9234c80bd",
+    "zip_integrity": "PASS",
+    "drive_verified": true,
+    "drive_id": "1Fh_34Vx2BV5eOzMQTCgNBMnDeYvAsMul",
+    "drive_sha_sidecar_id": "1zC_Ig8UjiL9C-rUXMSoQ5s38U2UYt_Ky",
+    "verification_level": "METADATA_NAME_SIZE_PARENT"
+  },
+  {
+    "checkpoint": "CP04_OFFLINE_INTEGRATION_REGRESSIONS_20261022",
+    "file": "/mnt/data/R1_CORDON_UPDATE_20261022/checkpoints/CP04_OFFLINE_INTEGRATION_REGRESSIONS_20261022.zip",
+    "bytes": 8260989,
+    "sha256": "b62866c9907c8931a7ee2b453f6322219ef718f3260dfb2972fc27b430a8f703",
+    "md5": "0ccf466dc48226e058e60ebd1049898a",
+    "zip_integrity": "PASS",
+    "drive_verified": true,
+    "drive_id": "1gC0MmvJsMFLS-VImL1nMxCteM80_6Xw5",
+    "drive_sha_sidecar_id": "1nHPLhBjRWCzfiD_XG1ZcBozYzmQ_97PZ",
+    "verification_level": "METADATA_NAME_SIZE_PARENT"
+  }
+]

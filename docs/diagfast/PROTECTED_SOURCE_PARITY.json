@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "files_compared": 1496,
+  "mismatches": [],
+  "parent_unchanged": true,
+  "all_original_code_data_config_unchanged": true,
+  "root_release_metadata_replaced": [
+    "SOURCE_MANIFEST.json",
+    "SHA256SUMS.txt"
+  ]
+}

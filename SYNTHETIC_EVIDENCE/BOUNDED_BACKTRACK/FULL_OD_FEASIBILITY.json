@@ -1,0 +1,29 @@
+{
+  "actuator_step": [
+    0.05
+  ],
+  "apply_permitted": false,
+  "basis_kind": "EXACT_SYNTHETIC_LINEAR",
+  "basis_provenance": {
+    "basis_kind": "EXACT_SYNTHETIC_LINEAR",
+    "origin": "SYNTHETIC_NOT_VISUM_TD",
+    "search_bound_policy": "CORDON_AGGRESSIVE_V1_PROFILE_FIX1_SEARCH_ONLY",
+    "source_sha256": "f38dbb0f0cb9045e93665aad465c342ce8908cd2397f8d874e2185f17c0c7bc7",
+    "state_hash": "60f0aa3725a644a09f349b688889e18d2aa885e51228b3844852828360466b6c"
+  },
+  "desired_delta": [
+    5.0
+  ],
+  "full_od_max_abs_residual": 0.0,
+  "full_od_rmse": 0.0,
+  "global_nonlinear_infeasibility_claimed": false,
+  "kkt": 0.0,
+  "live_verified": false,
+  "realizable_delta": [
+    5.0
+  ],
+  "residual": [
+    0.0
+  ],
+  "status": "SYNTHETIC_FEASIBLE_TG_TD"
+}

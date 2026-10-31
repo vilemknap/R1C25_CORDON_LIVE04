@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "tools/parent_compatibility.py"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/release",
+  "returncode": 0,
+  "elapsed_seconds": 44.63833951950073
+}

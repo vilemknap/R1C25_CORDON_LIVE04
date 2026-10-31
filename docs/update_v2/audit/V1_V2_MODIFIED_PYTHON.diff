@@ -1,0 +1,484 @@
+--- V1/cordon2025/__init__.py
++++ V2/cordon2025/__init__.py
+@@ -1,2 +1,2 @@
+ """2025-only offline cordon extension of R1 15A2; never attaches to Visum."""
+-__version__ = '1.0.0-offline'
++__version__ = '2.0.0-offline-bugfix-port'
+--- V1/cordon2025/__main__.py
++++ V2/cordon2025/__main__.py
+@@ -9,6 +9,10 @@
+ from .optimizer import solve
+ from .feasibility import parent_projection,evaluate_realizability,finecdf_availability
+ from .demos import synthetic_demo
++from .io import read_json, safe_failure_report
++from .state import observation_roster
++from .targeting import path_targeting_report
++from .session import RunSession, verify_run
+ 
+ 
+ def targets_from_audit():
+@@ -23,16 +27,17 @@
+     return target
+ 
+ 
+-def empirical_run(folder,cfg,cache,evidence_path,propose=False,allow_scenario=False,credit_scenario=False):
++def empirical_run(folder,cfg,cache,evidence_path,propose=False,allow_scenario=False,credit_scenario=False,checkpoint=None):
+     require(cache is not None and Path(cache).is_file(),'NO_2025_PATH_CACHE')
+     require(evidence_path is not None and Path(evidence_path).is_file(),'SNAPSHOT_EVIDENCE_REQUIRED')
+-    evidence=json.loads(Path(evidence_path).read_text(encoding='utf-8'))
++    evidence=read_json(evidence_path)
+     require(evidence.get('origin')=='VISUM_SAVED_PATHS','EMPIRICAL_RUN_REQUIRES_VISUM_SAVED_PATHS_NOT_SYNTHETIC')
+     cfg=dict(cfg)
+     if not propose:
+         cfg['mutable_dsegs']=[]  # Pure inspection requires no zonal actuator authority.
+     idx,_=mapping(ROOT/'data/audited/STATION_MAPPING.csv')
+     variants=build_from_snapshot(cache,idx,cfg,evidence,hits_output=folder/'STATION_HITS.csv')
++    if checkpoint: checkpoint('INCIDENCE_READ_COMPLETE')
+     targets=targets_from_audit()
+     holdout={tuple(sorted(p)) for p in cfg['validation_unordered_pairs']}
+     roles={(a,b):('VALIDATION' if (a,b) in holdout else 'CALIBRATION') for a in range(1,17) for b in range(a+1,17)}
+@@ -41,6 +46,8 @@
+         out=folder/method;raw.save(out/'DIRECTED_DIAGNOSTICS')
+         inc=aggregate_observations(raw,targets,bidirectional=True,roles=roles)
+         inc.save(out)
++        write_json(out/'OBSERVATION_ROSTER.json',observation_roster(inc.rows,cfg.get('expected_observation_roster')))
++        write_json(out/'TARGETING_CONTEXT.json',path_targeting_report(inc))
+         summary={'method':method,'status':'DIAGNOSTIC_PASS','gate':gate,'observation_semantics_approved':False,
+                  'survey_year':2026,'model_year':2025,'prediction_kind':'SAVED_PATH_HYPOTHESIS_NOT_CALIBRATED_RESULT'}
+         if propose:
+@@ -53,6 +60,7 @@
+             write_json(out/'FULL_OD_FEASIBILITY.json',evaluate_realizability(inc,result))
+             summary['status']=result.report['status'];summary['objective_before']=result.report['objective_initial'];summary['objective_after']=result.report['objective_final']
+         summaries.append(summary)
++        if checkpoint: checkpoint(method+'_COMPLETE')
+     report={'status':'OFFLINE_HYPOTHESIS_RESULTS','variants':summaries,'gate':gate,'config_sha256':canonical_hash(cfg),
+             'cache_sha256':sha256(cache),'snapshot_evidence_sha256':sha256(evidence_path),
+             'authority_audit_sha256':sha256(ROOT/'data/audited/AUTHORITY_AUDIT.json'),
+@@ -64,41 +72,48 @@
+ 
+ def main(argv=None):
+     p=argparse.ArgumentParser(description=__doc__)
+-    p.add_argument('command',choices=['audit-inputs','preflight','demo','inspect-cache','propose'])
++    p.add_argument('command',choices=['audit-inputs','preflight','demo','inspect-cache','propose','verify-run'])
+     p.add_argument('--config',type=Path,default=ROOT/'CORDON_2025_CONFIG.json')
+-    p.add_argument('--run-name',default=None,help='New folder under this release OFFLINE_RESULTS; no external output roots')
++    p.add_argument('--run-name',default=None,help='New isolated run name; long names are shortened deterministically')
++    p.add_argument('--output-root',type=Path,help='New empty or owned 2025 root; never an existing 2022 directory')
++    p.add_argument('--run-directory',type=Path,help='Completed/interrupted run to verify read-only')
+     p.add_argument('--cache',type=Path,help='Explicit completed copied SQLite snapshot; never an active WAL database')
+     p.add_argument('--evidence',type=Path,help='Snapshot provenance JSON; no automatic 2022 search')
+     p.add_argument('--allow-unapproved-scenario',action='store_true')
+     p.add_argument('--bounded-c17-scenario',action='store_true')
+     args=p.parse_args(argv);folder=None
+     try:
++        if args.command=='verify-run':
++            require(args.run_directory is not None,'RUN_DIRECTORY_REQUIRED')
++            report=verify_run(args.run_directory)
++            print(json.dumps(report));return 0
+         cfg=read_config(args.config)
+         name=args.run_name or (args.command.replace('-','_')+'_'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d_%H%M%S_%f'))
+-        folder=new_output(name)
+-        if args.command=='audit-inputs':
+-            report=audit_workbooks(ROOT/'data/source',folder/'audited')
+-        elif args.command=='demo':report=synthetic_demo(folder,cfg)
+-        elif args.command=='preflight':
+-            report={'status':'NO_2025_PATH_CACHE' if args.cache is None else 'EXPLICIT_CACHE_REQUIRES_INSPECT_CACHE',
+-                'gate':deployment_gate(cfg,args.cache is not None and args.cache.is_file()),
+-                'source_scope':'READ_ONLY_STATIC_PREFLIGHT','finecdf_reference':finecdf_availability()}
+-            write_json(folder/'PREFLIGHT.json',report)
+-        else:
+-            require(not args.bounded_c17_scenario or args.allow_unapproved_scenario,'C17_SCENARIO_OPT_IN_REQUIRED')
+-            report=empirical_run(folder,cfg,args.cache,args.evidence,args.command=='propose',args.allow_unapproved_scenario,args.bounded_c17_scenario)
+-        write_json(folder/'COMMAND_STATUS.json',{'command':args.command,'status':report.get('status'),'output':str(folder),
+-            'config_sha256':sha256(args.config),'apply_permitted':False,'live_visum_tested':False})
++        with RunSession(name,args.output_root) as session:
++            folder=session.folder
++            session.start(cfg,{'config':args.config,'cache':args.cache,'evidence':args.evidence})
++            if args.command=='audit-inputs':
++                report=audit_workbooks(ROOT/'data/source',folder/'audited')
++            elif args.command=='demo':report=synthetic_demo(folder,cfg)
++            elif args.command=='preflight':
++                report={'status':'NO_2025_PATH_CACHE' if args.cache is None else 'EXPLICIT_CACHE_REQUIRES_INSPECT_CACHE',
++                    'gate':deployment_gate(cfg,args.cache is not None and args.cache.is_file()),
++                    'source_scope':'READ_ONLY_STATIC_PREFLIGHT','finecdf_reference':finecdf_availability()}
++                write_json(folder/'PREFLIGHT.json',report)
++            else:
++                require(not args.bounded_c17_scenario or args.allow_unapproved_scenario,'C17_SCENARIO_OPT_IN_REQUIRED')
++                report=empirical_run(folder,cfg,args.cache,args.evidence,args.command=='propose',args.allow_unapproved_scenario,args.bounded_c17_scenario,session.checkpoint)
++            write_json(folder/'COMMAND_STATUS.json',{'command':args.command,'status':report.get('status'),'output':str(folder),
++                'config_sha256':sha256(args.config),'apply_permitted':False,'live_visum_tested':False})
++            failed_solver=(report.get('status')=='SYNTHETIC_DEMO_NOT_CONVERGED' or
++                any(v.get('status')=='OFFLINE_SOLVER_NOT_CONVERGED' for v in report.get('variants',[])))
++            session.checkpoint('OFFLINE_COMMAND_COMPLETE' if not failed_solver else 'OFFLINE_SOLVER_INCOMPLETE', completed=not failed_solver)
+         print(json.dumps({'status':report.get('status'),'output':str(folder),'apply':False}))
+         if args.command=='preflight':return 2
+-        if report.get('status')=='SYNTHETIC_DEMO_NOT_CONVERGED':return 3
+-        if any(v.get('status')=='OFFLINE_SOLVER_NOT_CONVERGED' for v in report.get('variants',[])):return 3
++        if failed_solver:return 3
+         return 0
+     except Exception as exc:
+-        report={'status':'BLOCKED','reason':str(exc),'exception':type(exc).__name__,'apply_permitted':False,'live_visum_tested':False}
+-        if folder:
+-            write_json(folder/'COMMAND_STATUS.json',report)
+-            (folder/'TRACEBACK.txt').write_text(traceback.format_exc(),encoding='utf-8')
+-        print(json.dumps(report),file=sys.stderr);return 2
++        safe_failure_report(folder, exc, traceback_text=traceback.format_exc(), emergency_stream=sys.stderr)
++        return 2
+ 
+ if __name__=='__main__':raise SystemExit(main())
+--- V1/cordon2025/authority.py
++++ V2/cordon2025/authority.py
+@@ -4,6 +4,8 @@
+ import json
+ from pathlib import Path
+ import numpy as np
++from .common import write_npz
++from .io import mkdir
+ import openpyxl
+ from openpyxl.utils import get_column_letter
+ from .common import require, finite, sha256, read_csv, write_json, write_csv
+@@ -126,8 +128,8 @@
+                     ri,ci=coordinate_to_tuple(cell)
+                     formula_evidence.append({'sheet':s,'cell':cell,'formula':str(rs[ri-1][ci-1])})
+         finally:f2.close();f3.close()
+-        out.mkdir(parents=True,exist_ok=True)
+-        np.savez_compressed(out/'AUDITED_MATRICES.npz',**arrays)
++        mkdir(out)
++        write_npz(out/'AUDITED_MATRICES.npz',**arrays)
+         write_csv(out/'PHYSICAL_TARGETS.csv',target_rows);write_csv(out/'C17_STATION_BUDGETS.csv',c17);write_csv(out/'STATION_MAPPING.csv',maprows)
+         addition={cat:float((arrays[f'{cat}_ALL_D1_FINAL']-arrays[f'{cat}_ALL_D1_PRE']).sum()) for cat in CATEGORIES}
+         physical_add={cat:float((arrays[f'{cat}_ALL_D1_FINAL']-arrays[f'{cat}_ALL_D1_PRE'])[:16,:16].sum()) for cat in CATEGORIES}
+--- V1/cordon2025/common.py
++++ V2/cordon2025/common.py
+@@ -10,15 +10,27 @@
+ ROOT = Path(__file__).resolve().parents[1]
+ PARENT = ROOT / 'parent'
+ 
+-def parent_core():
+-    """Import the bundled fork, refusing an already loaded different 15A2."""
+-    loaded = sys.modules.get('r1_15a2_core')
+-    if loaded and Path(loaded.__file__).resolve() != PARENT / 'r1_15a2_core.py':
+-        raise ContractError('PARENT_MODULE_COLLISION')
++def parent_module(name):
++    """Only import library modules from this isolated 2025 parent tree."""
++    require(name.startswith('r1_15a2_') and name.replace('_', '').isalnum(), 'INVALID_PARENT_MODULE')
++    expected = (PARENT / (name + '.py')).resolve()
++    require(expected.is_file(), 'PARENT_MODULE_MISSING:' + name)
++    # Reject already-imported dependencies from a running/different 2022 source.
++    for key, module in tuple(sys.modules.items()):
++        if key.startswith('r1_15a2_') and getattr(module, '__file__', None):
++            origin = Path(module.__file__).resolve()
++            if origin.parent != PARENT.resolve():
++                raise ContractError('PARENT_MODULE_COLLISION:' + key)
+     if str(PARENT) not in sys.path:
+         sys.path.insert(0, str(PARENT))
+-    import r1_15a2_core
+-    return r1_15a2_core
++    import importlib
++    module = importlib.import_module(name)
++    require(Path(module.__file__).resolve() == expected, 'PARENT_MODULE_COLLISION:' + name)
++    return module
++
++
++def parent_core():
++    return parent_module('r1_15a2_core')
+ 
+ class ContractError(ValueError):
+     pass
+@@ -37,36 +49,41 @@
+     return val
+ 
+ def sha256(path):
+-    h = hashlib.sha256()
+-    with open(path, 'rb') as f:
+-        for b in iter(lambda: f.read(1024*1024), b''):
+-            h.update(b)
+-    return h.hexdigest()
++    from .io import sha256 as secure_sha256
++    return secure_sha256(path)
+ 
+ def canonical_hash(obj):
+     return hashlib.sha256(json.dumps(obj, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
+ 
+ def read_csv(path):
+-    with open(path, encoding='utf-8-sig', newline='') as f:
+-        sample = f.read(8192); f.seek(0)
+-        return list(csv.DictReader(f, delimiter=';' if sample.count(';') >= sample.count(',') else ','))
++    from .io import read_csv as secure_read_csv
++    return secure_read_csv(path)
++
++
++def read_json(path):
++    from .io import read_json as secure_read_json
++    return secure_read_json(path)
++
+ 
+ def write_json(path, data):
+-    p = Path(path); p.parent.mkdir(parents=True, exist_ok=True)
+-    tmp = p.with_name(p.name + '.partial')
+-    tmp.write_text(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False, allow_nan=False), encoding='utf-8')
+-    os.replace(tmp, p)
++    from .io import write_json as secure_write_json
++    return secure_write_json(path, data)
++
+ 
+ def write_csv(path, rows, fields=None):
+-    p = Path(path); p.parent.mkdir(parents=True, exist_ok=True)
+-    rows = list(rows)
+-    fields = fields or list(dict.fromkeys(k for row in rows for k in row))
+-    with p.open('w', encoding='utf-8-sig', newline='') as f:
+-        w = csv.DictWriter(f, fieldnames=fields, delimiter=';'); w.writeheader(); w.writerows(rows)
++    from .io import write_csv as secure_write_csv
++    return secure_write_csv(path, rows, fields)
++
++
++def write_npz(path, **arrays):
++    from .io import write_npz as secure_write_npz
++    return secure_write_npz(path, **arrays)
+ 
+ def read_config(path=None):
+     p = Path(path or ROOT/'CORDON_2025_CONFIG.json')
+-    cfg = json.loads(p.read_text(encoding='utf-8'))
++    cfg = read_json(p)
++    from .state import validate_runtime_options
++    validate_runtime_options(cfg)
+     require(cfg.get('apply') is False, 'V1_APPLY_FORBIDDEN')
+     require(cfg.get('mode') == 'OFFLINE_PROPOSAL', 'OFFLINE_MODE_REQUIRED')
+     require(cfg.get('model_year') == 2025 and cfg.get('survey_year') == 2026, 'YEAR_CONTRACT_MISSING')
+@@ -78,7 +95,8 @@
+ def new_output(name):
+     require(name and name.replace('_','').replace('-','').isalnum(), 'UNSAFE_OUTPUT_NAME')
+     p = ROOT/'OFFLINE_RESULTS'/name
+-    p.mkdir(parents=True, exist_ok=False)
++    from .io import mkdir
++    mkdir(p, exist_ok=False)
+     return p
+ 
+ APPROVAL_FIELDS = ('observation_semantics','direction_mapping','year_bridge','network_mapping',
+@@ -90,5 +108,5 @@
+                        and approvals[key].get('evidence_sha256') and approvals[key].get('authority_id'))]
+     if not cache_present:
+         missing.append('NO_2025_PATH_CACHE')
+-    return {'blockers': missing + ['NOT_LIVE_TESTED', 'V1_OFFLINE_ONLY'],
++    return {'blockers': missing + ['NOT_LIVE_TESTED', 'V2_OFFLINE_ONLY' if str(cfg.get('schema','')).endswith('V2') else 'V1_OFFLINE_ONLY'],
+             'apply_permitted': False, 'production_ready': False, 'live_visum_tested': False}
+--- V1/cordon2025/incidence.py
++++ V2/cordon2025/incidence.py
+@@ -13,7 +13,13 @@
+ import json
+ import sqlite3
+ import struct
++import sys
++from contextlib import ExitStack
++from .io import atomic_output, native_path
+ import numpy as np
++from .common import write_npz
++from .state import snapshot_semantics
++from .io import mkdir
+ from .common import require, ContractError, sha256, parent_core, write_json, canonical_hash
+ 
+ METHODS=('ALL_ORDERED_UNIQUE_PAIRS','EXACT_TWO_HITS')
+@@ -45,8 +51,8 @@
+             'audit':self.audit}
+ 
+     def save(self, folder):
+-        folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
+-        np.savez_compressed(folder/'INCIDENCE.npz',row=self.operator.row_idx,col=self.operator.col_idx,
++        folder=Path(folder);mkdir(folder)
++        write_npz(folder/'INCIDENCE.npz',row=self.operator.row_idx,col=self.operator.col_idx,
+             through=self.operator.values,share=self.share_operator.values,q=self.q_current,
+             model=self.model,mutable=self.mutable,fixed=self.fixed)
+         write_json(folder/'INCIDENCE_METADATA.json',{'rows':self.rows,'variables':self.variables,
+@@ -71,7 +77,7 @@
+     require(evidence.get('origin') in ('SYNTHETIC_TEST_FIXTURE','VISUM_SAVED_PATHS'), 'CACHE_ORIGIN_UNPROVEN')
+     require(evidence.get('network_sha256') and evidence.get('demand_sha256'), 'CACHE_NETWORK_OR_DEMAND_ID_MISSING')
+     digest=sha256(p);require(digest==evidence.get('cache_sha256'),'CACHE_SHA256_MISMATCH')
+-    con=sqlite3.connect('file:'+quote(str(p),safe='/:')+'?mode=ro',uri=True)
++    con=sqlite3.connect('file:'+quote(str(p).replace(chr(92),'/'),safe='/:')+'?mode=ro',uri=True)
+     con.execute('PRAGMA query_only=ON');con.execute('PRAGMA cache_size=-16384')
+     try:
+         require(con.execute('PRAGMA quick_check').fetchone()[0]=='ok','SQLITE_INTEGRITY_FAIL')
+@@ -97,6 +103,8 @@
+         seen[pair]=role
+ 
+ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
++    if hits_output is not None:
++        require(Path(hits_output).resolve() != Path(path).resolve(), 'OUTPUT_INPUT_COLLISION')
+     core=parent_core()
+     require(cfg.get('apply') is False,'V1_APPLY_FORBIDDEN')
+     require(cfg.get('category')=='OA','V1_OA_ONLY')
+@@ -116,8 +124,10 @@
+     active=set(zones) if zones is not None else None
+     p,db,digest=_snapshot_open(path,evidence)
+     stream=None
++    output_stack=ExitStack()
+     try:
+         meta=dict(db.execute('SELECT key,value FROM metadata'))
++        state_audit=snapshot_semantics(evidence,cfg,meta)
+         if cfg.get('actual_network_sha256') is not None:
+             require(cfg['actual_network_sha256']==evidence['network_sha256'],'CACHE_NETWORK_IDENTITY_MISMATCH')
+         segments={core.norm_code(c):(c,m,json.loads(a)) for c,m,a in db.execute('SELECT dseg,mode,audit_json FROM segments')}
+@@ -134,6 +144,7 @@
+             if expected is not None:
+                 require(int(expected)==db.execute('SELECT COUNT(*) FROM volumes WHERE dseg=?',(original,)).fetchone()[0], 'INCOMPLETE_SEGMENT_VOLUME_ROWS:'+code)
+         edges={int(i):(int(ln),int(fr),int(to)) for i,ln,fr,to in db.execute('SELECT eid,link_no,from_no,to_no FROM edges')}
++        require(len(edges)==len(set(edges.values())),'DUPLICATE_DIRECTIONAL_EDGE_IDENTITY')
+         require(set(station_map).issubset(set(edges.values())),'MAPPING_EDGES_MISSING_FROM_CACHE')
+         eid_station={eid:station_map[key] for eid,key in edges.items() if key in station_map}
+         stations=sorted(set(station_map.values()));pairs=[(a,b) for a in stations for b in stations if a!=b]
+@@ -147,8 +158,8 @@
+                'FROM geometry g JOIN volumes v ON v.gid=g.gid ORDER BY g.gid,v.dseg')
+         if hits_output:
+             import csv
+-            hp=Path(hits_output);hp.parent.mkdir(parents=True,exist_ok=True)
+-            stream=hp.open('w',newline='',encoding='utf-8')
++            hp=Path(hits_output)
++            stream=output_stack.enter_context(atomic_output(hp,newline='',encoding='utf-8'))
+             writer=csv.writer(stream);writer.writerow(('gid','mode','orig','dest','path_index','station_hits','repeat_flag','excluded','edge_count'))
+         for gid,group in groupby(db.execute(query),key=lambda r:r[0]):
+             records=list(group);_,mode,o,d,pi,blob,count,seqhash,_,_=records[0]
+@@ -201,6 +212,8 @@
+         basevars=[{'dseg_code':c,'family':core.family_from_dseg(c),'origin':o,'destination':d,'q_current':v,'path_count':npaths[(c,o,d)]} for (c,o,d),v in sorted(q.items()) if c in mut]
+         qvec=np.array([q[k] for k in var_keys])
+         blocked=[]
++        if evidence['origin']=='VISUM_SAVED_PATHS' and not state_audit['complete']:
++            blocked.append('SEMANTIC_SNAPSHOT_NOT_SUPPLIED')
+         if not evidence.get('geometry_full_identity_proven'):blocked.append('GEOMETRY_IDENTITY_UNAPPROVED')
+         if od_expected is None:blocked.append('PER_OD_EXTERNAL_VOLUME_PARITY_NOT_SUPPLIED')
+         if metrics['excluded_geometry']:blocked.append('REPEATED_STATION_POLICY_DIAGNOSTIC')
+@@ -231,12 +244,22 @@
+             rows=[{'observation_type':'KORDON_PAIR','category':'OA','origin_station':a,'destination_station':b,
+               'role':'DIAGNOSTIC','method':meth,'basis':'RPDI','model':float(totals[meth][i]),
+               'per_dseg':{c:float(per_dseg[meth][c][i]) for c in codes}} for i,(a,b) in enumerate(pairs)]
+-            result[meth]=Incidence(rows,variables,basevars,qvec,op,share,totals[meth],mtotals[meth],totals[meth]-mtotals[meth],dict(audit,method=meth,nnz=len(vv)))
++            result[meth]=Incidence(rows,variables,basevars,qvec,op,share,totals[meth],mtotals[meth],totals[meth]-mtotals[meth],dict(audit,method=meth,nnz=len(vv),semantic_snapshot=state_audit,cross_run_cache_reuse=False))
+         return result
+     finally:
+-        if stream:stream.close()
++        primary = sys.exc_info()
+         db.close()
+-        require(sha256(p)==digest,'SOURCE_CACHE_CHANGED_DURING_READ')
++        if primary[0] is not None:
++            # Preserve the primary parsing error; failed diagnostics never publish.
++            output_stack.__exit__(*primary)
++        else:
++            try:
++                require(not any(Path(str(p)+ext).exists() for ext in ('-wal','-shm','-journal')), 'SOURCE_CACHE_SIDECAR_APPEARED_DURING_READ')
++                require(sha256(p)==digest,'SOURCE_CACHE_CHANGED_DURING_READ')
++            except BaseException:
++                output_stack.__exit__(*sys.exc_info())
++                raise
++            output_stack.close()
+ 
+ def aggregate_observations(inc, targets, *, bidirectional=True, roles=None):
+     """Aggregate algebra only, never infer survey axis orientation from symmetry."""
+--- V1/cordon2025/optimizer.py
++++ V2/cordon2025/optimizer.py
+@@ -3,6 +3,8 @@
+ from dataclasses import dataclass
+ from pathlib import Path
+ import numpy as np
++from .common import write_npz
++from .io import mkdir
+ from .common import parent_core,require,write_json,write_csv
+ from .incidence import validate_roles
+ 
+@@ -27,8 +29,8 @@
+     guidance: object
+ 
+     def save(self, folder, inc):
+-        folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
+-        np.savez_compressed(folder/'SOLUTION.npz',relative_change=self.x,delta_q=self.delta_q,
++        folder=Path(folder);mkdir(folder)
++        write_npz(folder/'SOLUTION.npz',relative_change=self.x,delta_q=self.delta_q,
+                             c17_relaxation=self.uncertainty,linearized_prediction=self.prediction)
+         write_json(folder/'SOLVER_REPORT.json',self.report)
+         write_csv(folder/'RELATION_BEFORE_AFTER.csv',self.report['relations'])
+--- V1/tools/parent_compatibility.py
++++ V2/tools/parent_compatibility.py
+@@ -5,11 +5,11 @@
+ 2022 deployment guard. A new test proves that rejection remains in effect.
+ """
+ from pathlib import Path
+-import os,sys,subprocess
++import os,sys,subprocess,datetime
+ ROOT=Path(__file__).resolve().parents[1]
+ EXCLUDED='tests/test_v24915_release.py::test_v24915_config_runtime_bundle_and_lineage_are_hash_locked'
+ if __name__=='__main__':
+-    evidence=ROOT/'docs/evidence';evidence.mkdir(exist_ok=True)
++    evidence=ROOT/'OFFLINE_RESULTS'/('PARENT_REGRESSION_'+datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f'));evidence.mkdir(parents=True,exist_ok=False)
+     env=dict(os.environ,OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',PYTHONHASHSEED='0')
+     args=[sys.executable,'-m','pytest','tests','-q','--disable-warnings','--deselect='+EXCLUDED,
+           '--junitxml='+str(evidence/'CP05_parent_compatibility.xml')]
+--- V1/verify_release.py
++++ V2/verify_release.py
+@@ -1,7 +1,9 @@
+-"""Verify the self-contained 2025 release. No COM, no model writes."""
+-from pathlib import Path
+-import argparse,hashlib,json,sys
++"""Independent, read-only release verifier; never imports the calibrated engine."""
++from pathlib import Path, PurePosixPath
++import argparse,hashlib,json,sys,re
+ ROOT=Path(__file__).resolve().parent
++RUNTIME_DIRS={'OFFLINE_RESULTS','__pycache__','.pytest_cache','.venv','venv'}
++
+ 
+ def digest(path):
+     h=hashlib.sha256()
+@@ -9,21 +11,45 @@
+         for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
+     return h.hexdigest()
+ 
++
++def load(path):
++    def bad(value):raise ValueError('NONFINITE_JSON:'+value)
++    return json.loads(path.read_text(encoding='utf-8'),parse_constant=bad)
++
++
+ def verify(root=ROOT):
+-    manifest=json.loads((root/'SOURCE_MANIFEST.json').read_text(encoding='utf-8'))
+-    failures=[]
++    root=Path(root)
++    manifest=load(root/'SOURCE_MANIFEST.json')
++    failures=[];seen=set()
+     for rec in manifest['files']:
+-        rel=Path(rec['path'])
+-        if rel.is_absolute() or '..' in rel.parts:failures.append({'path':str(rel),'reason':'INVALID_RELATIVE_PATH'});continue
+-        p=root/rel
+-        if not p.is_file():failures.append({'path':str(rel),'reason':'MISSING'})
+-        elif p.stat().st_size!=rec['size'] or digest(p)!=rec['sha256']:failures.append({'path':str(rel),'reason':'HASH_OR_SIZE_MISMATCH'})
+-    config=json.loads((root/'CORDON_2025_CONFIG.json').read_text())
++        name=rec['path'];rel=PurePosixPath(name)
++        if rel.is_absolute() or '..' in rel.parts or '\\' in name or name in seen:
++            failures.append({'path':name,'reason':'INVALID_OR_DUPLICATE_RELATIVE_PATH'});continue
++        seen.add(name);p=root/rel
++        if any((root/Path(*rel.parts[:i])).is_symlink() for i in range(1,len(rel.parts)+1)):
++            failures.append({'path':name,'reason':'SYMLINK_FORBIDDEN'});continue
++        if not re.fullmatch('[0-9a-f]{64}',str(rec.get('sha256',''))):
++            failures.append({'path':name,'reason':'INVALID_MANIFEST_HASH'});continue
++        if not p.is_file():failures.append({'path':name,'reason':'MISSING'})
++        elif p.stat().st_size!=rec['size'] or digest(p)!=rec['sha256']:
++            failures.append({'path':name,'reason':'HASH_OR_SIZE_MISMATCH'})
++    # Detect accidental old/extra code left when overlaying into an old release.
++    for p in root.rglob('*.py'):
++        rel=p.relative_to(root)
++        if not any(part in RUNTIME_DIRS for part in rel.parts) and rel.as_posix() not in seen:
++            failures.append({'path':rel.as_posix(),'reason':'UNMANIFESTED_PYTHON_SOURCE'})
++    config=load(root/'CORDON_2025_CONFIG.json')
+     if config.get('apply') is not False:failures.append({'path':'CORDON_2025_CONFIG.json','reason':'APPLY_MUST_BE_FALSE'})
+-    if config.get('model_year')!=2025:failures.append({'path':'CORDON_2025_CONFIG.json','reason':'WRONG_MODEL_YEAR'})
++    if config.get('model_year')!=2025 or config.get('survey_year')!=2026:
++        failures.append({'path':'CORDON_2025_CONFIG.json','reason':'WRONG_MODEL_OR_SURVEY_YEAR'})
++    if config.get('mode')!='OFFLINE_PROPOSAL':failures.append({'path':'CORDON_2025_CONFIG.json','reason':'OFFLINE_MODE_REQUIRED'})
++    for key in ('run_assignment','run_procseq','write_od','supply_enabled','automatic_live_reload','automatic_cache_discovery','persistent_path_cache_enabled','flowbundle_count_authority'):
++        if config.get(key,False) is not False:
++            failures.append({'path':'CORDON_2025_CONFIG.json','reason':'FORBIDDEN_LIVE_OR_REUSE_FLAG:'+key})
+     return {'status':'RELEASE_INTEGRITY_PASS' if not failures else 'RELEASE_INTEGRITY_FAIL',
+-        'release':manifest['release'],'checked_files':len(manifest['files']),'failures':failures,
+-        'apply_permitted':False,'live_visum_tested':False,'production_ready':False}
++            'release':manifest['release'],'checked_files':len(manifest['files']),'failures':failures,
++            'apply_permitted':False,'live_visum_tested':False,'production_ready':False}
++
+ 
+ if __name__=='__main__':
+     p=argparse.ArgumentParser();p.add_argument('--output',type=Path);a=p.parse_args()

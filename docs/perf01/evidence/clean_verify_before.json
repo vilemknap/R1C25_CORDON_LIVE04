@@ -1,0 +1,9 @@
+{
+  "status": "RELEASE_INTEGRITY_PASS",
+  "release": "R1_2025_CORDON_PERF01_V1_20261023",
+  "checked_files": 1534,
+  "failures": [],
+  "apply_permitted": false,
+  "live_visum_tested": false,
+  "production_ready": false
+}

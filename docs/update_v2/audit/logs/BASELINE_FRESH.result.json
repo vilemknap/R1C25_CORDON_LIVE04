@@ -1,0 +1,15 @@
+{
+  "command": [
+    "python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=/mnt/data/R1_CORDON_UPDATE_20261022/audit/logs/BASELINE_FRESH.xml"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/upstream/donor_fresh",
+  "returncode": 0,
+  "elapsed_seconds": 48.85717964172363
+}

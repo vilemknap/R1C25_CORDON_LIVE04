@@ -1,0 +1,11 @@
+R1 15A2 V2.4.2 FULL OVERNIGHT COUPLED DEMAND
+
+SPUSTIT VE VISUMU:
+  R1_15A2_FULL_OVERNIGHT_COUPLED_V2_4_2.py
+
+METODIKA:
+  TG koeficienty P/A -> TD b,c FineCDF/IDP -> opakovat jako jeden demand blok -> teprve potom ADDVAL1.
+
+NEPOUZIVAT pro tento beh V2.4.0 ani V2.4.1.
+
+Detail: README_R1_15A2_V2_4_2_FULL_OVERNIGHT_COUPLED_CZ.md

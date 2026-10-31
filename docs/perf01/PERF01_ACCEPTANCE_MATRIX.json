@@ -1,0 +1,183 @@
+{
+  "schema": "PERF01_ACCEPTANCE_V1",
+  "scope": "SYNTHETIC_AND_OFFLINE_NOT_NATIVE",
+  "items": [
+    {
+      "test_id": 1,
+      "requirement": "Cold build sealed snapshot",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 2,
+      "requirement": "Warm verified hit",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 3,
+      "requirement": "Zero COM/SQL geometry/decode warm",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 4,
+      "requirement": "Both methods exact identities numeric parity",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 5,
+      "requirement": "Independent original oracle retained",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 6,
+      "requirement": "Source SHA unchanged",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 7,
+      "requirement": "Directed mapping invalidation",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 8,
+      "requirement": "Repeat, mode, DSeg/method invalidation",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 9,
+      "requirement": "Mutable zones/relation invalidation",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 10,
+      "requirement": "Targets and CAL/VALID downstream recompute",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 11,
+      "requirement": "New assignment always blocked without new proof",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 12,
+      "requirement": "Year/network/scope fail closed",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 13,
+      "requirement": "Corruption nonfinite object dtype rejected",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 14,
+      "requirement": "Incomplete/sidecars/proof/parity fail rejected",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 15,
+      "requirement": "Crash before publish and safe explicit recovery",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 16,
+      "requirement": "Concurrent writers/readers symlink path traversal",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 17,
+      "requirement": "Old incomplete FIX2 rejected",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 18,
+      "requirement": "12 DSeg distinct volumes",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 19,
+      "requirement": "C and C_noT distinct geometry",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 20,
+      "requirement": "Order/repeats/no hits/empty routes",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 21,
+      "requirement": "Nonzero sparse mutable and zero mutable cases",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 22,
+      "requirement": "Holdout/fixed/C17/support contracts",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 23,
+      "requirement": "FIX3 and parent compatibility",
+      "status": "PASS_OFFLINE",
+      "basis": "tests/test_perf01_cache.py plus inherited regressions"
+    },
+    {
+      "test_id": 24,
+      "requirement": "Release/checkpoint roundtrip",
+      "status": "PASS_OFFLINE_CLEAN_CODE_TREE",
+      "basis": "573 tests on clean RC1, release/checkpoint roundtrips; final byte readback follows in FINAL_VERIFICATION"
+    },
+    {
+      "test_id": 25,
+      "requirement": "Exact real final SQLite and matrices",
+      "status": "NOT_RUN",
+      "basis": "WAITING_FOR_REAL_FINAL_CACHE"
+    },
+    {
+      "test_id": 26,
+      "requirement": "Real two-method cold/warm totals",
+      "status": "NOT_RUN",
+      "basis": "WAITING_FOR_REAL_FINAL_CACHE"
+    },
+    {
+      "test_id": 27,
+      "requirement": "Real complete per-DSeg/operator comparison",
+      "status": "NOT_RUN",
+      "basis": "WAITING_FOR_REAL_FINAL_CACHE"
+    },
+    {
+      "test_id": 28,
+      "requirement": "Real new-process warm replay",
+      "status": "NOT_RUN",
+      "basis": "WAITING_FOR_REAL_FINAL_CACHE"
+    }
+  ],
+  "full_native_gate": "WAITING_FOR_REAL_FINAL_CACHE",
+  "apply_permitted": false,
+  "live_calibration_verified": false,
+  "remaining_native_tests": [
+    25,
+    26,
+    27,
+    28
+  ]
+}

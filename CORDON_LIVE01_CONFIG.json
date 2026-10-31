@@ -1,0 +1,36 @@
+{
+  "schema": "R1_CORDON_LIVE01_CONFIG_V1",
+  "live_stage": "LIVE01_BASELINE_READ_ONLY",
+  "authority_family": "CORDON_SDP",
+  "model_year": 2025,
+  "survey_year": 2026,
+  "category": "OA",
+  "basis": "RPDI",
+  "execution_mode": "TECHNICAL_TRIAL",
+  "writes_enabled": false,
+  "assignment_enabled": false,
+  "apply_permitted": false,
+  "native_candidate_accepted": false,
+  "expected_zone_count": 681,
+  "observation_policy": "WHOLE_FINAL_SYMMETRIC_RPDI_MATRIX",
+  "calibration_rows": 120,
+  "validation_rows": 0,
+  "primary_aggregation": "BIDIRECTIONAL_SUM",
+  "repeat_policy": "EXCLUDE_FLAGGED",
+  "c17_allocation_policy": "UNAPPROVED",
+  "capture_backend": "LEGACY",
+  "snapshot_policy": "FRESH_CAPTURE_THIS_INVOCATION",
+  "outer_cycle": 1,
+  "mutable_dsegs": [
+    "NATIVE_CW",
+    "NATIVE_CW_NOT",
+    "NATIVE_CS",
+    "NATIVE_CS_NOT"
+  ],
+  "explicit_excluded_zone_nos": [],
+  "authority_pins": {
+    "physical_targets": "9e5018da5dc3887bd3f17a0b1a006d43a067f3315d46144bf3ceaba4f94d8733",
+    "station_mapping": "b9082462b62cb5b8c1a3076ce30142db1a25c17e0190bc650d61c4fd97ce11cc",
+    "c17": "1fef9c4b3e6f2dfe782a399e8e37657e491aa98528b0063b2f9dbf1851b11a09"
+  }
+}

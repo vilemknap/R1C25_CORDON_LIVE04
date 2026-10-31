@@ -1,0 +1,22 @@
+{
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--disable-warnings",
+    "tests/test_v24915_perf1_exact_safe_acceleration.py",
+    "tests/test_v24915p2_candidate_readback_bundle.py",
+    "tests/test_v24915p2_fault_injection.py",
+    "tests/test_v24915p2_invalidation.py",
+    "tests/test_v24915p2_snapshot_parity.py",
+    "tests/test_v24915p2_r6_nonfinite_diagnostic_reference.py",
+    "tests/test_v24915p2c_single_pass_snapshot.py",
+    "tests/test_v24916_demand_evidence.py",
+    "tests/test_v24916_flowbundle_targeting.py",
+    "tests/test_v24916_active_evidence_builder.py"
+  ],
+  "cwd": "/mnt/data/R1_CORDON_UPDATE_20261022/release/parent",
+  "returncode": 0,
+  "elapsed_seconds": 6.271501779556274
+}

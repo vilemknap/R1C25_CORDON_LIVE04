@@ -1,0 +1,52 @@
+{
+  "release": "R1_2025_CORDON_AGGRESSIVE_V1_20261023",
+  "status": "OFFLINE_IMPLEMENTED_TESTED_LIVE_BLOCKED",
+  "test_counts": {
+    "base_cordon": {
+      "tests": 170,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 170
+    },
+    "profile_policy": {
+      "tests": 34,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 34
+    },
+    "A03B_all_cordon": {
+      "tests": 253,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "passed": 253
+    },
+    "A03_parent_full": {
+      "tests": 884,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 4,
+      "passed": 879
+    },
+    "A03_parent_compat": {
+      "tests": 883,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 4,
+      "passed": 879
+    }
+  },
+  "parent_identity_failure_preserved": "tests/test_v24915_release.py::test_v24915_config_runtime_bundle_and_lineage_are_hash_locked",
+  "unchanged_protected_files": 807,
+  "native_windows_tested": false,
+  "live_visum_tested": false,
+  "apply_permitted": false,
+  "production_ready": false,
+  "native_TG_TD_run": false,
+  "outer_cycle_is_manual_offline_stage_selector": true,
+  "C17_budgets_enlarged": false,
+  "observation_semantics_approved": false,
+  "clean_release_verification": "SEE_EXTERNAL_FINAL_VERIFICATION_RECEIPT"
+}

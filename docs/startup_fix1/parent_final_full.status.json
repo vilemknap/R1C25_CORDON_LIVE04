@@ -1,0 +1,9 @@
+{
+  "exit_code": 1,
+  "elapsed_seconds": 22.11768388748169,
+  "args": [
+    "-q",
+    "tests"
+  ],
+  "root": "/mnt/data/R1_CORDON_AGGRESSIVE_STARTUP_FIX1_20261023/parent"
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="15" time="0.304" timestamp="2026-10-19T20:24:46.193712+00:00" hostname="6f453c633eca"><testcase classname="tests.test_incidence" name="test_decode_once_mode_scope_and_fixed" time="0.041" /><testcase classname="tests.test_incidence" name="test_oracle_and_legacy_core_numerical_parity" time="0.016"><failure message="oracle_2025.EvidenceError: UNKNOWN_GEOMETRY_STATUS">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_oracle_and_legacy_core_nu0')
+
+    def test_oracle_and_legacy_core_numerical_parity(tmp_path):
+        p,m,e,c=fixture(tmp_path);r=build_from_snapshot(p,m,c,e)
+        oraclepath=ROOT/'docs/readonly_reference/R1_2025_CORDON_READONLY_V1/r1_cordon_2025.py'
+        spec=importlib.util.spec_from_file_location('oracle_2025',oraclepath);oracle=importlib.util.module_from_spec(spec);spec.loader.exec_module(oracle)
+&gt;       ref=oracle.route_diagnostic(p,m,selected_dsegs=c['selected_dsegs'])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_incidence.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+db_path = PosixPath('/tmp/pytest-of-root/pytest-2/test_oracle_and_legacy_core_nu0/snapshot.sqlite')
+link_map = {(101, 1, 2): 1, (101, 2, 1): 1, (102, 2, 3): 2, (102, 3, 2): 2, ...}
+
+    def route_diagnostic(db_path, link_map, *, selected_dsegs=None, max_geometry_routes=0):
+        """Read ordered source BLOBs and independently stored segment volumes, no COM export.
+    
+        This is a diagnostic, not an approved calibration incidence operator.
+        Streaming SQL ordering keeps memory proportional to one route and 16x16 counts.
+        """
+        if not selected_dsegs:
+            raise EvidenceError("EXPLICIT_DSEG_SCOPE_REQUIRED")
+        if any(not (isinstance(s,str) and s and (s.startswith("NATIVE_") or s.startswith("EXOG_EE_"))) for s in selected_dsegs):
+            raise EvidenceError("UNVERIFIED_VEHICLE_CATEGORY_SCOPE")
+        if len(set(selected_dsegs))!=len(selected_dsegs):
+            raise EvidenceError("DUPLICATE_DSEG_SCOPE")
+        db=_read_only_sqlite(db_path)
+        counts={method:defaultdict(float) for method in METHODS}
+        raw_hits=Counter()
+        status=Counter()
+        by_dseg=defaultdict(lambda:defaultdict(float))
+        try:
+            tables={v[0] for v in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if not set(REQUIRED_TABLES).issubset(tables):
+                raise EvidenceError("NOT_A_TWO_MODE_15A2_SQLITE_STORE")
+            meta=dict(db.execute("SELECT key,value FROM metadata"))
+            if not str(meta.get("geometry_identity", "")).startswith(("PROVISIONAL", "VERIFIED", "PROVEN", "FULL")):
+&gt;               raise EvidenceError("UNKNOWN_GEOMETRY_STATUS")
+E               oracle_2025.EvidenceError: UNKNOWN_GEOMETRY_STATUS
+
+docs/readonly_reference/R1_2025_CORDON_READONLY_V1/r1_cordon_2025.py:169: EvidenceError</failure></testcase><testcase classname="tests.test_incidence" name="test_hook_uses_existing_parent" time="0.032" /><testcase classname="tests.test_incidence" name="test_mode_identity_not_inferred" time="0.018" /><testcase classname="tests.test_incidence" name="test_same_linkno_opposite_direction" time="0.015" /><testcase classname="tests.test_incidence" name="test_missing_segment" time="0.015" /><testcase classname="tests.test_incidence" name="test_omitting_fixed_is_rejected" time="0.012" /><testcase classname="tests.test_incidence" name="test_bad_parity" time="0.012" /><testcase classname="tests.test_incidence" name="test_wal_and_source_hash" time="0.014" /><testcase classname="tests.test_incidence" name="test_corrupt_geometry" time="0.013" /><testcase classname="tests.test_incidence" name="test_frozen_actuator_rejected" time="0.011" /><testcase classname="tests.test_incidence" name="test_role_split_and_aggregation" time="0.013" /><testcase classname="tests.test_incidence" name="test_epoch_support_and_zero" time="0.016" /><testcase classname="tests.test_incidence" name="test_repeat_policies_and_three_stations" time="0.000" /><testcase classname="tests.test_incidence" name="test_no_cache" time="0.001" /></testsuite></testsuites>

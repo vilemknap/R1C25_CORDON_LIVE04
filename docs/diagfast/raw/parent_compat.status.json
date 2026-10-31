@@ -1,0 +1,16 @@
+{
+  "name": "parent_compat",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "-m",
+    "pytest",
+    "tests",
+    "-q",
+    "--junitxml=/mnt/data/diagfast_dev/evidence/parent_compat.xml",
+    "-k",
+    "not test_v24915_config_runtime_bundle_and_lineage_are_hash_locked"
+  ],
+  "cwd": "/mnt/data/diagfast_dev/test_frozen/R1C25_DIAGFAST/parent",
+  "returncode": 0,
+  "wall_seconds": 23.742719173431396
+}

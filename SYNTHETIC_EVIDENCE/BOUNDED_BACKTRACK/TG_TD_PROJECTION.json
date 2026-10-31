@@ -1,0 +1,63 @@
+{
+  "apply_permitted": false,
+  "existing_generation_design": "ZONE_PARAMETER_AUTHORITY_NOT_SUPPLIED",
+  "family_summaries": [
+    {
+      "all_family_od_rows": 1,
+      "att_total_balance_scale": 1.0,
+      "common_projected_total_change": null,
+      "converged": true,
+      "current_family_volume": 100.0,
+      "family": "WORK",
+      "guided_absolute_total_change": 5.0,
+      "guided_att_total_change": 5.0,
+      "guided_od_rows": 1,
+      "guided_prod_total_change": 5.0,
+      "iterations": 0,
+      "method": "MARGINALS",
+      "prod_total_balance_scale": 1.0,
+      "projected_att_total_change": 5.0,
+      "projected_pa_total_abs_gap": 0.0,
+      "projected_prod_total_change": 5.0,
+      "weighted_rmse": 0.0
+    }
+  ],
+  "marginal_projection_weighted_rmse": 0.0,
+  "od_realization_error": null,
+  "projection_rows": [
+    {
+      "base_margin_volume": 100.0,
+      "family": "WORK",
+      "guided_margin_delta": 5.0,
+      "log_step": 0.04879016416943201,
+      "multiplier": 1.05,
+      "pa_total_balance_scale": 1.0,
+      "projected_margin_delta": 5.0,
+      "projection_gain": 1.0,
+      "projection_method": "MARGINALS",
+      "projection_shrink": 1.0,
+      "raw_log_step": 0.04879016416943201,
+      "raw_relative_margin_change": 0.05,
+      "role": "PROD",
+      "zone_no": 1
+    },
+    {
+      "base_margin_volume": 100.0,
+      "family": "WORK",
+      "guided_margin_delta": 5.0,
+      "log_step": 0.04879016416943201,
+      "multiplier": 1.05,
+      "pa_total_balance_scale": 1.0,
+      "projected_margin_delta": 5.0,
+      "projection_gain": 1.0,
+      "projection_method": "MARGINALS",
+      "projection_shrink": 1.0,
+      "raw_log_step": 0.04879016416943201,
+      "raw_relative_margin_change": 0.05,
+      "role": "ATT",
+      "zone_no": 3
+    }
+  ],
+  "real_visum_verified": false,
+  "status": "PROJECTION_AVAILABLE_REALIZATION_NOT_VERIFIED"
+}

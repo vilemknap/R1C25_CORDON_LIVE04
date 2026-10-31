@@ -1,0 +1,105 @@
+{
+  "apply_permitted": false,
+  "c17": {
+    "global_credits_consumed": 0,
+    "physical_pair_allocation": "PRODUCTION_DISABLED",
+    "policy": "DISABLED"
+  },
+  "epsilon_is_statistical_interval": false,
+  "final_breakdown": {
+    "c17_credit_loss": 0.0,
+    "cordon_data_loss": 2.8571459355105664,
+    "od_l1_loss": 0.0003997064113492204,
+    "od_ridge_loss": 0.003994132536699202
+  },
+  "history": [
+    {
+      "block": 1,
+      "kkt_u": 0.0,
+      "kkt_x": 2.3222093836622328e-08,
+      "objective": 2.8615397744586146,
+      "parent_solver_iterations": 40,
+      "u_iterations": 0
+    }
+  ],
+  "hypothesis": "SYNTHETIC_ALGEBRA",
+  "initial_breakdown": {
+    "c17_credit_loss": 0.0,
+    "cordon_data_loss": 12.857142857142856,
+    "od_l1_loss": 0.0,
+    "od_ridge_loss": 0.0
+  },
+  "kkt_u": 0.0,
+  "kkt_x": 2.3222093836622328e-08,
+  "live_visum_tested": false,
+  "numeric_converged": true,
+  "objective_final": 2.8615397744586146,
+  "objective_initial": 12.857142857142856,
+  "origin": "SYNTHETIC_TEST_FIXTURE",
+  "prediction_kind": "LINEARIZED_SHADOW_OD_NOT_VISUM_RESULT",
+  "production_ready": false,
+  "relations": [
+    {
+      "actual_assignment_verified": false,
+      "after_LINEARIZED": 139.97064113492203,
+      "aggregation": "BIDIRECTIONAL_SUM",
+      "before_saved_path_prediction": 120.0,
+      "c17_scenario_relaxation": 0.0,
+      "destination_station": 2,
+      "epsilon_abs": 0.0,
+      "fixed_contribution": 20.0,
+      "flags": "UNMET_TARGET_OUTSIDE_RELAXATION",
+      "method": "SYNTHETIC_ALGEBRA",
+      "mutable_before": 100.0,
+      "observed": 140.0,
+      "origin_station": 1,
+      "raw_difference_after": -0.02935886507796681,
+      "residual_after_relaxation": -0.02935886507796681,
+      "role": "CALIBRATION"
+    },
+    {
+      "actual_assignment_verified": false,
+      "after_LINEARIZED": 90.0,
+      "aggregation": "BIDIRECTIONAL_SUM",
+      "before_saved_path_prediction": 110.0,
+      "c17_scenario_relaxation": 0.0,
+      "destination_station": 3,
+      "epsilon_abs": 0.0,
+      "fixed_contribution": 10.0,
+      "flags": "UNMET_TARGET_OUTSIDE_RELAXATION",
+      "method": "SYNTHETIC_ALGEBRA",
+      "mutable_before": 100.0,
+      "observed": 70.0,
+      "origin_station": 1,
+      "raw_difference_after": 20.0,
+      "residual_after_relaxation": 20.0,
+      "role": "CALIBRATION"
+    },
+    {
+      "actual_assignment_verified": false,
+      "after_LINEARIZED": 110.98825645396882,
+      "aggregation": "BIDIRECTIONAL_SUM",
+      "before_saved_path_prediction": 115.0,
+      "c17_scenario_relaxation": 0.0,
+      "destination_station": 4,
+      "epsilon_abs": 0.0,
+      "fixed_contribution": 15.0,
+      "flags": "UNMET_TARGET_OUTSIDE_RELAXATION",
+      "method": "SYNTHETIC_ALGEBRA",
+      "mutable_before": 100.0,
+      "observed": 999.0,
+      "origin_station": 1,
+      "raw_difference_after": -888.0117435460312,
+      "residual_after_relaxation": -888.0117435460312,
+      "role": "VALIDATION"
+    }
+  ],
+  "relative_bounds": [
+    -0.2,
+    0.2
+  ],
+  "solver_backend": "PARENT_15A2_SOLVE_GUIDANCE_FISTA_PLUS_C17_BLOCK",
+  "status": "OFFLINE_SOLVER_PASS",
+  "uses_supply_actuator": false,
+  "validation_used_for_optimization": false
+}

@@ -1,0 +1,40 @@
+{
+  "creation": {
+    "cache_bytes": 10502144,
+    "creation_seconds": 3.9459778899999947,
+    "fixture_generation_peak_RSS_MiB": 177.2265625,
+    "geometry_count": 20000,
+    "phase": "create"
+  },
+  "measurement": {
+    "C17_policy": "DISABLED_FOR_SPARSE_SCALING_BENCHMARK",
+    "DSEG_volume_parity": "PASS",
+    "KKT_x": 8.873670727283791e-10,
+    "aggregation_seconds": 0.18348879300015142,
+    "apply_permitted": false,
+    "external_OD_parity": "PASS",
+    "geometries": 20000,
+    "geometries_per_second": 7423.70386163481,
+    "geometry_decode_once": true,
+    "geometry_decodes": 20000,
+    "incidence_seconds": 2.6940729820000797,
+    "live_visum_tested": false,
+    "mean_links_per_geometry": 48.9808,
+    "measure_process_peak_RSS_MiB": 288.40625,
+    "mutable_OD_variables": 40000,
+    "nnz_all_ordered": 133248,
+    "nnz_exact_two": 13344,
+    "objective_after": 1.1998602447746813,
+    "objective_before": 18.94302128208137,
+    "ordered_link_occurrences": 979616,
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "scope": "SYNTHETIC_COUNT_SCALING_NOT_REAL_R1_SPEED_CLAIM",
+    "segment_volume_rows": 120000,
+    "segment_volume_rows_per_second": 44542.22316980886,
+    "solver_iterations": 380,
+    "solver_seconds": 0.7568439010001384,
+    "solver_status": "OFFLINE_SOLVER_PASS",
+    "source_cache_sha256": "72bac14453548c76d73520557fa1c86794f47e8a7a8ce7c679217da300485b97"
+  }
+}

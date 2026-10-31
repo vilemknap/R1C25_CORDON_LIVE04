@@ -1,0 +1,14 @@
+{
+  "name": "patch_install",
+  "command": [
+    "/opt/pyvenv/bin/python",
+    "APPLY_DIAGFAST_PATCH.py",
+    "--base-zip",
+    "/mnt/data/R1_2025_CORDON_PERF01_V1_20261023.zip",
+    "--output",
+    "/mnt/data/diagfast_dev/patched_release"
+  ],
+  "cwd": "/mnt/data/diagfast_dev/clean_patch",
+  "returncode": 0,
+  "wall_seconds": 2.703932285308838
+}

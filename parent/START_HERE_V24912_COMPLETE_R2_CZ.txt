@@ -1,0 +1,18 @@
+V24912 COMPLETE R2
+==================
+
+Pouzij flat deployment ZIP a rozbal JEHO CELY OBSAH do prazdne slozky:
+C:\Users\vilem_knap\Documents\VISUM\v45\2022\R1_15A2_V24912
+
+Ve slozce musi byt primo:
+- R1_15A2_FULL_OVERNIGHT_PERSISTENT_PATH_CACHE_V2_4_9_12.py
+- R1_15A2_CONFIG_V2_4_9_12.json
+- V24912_RUNTIME_BUNDLE_MANIFEST.json
+- r1_15a2_core.py
+- r1_15a2_guard_policy_v24912.py
+- helpers\
+- authorities\
+
+Otevri posledni accepted .ver a spust launcher _V2_4_9_12.py.
+Launcher automaticky proveri cely runtime balik pred prvnim zapisem do modelu.
+Nevytvarej rucne zadne kopie jednotlivych .py souboru z predchozich verzi.

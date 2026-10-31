@@ -1,0 +1,46 @@
+--- aggressive_v1/R1_15A2_VISUM_COM_PREFLIGHT_V2_3_6_INLINE.py
++++ startup_fix1/R1_15A2_VISUM_COM_PREFLIGHT_V2_3_6_INLINE.py
+@@ -66,6 +66,16 @@
+     return None
+ 
+ 
++def safe_exception_text(exc):
++    """Logging must not replace the original COM failure (pywintypes can be unprintable)."""
++    for convert in (str, repr):
++        try:
++            return convert(exc)
++        except Exception:
++            pass
++    return "<unprintable %s>" % type(exc).__name__
++
++
+ def is_retryable_com_error(exc):
+     """Recognize only transient RPC call-rejected/retry-later failures."""
+     current = exc
+@@ -74,7 +84,7 @@
+         seen.add(id(current))
+         if com_error_hresult(current) in (RPC_E_CALL_REJECTED, RPC_E_SERVERCALL_RETRYLATER):
+             return True
+-        text = str(current).lower()
++        text = safe_exception_text(current).lower()
+         normalized = (text.replace("\u00e1", "a").replace("\u00ed", "i")
+                            .replace("\u00fd", "y").replace("\u011b", "e")
+                            .replace("\u0161", "s").replace("\u010d", "c")
+@@ -185,7 +195,7 @@
+                 "exhausted_by_attempts": attempts_exhausted,
+                 "exhausted_by_elapsed": elapsed_exhausted,
+                 "error_type": type(exc).__name__,
+-                "error": str(exc),
++                "error": safe_exception_text(exc),
+             }
+             if exhausted:
+                 if on_exhausted is not None:
+@@ -223,7 +233,7 @@
+             return True
+         if com_error_hresult(current) in _BOUNDED_PAGE_SIZE_HRESULTS:
+             return True
+-        text = str(current).lower()
++        text = safe_exception_text(current).lower()
+         if any(token in text for token in tokens):
+             return True
+         current = getattr(current, "__cause__", None) or getattr(current, "__context__", None)

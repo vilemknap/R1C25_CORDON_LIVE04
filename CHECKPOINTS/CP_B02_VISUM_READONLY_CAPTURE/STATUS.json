@@ -1,0 +1,32 @@
+{
+  "checkpoint": "CP_B02_VISUM_READONLY_CAPTURE",
+  "type": "INCREMENTAL_PATCH_ON_CORDON_AGGRESSIVE_V1",
+  "base_zip_sha256": "8bffad557e0e911f607a3e56d71dd55fea704844db9e9d34b8a6b78164dc42d9",
+  "native_visum_tested": false,
+  "model_writes": false,
+  "live_calibration_adapter_implemented": false,
+  "evidence": [
+    "CHECKPOINT_PLAN.txt",
+    "CP_B00_AUDIT.json",
+    "bridge_bootstrap_first.log",
+    "bridge_deep_final.log",
+    "bridge_first.log",
+    "bridge_second.log",
+    "bridge_third.log",
+    "contracts_after.log",
+    "cordon_all_first.log",
+    "cordon_baseline.log",
+    "cordon_first_failure.log",
+    "cordon_full_v2.log",
+    "cordon_hang_diagnostic.log",
+    "cordon_signal.log",
+    "cordon_stack_diagnostic.log",
+    "new_adversarial_before.log",
+    "parent_full.log",
+    "parent_full.status.json",
+    "profile_baseline.log",
+    "signal_stack.txt",
+    "stack_hang.txt",
+    "trace_pid.txt"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "source": "R1_2025_CORDON_AGGRESSIVE_STARTUP_FIX3_PRACTICAL_20261023.zip",
+  "source_sha256": "f851651237d93a84f163749bafa6acd0c2edc3c2916d8791a5a7afbdde6f6d3f",
+  "source_verified_files": 1422,
+  "local_p_sqlite_sha256": "840c8f2ccaf6368912edcf73098eeaa55125e6512f87df9cbbe06bd0eab91d43",
+  "local_p_sqlite_bytes": 30425088,
+  "required_real_sha256": "7e35a96ac1bc4fb306049d410379e349fde5aa8a07b15bf11301ed858253fa9a",
+  "required_real_bytes": 664272896,
+  "real_acceptance": "WAITING_FOR_REAL_FINAL_CACHE",
+  "drive_searches": [
+    "p.sqlite",
+    "VISUM_CAPTURE_DIAGNOSTICS_9bd0a39f07fa"
+  ],
+  "drive_search_results": 0,
+  "baseline_tests": {
+    "passed": 492,
+    "skipped": 1,
+    "failed": 0,
+    "log": "baseline_tests.log",
+    "skip_reason": "real NATIVE_CW replay paths not supplied via environment"
+  },
+  "scope": "OFFLINE_DERIVED_CACHE_ONLY",
+  "apply_permitted": false
+}

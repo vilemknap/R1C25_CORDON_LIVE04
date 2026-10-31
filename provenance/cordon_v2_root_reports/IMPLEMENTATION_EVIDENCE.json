@@ -1,0 +1,200 @@
+{
+  "release": "R1_2025_CORDON_OPTIMIZER_V2_BUGFIX_PORT_20261022",
+  "integration": [
+    {
+      "family": "IOFIX3/IOFIX4 + PATHFIX3",
+      "runtime_status": "ACTIVE_OFFLINE",
+      "implementation": "cordon2025/io.py",
+      "source": "Fresh donor long-path and retry primitives; stricter cordon serializer",
+      "tests": "test_v2_io.py"
+    },
+    {
+      "family": "GATEFIX2",
+      "runtime_status": "ACTIVE_ADAPTED_OFFLINE",
+      "implementation": "cordon2025/state.py::observation_roster",
+      "source": "Dynamic cordon identity, not PROFILE488 hardcode",
+      "tests": "test_v2_state_targeting.py"
+    },
+    {
+      "family": "SEMRELOAD1",
+      "runtime_status": "ACTIVE_ADAPTED_OFFLINE",
+      "implementation": "cordon2025/state.py::snapshot_semantics",
+      "source": "Eight hashes including aggregate; reject mismatch, never LoadVersion",
+      "tests": "test_v2_state_targeting.py"
+    },
+    {
+      "family": "FRESH0 isolation / CACHE_DISABLED / NO_WALLCLOCK",
+      "runtime_status": "ACTIVE_OFFLINE",
+      "implementation": "cordon2025/session.py, state.py",
+      "source": "Owned short root, exclusive lock, explicit completed input only",
+      "tests": "test_v2_session.py"
+    },
+    {
+      "family": "PERF1/PERF2/PERF2C snapshot and readback",
+      "runtime_status": "LIBRARY_PORT_MOCK_VERIFIED_LIVE_DISABLED",
+      "implementation": "parent exact-byte libraries + state.readback_manager",
+      "source": "Exact snapshot, invalidation, fallback and diagnostic hash tests. No live adapter activation",
+      "tests": "97 unchanged donor tests in parent/tests; test_v2_state_targeting.py"
+    },
+    {
+      "family": "V24916 targeting / skim",
+      "runtime_status": "CAL_ONLY_OFFLINE_GUIDANCE; LIVE_PROFILE_TARGETING_DISABLED",
+      "implementation": "cordon2025/targeting.py",
+      "source": "Sparse path pressure, sealed distances, mutable family only",
+      "tests": "test_v2_state_targeting.py"
+    },
+    {
+      "family": "A0004/CYCLE3/PROFILE488/2022 oneclick",
+      "runtime_status": "NOT_PORTED_AS_RUN_CONFIGURATION",
+      "implementation": "None",
+      "source": "Must not replace 2025 scope, run authority or checkpoint",
+      "tests": "test_v2_port_identity.py"
+    }
+  ],
+  "modified_existing_python": [
+    {
+      "path": "cordon2025/__init__.py",
+      "before": "14557d0765eae7bc10cb77282806da0e7a2b882f05f67634fd332bf6ddeaed64",
+      "after": "0f691e08f0ac4f65216debcbeaf2b6e938a9c6a4787570930b52dd3b0cd720aa"
+    },
+    {
+      "path": "cordon2025/__main__.py",
+      "before": "e9250022debfa82f739585b7c7184344989b7a673e85c4c484714021ef1631d5",
+      "after": "968de6dea0a1f6b2891491fe423ea1a61ec575be5e941abcaf248d0d7a185ac1"
+    },
+    {
+      "path": "cordon2025/authority.py",
+      "before": "9b4276a717dc112cda4a90c811d2f4f7ff4a05efa1c38a799547e42558398e54",
+      "after": "4fc2ed8e7658aed10dd129020c13fa5a9369d541eb6fa848117a0242b03e8748"
+    },
+    {
+      "path": "cordon2025/common.py",
+      "before": "66af7d003f59b6bbfaedc981f374b0ca629809891c07d6bd78e9d8939606e224",
+      "after": "2e3dd95b7f44a95faa2aa664514d8672ae456403e3a0ccd38dd3ba7091c835be"
+    },
+    {
+      "path": "cordon2025/incidence.py",
+      "before": "09c8bf2492afc9fc2e8b3f6fa6740a3a6b9b3ca6d45580e8f7fb4f76c65ebbcb",
+      "after": "e0912898da000ebf0ae3a06be4fe5d82d0fc11a7f3801b46249ab4757a3cd062"
+    },
+    {
+      "path": "cordon2025/optimizer.py",
+      "before": "a2e1428ce4de1e7b17f760f9efe5e1db8b521803ccb51d33d1e16381ce17b847",
+      "after": "1fd2bb33671a481e5ea8c511d4532cc231d224873d0c2884f09dce7003684891"
+    },
+    {
+      "path": "tools/parent_compatibility.py",
+      "before": "6f38e3fba8611ee33fa8e19923ae5b433b54dbbadbe4c755d8fea76f9e85ec6d",
+      "after": "6cf89b9991a4a7bcd0a7744c7eac0c34d36b3c1ba7eb7c2e2f03514dd108cd58"
+    },
+    {
+      "path": "verify_release.py",
+      "before": "d1ec3da6198216c536681f0f34a62c8136888ab69a380487781ed8b26b06ad5b",
+      "after": "36769eda608beb2e4cb516512df7b8b32e019c695f9f51e512a1722d68423d82"
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "cordon2025/budget.py",
+      "sha256": "81e6dd1177e3fd4ba393d3faeedef6331aea4c4428a3a703657f993b0b8fa2e0",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "cordon2025/feasibility.py",
+      "sha256": "750ab4e4f84d7dd6895ffecc3533927e3ec1779171b4a8d6fb199a5729dc8641",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "parent/r1_15a2_core.py",
+      "sha256": "1c24b099a9f41b5c91474725ffe11a29772b609b33fb7bccf962d47eab51660d",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "parent/r1_15a2_two_mode_v238.py",
+      "sha256": "78c902da66c3aa460dced9dd15c756ff63199b10f3131797845a4234d2bc7056",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "parent/r1_15a2_two_mode_adapter_v238.py",
+      "sha256": "88a7ef0a781332c24573029051e3de6f6ec514e277e6be62391f1f1eceeca43d",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "parent/r1_15a2_overnight_controller_v242.py",
+      "sha256": "20a729617cfaa20b0219c8fec184a5b2b98ab33a2985755ef4bfae3872fe733e",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/D3.xlsx",
+      "sha256": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/D1.xlsx",
+      "sha256": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/DEVELOPMENT_PROMPT.txt",
+      "sha256": "9652dd657c714e653a8ada51d1bd5776305bcbc12bf5ffaf5c912625b82d3f86",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/PHYSICAL_TARGETS_INPUT.csv",
+      "sha256": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/MAPPING_INPUT.csv",
+      "sha256": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/SURVEY_REPORT.docx",
+      "sha256": "7207be4914d5652030c3f40839d0f74b0669374d4b641e6e03790443e5c82883",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/INPUT_MANIFEST.json",
+      "sha256": "11f7d01e4913c7ed69d1babade5dfe6791e69372d0f8b89f95d3fab1b7c500c3",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/MAPPING_INPUT.json",
+      "sha256": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/source/D2.xlsx",
+      "sha256": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/audited/AUDITED_MATRICES.npz",
+      "sha256": "9e0ccb59a0a281b4c90828063d39bce89ecca116d66afa1b8a2c86ed2ae724a8",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/audited/PHYSICAL_TARGETS.csv",
+      "sha256": "9e5018da5dc3887bd3f17a0b1a006d43a067f3315d46144bf3ceaba4f94d8733",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/audited/C17_STATION_BUDGETS.csv",
+      "sha256": "1fef9c4b3e6f2dfe782a399e8e37657e491aa98528b0063b2f9dbf1851b11a09",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/audited/STATION_MAPPING.csv",
+      "sha256": "b9082462b62cb5b8c1a3076ce30142db1a25c17e0190bc650d61c4fd97ce11cc",
+      "unchanged_vs_cordon_v1": true
+    },
+    {
+      "path": "data/audited/AUTHORITY_AUDIT.json",
+      "sha256": "d3be0aa4d059fb92e54d81c7ae158c1eab519ec00719db12ead832c3a305164c",
+      "unchanged_vs_cordon_v1": true
+    }
+  ],
+  "live_visum_tested": false,
+  "apply_permitted": false
+}

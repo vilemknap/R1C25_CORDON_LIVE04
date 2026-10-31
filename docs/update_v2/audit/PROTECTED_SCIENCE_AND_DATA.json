@@ -1,0 +1,102 @@
+[
+  {
+    "path": "cordon2025/budget.py",
+    "sha256": "81e6dd1177e3fd4ba393d3faeedef6331aea4c4428a3a703657f993b0b8fa2e0",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "cordon2025/feasibility.py",
+    "sha256": "750ab4e4f84d7dd6895ffecc3533927e3ec1779171b4a8d6fb199a5729dc8641",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "parent/r1_15a2_core.py",
+    "sha256": "1c24b099a9f41b5c91474725ffe11a29772b609b33fb7bccf962d47eab51660d",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "parent/r1_15a2_two_mode_v238.py",
+    "sha256": "78c902da66c3aa460dced9dd15c756ff63199b10f3131797845a4234d2bc7056",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "parent/r1_15a2_two_mode_adapter_v238.py",
+    "sha256": "88a7ef0a781332c24573029051e3de6f6ec514e277e6be62391f1f1eceeca43d",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "parent/r1_15a2_overnight_controller_v242.py",
+    "sha256": "20a729617cfaa20b0219c8fec184a5b2b98ab33a2985755ef4bfae3872fe733e",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/D3.xlsx",
+    "sha256": "d5bb0ba71688db3d3106571fd9b0b6cd8d04fae1a452440b12a66a9108967ff7",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/D1.xlsx",
+    "sha256": "a59bbf68df6ca819a6979fef4b67a938650a8b5662272afed924901f214b47d7",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/DEVELOPMENT_PROMPT.txt",
+    "sha256": "9652dd657c714e653a8ada51d1bd5776305bcbc12bf5ffaf5c912625b82d3f86",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/PHYSICAL_TARGETS_INPUT.csv",
+    "sha256": "febae3a8d87967941da236753281e7d27339cbb9fbe3137f5ddd4079f3f44354",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/MAPPING_INPUT.csv",
+    "sha256": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/SURVEY_REPORT.docx",
+    "sha256": "7207be4914d5652030c3f40839d0f74b0669374d4b641e6e03790443e5c82883",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/INPUT_MANIFEST.json",
+    "sha256": "11f7d01e4913c7ed69d1babade5dfe6791e69372d0f8b89f95d3fab1b7c500c3",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/MAPPING_INPUT.json",
+    "sha256": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/source/D2.xlsx",
+    "sha256": "282844b03d6c2f3ac41fba41b2fce527b040ce9b10b8a3f95370e30b86af0e35",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/audited/AUDITED_MATRICES.npz",
+    "sha256": "9e0ccb59a0a281b4c90828063d39bce89ecca116d66afa1b8a2c86ed2ae724a8",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/audited/PHYSICAL_TARGETS.csv",
+    "sha256": "9e5018da5dc3887bd3f17a0b1a006d43a067f3315d46144bf3ceaba4f94d8733",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/audited/C17_STATION_BUDGETS.csv",
+    "sha256": "1fef9c4b3e6f2dfe782a399e8e37657e491aa98528b0063b2f9dbf1851b11a09",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/audited/STATION_MAPPING.csv",
+    "sha256": "b9082462b62cb5b8c1a3076ce30142db1a25c17e0190bc650d61c4fd97ce11cc",
+    "unchanged_vs_cordon_v1": true
+  },
+  {
+    "path": "data/audited/AUTHORITY_AUDIT.json",
+    "sha256": "d3be0aa4d059fb92e54d81c7ae158c1eab519ec00719db12ead832c3a305164c",
+    "unchanged_vs_cordon_v1": true
+  }
+]
