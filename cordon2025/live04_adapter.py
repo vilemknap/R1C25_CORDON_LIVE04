@@ -1,4 +1,4 @@
-"""LIVE04 adapter = LIVE03 cordon adapter on the v7 @ 977cef4 Generation and LONG rules.
+"""LIVE04 adapter = LIVE03 cordon adapter on the v7 @ 7b4c681 Generation, SupplyMix and LONG rules.
 
 Changes against LIVE03 (each mirrors r1_15a2_trial_adapter_v24917 of v7):
 * generation_design: live04_generation.design (MOBILITY2 + MOBILITYZONE1 parent
@@ -16,6 +16,12 @@ Changes against LIVE03 (each mirrors r1_15a2_trial_adapter_v24917 of v7):
   and LONGGUARD1 must pass against the last accepted state.
 * assign_for_block runs inside the v7 LONG post-TD mask scope; the native
   predictor's demand-only runs use execute_demand_only (same mask phases).
+LIVE04.4:
+* refine_generation_design: the v7 measured zonal refit (live04_generation.refine);
+* SupplyMix: apply_supply is the donor write (path proof, complete validation
+  before the first write, readback) under the donor supply policy; the
+  SUPPLY_ADDVAL1 recompute is the v7 cold chain (reset op .. joint assignment),
+  demand untouched, so the rollback recompute is deterministic.
 """
 from __future__ import annotations
 import copy
@@ -57,10 +63,15 @@ def _parent_coefficients_unchanged(authority, rows):
 
 
 class CordonLive04Adapter(CordonLive03Adapter):
-    runtime_backend = 'CORDON_LIVE04_V7_977CEF4_STEP1_GENFIX2_TD_CORDON_LONGMASK'
+    runtime_backend = 'CORDON_LIVE04_V7_7B4C681_STEP1_GENFIX2_SUPPLYMIX_TD_CORDON_LONGMASK'
 
-    def __init__(self, *args, long_mask=True, **kwargs):
+    def __init__(self, *args, long_mask=True, supply_policy=None, supply_reset_position=None, **kwargs):
         super().__init__(*args, **kwargs)
+        # LIVE04.4 SupplyMix: donor supply policy and the run-start ADDVAL1 anchors.
+        self.supply_writes_enabled = supply_policy is not None
+        if supply_policy is not None:
+            self.policy = supply_policy
+        self.supply_reset_position = supply_reset_position
         self._long_post_td_mask_enabled = bool(long_mask)
         # v7 adapter attribute read by MOBILITYZONE1 (enrich LONG/SCHOOL when LSGEN is active).
         self.v24917_ls = dict((self.v24917_status or {}).get('long_school') or {})
@@ -73,7 +84,34 @@ class CordonLive04Adapter(CordonLive03Adapter):
     # ---------------------------------------------------- procedure execution
     def assign_for_block(self, folder, block):
         with _mask.execution_scope(self):
+            if str(block).upper() == 'SUPPLY_ADDVAL1':
+                return self._assign_supply_cold(folder)
             return super().assign_for_block(folder, block)
+
+    def _assign_supply_cold(self, folder):
+        """v7 SUPPLYMIX cold chain: reset op .. joint assignment (+ active groups)."""
+        perf1 = parent_module('r1_15a2_acceleration_v24915p1')
+        sm = parent_module('r1_15a2_supply_mix_v24917')
+        folder = Path(folder); mkdir(folder)
+        require(self.supply_writes_enabled and self.supply_reset_position is not None, 'LIVE04_SUPPLYMIX_NOT_ENABLED')
+        plan = perf1.phase_recompute_plan(self.visum, self.cfg, 'SUPPLY_ADDVAL1')
+        if not plan.get('inventory'):
+            plan = dict(plan, inventory=[{k: v for k, v in r.items() if k != 'object'}
+                                         for r in parent_module('r1_15a2_com_compat').operation_rows(self.visum)])
+        cold = sm.cold_supply_plan(plan, self.cfg, int(self.supply_reset_position))
+        info = cold.get('v24917_supplymix_plan') or {}
+        if not info.get('applied'):
+            raise _supply.SupplyContractError('V24917_SUPPLYMIX_COLD_PLAN_UNAVAILABLE:' + ';'.join(info.get('reasons', [])))
+        return self._execute_perf1_plan(folder, 'SUPPLY_ADDVAL1', cold)
+
+    # ------------------------------------------------------------ SupplyMix
+    def apply_supply(self, candidate, snapshot, folder):
+        if not self.supply_writes_enabled:
+            raise PermissionError('LIVE04_SUPPLY_WRITES_DISABLED')
+        return _supply.VisumAdapter.apply_supply(self, candidate, snapshot, folder)
+
+    def refine_generation_design(self, context, scale, preview, before, after, folder):
+        return gen.refine(self, context, scale, preview, before, after, folder)
 
     def execute_demand_only(self, plan, folder):
         perf1 = parent_module('r1_15a2_acceleration_v24915p1')

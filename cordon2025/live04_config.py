@@ -1,4 +1,4 @@
-"""LIVE04 contract (CORDON_LIVE04_CONFIG.json) = LIVE03 contract on the v7 @ 977cef4 runtime.
+"""LIVE04 contract (CORDON_LIVE04_CONFIG.json) = LIVE03 contract on the v7 @ 7b4c681 runtime.
 
 Validation:
 * the inherited part by the unchanged LIVE02 validator on a LIVE02-shaped view
@@ -7,7 +7,10 @@ Validation:
 * the LIVE03 additions by the unchanged live03_config.validate_sections;
 * the v7 section: run options byte-pinned to the v7 file except the three
   documented cordon deviations, policy validated by the v7 demand_policy;
-* the only new write permission: LONG post-TD mask matrices (live04_guard).
+* the new write permissions: LONG post-TD mask matrices and (LIVE04.4) the
+  SupplyMix ADDVAL1 link writes (live04_guard);
+* LIVE04.4 sections supply_mix and row_geh_guard (values from the pinned v7 run
+  options sp_* / sev_*, never a second copy).
 """
 from copy import deepcopy
 from .common import ROOT, require, read_json, sha256, parent_module
@@ -18,7 +21,7 @@ from .live03_observations import validate as validate_observations  # noqa: F401
 SCHEMA = 'R1_CORDON_LIVE04_CONFIG_V1'
 STAGE = 'LIVE04_V7_TG_TD_CYCLE'
 CONFIG_FILE = 'CORDON_LIVE04_CONFIG.json'
-LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory')
+LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard')
 
 
 def live02_view(cfg):
@@ -26,6 +29,7 @@ def live02_view(cfg):
     v['schema'] = l2.SCHEMA; v['live_stage'] = l2.STAGE
     v['max_tg_cycles'] = 1
     v['write_policy'].pop('long_post_td_mask_matrix_writes', None)
+    v['write_policy'].pop('supply_addval1_writes', None)
     v['write_policy']['td_parameter_writes'] = False
     v['acceptance']['method'] = 'ALL_ORDERED_UNIQUE_PAIRS'
     v['acceptance']['secondary_method'] = 'EXACT_TWO_HITS'
@@ -100,6 +104,42 @@ def validate_memory(m):
     return m
 
 
+def validate_supply_mix(cfg):
+    """LIVE04.4: v7 SupplyMix on the cordon rows (options = pinned v7 sp_* run options)."""
+    from .live04_supply import POLICY_SOURCE
+    s = cfg.get('supply_mix')
+    require(isinstance(s, dict) and set(s) == {'enabled', 'role', 'drivers', 'options', 'policy_source', 'approval'},
+            'LIVE04_SUPPLY_MIX_FIELDS')
+    require(isinstance(s['enabled'], bool) and s['role'] == 'V7_SUPPLYMIX_ON_CORDON_ROWS_AFTER_GENERATION'
+            and s['drivers'] == 'ACCEPTANCE_METHOD_ROWS_FIRST_LAST_PAIRS_AND_C17' and s['options'] == 'V7_RUN_OPTIONS_SP'
+            and s['policy_source'] == POLICY_SOURCE and isinstance(s['approval'], str) and s['approval'],
+            'LIVE04_SUPPLY_MIX_POLICY')
+    require(cfg['write_policy'].get('supply_addval1_writes') is s['enabled'], 'LIVE04_SUPPLY_WRITE_POLICY_MUST_MATCH')
+    opts = parent_module('r1_15a2_demand_policy_v1').validate(dict(cfg['v7']['run_options']))
+    if s['enabled']:
+        require(opts['sp_enabled'] is True, 'LIVE04_SUPPLY_MIX_REQUIRES_SP_ENABLED')
+        require(cfg['acceptance']['method'] == 'FIRST_LAST', 'LIVE04_SUPPLY_MIX_REQUIRES_FIRST_LAST')
+    return s
+
+
+def validate_row_guard(cfg):
+    """LIVE04.4: SEVRELAX3 on the cordon rows (limits = pinned v7 sev_* run options)."""
+    g = cfg.get('row_geh_guard')
+    require(isinstance(g, dict) and set(g) == {'enabled', 'role', 'rows', 'row_weight', 'limits', 'approval'},
+            'LIVE04_ROW_GEH_GUARD_FIELDS')
+    require(isinstance(g['enabled'], bool) and g['role'] == 'V7_SEVRELAX3_ON_CORDON_ROWS'
+            and g['rows'] == 'ACCEPTANCE_METHOD_ROWS_WITH_POSITIVE_OBSERVATION' and g['row_weight'] == 1.0
+            and g['limits'] == 'V7_RUN_OPTIONS_SEV' and isinstance(g['approval'], str) and g['approval'],
+            'LIVE04_ROW_GEH_GUARD_POLICY')
+    return g
+
+
+def row_guard_policy(cfg):
+    from .live04_v7 import run_options
+    from .live04_severity import policy_from_options
+    return policy_from_options(run_options(cfg), enabled=cfg['row_geh_guard']['enabled'])
+
+
 def validate_config(cfg, *, allow_donor_overrides=False):
     require(cfg.get('schema') == SCHEMA and cfg.get('live_stage') == STAGE, 'LIVE04_CONFIG_SCHEMA')
     require(set(cfg) == set(read_json(ROOT / CONFIG_FILE)), 'LIVE04_UNKNOWN_OR_MISSING_CONFIG_FIELD')
@@ -107,10 +147,13 @@ def validate_config(cfg, *, allow_donor_overrides=False):
     require(cfg['generation_mode'] == 'V24917_TARGETED_STEP1', 'LIVE04_REQUIRES_STEP1')
     require(set(cfg['write_policy']) == {'tg_zone_parameter_writes', 'td_parameter_writes', 'direct_od_matrix_writes',
                                          'load_version', 'overwrite_source_version', 'save_accepted_version_new_file',
-                                         'long_post_td_mask_matrix_writes'}, 'LIVE04_WRITE_POLICY_FIELDS')
+                                         'long_post_td_mask_matrix_writes', 'supply_addval1_writes'},
+            'LIVE04_WRITE_POLICY_FIELDS')
     l3.validate_sections(cfg)
     validate_v7(cfg, allow_donor_overrides)
     validate_memory(cfg['memory'])
+    validate_supply_mix(cfg)
+    validate_row_guard(cfg)
     return cfg
 
 

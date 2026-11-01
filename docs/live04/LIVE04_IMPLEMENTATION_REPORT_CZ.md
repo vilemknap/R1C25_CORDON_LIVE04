@@ -149,3 +149,19 @@ Validace konfigurace vynucuje PROD = pás mobility a ATT = plot atrakce. Krok na
 Test `test_wider_domestic_envelope_reaches_the_model` ověří na mocku, že přijatý stav přesáhne 2,5 a 4,0 a nepřekročí 3,0 a 5,0.
 
 **Pozor:** profilová kalibrace v7 má dál 0,75–2,5 / 0,75–4,0. Pokud by se na kordónem kalibrovaný stav pustila v7, koeficienty mimo její obálku smí jen vracet dovnitř.
+
+## 8. LIVE04.4 – přechod na v7 @ 7b4c681 (rozhodnutí 2026-11-01)
+Uživatel chtěl do kordonového kalibrátoru převést z profilového kalibrátoru změny SupplyMix, trip generation, GEH limitů a severity. Upřesnil, že:
+- SupplyMix se přidá jako nový blok řízený kordonovými řádky;
+- limity SEVRELAX3 platí na kordonové řádky.
+
+Co se změnilo:
+- Donory v `parent/` jsou zkopírované z 7b4c681 (8 změněných a nový `r1_15a2_supply_mix_v24917.py`) a nově pinované.
+- Run options jsou pinované z 7b4c681. Odchylky `mg_min_ratio` a `mg_max_ratio` odpadly, protože v7 má stejné pásmo P 0,5–3 / A 0,5–5.
+- TG: bez CATCH_UP, ±5 %, měřený zónový refit a `STEP1_PRED_AUDIT.json`.
+- Nový blok SupplyMix (`cordon2025/live04_supply.py`).
+- SEVRELAX3 na kordonových řádcích (`cordon2025/live04_severity.py`, `cordon2025/live04_evaluation.py`).
+- Nové oprávnění guardu: `Link.SetAttValue('ADDVAL1', …)`.
+
+Podrobně: `docs/live04/LIVE04_4_V7_7B4C681_CZ.md`.
+

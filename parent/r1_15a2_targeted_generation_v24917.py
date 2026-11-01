@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """V24917 targeted catch-up Generation: policy, phases, bounds and design patch.
 
-* Phase CATCH_UP while model/observed (CAL profile sums) < 0.80:
-  per-zone step up to +50 % (log 0.4055) and down to -20 % (log -0.2231),
-  no soft-band damping.
-* Phase REFINE afterwards: the inherited per-cycle stage caps
-  (generation_step_schedule) and soft-band damping.
-* Coefficient envelope (both phases): WORK/SERVICE domestic ADD_PROD [0.75, 2.5],
-  ADD_ATT [0.75, 4.0].  ZAHR run-start reference x [0.5, 10.0].
+* The delivered configuration disables CATCH_UP, including on restart.
+  Legacy explicit opt-in remains available outside the strict fresh launcher.
+* REFINE uses at most +5 % / -5 % P/A effects and preserves smaller inherited
+  per-cycle stage caps (generation_step_schedule), with soft-band damping.
+* Coefficient envelope (both phases): WORK/SERVICE domestic ADD_PROD [0.5, 3.0],
+  ADD_ATT [0.5, 5.0].  ZAHR run-start reference x [0.5, 10.0].
   Role-specific soft bands equal the corresponding hard bands.
   The normalized ZAHR reference is 1; native raw units are preserved.  ADD_SALARY keeps [0.5, 2.0].
 * Design mode TARGETED_ZONE_DIRECT replaces the family-global + centred
@@ -24,7 +23,7 @@ import functools
 import math
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
-RELEASE = "R1_15A2_V24917_TARGETED_PA_COEFFICIENT_BOUNDS_V2_20261030"
+RELEASE = "R1_15A2_V24917_TARGETED_FINE_REFINE_ONLY_20261101"
 POLICY_KEY = "v24917_targeted_generation"
 PHASE_KEY = "v24917_generation_phase"
 MODE_KEY = "v24917_generation_mode"
@@ -40,21 +39,19 @@ DEFAULT_POLICY: Dict[str, Any] = {
     "catchup_max_log_up": math.log(1.5),
     "catchup_max_log_down": math.log(0.8),
     "refine_uses_stage_caps": True,
-    # RELAX1: REFINE steps per zone and cycle up to +25 % / -20 % (stage caps were +-3 %),
-    # outward steps beyond the soft band damped to 50 % (was 15 %).
-    "refine_max_log_up": math.log(1.25),
-    "refine_max_log_down": math.log(0.8),
+    "refine_max_log_up": math.log(1.05),
+    "refine_max_log_down": math.log(0.95),
     "refine_soft_outward_step_factor": 0.5,
     "envelope": {
         "domestic_hard": [0.75, 2.0],  # backward-compatible unknown-role query
         "domestic_hard_by_role": {
-            "PROD": [0.75, 2.5], "ATT": [0.75, 4.0],
+            "PROD": [0.5, 3.0], "ATT": [0.5, 5.0],
         },
         "zahr_reference_multiplier": [0.5, 10.0],
         "boundary_reference_multiplier": [0.5, 2.0],
         "refine_domestic_soft": [0.75, 2.0],  # backward-compatible unknown role
         "refine_domestic_soft_by_role": {
-            "PROD": [0.75, 2.5], "ATT": [0.75, 4.0],
+            "PROD": [0.5, 3.0], "ATT": [0.5, 5.0],
         },
         "refine_zahr_reference_soft": [0.5, 10.0],
     },
@@ -133,8 +130,8 @@ def catchup_enabled() -> bool:
     try:
         import r1_15a2_demand_policy_v1 as dp
     except ImportError:
-        return True
-    return bool(dp.load_options().get("tg_catchup_enabled", True))
+        return False
+    return bool(dp.load_options().get("tg_catchup_enabled", False))
 
 
 def phase_for(d12_rows, policy: Mapping[str, Any]) -> Tuple[str, float]:
@@ -156,9 +153,11 @@ def overlay_cfg(cfg: Mapping[str, Any], phase: str) -> Dict[str, Any]:
         out["max_add_log_up"] = float(policy["catchup_max_log_up"])
         out["max_add_log_down"] = abs(float(policy["catchup_max_log_down"]))
     elif "refine_max_log_up" in policy:
-        out["max_add_log_up"] = max(float(cfg.get("max_add_log_up", 0.0)), float(policy["refine_max_log_up"]))
-        out["max_add_log_down"] = max(float(cfg.get("max_add_log_down", 0.0)),
-                                      abs(float(policy["refine_max_log_down"])))
+        up, down = float(policy["refine_max_log_up"]), abs(float(policy["refine_max_log_down"]))
+        if policy.get("refine_uses_stage_caps", True):
+            up = min(float(cfg.get("max_add_log_up", up)), up)
+            down = min(float(cfg.get("max_add_log_down", down)), down)
+        out["max_add_log_up"], out["max_add_log_down"] = up, down
     return out
 
 

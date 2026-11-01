@@ -19,6 +19,12 @@ Never native PTV evidence.
   share_cordon = clip(0.8 * (OD/OD_base)**(-route_gamma), 0.05, 0.95); demand-only
   runs leave the split unchanged.  Frozen-path predictions therefore miss the
   route-choice response exactly like in a congested native model.
+* LIVE04.4 SupplyMix: op 15 is the v7 reset operation (type 9).  With addval_beta > 0
+  the split also reacts to ADDVAL1 (10 s per unit):
+  share_cordon *= exp(-addval_beta * (ADDVAL1(cordon path) - ADDVAL1(bypass path))).
+  bypass_anchor=True routes the bypass of pair (a, b) over two own links from the start
+  node of the station-a link to the end node of the station-b link (no station is
+  crossed), so cordon and bypass paths diverge and rejoin at common nodes.
 """
 import numpy as np
 from fake_visum_startup import Matrix
@@ -71,9 +77,13 @@ class FormulaMatrix(Matrix4):
 
 
 class Live04Visum(Live03Visum):
-    def __init__(self, folder, *, masked_start=True, long_leak=1.0e-3, route_gamma=0.0, **kwargs):
+    def __init__(self, folder, *, masked_start=True, long_leak=1.0e-3, route_gamma=0.0, addval_beta=0.0,
+                 bypass_anchor=False, **kwargs):
         super().__init__(folder, **kwargs)
         self.route_gamma = float(route_gamma)
+        self.addval_beta = float(addval_beta)
+        self.bypass_anchor = bool(bypass_anchor)
+        self.ops[14].values['OPERATIONTYPE'] = 9     # v7 SupplyMix cold chain reset operation
         self.Net.Links = WritableLinkCollection(self, self.Net.Links.rows, 'Links')
         self.origin = 'MOCK_LIVE04_681_ZONES_NOT_NATIVE'
         src = folder / 'R1_2025_SYNTHETIC_LIVE04_COPY.ver'; src.write_bytes(b'SYNTHETIC_NOT_A_VISUM_VERSION')
@@ -176,16 +186,33 @@ class Live04Visum(Live03Visum):
         self.sigma = {}
         if self.route_gamma <= 0:
             return
-        self.Net.Links.rows.append({'NO': self.BYPASS[0], 'FROMNODENO': self.BYPASS[1], 'TONODENO': self.BYPASS[2],
-                                    'TSYSSET': 'C,C_noT,LNV,NV', 'ADDVAL1': 0.0, 'T0_PRTSYS(C)': 30.0,
-                                    'CAPPRT': 1800.0, 'LENGTH': 0.5, 'TYPENO': 10})
+        link = lambda key: {'NO': key[0], 'FROMNODENO': key[1], 'TONODENO': key[2], 'TSYSSET': 'C,C_noT,LNV,NV',
+                            'ADDVAL1': 0.0, 'T0_PRTSYS(C)': 30.0, 'CAPPRT': 1800.0, 'LENGTH': 0.5, 'TYPENO': 10}
+        self.Net.Links.rows.append(link(self.BYPASS))
         i, j = self._route_cells()
         self.route_base = {c: np.array(self.dsegs[c].ODMatrix.values[i, j], copy=True) for c in self._mode_c_codes()}
         self.sigma = {c: np.full(len(i), self.SIGMA0) for c in self.route_base}
         geo = self.geometry_rows['C']
-        for o, d in self.path_keys[:240]:
+        # cordon path links of every station pair (mode C: station a link, bridge, station b link)
+        self.cordon_links, self.bypass_links, current = [], [], None
+        for row in geo:
+            if row[0] != '':
+                current = []; self.cordon_links.append(current)
+            else:
+                current.append(tuple(row[4:7]))
+        for n, (o, d) in enumerate(self.path_keys[:240]):
             geo.append([o, d, 2, '', '', '', ''])
-            geo.append(['', '', '', 1, *self.BYPASS])
+            if self.bypass_anchor:
+                x, y = self.cordon_links[n][0], self.cordon_links[n][-1]
+                b1 = (991000 + n, x[1], 995000 + n); b2 = (993000 + n, 995000 + n, y[2])
+                for k in (b1, b2):
+                    self.Net.Links.rows.append(link(k))
+                path = (b1, b2)
+            else:
+                path = (self.BYPASS,)
+            self.bypass_links.append(path)
+            for jx, k in enumerate(path, 1):
+                geo.append(['', '', '', jx, *k])
         lists = self.Workbench.Lists
         lists.CreatePrTPathList = lambda: RouteList(self, 'parent')
 
@@ -193,10 +220,17 @@ class Live04Visum(Live03Visum):
         if self.route_gamma <= 0:
             return
         i, j = self._route_cells()
+        factor = 1.0
+        if self.addval_beta > 0:
+            av = {(r['NO'], r['FROMNODENO'], r['TONODENO']): float(r.get('ADDVAL1', 0.0)) for r in self.Net.Links.rows}
+            cost = np.array([sum(av[k] for k in on) - sum(av[k] for k in off)
+                             for on, off in zip(self.cordon_links, self.bypass_links)])
+            factor = np.exp(-self.addval_beta * cost)
         for c, base in self.route_base.items():
             od = np.asarray(self.dsegs[c].ODMatrix.values)[i, j]
             ratio = np.where(base > 0, od / np.where(base > 0, base, 1.0), 1.0)
-            self.sigma[c] = np.clip(self.SIGMA0 * np.power(np.maximum(ratio, 1e-9), -self.route_gamma), 0.05, 0.95)
+            self.sigma[c] = np.clip(self.SIGMA0 * np.power(np.maximum(ratio, 1e-9), -self.route_gamma) * factor,
+                                    0.05, 0.95)
 
     def _vehicle(self, person, *, leak):
         """Vehicle LONG only on OD pairs that have saved paths (path/OD parity of the fixture)."""

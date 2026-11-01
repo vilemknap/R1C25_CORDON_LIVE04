@@ -1,9 +1,13 @@
-LIVE04.3 (domestic envelope P 0.5-3.0 / A 0.5-5.0 + TRANSFER2025 + LIVE04.1) full offline regression from the extracted release ZIP (2 shards), 2026-11-01
+LIVE04.4 (v7 @ 7b4c681: GENFIX2 trip generation without CATCH_UP + measured zonal refit + STEP1_PRED_AUDIT, SupplyMix ADDVAL1 driven by cordon rows, SEVRELAX3 GEH limits/severity on cordon rows; on top of LIVE04.3 + TRANSFER2025 + LIVE04.1) full offline regression from the extracted release ZIP (3 shards), 2026-11-01
 Synthetic mock only - NOT native PTV Visum evidence.
 == shard 0
-452 passed, 9 skipped in 383.50s (0:06:23)
+296 passed, 8 skipped in 1269.92s (0:21:09)
 EXIT 0
 == shard 1
-482 passed, 11 skipped in 4278.19s (1:11:18)
+268 passed, 1 skipped in 4406.55s (1:13:26)
 EXIT 0
-TOTAL: 934 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed
+== shard 2
+390 passed, 11 skipped in 2039.98s (0:33:59)
+EXIT 0
+TOTAL: 954 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed
+New in LIVE04.4: tests/test_live04_4.py (19 tests) - all passed.

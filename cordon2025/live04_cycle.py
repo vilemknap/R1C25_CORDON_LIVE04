@@ -1,4 +1,4 @@
-"""LIVE04 orchestration (v7 @ 977cef4): baseline -> joint TG/TD cycles -> verified end.
+"""LIVE04 orchestration (v7 @ 7b4c681): baseline -> joint TG/SupplyMix/TD cycles -> verified end.
 
 Same flow as LIVE03 (live03_cycle), on the v7 runtime (live04_v7.runtime_scope),
 the LIVE04 adapter (MOBILITY2/MOBILITYZONE1, BDPA1, GENFIX2 STEP1) and the v7
@@ -7,10 +7,12 @@ already be masked (>= 80 km on 9697) before any write, every accepted state
 carries its LONG support audit, and the final state must reproduce it exactly.
 
 Per outer cycle the configured blocks run in order (default GENERATION, then
-TD_CORDON).  Each block either keeps an eligible native trial in place or ends
+TD_CORDON); LIVE04.4 runs the v7 SupplyMix block (SUPPLY_ADDVAL1) right after
+GENERATION in the cycles where it is due (v7: every 2nd cycle from cycle 2).
+Every block gate also applies the v7 SEVRELAX3 limits to the cordon rows.  Each block either keeps an eligible native trial in place or ends
 with the donor verified rollback, so the open model is always the last
 accepted state or the baseline.  Writes: TG zone attributes, TD gravity b/c,
-ACTIVE flags of phase plans (restored), Procedures.Execute.  Never LoadVersion,
+link ADDVAL1 (SupplyMix), ACTIVE flags of phase plans (restored), Procedures.Execute.  Never LoadVersion,
 never a direct OD matrix write, never the source .ver.
 """
 from __future__ import annotations
@@ -33,7 +35,7 @@ from .live02_cycle import (LiveControl, isolated_copy_guard, gate_shortcut, fail
                            HashCachingRunSession, _parameter_changes)
 from .live04_config import load_config, live01_view, adapter_config, CONFIG_FILE
 from .live03_observations import Contract
-from .live03_evaluation import Live03Evaluator
+from .live04_evaluation import Live04Evaluator
 
 RESULT_SCHEMA = 'LIVE04_RESULT_V1'
 
@@ -72,6 +74,27 @@ def make_td_block(tx, cfg):
         return td_block(tx, adapter, cfg_, folder_, control, state, diag, anchors, reference, policy,
                         tdc=cfg['td_cordon'], idp_cfg=idp_cfg, memory=getattr(adapter, 'run_memory', None))
     return cb._wrap_block(block, com, 'TD_CORDON', 1, int(opts['cb_block_retries']))
+
+
+def make_supply_block(tx, cfg):
+    """v7 SupplyMix on the cordon rows; COMBUSY2 block retries as the other blocks."""
+    com = parent_module('r1_15a2_com_compat')
+    cb = parent_module('r1_15a2_combusy2_v24917')
+    from .live04_v7 import run_options
+    from .live04_supply import supply_block, options
+    opts = run_options(cfg)
+    sopts = options(cfg)
+
+    def block(adapter, cfg_, folder_, control, state, diag, anchors, reference, policy, outer_cycle=None):
+        return supply_block(tx, adapter, cfg_, folder_, control, state, diag, anchors, reference, policy,
+                            outer_cycle=outer_cycle, opts=sopts)
+    return cb._wrap_block(block, com, 'SUPPLY_ADDVAL1', 1, int(opts['cb_block_retries']))
+
+
+def _addval_changes(before, after):
+    b = before.get('addval1') or {}
+    return [{'link': k, 'addval1_run_start': b.get(k), 'addval1_accepted': v}
+            for k, v in sorted((after.get('addval1') or {}).items()) if b.get(k) != v]
 
 
 def _td_changes(before, after):
@@ -144,10 +167,12 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 write_json(folder / 'ISOLATED_COPY_GUARD.json', copy_guard)
                 mathcfg = calculation_config(view, state['actuatable_zones'])
                 mathcfg['actual_network_sha256'] = pre[0]['network_sha256']
-                evaluator = Live03Evaluator(cfg, mathcfg, contract, opt, ctl, pre)
+                from .live04_config import row_guard_policy
+                evaluator = Live04Evaluator(cfg, mathcfg, contract, opt, ctl, pre, row_guard_policy=row_guard_policy(cfg))
                 audit = Live04WriteAudit(folder / 'WRITE_AUDIT.jsonl')
                 audit.td_writes = bool(cfg['write_policy']['td_parameter_writes'])
                 audit.long_mask_writes = bool(cfg['write_policy']['long_post_td_mask_matrix_writes'])
+                audit.supply_addval_writes = bool(cfg['write_policy']['supply_addval1_writes'])
                 guarded = Live04GuardedCOM(visum, 'Visum', audit)
                 from .live04_v7 import runtime_scope
                 v17status = stack.enter_context(runtime_scope(cfg, guarded, pre[2], state['actuatable_zones'], folder))
@@ -156,8 +181,12 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 acfg = adapter_config(cfg, cfg['outer_cycle_start'], state['actuatable_zones'])
                 from .live04_adapter import CordonLive04Adapter
                 lm = cfg['v7']['long_post_td_mask']
+                from .live04_supply import options as supply_options, sealed_supply_policy
+                sopts = supply_options(cfg)
                 adapter = CordonLive04Adapter(guarded, acfg, v24917_status=v17status, evaluator=evaluator, raw_visum=visum,
                                               long_mask=lm['enabled'],
+                                              supply_policy=sealed_supply_policy() if sopts['enabled'] else None,
+                                              supply_reset_position=sopts['reset_position'],
                                               expected_zones=pre[2], actuatable_zones=state['actuatable_zones'],
                                               folder=folder, live02=cfg)
                 session.checkpoint('LIVE04_CURRENT_MODEL_BOUND')
@@ -178,6 +207,10 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     'method': 'DONOR_PARAMETER_RESTORE_PLUS_NATIVE_RECOMPUTE_NO_LOADVERSION',
                     'source_version': state['source_version'], 'source_file_sha256': state['source_file_sha256']})
                 adapter.set_generation_reference(snap0, folder)
+                if sopts['enabled']:
+                    # Cumulative ADDVAL1 bounds are relative to the run start (donor baseline anchors).
+                    adapter.baseline_addval = {k: r['addval1'] for k, r in adapter.read_links().items()}
+                    require(adapter.snapshot() == snap0, 'LIVE04_SUPPLY_BASELINE_READ_CHANGED_MODEL')
                 from .live04_memory import RunMemory
                 adapter.run_memory = RunMemory(cfg['memory'], folder / 'MEMORY') if cfg['memory']['enabled'] else None
                 reference = evaluator.reference(baseline)
@@ -190,6 +223,9 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 blocks = {'GENERATION': make_generation_block(tx, cfg)}
                 if 'TD_CORDON' in cfg['blocks_per_cycle'] and cfg['td_cordon']['enabled']:
                     blocks['TD_CORDON'] = make_td_block(tx, cfg)
+                if sopts['enabled']:
+                    blocks['SUPPLY_ADDVAL1'] = make_supply_block(tx, cfg)
+                from .live04_supply import due as supply_due
                 session.checkpoint('LIVE04_BASELINE_AND_RESTORE_POINT_SEALED')
                 current_state, current_diag = snap0, baseline
                 progress['accepted_state_hash'] = snap0['state_hash']
@@ -200,7 +236,12 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                         adapter.run_memory.begin_cycle(outer)
                     cycle = {'outer_cycle': outer, 'blocks': []}
                     changed_cycle = False
+                    names = []
                     for name in cfg['blocks_per_cycle']:
+                        names.append(name)
+                        if name == 'GENERATION' and 'SUPPLY_ADDVAL1' in blocks and supply_due(outer, sopts)[0]:
+                            names.append('SUPPLY_ADDVAL1')      # v7: SupplyMix right after Generation
+                    for name in names:
                         if name not in blocks:
                             continue
                         bdir = folder / ('C%02d_%s' % (outer, name))
@@ -254,6 +295,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             'LIVE04_FINAL_LONG_SUPPORT_NOT_LAST_ACCEPTED')
                 tg_changes = _parameter_changes(snap0, final, adapter.zones)
                 td_changes = _td_changes(snap0, final)
+                addval_changes = _addval_changes(snap0, final)
+                write_csv(folder / 'ACCEPTED_ADDVAL1.csv', addval_changes, ['link', 'addval1_run_start', 'addval1_accepted'])
                 write_csv(folder / 'ACCEPTED_TG_PARAMETERS.csv', tg_changes, ['zone_no', 'attr', 'run_start', 'accepted', 'ratio'])
                 write_csv(folder / 'ACCEPTED_TD_PARAMETERS.csv', td_changes,
                           ['component', 'b_run_start', 'b_accepted', 'c_run_start', 'c_accepted'])
@@ -275,6 +318,13 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                           'metrics_baseline': {k: baseline['methods'][k]['metrics'] for k in baseline['methods']},
                           'metrics_final': {k: current_diag['methods'][k]['metrics'] for k in current_diag['methods']},
                           'changed_tg_parameters': len(tg_changes), 'changed_td_components': len(td_changes),
+                          'changed_addval1_links': len(addval_changes),
+                          'supply_mix': {'enabled': sopts['enabled'], 'every_n_cycles': sopts['every_n'],
+                                         'start_cycle': sopts['start_cycle'], 'max_groups': sopts['max_groups'],
+                                         'max_edges': sopts['max_edges'], 'max_trials': sopts['max_trials'],
+                                         'step_units': sopts['step_units'],
+                                         'addval1_writes': audit.summary().get('supply_addval1_writes', 0)},
+                          'row_geh_guard': evaluator.row_guard_policy,
                           'model_state': 'LAST_ACCEPTED_STATE_IN_OPEN_VISUM' if progress['accepted_states'] else 'BASELINE_RESTORED',
                           'saved_version': saved, 'source_version_overwritten': False,
                           'direct_od_matrix_writes': False, 'load_version_called': False,

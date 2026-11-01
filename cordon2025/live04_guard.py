@@ -1,4 +1,4 @@
-"""LIVE04 write policy = LIVE03 policy + the v7-authorized LONG post-TD mask.
+"""LIVE04 write policy = LIVE03 policy + the v7-authorized LONG post-TD mask + SupplyMix ADDVAL1.
 
 The only new permission (audit.long_mask_writes, from write_policy):
     <Net.Matrices.ItemByKey(N)>.SetValues(<2-D float64 numpy array>, False)
@@ -8,8 +8,14 @@ aggregate 9305, the frozen foreign matrix 9116, every demand-segment OD matrix
 and every other matrix remain forbidden, as do all other LIVE02/LIVE03 rules.
 To make the matrix number visible to the policy, ItemByKey on the matrix
 collection carries its key in the audit label.
+
+LIVE04.4 (audit.supply_addval_writes, from write_policy.supply_addval1_writes):
+    <Net.Links link>.SetAttValue('ADDVAL1', <finite number>)
+the v7 SupplyMix write (donor apply_supply / restore_supply_parameters, each with
+readback); no other link attribute is writable.
 """
 from __future__ import annotations
+import math
 import re
 from .live02_guard import GuardedCOM, WriteAudit, WriteForbidden, _policy as _live03_policy, _plain, MUTATING_PREFIXES, \
     NON_MUTATING
@@ -25,12 +31,14 @@ class Live04WriteAudit(WriteAudit):
     def __init__(self, path=None, allowed_zone_attrs=None):
         super().__init__(path, allowed_zone_attrs)
         self.long_mask_writes = False
+        self.supply_addval_writes = False
 
     def summary(self):
         out = super().summary()
         out['long_mask_matrix_writes'] = sum(1 for e in self.events if e['kind'] == 'LONG_MASK_MATRIX_WRITE')
         out['long_mask_matrices_written'] = sorted({e['matrix_no'] for e in self.events
                                                     if e['kind'] == 'LONG_MASK_MATRIX_WRITE'})
+        out['supply_addval1_writes'] = sum(1 for e in self.events if e['kind'] == 'SUPPLY_ADDVAL1_WRITE')
         # Demand-segment OD matrices are still never written directly.
         out['direct_od_matrix_writes'] = 0
         return out
@@ -44,6 +52,11 @@ def _matrix_no(label):
 
 
 def _policy(label, name, args, audit):
+    if (name == 'SetAttValue' and getattr(audit, 'supply_addval_writes', False) and '.Net.Links' in label
+            and len(args) == 2 and isinstance(args[0], str) and args[0].upper() == 'ADDVAL1'
+            and isinstance(args[1], (int, float)) and not isinstance(args[1], bool) and math.isfinite(args[1])):
+        audit.record('SUPPLY_ADDVAL1_WRITE', label, value=float(args[1]))
+        return
     if name == 'SetValues':
         no = _matrix_no(label)
         if (no is not None and no in LONG_MASK_WRITABLE and getattr(audit, 'long_mask_writes', False)

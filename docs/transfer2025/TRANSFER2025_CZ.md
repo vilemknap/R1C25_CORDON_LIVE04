@@ -53,6 +53,7 @@ Při chybě po prvním zápisu se parametry vrátí na hodnoty před importem. P
 2. Preflight LIVE01: 681 zón, síť, demand segmenty, matice, uložené cesty.
 3. Název kopie podle pravidel LIVE04.
 4. Jednu aktivní operaci TD; operace 17, 18, 19 a 20 s DSEGSET podle v7.
+   LIVE04.4: pro SupplyMix aktivní reset (op 15, typ 9) před společným přiřazením (`SUPPLYMIX_COLD_CHAIN`).
 5. Typy matic: 9291–9295 DATA, 9305 FORMULA (čte se 9111–9115, 9116).
 6. Čistou podporu LONG (osoby i vozidla ≥ 80 km).
 7. Autoritu mobility: produkční poměr W/S, MOBILITYZONE1.

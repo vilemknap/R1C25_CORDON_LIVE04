@@ -1,6 +1,6 @@
 """STEP1 with the v7 GENFIX2 semantics on the cordon objective (LIVE04).
 
-Control flow = r1_15a2_step_search_v24917._generation_block_impl (v7 @ 977cef4);
+Control flow = r1_15a2_step_search_v24917._generation_block_impl (v7 @ 7b4c681);
 cordon specifics kept from LIVE03 (live02_step1):
   * the gate is the cordon block_gate on BOTH enumeration methods;
   * native demand on frozen paths (LIVE03 nodes) when enabled, otherwise the
@@ -19,11 +19,20 @@ v7 semantics added against LIVE03:
     verified rollback;
   * stationarity is certified only for a converged proposal whose complete
     configured real search was rejected (not for a truncated or fallback search).
+LIVE04.4 (v7 @ 7b4c681):
+  * the actually applied preview (including an off-grid pre-apply shrink) is
+    recorded as the prediction of that scale;
+  * after the first fully measured, rejected trial the zonal direction may be
+    re-solved ONCE (adapter.refine_generation_design); the new direction starts a
+    fresh step model (origin MEASURED_ZONAL_REFIT) and shares the trial budget;
+  * every trial writes STEP1_PRED_AUDIT.json: the planner forecast vs the measured
+    cordon rows (no COM reads, never an acceptance authority).
 """
 from __future__ import annotations
 from pathlib import Path
 from types import SimpleNamespace
 import numpy as np
+import math
 from .common import parent_module
 from .live02_step1 import CordonStepModel, _drop_capture
 
@@ -45,21 +54,60 @@ class Live04StepModel(CordonStepModel):
             return ({m: s * self.delta[m] for m in self.methods}, True, [])
         key = float(s)
         if key not in self.preview_cache:
-            preview = self.predictor(key)
-            pred = preview.get('genfix2_prediction') or {}
-            proof = preview.get('genfix2_mobility') or {}
-            pgate = preview.get('_genfix2_pre_gate') or {'passes': True, 'reasons': []}
-            ok = proof.get('passes') is True and pgate.get('passes') is True
-            reasons = list(pgate.get('reasons', []))
-            if proof.get('passes') is not True:
-                reasons.append('MOBILITY2_FINAL_ENVELOPE')
-            delta = None
-            if pred.get('available'):
-                delta = {m: np.asarray(pred['delta'][m], dtype=float) for m in self.methods}
-                if any(not np.isfinite(v).all() or len(v) != len(self.m0[m]) for m, v in delta.items()):
-                    raise ValueError('GENFIX2_PREDICTION_IDENTITY_MISMATCH')
-            self.preview_cache[key] = (delta, ok, reasons)
+            self.record_preview(key, self.predictor(key))
         return self.preview_cache[key]
+
+    def record_preview(self, scale, preview):
+        """v7 record_preview: retain the ACTUAL pre-write preview (off-grid shrinks included)."""
+        pred = preview.get('genfix2_prediction') or {}
+        proof = preview.get('genfix2_mobility') or {}
+        pgate = preview.get('_genfix2_pre_gate') or {'passes': True, 'reasons': []}
+        ok = proof.get('passes') is True and pgate.get('passes') is True
+        reasons = list(pgate.get('reasons', []))
+        if proof.get('passes') is not True:
+            reasons.append('MOBILITY2_FINAL_ENVELOPE')
+        delta = None
+        if pred.get('available'):
+            delta = {m: np.asarray(pred['delta'][m], dtype=float) for m in self.methods}
+            if any(not np.isfinite(v).all() or len(v) != len(self.m0[m]) for m, v in delta.items()):
+                raise ValueError('GENFIX2_PREDICTION_IDENTITY_MISMATCH')
+        self.preview_cache[float(scale)] = (delta, ok, reasons)
+
+    def prediction_audit(self, scale, after_diag, labels=None):
+        """v7 prediction_audit on the cordon rows of the acceptance method (no COM reads)."""
+        m = self.method
+        if not after_diag.get('valid', True):
+            return {'status': 'UNAVAILABLE', 'reason': 'CANDIDATE_CAPTURE_INVALID'}
+        measured = np.asarray(after_diag['methods'][m]['model'], dtype=float)
+        observed = np.asarray(after_diag['methods'][m].get('observed') or self.terms[m]['y'], dtype=float)
+        if measured.shape != self.m0[m].shape or not np.allclose(observed, self.terms[m]['y'], rtol=1e-7, atol=1e-7):
+            return {'status': 'UNAVAILABLE', 'reason': 'OBSERVATION_AUTHORITY_CHANGED'}
+        if not np.isfinite(measured).all() or np.any(measured < 0):
+            return {'status': 'UNAVAILABLE', 'reason': 'INVALID_MEASURED_MODEL'}
+        raw, _, _ = self.final_prediction(float(scale)) if self.predictor is not None else (None, True, [])
+        planned = self.volumes(float(scale), m)
+
+        def geh(v, o):
+            return math.sqrt(2.0 * (v - o) ** 2 / max(v + o, 1e-12))
+        rows = []
+        for i in range(len(measured)):
+            o = float(observed[i])
+            rows.append({'row': labels[i] if labels else i, 'observed': o, 'parent_model': float(self.m0[m][i]),
+                         'parent_geh': geh(float(self.m0[m][i]), o),
+                         'raw_proposal_delta': None if raw is None else float(raw[m][i]),
+                         'planner_model': float(planned[i]), 'planner_geh': geh(float(planned[i]), o),
+                         'measured_model': float(measured[i]), 'measured_geh': geh(float(measured[i]), o),
+                         'flow_prediction_error': float(measured[i] - planned[i]),
+                         'measured_delta': float(measured[i] - self.m0[m][i])})
+        ranked = sorted(rows, key=lambda r: abs(r['flow_prediction_error']), reverse=True)
+        return {'status': 'MEASURED_PREDICTION_COMPARISON', 'scale': float(scale), 'method': m,
+                'mode': 'SECANT_MEASURED' if self.measured is not None else getattr(self, 'origin_mode', 'LINEAR_FIT'),
+                'proposal_origin_mode': getattr(self, 'origin_mode', 'LINEAR_FIT'),
+                'prediction': 'NATIVE_FROZEN_PATHS' if self.nodes else 'GENFIX2_FINAL_EFFECT_LINEAR',
+                'previous_measurement_scale': None if self.measured is None else float(self.measured[0]),
+                'rho': self.rho, 'rows': rows, 'largest_errors': ranked[:10],
+                'acceptance_authority': False, 'new_com_reads': 0,
+                'native_stage_attribution': 'UNIDENTIFIED_REQUIRES_STAGE_EVIDENCE'}
 
     def prior(self, s, m, *, with_memory=True):
         """Prediction before the in-block secant: native nodes or the GENFIX2 operator
@@ -215,6 +263,8 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
     baseline_diag_hash = base.diagnostic_hash(diag)
     own = {'rows': None, 'candidate': None, 'applied': None, 'demand_dirty': False, 'rollback_started': False}
     upper = float(opts['max_scale'])
+    refit_attempted = False
+    labels = ['%s-%s' % tuple(p) for p in diag['methods'][evaluator.method].get('pairs', [])] or None
     step._STATE['blocks'] += 1
 
     def own_recovery(rows, candidate):
@@ -307,6 +357,8 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                     break
                 base.atomic_json(trial_folder / ('GENERATION_PREVIEW_%s.json' % str(round(scale, 6)).replace('.', '_')),
                                  preview)
+                if model.predictor is not None:
+                    model.record_preview(float(scale), dict(preview, _genfix2_pre_gate=pgate))
                 rows = list(rows or [])
                 if not rows:
                     attempt['status'] = 'NO_PARAMETER_CANDIDATE'
@@ -380,13 +432,19 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                     raise
                 raise SupplyContractError('V245_GENERATION_TRIAL_ERROR_NOT_A_PLATEAU:' + str(exc)) from exc
             step._STATE['trials'] += 1
+            audit = model.prediction_audit(float(scale), after_diag, labels)
+            audit.update(parent_state_hash=state.get('state_hash'), candidate_state_hash=after.get('state_hash'),
+                         assignment_gap=gap)
+            write_json(trial_folder / 'STEP1_PRED_AUDIT.json', audit)
+            attempt['prediction_audit'] = {'path': str(trial_folder / 'STEP1_PRED_AUDIT.json'),
+                                           'status': audit['status'], 'mode': audit.get('mode')}
             attempt.update(status='ELIGIBLE' if decision.get('accepted') else 'REJECTED', gap=gap, decision=decision,
                            counts_objective=after_value, predicted_objective=model.objective(float(scale)),
                            measured_objective=float(after_value['total']))
             valid_capture = bool(after_diag.get('valid', True))
             if model.memory_correction is not None:
                 attempt['predicted_objective_without_memory'] = model.objective_without_memory(float(scale))
-            if memory is not None and valid_capture and model.measured is None:
+            if memory is not None and direction is not None and valid_capture and model.measured is None:
                 memory.record_tg_correction(
                     direction, float(scale), {m: after_diag['methods'][m]['model'] for m in model.methods},
                     {m: model.prior(float(scale), m, with_memory=False) for m in model.methods})
@@ -409,6 +467,28 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                 probe['dirty'] = False
                 adapter.tg_outputs_from_rejected_trial = False
                 return True, after, after_diag, after_value, rec
+            if (not refit_attempted and ordinal < max_trials and valid_capture
+                    and callable(getattr(adapter, 'refine_generation_design', None))):
+                refit_attempted = True
+                # Full native diagnostics describe this rejected trial; only the proposal
+                # operator changes, the parent and the recovery ownership stay intact (v7).
+                try:
+                    refined, raudit = adapter.refine_generation_design(context, float(scale), preview, diag, after_diag,
+                                                                       folder / 'MEASURED_REFIT')
+                except Exception as exc:
+                    refined, raudit = None, {'status': 'REFIT_UNAVAILABLE', 'error': repr(exc)}
+                rec['measured_zonal_refit'] = raudit
+                base.atomic_json(folder / 'MEASURED_ZONAL_REFIT.json', raudit)
+                if refined is not None:
+                    context = refined
+                    # A secant of the old direction cannot be applied to a different zonal
+                    # vector: fresh model and preview cache on the corrected operator.
+                    model = Live04StepModel(evaluator, diag, context.get('v24917_step_model'), 1.0,
+                                            predictor=final_preview if context.get('_genfix2_mobility') else None)
+                    model.origin_mode = 'MEASURED_ZONAL_REFIT'
+                    direction = None
+                    upper = float(opts['max_scale'])
+                    continue
             if valid_capture:
                 model.set_measured(float(scale), after_diag)
             upper = float(scale) * 0.95

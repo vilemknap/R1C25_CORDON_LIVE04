@@ -1,4 +1,4 @@
-"""LIVE04: the cordon calibrator on the v7 (vilemknap/R1_15A2_V24917_v7 @ 977cef4) runtime.
+"""LIVE04: the cordon calibrator on the v7 (vilemknap/R1_15A2_V24917_v7 @ 7b4c681) runtime.
 
 Synthetic host only (tests/fake_live04.py); never native PTV evidence."""
 import numpy as np
@@ -51,9 +51,18 @@ def test_v7_donors_pinned_and_config_is_the_running_profile_policy():
     cfg = load_config()
     opts = v7.run_options(cfg)
     pin = read_json(ROOT / v7.RUN_OPTIONS_PIN)
-    # v7 runs P 0.75-2.5 / A 0.75-4.0; the cordon uses the user-approved P 0.5-3.0 / A 0.5-5.0.
-    assert pin['mg_min_ratio'] == 0.75 and pin['mg_max_ratio'] == 2.5
+    # v7 @ 7b4c681 itself runs P 0.5-3.0 / A 0.5-5.0 (LIVE04.3 user decision), no cordon deviation.
+    assert pin['mg_min_ratio'] == 0.5 and pin['mg_max_ratio'] == 3.0
     assert opts['mg_min_ratio'] == 0.5 and opts['mg_max_ratio'] == 3.0
+    assert set(v7.CORDON_DEVIATIONS) == {'long_generation_enabled', 'long_composite_td_enabled', 'fa_enabled'}
+    # LIVE04.4: the v7 Generation/SupplyMix/SEVRELAX3 options are the cordon options
+    assert opts['tg_catchup_enabled'] is False and opts['tg_max_trials'] == 6
+    assert (opts['sp_max_groups'], opts['sp_max_edges'], opts['sp_max_trials'], opts['sp_step_units']) == (24, 240, 4, [8, 6, 4, 2])
+    assert (opts['sev_protected_after_hard_geh'], opts['sev_max_single_profile_geh_increase'],
+            opts['sev_max_high_geh_increase']) == (40.0, 50.0, 30.0)
+    assert opts['sev_scope_budgets']['supply'] == {'max_severity20_relative_degradation': 0.35,
+                                                   'max_severity30_relative_degradation': 0.45,
+                                                   'max_geh40_net_count_increase': 30}
     assert all(opts[k] == val for k, val in v7.CORDON_DEVIATIONS.items())
     policy = v7.targeted_policy(cfg)
     assert policy['envelope']['domestic_hard_by_role'] == {'PROD': [0.5, 3.0], 'ATT': [0.5, 5.0]}
@@ -61,11 +70,12 @@ def test_v7_donors_pinned_and_config_is_the_running_profile_policy():
     assert policy['envelope']['zahr_reference_multiplier'] == [0.5, 10.0]
     mob = v7.mobility_options(cfg)
     assert [mob['lo'], mob['hi']] == [0.5, 3.0] and mob['ws_attraction_coefficient_band'] == [0.5, 5.0]
-    assert cfg['v7']['source_commit'].startswith('977cef4')
+    assert cfg['v7']['source_commit'].startswith('7b4c681')
 
 
 @pytest.mark.parametrize('over,error', [
-    ({'v7': {'run_options': {'mg_max_ratio': 2.0}}}, 'LIVE04_V7_CORDON_DEVIATION:mg_max_ratio'),
+    ({'v7': {'run_options': {'mg_max_ratio': 2.0}}}, 'LIVE04_V7_RUN_OPTION_DRIFT'),
+    ({'v7': {'run_options': {'tg_catchup_enabled': True}}}, 'LIVE04_V7_RUN_OPTION_DRIFT'),
     ({'v7': {'run_options': {'td_count_weight': 0.5}}}, 'LIVE04_V7_RUN_OPTION_DRIFT'),
     ({'v7': {'coefficient_envelope': {'PROD': [0.5, 3.5]}}}, 'LIVE04_PROD_ENVELOPE_MUST_EQUAL_MOBILITY_BAND'),
     ({'v7': {'coefficient_envelope': {'ATT': [0.5, 6.0]}}}, 'LIVE04_ATTRACTION_FENCE_MUST_EQUAL_ATT_ENVELOPE'),
@@ -144,7 +154,7 @@ def test_live04_cycle_v7_generation_long_mask_and_td(tmp_path):
     f = folder_of(tmp_path)
     assert r['status'] == 'MOCK_LIVE04_ACCEPTED' and r['accepted_by_block'] == {'GENERATION': 1, 'TD_CORDON': 1}
     assert r['objective_final'] < r['cycles'][0]['blocks'][0]['objective_after'] < r['objective_baseline']
-    assert r['v7_source']['commit'].startswith('977cef4')
+    assert r['v7_source']['commit'].startswith('7b4c681')
     assert r['mobility_band'] == [0.5, 3.0] and r['ws_attraction_band'] == [0.5, 5.0]
     gen = read_json(f / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
     assert gen['prediction_authority'] == 'FINAL_IMPLEMENTED_EFFECT_ROWS'
@@ -330,7 +340,10 @@ def test_rejected_generation_trial_then_second_trial_runs(tmp_path, monkeypatch,
     f = folder_of(tmp_path)
     gen = read_json(f / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
     if not native:
-        assert read_json(f / 'C01_GENERATION/STEP1_PLAN_02.json')['mode'] == 'SECANT_MEASURED'
+        # LIVE04.4 (v7 @ 7b4c681): the first rejection re-solves the zonal direction once
+        refit = read_json(f / 'C01_GENERATION/MEASURED_ZONAL_REFIT.json')
+        expected = 'MEASURED_ZONAL_REFIT' if refit['status'] == 'ZONAL_DIRECTION_REFITTED' else 'SECANT_MEASURED'
+        assert read_json(f / 'C01_GENERATION/STEP1_PLAN_02.json')['mode'] == expected
     statuses = [a['status'] for a in gen['attempts']]
     assert statuses[0] == 'REJECTED' and statuses[-1] == 'ELIGIBLE', statuses
     assert 'REJECTED_PRE_APPLY_GATE' not in statuses
@@ -346,6 +359,11 @@ def test_two_cycles_keep_mobility_anchor_and_long_support(tmp_path):
     assert (f / 'C02_GENERATION/GENERATION_BLOCK_RESULT.json').exists()
     gen2 = read_json(f / 'C02_GENERATION/GENERATION_BLOCK_RESULT.json')
     assert gen2['status'] in ('ACCEPTED', 'CONFIGURED_GENERATION_SEARCH_EXHAUSTED'), gen2.get('error')
+    # LIVE04.4: SupplyMix is due in cycle 2 (v7 schedule) and leaves a verified state
+    blocks2 = [b['block'] for b in r['cycles'][1]['blocks']]
+    assert blocks2 == ['GENERATION', 'SUPPLY_ADDVAL1']
+    sup = read_json(f / 'C02_SUPPLY_ADDVAL1/SUPPLYMIX_BLOCK_RESULT.json')
+    assert sup['status'] in ('ACCEPTED', 'NO_ACCEPTED_TRIAL', 'NO_DRIVER_BRANCH', 'NO_COST_SAFE_CANDIDATE'), sup.get('error')
     assert r['long_post_td_mask']['final_support_clean']
     assert not read_json(f / 'WRITE_AUDIT_SUMMARY.json')['forbidden_attempts']
 
@@ -439,9 +457,11 @@ def test_memory_td_rejected_jacobian_falls_back_to_probes(tmp_path, monkeypatch)
 
 def test_memory_route_correction_improves_tg_prediction(tmp_path, monkeypatch):
     _force_reject(monkeypatch, 'GENERATION', {1, 2, 3})       # cycle 1 stays at the baseline
-    v = Live04Visum(tmp_path / 'model', route_gamma=0.5)
+    # LIVE04.4: REFINE steps are at most +/-5 %, so a stronger route response keeps it measurable
+    v = Live04Visum(tmp_path / 'model', route_gamma=2.0)
     over = dict(GEN_ONLY, max_cycles=2, stop_after_cycle_without_change=False,
-                generation_search={'max_trials': 1})
+                generation_search={'max_trials': 1}, supply_mix={'enabled': False},
+                write_policy={'td_parameter_writes': False, 'supply_addval1_writes': False})
     go(tmp_path, v, over)
     f = folder_of(tmp_path)
     g1 = read_json(f / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')

@@ -569,6 +569,23 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
                 'partial_active': {no: bool(by[no]['active']) for no in partial}}
     check('OPERATIONS_TD_17_20', operations)
 
+    def supply_cold_chain():
+        """LIVE04.4 SupplyMix: the v7 cold chain needs an active reset operation before the joint assignment."""
+        from .live04_supply import options as supply_options
+        sopts = supply_options(lcfg)
+        if not sopts['enabled']:
+            return {'supply_mix': 'DISABLED'}
+        com = parent_module('r1_15a2_com_compat')
+        rows = com.operation_rows(guarded)
+        by = {int(r['no']): r for r in rows}
+        pos = int(sopts['reset_position'])
+        last = max(int(r['no']) for r in acfg['supply']['assignment_operations'])
+        require(pos in by and int(by[pos]['type']) == parent_module('r1_15a2_supply_mix_v24917').RESET_TYPE
+                and bool(by[pos]['active']), 'SUPPLYMIX_RESET_OPERATION:%d' % pos)
+        require(last > pos and bool(by[last]['active']), 'SUPPLYMIX_RESET_NOT_BEFORE_ASSIGNMENT')
+        return {'reset_position': pos, 'joint_assignment': last}
+    check('SUPPLYMIX_COLD_CHAIN', supply_cold_chain)
+
     def matrices():
         mask = parent_module('r1_15a2_long_post_td_mask_v24917')
         out = {}

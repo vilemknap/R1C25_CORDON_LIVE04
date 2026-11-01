@@ -1,6 +1,6 @@
 """v7 Generation design (GENFIX2 / MOBILITY2 / MOBILITYZONE1 / BDPA1) on the cordon incidence.
 
-Port of r1_15a2_trial_adapter_v24917._generation_design_live (v7 @ 977cef4) with
+Port of r1_15a2_trial_adapter_v24917._generation_design_live (v7 @ 7b4c681) with
 the profile-only parts replaced by their cordon equivalents:
 
   v7 (498 count profiles)                        LIVE04 (cordon, 136 observations)
@@ -13,7 +13,14 @@ the profile-only parts replaced by their cordon equivalents:
                                                   v7 yields zero LS steps, LIVE04 writes none
   _final_step_prediction on profile rows          the same operator on BOTH cordon methods
 
-Unchanged donor calls: tg.zone_bounds (role envelopes P 0.75..2.5 / A 0.75..4.0),
+LIVE04.4 adds the v7 measured zonal refit (refine_generation_design of v7 @ 7b4c681):
+after the first fully measured and rejected trial of a block the W/S + boundary
+direction is re-solved ONCE from the same parent with the minimum-change secant
+operator (zf.measured_refit_problem, half the original box x measured scale),
+then the same masks and mobility guards; the cordon effect operators of both
+methods get the same secant correction.  Native acceptance stays the authority.
+
+Unchanged donor calls: tg.zone_bounds (role envelopes P 0.5..3.0 / A 0.5..5.0),
 zguard.enrich/capture/constrain_fit_bounds/guard_projection, zf.build_problem/
 solve(nonlinear_pa_repair=True)/projection_rows/summary, bdgen.bounds/merge_pa/
 split_rows/design_payload (boundary_reference_multiplier), bdpa.margins_from_problem,
@@ -190,7 +197,8 @@ def design(adapter, diag, folder, context):
             rows, summary, _problem, solution, bd, all_bounds = fit_with_boundary(adapter, incidence, bounds, cfg, policy)
             if not rows:
                 raise RuntimeError('V24917_FIT_PRODUCED_NO_ROWS')
-            context['_genfix2_effect_model'] = {'problems': effect_problems(adapter, diag, all_bounds, cfg), 'bd': bd}
+            context['_genfix2_effect_model'] = {'problems': effect_problems(adapter, diag, all_bounds, cfg), 'bd': bd,
+                                                'problem': _problem}
     except Exception as exc:
         fallback = type(exc).__name__ + ':' + str(exc)
         adapter.v24917_counts['fit_fallbacks'] += 1
@@ -251,6 +259,100 @@ def design(adapter, diag, folder, context):
               % (phase, ratio, len(rows), int(zonal_projection.get('rows_clipped', 0) or 0),
                  mobility.get('status'), lp.get('ratio_after') or 0.0))
     return context
+
+
+def implemented_vector(var_keys, design, scale, bd):
+    """v7 _implemented_fit_vector: implemented log effects of the applied candidate."""
+    effects = {(r['family'], r['role'], int(r['zone_no'])): float(r['implemented_total_log_effect'])
+               for r in design.get('effect_rows', [])}
+    for key, value in ((bd or {}).get('steps') or {}).items():
+        fam, z = key.split('|')
+        effects[(fam, 'PA', int(z))] = float(scale) * float(value)
+    return np.array([effects.get(tuple(k), 0.0) for k in var_keys], dtype=float)
+
+
+def secant_operator(G, x, delta):
+    """Minimum-change (Broyden) correction G_new @ x = delta; never mutates G."""
+    G = np.asarray(G, dtype=float); x = np.asarray(x, dtype=float); delta = np.asarray(delta, dtype=float)
+    den = float(x @ x)
+    if den <= 1.0e-12:
+        raise ValueError('V24917_REFIT_NO_MEASURED_PARAMETER_DIRECTION')
+    out = G + np.outer(delta - G @ x, x / den)
+    if not np.isfinite(out).all():
+        raise ValueError('V24917_REFIT_NONFINITE_OPERATOR')
+    return out
+
+
+def refine(adapter, context, scale, preview, before, after, folder):
+    """v7 refine_generation_design on the cordon rows (one pure re-solve, no COM)."""
+    m = _mods()
+    folder = Path(folder); mkdir(folder)
+    policy = m.tg.policy_of(adapter.cfg)
+    effect = context.get('_genfix2_effect_model') or {}
+    problem, bd = effect.get('problem'), effect.get('bd')
+    if policy is None or problem is None:
+        return None, {'status': 'NO_ZONAL_EFFECT_OPERATOR'}
+    # LIVE04: SCHOOL TG fixed and LONG TG deferred, so no mixed LONG/SCHOOL actuator exists.
+    require(before.get('valid', True) and after.get('valid', True), 'V24917_REFIT_INVALID_MEASUREMENT')
+    require(before['observed_hash'] == after['observed_hash'], 'V24917_REFIT_OBSERVATION_AUTHORITY_CHANGED')
+    method = adapter.evaluator.method
+    inc = before['_incidence'][method]
+    index = {v17.pair_key(r['origin_station'], r['destination_station']): i for i, r in enumerate(inc.rows)}
+    mb = np.asarray(before['methods'][method]['model'], dtype=float)
+    ma = np.asarray(after['methods'][method]['model'], dtype=float)
+    delta = []
+    for row in problem.profile_rows:
+        i = index[int(row['countlocation_no'])]
+        if not np.isclose(mb[i], float(row['model']), rtol=1e-12, atol=1e-9):
+            raise ValueError('V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH')
+        delta.append(float(ma[i] - mb[i]))
+    x = implemented_vector(problem.var_keys, preview, scale, bd)
+    refined, audit = m.zf.measured_refit_problem(problem, x, np.array(delta), min(0.5, 0.5 * float(scale)))
+    fit_cfg = dict(policy.get('fit', {}), nonlinear_pa_repair=True)
+    solution = m.zf.solve(refined, fit_cfg)
+    audit['solver_converged'] = bool(solution['converged'])
+    if not solution['converged']:
+        return None, dict(audit, status='REFIT_SOLVER_NOT_CONVERGED')
+    rows = m.zf.projection_rows(refined, solution, float(adapter.cfg.get('min_add_log_step', 1.0e-5)))
+    rows, steps = m.bdgen.split_rows(rows)
+    new_bd = None
+    if bd is not None:
+        new_bd = m.bdgen.design_payload(steps, bd['current'])
+        new_bd['margins'] = copy.deepcopy(bd.get('margins', {}))
+    rows, zproj = m.zguard.guard_projection(rows, context['_mobilityzone1'])
+    authority = context['_genfix2_mobility']
+    rows, mobility = m.mguard.guard(rows, authority['zone_rows'], authority['options'])
+    if not mobility.get('passes', mobility.get('status') == 'DISABLED'):
+        return None, dict(audit, status='REFIT_MOBILITY_REJECTED')
+    if not rows and not (new_bd or {}).get('steps'):
+        return None, dict(audit, status='REFIT_NO_PARAMETER_DIRECTION')
+    # The cordon effect operators (both methods, all rows) get the same measured secant.
+    problems, operators = {}, {}
+    for meth, p in effect['problems'].items():
+        xm = implemented_vector(p['var_keys'], preview, scale, bd)
+        b = np.asarray(before['methods'][meth]['model'], dtype=float)
+        a = np.asarray(after['methods'][meth]['model'], dtype=float)
+        d = np.zeros(p['G'].shape[0])
+        for i, k in enumerate(p['order']):
+            if k is not None:
+                d[k] = a[i] - b[i]
+        G = secant_operator(p['G'], xm, d)
+        problems[meth] = dict(p, G=G)
+        operators[meth] = {'prediction_error_l2_before': float(np.linalg.norm(d - p['G'] @ xm)),
+                           'prediction_error_l2_after': float(np.linalg.norm(d - G @ xm))}
+    out = dict(context)
+    out['projection'] = m.core.ProjectionResult(rows=rows, weighted_rmse=0.0, family_summaries=[
+        {'family': f, 'method': m.zf.METHOD, 'converged': True} for f in m.zf.FAMILIES])
+    out['v24917_bd'] = new_bd
+    out['_genfix2_effect_model'] = {'problems': problems, 'bd': new_bd, 'problem': refined}
+    out['v24917_step_model'] = step_model(out, rows, new_bd)
+    audit.update(status='ZONAL_DIRECTION_REFITTED', fit=m.zf.summary(refined, solution, rows),
+                 cordon_effect_operators=operators, mobilityzone1=zproj, mobility_guard=mobility,
+                 rows=len(rows), boundary_steps=len((new_bd or {}).get('steps') or {}))
+    out['v24917'] = dict(context['v24917'], measured_zonal_refit=audit)
+    write_json(folder / 'MEASURED_ZONAL_REFIT.json', audit)
+    write_csv(folder / 'MEASURED_ZONAL_REFIT_ROWS.csv', rows)
+    return out, audit
 
 
 def validate_mobility_plan(context, design):

@@ -19,7 +19,8 @@
   "load_version": false,
   "overwrite_source_version": false,
   "save_accepted_version_new_file": true,
-  "long_post_td_mask_matrix_writes": true
+  "long_post_td_mask_matrix_writes": true,
+  "supply_addval1_writes": true
  },
  "isolated_copy_guard": {
   "required_version_name_tokens_any": [
@@ -378,10 +379,10 @@
  "generation_mode": "V24917_TARGETED_STEP1",
  "v7": {
   "source_repository": "vilemknap/R1_15A2_V24917_v7",
-  "source_commit": "977cef4e77ab67f159bbe392edc8d3d485dc72ee",
-  "source_note": "P2.5/A4 calibration running in Visum (user, 2026-10-31)",
-  "run_options_pin": "provenance/v24917_v7/R1_RUN_OPTIONS_V24917_V7_977cef4.json",
-  "run_options_source_sha256": "b25f81a9701bb4b756e503614983515820ec17a9c2e73bd0291174f57afccae6",
+  "source_commit": "7b4c681732080a28264c616daee87f7d23a8d643",
+  "source_note": "v7 after GEH relaxation SEVRELAX3, expanded SupplyMix 24/240/4, W/S P0.5-3/A0.5-5 and Generation without CATCH_UP (+/-5 %) (user request 2026-11-01)",
+  "run_options_pin": "provenance/v24917_v7/R1_RUN_OPTIONS_V24917_V7_7b4c681.json",
+  "run_options_source_sha256": "566e024fbab728b823681c8c2547ed39fd7f0b856f49e91cca7eccbbb757e28b",
   "run_options_environment_overrides": false,
   "run_options": {
    "td_policy": "ALWAYS",
@@ -391,15 +392,16 @@
    "generation_envelope_scale": 1,
    "td_during_catchup": true,
    "td_first_cycle": true,
-   "tg_catchup_enabled": true,
+   "tg_catchup_enabled": false,
    "td_count_weight": 0.6,
    "td_inner_mode": "DYNAMIC",
    "long_generation_enabled": false,
    "long_composite_td_enabled": false,
    "school_td_enabled": true,
-   "tg_max_trials": 3,
-   "td_realization_max_trials": 3,
-   "td_inner_max_evaluations": 60,
+   "tg_max_trials": 6,
+   "td_realization_max_trials": 5,
+   "td_inner_max_evaluations": 180,
+   "td_inner_budget_multiplier": 2,
    "ls_max_step_up": 0.5,
    "ls_max_step_down": 0.1,
    "ls_school_envelope": [
@@ -457,21 +459,40 @@
    "sp_enabled": true,
    "sp_every_n_cycles": 2,
    "sp_start_cycle": 2,
-   "sp_max_trials": 2,
+   "sp_max_trials": 4,
    "sp_step_units": [
     8,
-    4
+    6,
+    4,
+    2
    ],
-   "sp_max_groups": 12,
-   "sp_max_edges": 120,
+   "sp_max_groups": 24,
+   "sp_max_edges": 240,
    "sp_min_driver_geh": 10,
    "sp_drivers": "BOTH",
    "sp_cold_reset_position": 15,
    "sp_min_attribution_coverage": 0.5,
-   "sev_max_single_profile_geh_increase": 25,
-   "sev_max_high_geh_increase": 15,
+   "sev_max_single_profile_geh_increase": 50,
+   "sev_max_high_geh_increase": 30,
    "sev_extend_early_horizon": true,
-   "sev_protected_after_hard_geh": 0,
+   "sev_protected_after_hard_geh": 40,
+   "sev_scope_budgets": {
+    "generation": {
+     "max_severity20_relative_degradation": 0.2,
+     "max_severity30_relative_degradation": 0.25,
+     "max_geh40_net_count_increase": 10
+    },
+    "td": {
+     "max_severity20_relative_degradation": 0.4,
+     "max_severity30_relative_degradation": 0.5,
+     "max_geh40_net_count_increase": 25
+    },
+    "supply": {
+     "max_severity20_relative_degradation": 0.35,
+     "max_severity30_relative_degradation": 0.45,
+     "max_geh40_net_count_increase": 30
+    }
+   },
    "rb_tolerant_diagnostics": true,
    "rb_roster_reuse_proof": true,
    "td_max_survey_degradation": 1.25,
@@ -485,9 +506,7 @@
   "cordon_deviations": {
    "long_generation_enabled": "LONG zonal TG needs the profile LONG cache incidence; deferred as in v7 without it",
    "long_composite_td_enabled": "LONG TD is calibrated only by the profile/FineCDF runner",
-   "fa_enabled": "STEP1 always uses the full assignment (v7 STEP1 too)",
-   "mg_min_ratio": "User decision 2026-11-01: production envelope/mobility band 0.5 (v7: 0.75)",
-   "mg_max_ratio": "User decision 2026-11-01: production envelope/mobility band 3.0 (v7: 2.5)"
+   "fa_enabled": "STEP1 always uses the full assignment (v7 STEP1 too)"
   },
   "targeted_generation_policy": "DONOR_DEFAULT_POLICY_V7_ROLE_ENVELOPES",
   "coefficient_envelope": {
@@ -532,5 +551,21 @@
   "tg_single_node_curvature": 0.05,
   "max_age_cycles": 2,
   "role": "PREDICTION_AND_STEP_CHOICE_ONLY_NEVER_ACCEPTANCE"
+ },
+ "supply_mix": {
+  "enabled": true,
+  "role": "V7_SUPPLYMIX_ON_CORDON_ROWS_AFTER_GENERATION",
+  "drivers": "ACCEPTANCE_METHOD_ROWS_FIRST_LAST_PAIRS_AND_C17",
+  "options": "V7_RUN_OPTIONS_SP",
+  "policy_source": "provenance/live01/DONOR_EFFECTIVE_CONFIG_FORENSIC_ONLY.json",
+  "approval": "USER_DECISION_20261101_SUPPLYMIX_CORDON_DRIVEN"
+ },
+ "row_geh_guard": {
+  "enabled": true,
+  "role": "V7_SEVRELAX3_ON_CORDON_ROWS",
+  "rows": "ACCEPTANCE_METHOD_ROWS_WITH_POSITIVE_OBSERVATION",
+  "row_weight": 1.0,
+  "limits": "V7_RUN_OPTIONS_SEV",
+  "approval": "USER_DECISION_20261101_GEH_LIMITS_ON_CORDON_ROWS"
  }
 }

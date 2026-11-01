@@ -1,13 +1,14 @@
-"""v7 (vilemknap/R1_15A2_V24917_v7 @ 977cef4) mechanics for the cordon calibrator (LIVE04).
+"""v7 (vilemknap/R1_15A2_V24917_v7 @ 7b4c681) mechanics for the cordon calibrator (LIVE04).
 
 Donor modules in parent/ are byte-identical copies from the v7 repository at
-commit 977cef4e77ab67f159bbe392edc8d3d485dc72ee (hash-pinned below, checked at
-every run start).  This module installs, for ONE cordon run only, everything the
+commit 7b4c681732080a28264c616daee87f7d23a8d643 (hash-pinned below, checked at
+every run start; LIVE04.4 rebased them from 977cef4: Generation without CATCH_UP
+and REFINE caps +/-5 %, measured zonal refit, SupplyMix 24/240/4, SEVRELAX3).  This module installs, for ONE cordon run only, everything the
 v7 launcher installs that the cordon blocks use, and restores it on exit:
 
 * demand_policy_v1.load_options -> the pinned cordon run options (no env vars);
 * targeted_generation.patch_multiblock -> role-tagged coefficient references and
-  the role envelopes P [0.75, 2.5] / A [0.75, 4.0], ZAHR [0.5, 10];
+  the role envelopes P [0.5, 3.0] / A [0.5, 5.0], ZAHR [0.5, 10];
 * boundary_pa.install (BDPA1) -> boundary rows inside the P/A rebalance and gate;
 * long_school_generation.activate -> LONG/SCHOOL attributes in snapshot/rollback
   (SCHOOL TG stays fixed per AMDY, LONG TG is deferred, exactly as in v7);
@@ -24,33 +25,30 @@ from .common import ROOT, require, parent_module
 from .io import write_json, sha256
 
 SOURCE_REPOSITORY = 'vilemknap/R1_15A2_V24917_v7'
-SOURCE_COMMIT = '977cef4e77ab67f159bbe392edc8d3d485dc72ee'
-RUN_OPTIONS_PIN = 'provenance/v24917_v7/R1_RUN_OPTIONS_V24917_V7_977cef4.json'
-MODE = 'V7_977CEF4_TARGETED_STEP1_GENFIX2'
+SOURCE_COMMIT = '7b4c681732080a28264c616daee87f7d23a8d643'
+RUN_OPTIONS_PIN = 'provenance/v24917_v7/R1_RUN_OPTIONS_V24917_V7_7b4c681.json'
+MODE = 'V7_7B4C681_TARGETED_STEP1_GENFIX2_SUPPLYMIX_SEVRELAX3'
 # Options whose v7 value cannot be ported to the cordon objective (see docs/live04).
 CORDON_DEVIATIONS = {
     'long_generation_enabled': False,     # needs the profile LONG cache incidence (long_cache)
     'long_composite_td_enabled': False,   # LONG TD is calibrated by the profile/FineCDF runner only
     'fa_enabled': False,                  # STEP1 always uses the full assignment (as in v7 STEP1)
-    # User decision 2026-11-01: wider domestic W/S envelope for the cordon (P 0.5-3.0, A 0.5-5.0).
-    # The MOBILITY2/MOBILITYZONE1 production band must equal the PROD envelope, otherwise
-    # it would silently clip the wider coefficient range back to 0.75-2.5.
-    'mg_min_ratio': 0.5,
-    'mg_max_ratio': 3.0,
 }
+# W/S P 0.5-3.0 / A 0.5-5.0 (user decision 2026-11-01, LIVE04.3) is the v7 default since
+# e264314, so mg_min_ratio/mg_max_ratio are no longer cordon deviations.
 DONOR_FILES = {
-    'r1_15a2_zonal_count_fit_v24917.py': 'c05b60996c495343b3dc855ad58bf1683b0da61c1cd4205e66bb95632ce8b9fd',
-    'r1_15a2_targeted_generation_v24917.py': 'cea3f5d0707578f1fbf5f67a8ff9f023acdeafa7fcc005ce829c180bd9b26e8a',
-    'r1_15a2_step_search_v24917.py': '0876b10c65c6b6b44e49c13418677cdeb170b0f090053b916bc8b15d8c3d9f07',
+    'r1_15a2_zonal_count_fit_v24917.py': '43f49a80ebe807daf6b1c9d44e4894a7e50dbe1d100c58214f37eadb6299b08a',
+    'r1_15a2_targeted_generation_v24917.py': '3d9dc53d5f33d633c3319608bdad58f7aa25a0bfa02cebfc5a5ba854bc0d778d',
+    'r1_15a2_step_search_v24917.py': 'fec80cb36a507b2d1e40b4df74fbff1420db2ad2008939cd230d70c1fdb00664',
     'r1_15a2_boundary_generation_v24917.py': 'b437fcde80c8815a80911138665c3974e298d80e1c3ed4561a3862a931e32d5e',
     'r1_15a2_boundary_pa_v24917.py': 'a0a037a46570e34e0ff7ac85954959b90652e90e4f1e474a2a72d111c89a0958',
     'r1_15a2_long_school_generation_v24917.py': '3710e3aeca5ca5f39881d25b6838dcbdb44f42a3eb1dd353e0f494d054eb17b8',
-    'r1_15a2_combusy2_v24917.py': '21cfa0e83e99853268e3ec4777d583537eac58a80f1efc655ea2617109ab4f0f',
-    'r1_15a2_demand_policy_v1.py': '27d3b80da57cc92281ef74afb099523897114bbc84287c07b9e08312322a58a5',
+    'r1_15a2_combusy2_v24917.py': 'ae63f5927b98acb6e18feeb40206de59dc5078c1085bf89a6b0dcb16c764c2b7',
+    'r1_15a2_demand_policy_v1.py': '028894298d628c80f7dece561059c8619614aeeea07da41bf4aa443d75ec6b5e',
     'r1_15a2_perf_v24917.py': 'a2f08218e5e8931a4bb905599b8c6943b14a894dccb24c987a3032483d76ae2a',
-    'r1_15a2_td_count_blend_v24917.py': '313acb356557a23941a2ce1d9f422c016674402894374238074d891a3802ae64',
-    'r1_15a2_mobility_guard_v24917.py': '2e58fde661667c733e9136da36ca24dc53378f5ce2ab364777d211f64b9715ec',
-    'r1_15a2_mobility_zone_v24917.py': 'd74848fb7d97453bfa88949e2330e7115595ad67bb9ca9ecc013dbb6f5efb6b6',
+    'r1_15a2_td_count_blend_v24917.py': 'b9f9756f3215b07b6e53bd544328df3a2fea479134def1b28309b231f37fedc4',
+    'r1_15a2_mobility_guard_v24917.py': 'e079d63af6cafe7dc371689e769de0924d4c68d090ee08743a6e03803b2e5120',
+    'r1_15a2_mobility_zone_v24917.py': '7d664e8022ba6e95c3a11a458edd046b412ee1b0b460ec9e05cfdd1f3b7372f4',
     'r1_15a2_long_post_td_mask_v24917.py': 'ea50a146233dbb5f0d1d554effbef5574a5c84091d4afc334f50f4f8a6b276cd',
     'r1_15a2_long_support_distance_v24917.py': '79765255b057b1f09345ce4b7ac9874cd4b1fe91a09d996ba20d4c63223c02e9',
     'r1_15a2_long_distance_guard_v24917.py': 'c98bcf5013eaab983ed8ac52f946d008e795f9ad05d9748918acef826c15bee6',
@@ -58,6 +56,7 @@ DONOR_FILES = {
     'r1_15a2_long_composite_diagnostic_v24917.py': '0378bfd4bbe245f4bc00e5c31f208b57632ce6ef5b26fd2b3fcbae57c1185ecb',
     'r1_15a2_generation_state_v24917.py': '27f3fdafb6f1ce595866455b5841cd78992a923dd59e5fc4e9ec29e56a1b7a93',
     'r1_15a2_parent_equivalence_v24917.py': '9714a9390169c6dce91ea4ace6254131fd49871e8331b25f14bc7d4277491332',
+    'r1_15a2_supply_mix_v24917.py': 'e9b51daf800cf7d7ee3ede4384ce2c085099d700c23347798fd891daed51b50d',
     'r1_15a2_path_incidence_v24917.py': '3c4830a61fe3de9cb1a39a5ca8f203220a008585e1dd3f34d3dbd2dba787fb78',
 }
 
