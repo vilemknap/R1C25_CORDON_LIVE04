@@ -1,7 +1,8 @@
 R1 2025 LIVE04: kordonova kalibrace TG + TD (LIVE03) portovana na profilovy kalibrator v7
 (vilemknap/R1_15A2_V24917_v7 @ 977cef4, P2.5/A4 - verze, ktera bezi ve Visumu).
 - Pozorovani a cil beze zmeny proti LIVE03 (FIRST_LAST na Transit RPDI + 16 radku C17, rok 1,0).
-- TG: v7 GENFIX2 STEP1 - obalky podle role P 0,75-2,5 / A 0,75-4,0, MOBILITY2 + MOBILITYZONE1,
+- TG: v7 GENFIX2 STEP1 - obalky podle role P 0,5-3,0 / A 0,5-5,0 (od 2026-11-01; v7: 0,75-2,5 / 0,75-4,0),
+  MOBILITY2 + MOBILITYZONE1 se stejnymi pasmy,
   BDPA1, nativni predikce na zmrazenych cestach; SCHOOL TG pevne (AMDY), LONG TG odlozeno.
 - TD_CORDON: jako LIVE03 (b/c po rodinach, objective = jen kordon, IDP jen straz).
 - LONG post-TD maska >= 80 km (9697) pri kazdem nativnim prepoctu vcetne sond; baseline musi byt

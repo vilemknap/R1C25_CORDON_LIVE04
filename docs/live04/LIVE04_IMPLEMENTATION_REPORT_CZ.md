@@ -11,7 +11,7 @@ Kordónová část se nemění. Platí stejná pozorování (FIRST_LAST + C17, f
 | Donorové moduly v7 (20 souborů) | bajtové kopie, SHA-256 připnuté a ověřované při startu | `parent/`, `live04_v7.DONOR_FILES` |
 | Run options v7 | připnutý soubor `R1_RUN_OPTIONS.json` z 977cef4, změnit lze jen tři odchylky (kap. 3) | `provenance/v24917_v7/`, `CORDON_LIVE04_CONFIG.json` → `v7` |
 | Obálky podle role (TGBOUNDS v2) | P [0,75; 2,5], A [0,75; 4,0], ZAHR [0,5; 10], hranice [0,5; 2] | `tg.patch_multiblock` |
-| MOBILITY2 | produkční pás 0,75–2,5 (`mg_max_ratio` 2,5) + samostatný plot atrakce W/S 0,75–4,0 | návrh, náhled, kontrola před zápisem a po pokusu |
+| MOBILITY2 | produkční pás + samostatný plot atrakce W/S; od LIVE04.3 stejné jako obálky P 0,5–3,0 / A 0,5–5,0 (kap. 7) | návrh, náhled, kontrola před zápisem a po pokusu |
 | MOBILITYZONE1 | pevná reference AMDY FP pro každou zónu a účel, oříznutí mezí fitu, kontrola zastaralého rodiče před zápisem | `live04_generation`, `live04_adapter` |
 | BDPA1 | hraniční P/A v rebalancu a v bráně | `bdpa.install` + `bdpa.scope` |
 | Zonální fit | `nonlinear_pa_repair=True`, `boundary_reference_multiplier` | `live04_generation.fit_with_boundary` |
@@ -101,7 +101,7 @@ Mock `tests/fake_live04.py` rozšiřuje LIVE03:
 
 `tests/test_live04.py` pokrývá:
 
-- piny a politiku v7 (P2,5/A4, odchylky, drift, zdroj);
+- piny a politiku v7 (odchylky včetně obálek P 0,5–3,0 / A 0,5–5,0, drift, zdroj);
 - guard zápisů (jen matice masky, numpy float64, Add=False);
 - obnovu všech globálů po běhu;
 - rozhodnutí LONGGUARD1;
@@ -131,3 +131,21 @@ Výsledky regrese jsou v `LIVE04_TEST_RESULTS.txt`.
 3. **Typy matic:** 9291–9295 musí být DATA a 9305 FORMULA. Donor to čte z `DATASOURCETYPE` a na FORMULA se zastaví.
 4. **Délka:** sonda TG teď stojí dva přepočty poptávky na uzel, tedy čtyři na blok.
 5. **Oddělený Visum:** LIVE04 a běžící profilová kalibrace v7 nesmí běžet ve stejné instanci. Bootstrap hlídá kolizi modulů `r1_15a2_*` z jiné složky.
+
+## 7. LIVE04.3 – širší obálky domácích koeficientů W/S (rozhodnutí 2026-11-01)
+| | v7 (profilová kalibrace) | LIVE04.3 (kordón) |
+|---|---|---|
+| ADD_PROD_W/S | 0,75–2,5 | **0,5–3,0** |
+| ADD_ATT_W/S | 0,75–4,0 | **0,5–5,0** |
+
+Změna se musí projevit na čtyřech místech najednou. Jinak by nejužší z nich obálku tiše ořízlo:
+1. **Obálky politiky TG** (`domestic_hard_by_role`, `refine_domestic_soft_by_role`) v `live04_v7.targeted_policy` ze `v7.coefficient_envelope`.
+2. **Produkční pás MOBILITY2/MOBILITYZONE1** pro W/S: `run_options.mg_min_ratio = 0,5`, `mg_max_ratio = 3,0`. Obě hodnoty jsou deklarované odchylky od pinu v7. Pás SCHOOL je min(3,0; 2,0) = 0,5–2,0 a LONG zůstává 0,5–1,5.
+3. **Plot atrakce W/S** `ws_attraction_coefficient_band = [0,5; 5,0]`.
+4. **Konstanta donoru `ATTRACTION_BAND`.** Donor ji porovnává s plotem, a proto se na dobu jednoho běhu nastaví na stejnou hodnotu a po běhu se vrátí.
+
+Validace konfigurace vynucuje PROD = pás mobility a ATT = plot atrakce. Krok na cyklus se nemění (CATCH_UP +50 %/−20 %, REFINE +25 %/−20 %).
+
+Test `test_wider_domestic_envelope_reaches_the_model` ověří na mocku, že přijatý stav přesáhne 2,5 a 4,0 a nepřekročí 3,0 a 5,0.
+
+**Pozor:** profilová kalibrace v7 má dál 0,75–2,5 / 0,75–4,0. Pokud by se na kordónem kalibrovaný stav pustila v7, koeficienty mimo její obálku smí jen vracet dovnitř.

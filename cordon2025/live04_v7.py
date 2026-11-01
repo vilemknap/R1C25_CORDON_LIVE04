@@ -32,6 +32,11 @@ CORDON_DEVIATIONS = {
     'long_generation_enabled': False,     # needs the profile LONG cache incidence (long_cache)
     'long_composite_td_enabled': False,   # LONG TD is calibrated by the profile/FineCDF runner only
     'fa_enabled': False,                  # STEP1 always uses the full assignment (as in v7 STEP1)
+    # User decision 2026-11-01: wider domestic W/S envelope for the cordon (P 0.5-3.0, A 0.5-5.0).
+    # The MOBILITY2/MOBILITYZONE1 production band must equal the PROD envelope, otherwise
+    # it would silently clip the wider coefficient range back to 0.75-2.5.
+    'mg_min_ratio': 0.5,
+    'mg_max_ratio': 3.0,
 }
 DONOR_FILES = {
     'r1_15a2_zonal_count_fit_v24917.py': 'c05b60996c495343b3dc855ad58bf1683b0da61c1cd4205e66bb95632ce8b9fd',
@@ -74,10 +79,19 @@ def run_options(cfg):
     return dp.validate(dict(cfg['v7']['run_options']))
 
 
+def coefficient_envelope(cfg):
+    env = cfg['v7']['coefficient_envelope']
+    return {'PROD': [float(x) for x in env['PROD']], 'ATT': [float(x) for x in env['ATT']]}
+
+
 def targeted_policy(cfg):
+    """v7 DEFAULT_POLICY with the cordon's domestic W/S role envelope (hard = soft, as v7)."""
     tg = parent_module('r1_15a2_targeted_generation_v24917')
     policy = copy.deepcopy(tg.DEFAULT_POLICY)
     policy['catchup_until_model_obs_ratio'] = float(cfg['v7']['catchup_until_model_obs_ratio'])
+    env = coefficient_envelope(cfg)
+    policy['envelope']['domestic_hard_by_role'] = {r: list(v) for r, v in env.items()}
+    policy['envelope']['refine_domestic_soft_by_role'] = {r: list(v) for r, v in env.items()}
     return tg.validate_policy(policy)
 
 
@@ -89,9 +103,15 @@ def mobility_options(cfg):
     old = dp.load_options
     try:
         dp.load_options = lambda root=None, environ=None: dict(opts)
-        return mg.options()
+        out = _ORIGINAL_MG_OPTIONS(mg)()
     finally:
         dp.load_options = old
+    out['ws_attraction_coefficient_band'] = list(coefficient_envelope(cfg)['ATT'])
+    return out
+
+
+def _ORIGINAL_MG_OPTIONS(mg):
+    return getattr(mg.options, '__live04_original__', mg.options)
 
 
 # ------------------------------------------------------------------ scope
@@ -120,7 +140,9 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
              'attrs': list(mb.GENERATION_ATTRS), 'attr_map': dict(mb.GENERATION_ATTR_MAP),
              'bd_state': copy.deepcopy(bdgen.STATE), 'bdpa_state': copy.deepcopy(bdpa._STATE),
              'step_state': copy.deepcopy(step._STATE), 'retry_budget': com._retry_budget,
-             'perf_timing': copy.deepcopy(perf._STATE['timing']), 'execute': rt.execute_procseq}
+             'perf_timing': copy.deepcopy(perf._STATE['timing']), 'execute': rt.execute_procseq,
+             'mg_options': parent_module('r1_15a2_mobility_guard_v24917').options,
+             'mg_attraction_band': parent_module('r1_15a2_mobility_guard_v24917').ATTRACTION_BAND}
     status = {'schema': 'LIVE04_V7_RUNTIME_V1', 'mode': MODE, 'source_repository': SOURCE_REPOSITORY,
               'source_commit': SOURCE_COMMIT, 'donor_files': verify_donor_files(),
               'run_options': {k: v for k, v in opts.items() if not k.startswith('_')},
@@ -137,6 +159,16 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
         status['boundary'] = v17.activate_boundary({'v24917': {'boundary_zone_policy': cfg['v7']['boundary_zone_policy']}},
                                                    opts, guarded_visum, zones, actuatable_zones, bdgen)
         status['mobility'] = mobility_options(cfg)
+        mg = parent_module('r1_15a2_mobility_guard_v24917')
+        fixed_mobility = dict(status['mobility'])
+
+        def cordon_mobility_options():
+            return dict(fixed_mobility, ws_attraction_coefficient_band=list(fixed_mobility['ws_attraction_coefficient_band']))
+        cordon_mobility_options.__live04_original__ = saved['mg_options']
+        mg.options = cordon_mobility_options        # every donor call sees the cordon bands
+        # The donor fence also compares the band with its module constant: same value, one run only.
+        mg.ATTRACTION_BAND = tuple(float(x) for x in fixed_mobility['ws_attraction_coefficient_band'])
+        status['coefficient_envelope'] = coefficient_envelope(cfg)
         cb.install_budget_floor(com, float(opts['cb_max_wait_seconds']))
         filter_info = cb.install_message_filter(float(opts['cb_max_wait_seconds']))
         status['combusy2'] = {'budget_floor_seconds': float(opts['cb_max_wait_seconds']),
@@ -158,6 +190,8 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
         if restore_mask is not None:
             restore_mask()
         rt.execute_procseq = saved['execute']
+        parent_module('r1_15a2_mobility_guard_v24917').options = saved['mg_options']
+        parent_module('r1_15a2_mobility_guard_v24917').ATTRACTION_BAND = saved['mg_attraction_band']
         dp.load_options = saved['load_options']
         mb._reference_coefficient = saved['reference']
         mb._multiplicative_coefficient_bounds = saved['hard']

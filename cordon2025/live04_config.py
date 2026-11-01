@@ -49,7 +49,8 @@ def validate_v7(cfg, allow_donor_overrides=False):
     opts = v.get('run_options')
     require(isinstance(opts, dict) and set(opts) == set(src), 'LIVE04_V7_RUN_OPTIONS_KEYS')
     for key, value in CORDON_DEVIATIONS.items():
-        require(opts.get(key) is value, 'LIVE04_V7_CORDON_DEVIATION:' + key)
+        require(type(opts.get(key)) is type(value) or isinstance(value, float), 'LIVE04_V7_CORDON_DEVIATION:' + key)
+        require(opts.get(key) == value, 'LIVE04_V7_CORDON_DEVIATION:' + key)
     require(set(v.get('cordon_deviations') or {}) == set(CORDON_DEVIATIONS), 'LIVE04_V7_DEVIATIONS_DOCUMENTED')
     drift = [k for k, val in opts.items() if k not in CORDON_DEVIATIONS and src.get(k) != val]
     require(allow_donor_overrides or not drift, 'LIVE04_V7_RUN_OPTION_DRIFT:' + ','.join(drift))
@@ -69,10 +70,19 @@ def validate_v7(cfg, allow_donor_overrides=False):
             and lm.get('policy') == 'POST_TD_MULTIPLICATION_ACCEPT_VOLUME_LOSS', 'LIVE04_V7_LONG_MASK_POLICY')
     require(cfg['write_policy'].get('long_post_td_mask_matrix_writes') is lm['enabled'],
             'LIVE04_LONG_MASK_WRITE_POLICY_MUST_MATCH')
+    env = v.get('coefficient_envelope') or {}
+    require(set(env) == {'PROD', 'ATT', 'approval'} and isinstance(env.get('approval'), str) and env['approval'],
+            'LIVE04_COEFFICIENT_ENVELOPE_FIELDS')
+    for role in ('PROD', 'ATT'):
+        band = env[role]
+        require(isinstance(band, list) and len(band) == 2 and all(isinstance(x, (int, float)) for x in band)
+                and 0.0 < float(band[0]) < 1.0 < float(band[1]) <= 20.0, 'LIVE04_COEFFICIENT_ENVELOPE:' + role)
+    require([float(x) for x in env['PROD']] == [float(validated['mg_min_ratio']), float(validated['mg_max_ratio'])],
+            'LIVE04_PROD_ENVELOPE_MUST_EQUAL_MOBILITY_BAND')
     mg = v.get('mobility_guards') or {}
     require(mg.get('production_band_from_run_options') is True and mg.get('mobilityzone1') is True
-            and mg.get('ws_attraction_coefficient_band') == list(parent_module('r1_15a2_mobility_guard_v24917').ATTRACTION_BAND),
-            'LIVE04_V7_MOBILITY_GUARDS')
+            and [float(x) for x in mg.get('ws_attraction_coefficient_band') or []] == [float(x) for x in env['ATT']],
+            'LIVE04_ATTRACTION_FENCE_MUST_EQUAL_ATT_ENVELOPE')
     return v
 
 

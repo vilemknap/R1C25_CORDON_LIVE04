@@ -476,8 +476,8 @@
    "rb_roster_reuse_proof": true,
    "td_max_survey_degradation": 1.25,
    "mg_enabled": true,
-   "mg_min_ratio": 0.75,
-   "mg_max_ratio": 2.5,
+   "mg_min_ratio": 0.5,
+   "mg_max_ratio": 3.0,
    "td_joint_enabled": true,
    "td_joint_outer_isolates": true,
    "td_joint_max_isolates": 2
@@ -485,9 +485,22 @@
   "cordon_deviations": {
    "long_generation_enabled": "LONG zonal TG needs the profile LONG cache incidence; deferred as in v7 without it",
    "long_composite_td_enabled": "LONG TD is calibrated only by the profile/FineCDF runner",
-   "fa_enabled": "STEP1 always uses the full assignment (v7 STEP1 too)"
+   "fa_enabled": "STEP1 always uses the full assignment (v7 STEP1 too)",
+   "mg_min_ratio": "User decision 2026-11-01: production envelope/mobility band 0.5 (v7: 0.75)",
+   "mg_max_ratio": "User decision 2026-11-01: production envelope/mobility band 3.0 (v7: 2.5)"
   },
   "targeted_generation_policy": "DONOR_DEFAULT_POLICY_V7_ROLE_ENVELOPES",
+  "coefficient_envelope": {
+   "PROD": [
+    0.5,
+    3.0
+   ],
+   "ATT": [
+    0.5,
+    5.0
+   ],
+   "approval": "USER_DECISION_20261101_P0.5-3.0_A0.5-5.0"
+  },
   "catchup_until_model_obs_ratio": 0.8,
   "boundary_zone_policy": "CONFIGURED_ZONES_POSITIVE_WS_PA_AND_NO_ADD_ZAHR_ACTUATOR",
   "long_school": "SCHOOL_TG_FIXED_AMDY_LONG_TG_DEFERRED",
@@ -502,8 +515,8 @@
   "mobility_guards": {
    "production_band_from_run_options": true,
    "ws_attraction_coefficient_band": [
-    0.75,
-    4.0
+    0.5,
+    5.0
    ],
    "mobilityzone1": true
   }

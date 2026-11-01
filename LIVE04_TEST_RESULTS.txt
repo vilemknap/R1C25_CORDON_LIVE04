@@ -1,9 +1,9 @@
-LIVE04.2 (TRANSFER2025 + LIVE04.1) full offline regression from the extracted release ZIP (2 shards), 2026-10-31
+LIVE04.3 (domestic envelope P 0.5-3.0 / A 0.5-5.0 + TRANSFER2025 + LIVE04.1) full offline regression from the extracted release ZIP (2 shards), 2026-11-01
 Synthetic mock only - NOT native PTV Visum evidence.
-== shard 0: tests/test_aggressive_integration.py tests/test_aggressive_solver.py tests/test_budget.py tests/test_combusy_startup_fix2.py tests/test_diagfast_geometry.py tests/test_diagfast_patch_guards.py tests/test_diagfast_telemetry_safety.py tests/test_hardening.py tests/test_live01_baseline.py tests/test_live01_observations.py tests/test_live01_visum.py tests/test_live02_units.py tests/test_live03.py tests/test_optimizer.py tests/test_practical_limits_fix3.py tests/test_transfer2025.py tests/test_v2_port_identity.py tests/test_v2_session.py tests/test_visum_bootstrap.py 
-452 passed, 9 skipped in 368.42s (0:06:08)
+== shard 0
+452 passed, 9 skipped in 383.50s (0:06:23)
 EXIT 0
-== shard 1: tests/test_aggressive_policy.py tests/test_authority.py tests/test_combusy_entry_fix2.py tests/test_diagfast_extended.py tests/test_diagfast_pages.py tests/test_diagfast_runtime.py tests/test_feasibility.py tests/test_incidence.py tests/test_live01_hardening.py tests/test_live01_recovery.py tests/test_live02_cycle.py tests/test_live02_v24917.py tests/test_live04.py tests/test_perf01_cache.py tests/test_startup_hardening.py tests/test_v2_io.py tests/test_v2_release_verifier.py tests/test_v2_state_targeting.py tests/test_visum_startup.py 
-477 passed, 11 skipped in 4085.17s (1:08:05)
+== shard 1
+482 passed, 11 skipped in 4278.19s (1:11:18)
 EXIT 0
-TOTAL: 929 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed
+TOTAL: 934 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed

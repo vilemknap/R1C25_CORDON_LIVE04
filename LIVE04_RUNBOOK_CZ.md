@@ -4,8 +4,8 @@
 Postup je stejný jako v LIVE03: TG + TD na pozorováních ze Sprievodné správy (FIRST_LAST + C17), nativní predikce na zmrazených cestách a TD_CORDON s guardem IDP. Pravidla Generation a LONG jsou ale převzatá **z v7 @ 977cef4**, tedy z verze, která teď běží ve Visumu:
 
 1. **TG:**
-   - obálky podle role: P 0,75–2,5 a A 0,75–4,0 (ZAHR 0,5–10, hranice 0,5–2);
-   - MOBILITY2 (produkční pás 0,75–2,5 a plot atrakce W/S 0,75–4,0);
+   - obálky podle role: **P 0,5–3,0 a A 0,5–5,0** (rozhodnutí 2026-11-01; v7 má 0,75–2,5 / 0,75–4,0), ZAHR 0,5–10, hranice 0,5–2;
+   - MOBILITY2 (produkční pás 0,5–3,0 a plot atrakce W/S 0,5–5,0, vždy stejné jako obálky);
    - MOBILITYZONE1 (pevná reference AMDY FP pro každou zónu);
    - BDPA1 a STEP1 podle GENFIX2 (predikce finálního kandidáta, brána s mobilitou, zmenšení ×0,75 před zápisem, vlastnictví obnovy).
 2. **SCHOOL TG** zůstává pevné (AMDY). **LONG TG** je odložené, stejně jako ve v7 bez LONG cache.
@@ -66,6 +66,7 @@ Typické zastavení před prvním zápisem:
   - `enabled`;
   - `require_masked_baseline`, výchozí `true`, nedoporučuje se vypínat;
   - `minimum_km` = 80 (pevné podle v7).
+- **`v7.coefficient_envelope`**: obálka koeficientů W/S podle role (PROD [0,5; 3,0], ATT [0,5; 5,0]). Validace vynucuje, že `run_options.mg_min_ratio`/`mg_max_ratio` = PROD a `mobility_guards.ws_attraction_coefficient_band` = ATT. Jinak by nejužší mez obálku tiše ořízla.
 - **`write_policy.long_post_td_mask_matrix_writes`** musí odpovídat `v7.long_post_td_mask.enabled`.
 - **`memory`** (LIVE04.1): paměť mezi cykly. Přenáší Jacobián TD s ověřovací sondou, korekci změny tras v TG a volí počet uzlů. Ovlivňuje jen predikci a volbu kroku, nikdy přijetí. `enabled=false` vrací přesně chování LIVE04. Podrobně: `docs/live04/LIVE04_1_MEMORY_CZ.md`.
 
