@@ -9,6 +9,7 @@ Každý krok spouštěj v **čerstvé instanci Visumu**. V instanci, kde běžel
 |---|---|---|---|
 | 1. EXPORT | kalibrovaná verze 2022 (poslední přijatý stav po cyklu 06) | `RUN_R1_2022_EXPORT_CALIBRATED_PARAMETERS.py` | nic |
 | 2. IMPORT | **kopie** modelu 2025 (název obsahuje `LIVE04`/`KOPIE`/`COPY`/`TEST`/`TRIAL`/`CALIB`, nesmí obsahovat `2022`) | `RUN_R1_2025_IMPORT_AND_RECOMPUTE.py` | parametry + jeden přepočet + nová verze |
+| 2b. RECOMPUTE (místo kroků 1–2, když už koeficienty v kopii jsou) | **kopie** modelu 2025 se zkalibrovanými koeficienty | `RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py` | jen přepočet + nová verze, žádné parametry |
 | 3. READINESS (volitelně znovu) | libovolná verze 2025 | `RUN_R1_2025_LIVE04_READINESS.py` | nic |
 
 Výstupy: `%LOCALAPPDATA%\R1C25_TRANSFER2025\<EXPORT|IMPORT|READINESS>_<id>\00_RESULT.json`.
@@ -47,6 +48,21 @@ Přenášejí se **parametry**, ne matice. Poptávka 2025 se z nich přepočte n
 6. **READINESS** na výsledku.
 
 Při chybě po prvním zápisu se parametry vrátí na hodnoty před importem. Poptávka ale může zůstat přepočtená, takže kopii znovu otevři (`model_state = PARAMETERS_RESTORED_DEMAND_MAY_BE_RECOMPUTED_REOPEN_THE_COPY`).
+
+## RECOMPUTE – bez importu koeficientů (od 2026-11-03)
+Pro kopii 2025, ve které už koeficienty jsou (např. scénářová verze `R1_CSD22_kal_2025.ver` vytvořená z kalibrovaného 2022). Nepotřebuje export 2022 a nic z parametrů nezapisuje.
+
+1. Ulož kopii pod názvem s `2025` a `KOPIE`/`COPY`/`TEST`/`TRIAL`/`CALIB`/`LIVE04`, bez `2022` (např. `R1_CSD22_kal_2025_KOPIE.ver`).
+2. V čerstvém Visumu ji otevři a spusť `RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py`.
+3. Skript:
+   - **před prvním zápisem** ověří, že síť obsahuje všech 32 směrových hran 16 kordonových stanic (`STATION_MAPPING.csv`); jinak skončí `RECOMPUTE_BASE_CORDON_STATION_LINKS_MISSING_IN_NETWORK` a model zůstane beze změny;
+   - uloží snímek koeficientů zón, TD b/c a ADDVAL1 (`PARAMETERS_BEFORE.json`);
+   - provede jeden přepočet v7 s ořezem LONG (stejně jako IMPORT) – tím vzniknou i uložené cesty;
+   - ověří, že žádná procedura koeficienty, TD ani ADDVAL1 nezměnila, a že je podpora LONG čistá;
+   - uloží novou verzi `<kopie>_LIVE04_BASE_<id>.ver` a spustí READINESS (bez kontroly shody s exportem).
+4. Výsledek: `%LOCALAPPDATA%\R1C25_TRANSFER2025\RECOMPUTE_<id>\00_RESULT.json`, `status = RECOMPUTED_SAVED`, `readiness = READY_FOR_LIVE04`.
+
+Zápisy: jen matice masky LONG (9111–9115, 9291–9295) a nová .ver; guard zakazuje zápis zónových atributů, TD i ADDVAL1.
 
 ## READINESS kontroluje (bez zápisu)
 1. Piny release a donorů v7.

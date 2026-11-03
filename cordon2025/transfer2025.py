@@ -472,6 +472,124 @@ def import_and_recompute(visum, *, output_root=None, config_path=None, config_ov
     return result
 
 
+# ------------------------------------------------------------------ RECOMPUTE ONLY (no parameter import)
+def _parameter_snapshot(m):
+    """Calibrated parameters that the recompute must not change (read-only)."""
+    attrs = sorted({a for g, names in attribute_groups().items() if g != 'boundary_pa_volumes' for a in names})
+    zone, missing = {}, []
+    for a in attrs:
+        try:
+            zone[a] = m.read_zone_values(a)
+        except Exception:
+            missing.append(a)                    # optional attribute absent in this model
+    for g in REQUIRED_GROUPS:
+        for a in attribute_groups()[g]:
+            require(a in zone, 'RECOMPUTE_BASE_REQUIRED_ATTRIBUTE_MISSING:' + a)
+    links = {k: float(r['addval1']) for k, r in m.link_rows().items()}
+    return {'zone_attributes': zone, 'missing_optional_attributes': missing,
+            'td': _td_rows(m.visum), 'addval1': links}
+
+
+def _snapshot_diff(before, after):
+    diffs = []
+    for a, rows in before['zone_attributes'].items():
+        cur = after['zone_attributes'].get(a, {})
+        bad = [z for z, v in rows.items() if abs(cur.get(z, float('nan')) - v) > 1e-9 * max(1.0, abs(v))
+               or not math.isfinite(cur.get(z, float('nan')))]
+        if bad:
+            diffs.append({'attr': a, 'zones': len(bad), 'examples': bad[:5]})
+    if before['td'] != after['td']:
+        diffs.append({'td': 'CHANGED'})
+    bad = [k for k, v in before['addval1'].items() if after['addval1'].get(k) != v]
+    if bad or set(before['addval1']) != set(after['addval1']):
+        diffs.append({'addval1_links': len(bad), 'examples': bad[:5]})
+    return diffs
+
+
+def _station_link_precheck(m):
+    """Before any write: the 32 directed cordon station links must exist in the open network."""
+    from .authority import mapping
+    stations, _ = mapping(ROOT / 'data/audited/STATION_MAPPING.csv')
+    links = m.link_rows()
+    missing = sorted({sid for key, sid in stations.items() if link_key(*key) not in links})
+    require(not missing, 'RECOMPUTE_BASE_CORDON_STATION_LINKS_MISSING_IN_NETWORK:stations=%s' % missing)
+    return {'directed_station_links': len(stations), 'all_present': True}
+
+
+def recompute_base(visum, *, output_root=None, config_path=None, config_overrides=None, options=None):
+    """2025 copy whose calibrated parameters are ALREADY in place: no export, no parameter write.
+
+    One v7 recompute with the LONG post-TD mask (creates the assignment paths), checks that no
+    procedure changed the zone coefficients / TD b/c / ADDVAL1, saves a NEW version
+    <copy>_LIVE04_BASE_<id>.ver and runs READINESS (without PARAMETERS_EQUAL_EXPORT).
+    """
+    from .live02_cycle import isolated_copy_guard
+    from .live04_long_mask import install_scoped, support_report
+    rt = parent_module('r1_15a2_runtime_v1')
+    tcfg = load_transfer_config(config_path, config_overrides)
+    folder = _run_folder(output_root, 'RECOMPUTE')
+    lcfg, acfg = _adapter_cfg()
+    audit = TransferWriteAudit(folder / 'WRITE_AUDIT.jsonl')
+    guarded = TransferGuardedCOM(visum, 'Visum', audit)
+    result = {'schema': 'R1_TRANSFER2025_RECOMPUTE_BASE_RESULT_V1', 'folder': str(folder), 'status': 'STARTED',
+              'parameters_imported': False, 'parameter_writes': 0, 'model_mutated': False,
+              'load_version_called': False, 'source_version_overwritten': False, 'direct_od_matrix_writes': False}
+    try:
+        target_path, _ = _source_version(visum)
+        require(target_path and Path(target_path).suffix.lower() == '.ver', 'RECOMPUTE_BASE_OPEN_A_SAVED_VER_FIRST')
+        result['target_version'] = target_path
+        result['copy_guard'] = isolated_copy_guard(lcfg, target_path)
+        m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'])
+        result['station_links'] = _station_link_precheck(m)
+        before = _parameter_snapshot(m)
+        write_json(folder / 'PARAMETERS_BEFORE.json', before)
+        result['parameters'] = {'zone_attributes': len(before['zone_attributes']),
+                                'missing_optional_attributes': before['missing_optional_attributes'],
+                                'td_components': len(before['td']), 'links': len(before['addval1'])}
+        audit.long_mask_writes = True
+        result['model_mutated'] = True
+        status, restore = install_scoped(rt)
+        try:
+            gap = m.assign_for_block(folder / 'RECOMPUTE', 'GENERATION')
+        finally:
+            restore()
+        result['recompute'] = {'gap': gap, 'mask_hook': status}
+        after = _parameter_snapshot(m)
+        diffs = _snapshot_diff(before, after)
+        require(not diffs, 'RECOMPUTE_BASE_PARAMETERS_CHANGED_BY_PROCEDURE:' + repr(diffs)[:800])
+        support = support_report(m, folder, 'AFTER_RECOMPUTE')
+        require(support['support_clean'], 'RECOMPUTE_BASE_LONG_SUPPORT_NOT_CLEAN_AFTER_RECOMPUTE')
+        result['long_support_clean'] = True
+        src = Path(target_path)
+        target = src.with_name(src.stem + '_LIVE04_BASE_' + uuid.uuid4().hex[:8] + src.suffix)
+        require(not target.exists() and target.resolve() != src.resolve(), 'RECOMPUTE_BASE_SAVE_TARGET_INVALID')
+        src_sha = sha256(src) if src.is_file() else None
+        audit.save_target = target
+        rt.save_version(guarded, target)
+        audit.save_target = None
+        require(src_sha is None or sha256(src) == src_sha, 'RECOMPUTE_BASE_SOURCE_VERSION_CHANGED_BY_SAVE')
+        result['saved_version'] = {'path': str(target), 'sha256': sha256(target)}
+        result['status'] = 'RECOMPUTED_SAVED'
+        summary = audit.summary()
+        require(summary['addval1_writes'] == 0 and not summary['forbidden_attempts'], 'RECOMPUTE_BASE_UNEXPECTED_WRITE')
+        result['write_audit'] = summary
+        write_json(folder / '00_RESULT.json', result)
+    except BaseException as exc:
+        result.update(status='RECOMPUTE_BASE_FAILED', reason=exception_text(exc),
+                      model_state=('DEMAND_MAY_BE_RECOMPUTED_REOPEN_THE_COPY' if result['model_mutated']
+                                   else 'UNCHANGED_NO_WRITE'))
+        result['write_audit'] = audit.summary()
+        write_json(folder / '99_TRACEBACK.json', {'traceback': traceback.format_exc()})
+        write_json(folder / '00_RESULT.json', result)
+        raise
+    if tcfg['readiness_after_import']:
+        result['readiness'] = readiness(visum, output_root=output_root, options=options, expected_parameters=None,
+                                        baseline_capture=tcfg['readiness_baseline_capture'],
+                                        transfer_cfg=tcfg)['status']
+        write_json(folder / '00_RESULT.json', result)
+    return result
+
+
 # ------------------------------------------------------------------ READINESS
 def _parameter_identity(export, m, tcfg):
     diffs = []

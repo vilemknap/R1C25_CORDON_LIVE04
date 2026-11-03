@@ -184,3 +184,56 @@ def test_transfer_launchers(tmp_path):
     a = calibrated_2022(tmp_path)
     result = bootstrap.launch({'Visum': a}, 'EXPORT', output_root=tmp_path / 'out')
     assert result['status'] == 'EXPORTED', result
+
+
+# ---------------------------------------------------------------- RECOMPUTE (coefficients already in place)
+def test_recompute_base_without_export_writes_no_parameter_and_is_ready(tmp_path):
+    b = Live04Visum(tmp_path / 'm2025', masked_start=False)
+    for r in b.Net.Zones.rows[:50]:
+        r['ADD_PROD_W'] = 1.2                              # coefficients transferred earlier by the user
+    b.writes.clear(); b.allowed_writes.clear()
+    z0 = zones(b); t0 = td(b); a0 = [r_['ADDVAL1'] for r_ in b.Net.Links.rows]
+    opened = b.IO.CurrentVersionFile
+    r = tr.recompute_base(b, output_root=tmp_path / 'out', options=OPT)
+    assert r['status'] == 'RECOMPUTED_SAVED' and r['readiness'] == 'READY_FOR_LIVE04', r
+    assert r['parameters_imported'] is False and r['station_links']['all_present']
+    assert zones(b) == z0 and td(b) == t0 and [r_['ADDVAL1'] for r_ in b.Net.Links.rows] == a0
+    assert not list(tr.Path(tmp_path / 'out').glob('EXPORT_*'))
+    assert r['long_support_clean'] and '_LIVE04_BASE_' in r['saved_version']['path']
+    assert b.saved_versions == [r['saved_version']['path']]
+    assert tr.Path(opened).read_bytes() == b'SYNTHETIC_NOT_A_VISUM_VERSION'
+    km = b.km >= 80.0
+    assert not np.any(b.component[9111].values[~km]) and not np.any(b.component[9305].values[~km])
+    audit = r['write_audit']
+    assert audit['addval1_writes'] == 0 and audit['save_version_calls'] == 1 and not audit['forbidden_attempts']
+    assert audit['direct_od_matrix_writes'] == 0 and not b.writes
+    ready = sorted(tr.Path(tmp_path / 'out').glob('READINESS_*/00_RESULT.json'))
+    checks = {c['check']: c['status'] for c in read_json(ready[-1])['checks']}
+    assert 'PARAMETERS_EQUAL_EXPORT' not in checks and checks['CORDON_BASELINE_CAPTURE'] == 'PASS'
+
+
+def test_recompute_base_missing_station_link_stops_before_any_write(tmp_path):
+    b = Live04Visum(tmp_path / 'm2025')
+    from cordon2025.authority import mapping
+    stations, _ = mapping(tr.ROOT / 'data/audited/STATION_MAPPING.csv')
+    key = next(k for k, s in stations.items() if s == 2)
+    b.Net.Links.rows[:] = [r_ for r_ in b.Net.Links.rows
+                           if (int(r_['NO']), int(r_['FROMNODENO']), int(r_['TONODENO'])) != key]
+    with pytest.raises(Exception, match='STATION_LINKS_MISSING'):
+        tr.recompute_base(b, output_root=tmp_path / 'out', options=OPT, config_overrides=FAST)
+    res = read_json(sorted(tr.Path(tmp_path / 'out').glob('RECOMPUTE_*/00_RESULT.json'))[-1])
+    assert res['model_state'] == 'UNCHANGED_NO_WRITE' and b.executions == 0 and not b.saved_versions
+
+
+def test_recompute_base_rejects_unmarked_or_2022_name(tmp_path):
+    b = Live04Visum(tmp_path / 'm2025')
+    for name in ('R1_CSD22_kal_2025.ver', 'R1_2022_KOPIE.ver'):
+        p = tmp_path / 'm2025' / name; p.write_bytes(b'x'); b.IO.CurrentVersionFile = str(p)
+        with pytest.raises(Exception, match='LIVE02_'):
+            tr.recompute_base(b, output_root=tmp_path / 'out', options=OPT, config_overrides=FAST)
+    assert b.executions == 0 and not b.saved_versions
+
+
+def test_recompute_base_launcher(tmp_path):
+    import RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE as entry
+    assert entry.main({})['reason'] == 'VISUM_NOT_INJECTED'

@@ -1,4 +1,4 @@
-"""Standard-library-only TRANSFER2025 entry (EXPORT / IMPORT / READINESS) with the LIVE01 import isolation."""
+"""Standard-library-only TRANSFER2025 entry (EXPORT / IMPORT / RECOMPUTE / READINESS) with the LIVE01 import isolation."""
 from pathlib import Path
 import importlib.util
 import importlib
@@ -7,7 +7,7 @@ import json
 import traceback
 
 
-ACTIONS=('EXPORT','IMPORT','READINESS')
+ACTIONS=('EXPORT','IMPORT','RECOMPUTE','READINESS')
 
 
 def launch(namespace,action,*,root=None,output_root=None,options=None,config_path=None,config_overrides=None):
@@ -41,6 +41,9 @@ def launch(namespace,action,*,root=None,output_root=None,options=None,config_pat
             elif action=='IMPORT':
                 result=tr.import_and_recompute(visum,output_root=output_root,config_path=config_path,
                                                config_overrides=config_overrides,options=options)
+            elif action=='RECOMPUTE':
+                result=tr.recompute_base(visum,output_root=output_root,config_path=config_path,
+                                         config_overrides=config_overrides,options=options)
             else:
                 cfg=tr.load_transfer_config(config_path,config_overrides)
                 expected=tr.find_export(cfg,output_root) if cfg['parameter_file'] else None

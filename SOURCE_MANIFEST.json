@@ -1,5 +1,5 @@
 {
- "release": "R1_2025_CORDON_LIVE04_4_V7_7B4C681_20261101",
+ "release": "R1_2025_CORDON_LIVE04_4_1_RECOMPUTE_BASE_20261103",
  "files": [
   {
    "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
   },
   {
    "path": "00_START_HERE_LIVE04_CZ.txt",
-   "size": 2510,
-   "sha256": "4e5bbc67315369f9ff7c084e905f98d2d3b52000369767b3e592b88001fdf19b"
+   "size": 2832,
+   "sha256": "ae9cb627b762960f59fdff04119f6bd00655e3587290086fadc74a89623f75cb"
   },
   {
    "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -585,6 +585,11 @@
    "path": "RUN_R1_2025_LIVE04_READINESS.py",
    "size": 798,
    "sha256": "29661f0f65a43cca0f981d33ef07db40dd65c56ae852e55a596a6babc6ec96fb"
+  },
+  {
+   "path": "RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py",
+   "size": 1095,
+   "sha256": "5ef736f8ff4658da5603731e06819ee7e90f859f6f28a574d608df99b668cb66"
   },
   {
    "path": "SOURCE_PINS_AND_MERGE_DECISIONS.csv",
@@ -1533,8 +1538,8 @@
   },
   {
    "path": "cordon2025/transfer2025.py",
-   "size": 35234,
-   "sha256": "5328d1aa43a137e40db606b30d791c091b4d9afe4e857e4416a95c8eec8f7d0f"
+   "size": 41902,
+   "sha256": "052355906166eee0ea7d3a2e2b97bf00cc2694cdb980dcc2626c73351742d181"
   },
   {
    "path": "cordon2025/visum_startup.py",
@@ -1568,8 +1573,8 @@
   },
   {
    "path": "cordon_transfer_bootstrap.py",
-   "size": 3772,
-   "sha256": "07ffbd5497775bf3c42e04502c927fe817d111d9839559f51a94be8132a02af7"
+   "size": 4022,
+   "sha256": "ed69c14fb42e18c3c8a4ffb28069a476d8039f2f2b584c953d5c70824bf71493"
   },
   {
    "path": "cordon_visum_bootstrap.py",
@@ -3898,8 +3903,8 @@
   },
   {
    "path": "docs/transfer2025/TRANSFER2025_CZ.md",
-   "size": 5282,
-   "sha256": "439d7f809930f55f3f835aca77fe5172779c2de0b75666cd519563679df0b992"
+   "size": 6916,
+   "sha256": "5099eed564873ab64d57b4e813632a6db1195596cd0d950c826e46067dfcd32c"
   },
   {
    "path": "docs/update_v2/CP02_IO_REPORT.md",
@@ -8878,8 +8883,8 @@
   },
   {
    "path": "tests/test_transfer2025.py",
-   "size": 9526,
-   "sha256": "d4715a929e9011602e37d1694cc0a6bd50e71d6d4e65d6b4a21856dea0cb63b4"
+   "size": 12740,
+   "sha256": "016b63870b9ce07c7a5810a1decdf428dd5f2628da11f42539f764610197379e"
   },
   {
    "path": "tests/test_v2_io.py",

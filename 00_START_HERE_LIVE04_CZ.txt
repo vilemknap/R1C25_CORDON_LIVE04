@@ -18,6 +18,10 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
    b) otevri KOPII modelu 2025      -> RUN_R1_2025_IMPORT_AND_RECOMPUTE.py
       (prenos ADD_*/ZAHR_*/ADD_SALARY, TD b/c, ADDVAL1 -> jeden prepocet v7 s orezem LONG ->
        nova verze <kopie>_LIVE04_BASE_<id>.ver -> kontrola READY_FOR_LIVE04)
+   b2) KOEFICIENTY UZ V KOPII 2025 JSOU (bez exportu/importu, misto a+b):
+      otevri KOPII 2025 -> RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py
+      (kontrola 32 hran stanic -> jeden prepocet v7 s orezem LONG, vzniknou cesty ->
+       nova verze <kopie>_LIVE04_BASE_<id>.ver -> kontrola READY_FOR_LIVE04; parametry nemeni)
    c) kdykoli znovu: RUN_R1_2025_LIVE04_READINESS.py (jen cte)
    Navod: docs/transfer2025/TRANSFER2025_CZ.md
 
