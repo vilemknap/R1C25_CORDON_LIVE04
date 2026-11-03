@@ -2,7 +2,7 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
 (vilemknap/R1_15A2_V24917_v7 @ 7b4c681; LIVE04.4 od 2026-11-01, drive 977cef4).
 - Pozorovani a cil beze zmeny proti LIVE03 (FIRST_LAST na Transit RPDI + 16 radku C17, rok 1,0).
 - TG: v7 GENFIX2 STEP1 bez CATCH_UP, krok +-5 %, az 6 pokusu, mereny zonovy refit po odmitnuti,
-  obalky podle role P 0,5-3,0 / A 0,5-5,0 (stejne jako v7),
+  obalky podle role P 0,5-3,15 / A 0,5-5,5 (LIVE04.5, rozhodnuti 2026-11-03; v7: 3,0 / 5,0),
   MOBILITY2 + MOBILITYZONE1 se stejnymi pasmy,
   BDPA1, nativni predikce na zmrazenych cestach; SCHOOL TG pevne (AMDY), LONG TG odlozeno.
 - SupplyMix (SUPPLY_ADDVAL1) po Generation v cyklech 2, 4, ...: ADDVAL1 na vetvich ulozenych cest

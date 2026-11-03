@@ -6,8 +6,8 @@ Postup je stejný jako v LIVE03: TG + TD na pozorováních ze Sprievodné správ
 1. **TG:**
    - **bez CATCH_UP**, krok jedné zóny nejvýše **+5 % / −5 %** P/A efektu, až 6 nativních pokusů v bloku;
    - po prvním odmítnutém pokusu jeden **měřený zónový refit** směru (v7), audit predikce `STEP1_PRED_AUDIT.json` u každého pokusu;
-   - obálky podle role: **P 0,5–3,0 a A 0,5–5,0** (stejně jako v7 od e264314), ZAHR 0,5–10, hranice 0,5–2;
-   - MOBILITY2 (produkční pás 0,5–3,0 a plot atrakce W/S 0,5–5,0, vždy stejné jako obálky);
+   - obálky podle role: **P 0,5–3,15 a A 0,5–5,5** (LIVE04.5, rozhodnutí 2026-11-03; v7: 3,0 / 5,0), ZAHR 0,5–10, hranice 0,5–2;
+   - MOBILITY2 (produkční pás 0,5–3,15 a plot atrakce W/S 0,5–5,5, vždy stejné jako obálky);
    - MOBILITYZONE1 (pevná reference AMDY FP pro každou zónu);
    - BDPA1 a STEP1 podle GENFIX2 (predikce finálního kandidáta, brána s mobilitou, zmenšení ×0,75 před zápisem, vlastnictví obnovy).
 2. **SupplyMix (SUPPLY_ADDVAL1)** hned po Generation v cyklech 2, 4, 6…: ADDVAL1 na prokázaných větvích uložených cest řádků kordonu s vysokým GEH, až 24 skupin / 240 hran / 4 pokusy (kroky 4 / 3 / 2 / 1 ADDVAL1), studený přepočet reset op 15 → přiřazení, ověřený rollback.
@@ -74,7 +74,7 @@ Typické zastavení před prvním zápisem:
   - `enabled`;
   - `require_masked_baseline`, výchozí `true`, nedoporučuje se vypínat;
   - `minimum_km` = 80 (pevné podle v7).
-- **`v7.coefficient_envelope`**: obálka koeficientů W/S podle role (PROD [0,5; 3,0], ATT [0,5; 5,0]). Validace vynucuje, že `run_options.mg_min_ratio`/`mg_max_ratio` = PROD a `mobility_guards.ws_attraction_coefficient_band` = ATT. Jinak by nejužší mez obálku tiše ořízla.
+- **`v7.coefficient_envelope`**: obálka koeficientů W/S podle role (PROD [0,5; 3,15], ATT [0,5; 5,5]). Validace vynucuje, že `run_options.mg_min_ratio`/`mg_max_ratio` = PROD a `mobility_guards.ws_attraction_coefficient_band` = ATT. Jinak by nejužší mez obálku tiše ořízla.
 - **`write_policy.long_post_td_mask_matrix_writes`** musí odpovídat `v7.long_post_td_mask.enabled`.
 - **`supply_mix`** (LIVE04.4): `enabled` zapíná SupplyMix; `write_policy.supply_addval1_writes` musí mít stejnou hodnotu. Volby `sp_*` (24/240/4, kroky 8/6/4/2, cykly 2, 4, …) jsou pinované run options v7.
 - **`row_geh_guard`** (LIVE04.4): `enabled` zapíná SEVRELAX3 na kordonových řádcích; limity `sev_*` jsou pinované run options v7. Podrobně: `docs/live04/LIVE04_4_V7_7B4C681_CZ.md`.

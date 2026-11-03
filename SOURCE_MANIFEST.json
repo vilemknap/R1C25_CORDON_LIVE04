@@ -1,5 +1,5 @@
 {
- "release": "R1_2025_CORDON_LIVE04_4_2_NETWORK_20261103",
+ "release": "R1_2025_CORDON_LIVE04_5_ENVELOPE_P315_A55_20261103",
  "files": [
   {
    "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
   },
   {
    "path": "00_START_HERE_LIVE04_CZ.txt",
-   "size": 3278,
-   "sha256": "f2f1245e473a835844e2819a6361dda1f8cebb67fb7f48b2c974ca29120ec90e"
+   "size": 3311,
+   "sha256": "f2f9053eba76152185218364120d5dcd0491048d70c106219ba397ee2e33936c"
   },
   {
    "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -393,8 +393,8 @@
   },
   {
    "path": "CORDON_LIVE04_CONFIG.json",
-   "size": 14052,
-   "sha256": "184eeb7fa74d9281402b45b42241a7667bd2713b7108a60f0f9849419d93d9b2"
+   "size": 14178,
+   "sha256": "0bb5db4f6cae4da9bc5f578665cabbf99e402edc5828f159259d739b4e74725c"
   },
   {
    "path": "FINAL_STATUS.json",
@@ -443,13 +443,13 @@
   },
   {
    "path": "LIVE04_RUNBOOK_CZ.md",
-   "size": 6478,
-   "sha256": "ab3c8dedd54b0f3f267ea0e1b38d6338ab85c8530070790f39a935bba6c36992"
+   "size": 6502,
+   "sha256": "c2ed5d5938c13f327aa45d70bfefa1a0b39ca6a35f6d4de5475cc6308cd02965"
   },
   {
    "path": "LIVE04_TEST_RESULTS.txt",
-   "size": 1278,
-   "sha256": "62e21aa19a8aa14f8db37d765d18b001b34ebac83e1c1becfa0cfa4c722e9efb"
+   "size": 1056,
+   "sha256": "c1e04f9df40b9a0fd6df2b44c9ff5a0053c6c620c851914de298da01323c6a04"
   },
   {
    "path": "LIVE_MODEL_PREFLIGHT_CONTRACT.json",
@@ -1458,8 +1458,8 @@
   },
   {
    "path": "cordon2025/live04_generation.py",
-   "size": 21908,
-   "sha256": "0e2b75d3e86120c2c57b6bb6b102346a88cb41cba008a5a32d1376c762cb6edb"
+   "size": 21921,
+   "sha256": "871735b4f4eb7e98527bfa230555b271b9e44c6f6894636100ff7bc39a8e97c0"
   },
   {
    "path": "cordon2025/live04_guard.py",
@@ -1493,8 +1493,8 @@
   },
   {
    "path": "cordon2025/live04_v7.py",
-   "size": 12753,
-   "sha256": "aa2234122bf1b91adb7527011cafbb0d006be01b41979956df4feb6b00692aef"
+   "size": 12923,
+   "sha256": "ba639e54c3e53a47b148851892510fa2732f04cd49374ff1ae8691f6d831d281"
   },
   {
    "path": "cordon2025/optimizer.py",
@@ -3128,8 +3128,8 @@
   },
   {
    "path": "docs/live04/LIVE04_IMPLEMENTATION_REPORT_CZ.md",
-   "size": 13421,
-   "sha256": "f361ddcfcf5147c7ca0d467d7e52e6ee76e9b9b63f682adb1204395eefda8ecb"
+   "size": 14112,
+   "sha256": "e1519706b14308f6f67e20dad9556bdeade9dd35518d3e77a4de5b9267770410"
   },
   {
    "path": "docs/network_20261103/REVIEWED_CHANGES.json",
@@ -8858,8 +8858,8 @@
   },
   {
    "path": "tests/test_live04.py",
-   "size": 29796,
-   "sha256": "7fc1f55f35ec845f1d9dc20b038aafababa00fc47fceceb1354544426e64a415"
+   "size": 30116,
+   "sha256": "960f3c560aca3d033a857a78dad92d360562d3c199565aef513bc484487d17a5"
   },
   {
    "path": "tests/test_live04_4.py",

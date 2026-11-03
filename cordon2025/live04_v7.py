@@ -8,7 +8,7 @@ v7 launcher installs that the cordon blocks use, and restores it on exit:
 
 * demand_policy_v1.load_options -> the pinned cordon run options (no env vars);
 * targeted_generation.patch_multiblock -> role-tagged coefficient references and
-  the role envelopes P [0.5, 3.0] / A [0.5, 5.0], ZAHR [0.5, 10];
+  the role envelopes P [0.5, 3.15] / A [0.5, 5.5] (config coefficient_envelope), ZAHR [0.5, 10];
 * boundary_pa.install (BDPA1) -> boundary rows inside the P/A rebalance and gate;
 * long_school_generation.activate -> LONG/SCHOOL attributes in snapshot/rollback
   (SCHOOL TG stays fixed per AMDY, LONG TG is deferred, exactly as in v7);
@@ -33,9 +33,10 @@ CORDON_DEVIATIONS = {
     'long_generation_enabled': False,     # needs the profile LONG cache incidence (long_cache)
     'long_composite_td_enabled': False,   # LONG TD is calibrated by the profile/FineCDF runner only
     'fa_enabled': False,                  # STEP1 always uses the full assignment (as in v7 STEP1)
+    'mg_max_ratio': 3.15,                 # user decision 2026-11-03 (LIVE04.5): W/S production cap 3.15 (v7: 3.0)
 }
-# W/S P 0.5-3.0 / A 0.5-5.0 (user decision 2026-11-01, LIVE04.3) is the v7 default since
-# e264314, so mg_min_ratio/mg_max_ratio are no longer cordon deviations.
+# W/S P 0.5-3.0 / A 0.5-5.0 is the v7 default since e264314; LIVE04.5 widens the cordon run to
+# P 0.5-3.15 / A 0.5-5.5 (user decision 2026-11-03).  mg_min_ratio stays the v7 value 0.5.
 DONOR_FILES = {
     'r1_15a2_zonal_count_fit_v24917.py': '43f49a80ebe807daf6b1c9d44e4894a7e50dbe1d100c58214f37eadb6299b08a',
     'r1_15a2_targeted_generation_v24917.py': '3d9dc53d5f33d633c3319608bdad58f7aa25a0bfa02cebfc5a5ba854bc0d778d',

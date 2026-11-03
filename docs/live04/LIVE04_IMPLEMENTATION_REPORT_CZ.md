@@ -11,7 +11,7 @@ Kordónová část se nemění. Platí stejná pozorování (FIRST_LAST + C17, f
 | Donorové moduly v7 (20 souborů) | bajtové kopie, SHA-256 připnuté a ověřované při startu | `parent/`, `live04_v7.DONOR_FILES` |
 | Run options v7 | připnutý soubor `R1_RUN_OPTIONS.json` z 977cef4, změnit lze jen tři odchylky (kap. 3) | `provenance/v24917_v7/`, `CORDON_LIVE04_CONFIG.json` → `v7` |
 | Obálky podle role (TGBOUNDS v2) | P [0,75; 2,5], A [0,75; 4,0], ZAHR [0,5; 10], hranice [0,5; 2] | `tg.patch_multiblock` |
-| MOBILITY2 | produkční pás + samostatný plot atrakce W/S; od LIVE04.3 stejné jako obálky P 0,5–3,0 / A 0,5–5,0 (kap. 7) | návrh, náhled, kontrola před zápisem a po pokusu |
+| MOBILITY2 | produkční pás + samostatný plot atrakce W/S; stejné jako obálky, od LIVE04.5 P 0,5–3,15 / A 0,5–5,5 (kap. 7) | návrh, náhled, kontrola před zápisem a po pokusu |
 | MOBILITYZONE1 | pevná reference AMDY FP pro každou zónu a účel, oříznutí mezí fitu, kontrola zastaralého rodiče před zápisem | `live04_generation`, `live04_adapter` |
 | BDPA1 | hraniční P/A v rebalancu a v bráně | `bdpa.install` + `bdpa.scope` |
 | Zonální fit | `nonlinear_pa_repair=True`, `boundary_reference_multiplier` | `live04_generation.fit_with_boundary` |
@@ -101,7 +101,7 @@ Mock `tests/fake_live04.py` rozšiřuje LIVE03:
 
 `tests/test_live04.py` pokrývá:
 
-- piny a politiku v7 (odchylky včetně obálek P 0,5–3,0 / A 0,5–5,0, drift, zdroj);
+- piny a politiku v7 (odchylky včetně obálek P 0,5–3,15 / A 0,5–5,5, drift, zdroj);
 - guard zápisů (jen matice masky, numpy float64, Add=False);
 - obnovu všech globálů po běhu;
 - rozhodnutí LONGGUARD1;
@@ -146,7 +146,15 @@ Změna se musí projevit na čtyřech místech najednou. Jinak by nejužší z n
 
 Validace konfigurace vynucuje PROD = pás mobility a ATT = plot atrakce. Krok na cyklus se nemění (CATCH_UP +50 %/−20 %, REFINE +25 %/−20 %).
 
-Test `test_wider_domestic_envelope_reaches_the_model` ověří na mocku, že přijatý stav přesáhne 2,5 a 4,0 a nepřekročí 3,0 a 5,0.
+Test `test_wider_domestic_envelope_reaches_the_model` ověří na mocku, že přijatý stav přesáhne 3,0 a 5,0 a nepřekročí 3,15 a 5,5.
+
+### LIVE04.5 – horní meze W/S 3,15 / 5,5 (rozhodnutí 2026-11-03)
+| | v7 @ 7b4c681 | LIVE04.3–04.4 | LIVE04.5 (kordón) |
+|---|---|---|---|
+| ADD_PROD_W/S | 0,5–3,0 | 0,5–3,0 | **0,5–3,15** |
+| ADD_ATT_W/S | 0,5–5,0 | 0,5–5,0 | **0,5–5,5** |
+
+Stejná čtyři místa jako výše. `mg_max_ratio = 3,15` je znovu deklarovaná odchylka kordonu od pinu v7 (`CORDON_DEVIATIONS`, `cordon_deviations`); `mg_min_ratio` zůstává 0,5 podle v7. SCHOOL (0,5–2,0), LONG (0,5–1,5) a ZAHR (0,5–10) se nemění. Ve vstupní zónové tabulce 2026-11-03 bylo na staré mezi 3,0 u ADD_PROD_W 261 zón a u ADD_PROD_S 236 zón; ADD_ATT_S mělo 181 zón ≥ 4,95, ADD_ATT_W max 4,71.
 
 **Pozor:** profilová kalibrace v7 má dál 0,75–2,5 / 0,75–4,0. Pokud by se na kordónem kalibrovaný stav pustila v7, koeficienty mimo její obálku smí jen vracet dovnitř.
 

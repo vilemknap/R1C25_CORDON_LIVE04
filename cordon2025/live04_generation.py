@@ -20,7 +20,7 @@ operator (zf.measured_refit_problem, half the original box x measured scale),
 then the same masks and mobility guards; the cordon effect operators of both
 methods get the same secant correction.  Native acceptance stays the authority.
 
-Unchanged donor calls: tg.zone_bounds (role envelopes P 0.5..3.0 / A 0.5..5.0),
+Unchanged donor calls: tg.zone_bounds (role envelopes P 0.5..3.15 / A 0.5..5.5 from config),
 zguard.enrich/capture/constrain_fit_bounds/guard_projection, zf.build_problem/
 solve(nonlinear_pa_repair=True)/projection_rows/summary, bdgen.bounds/merge_pa/
 split_rows/design_payload (boundary_reference_multiplier), bdpa.margins_from_problem,

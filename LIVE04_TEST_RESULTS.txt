@@ -1,19 +1,10 @@
-LIVE04.4.2 (network 2026-11-03: station SDP15 remapped to split-carriageway links 9800634 9900317->9900312 and 9800637 9900314->9900318, user-confirmed; LIVE04.4.1 RECOMPUTE-only 2025 base preparation without coefficient import; on top of LIVE04.4 v7 @ 7b4c681) full offline regression from the extracted release ZIP, 2026-11-03
+LIVE04.5 (W/S coefficient envelopes widened by user decision 2026-11-03: ADD_PROD 0.5-3.15, ADD_ATT 0.5-5.5; mg_max_ratio 3.15 declared cordon deviation; on top of LIVE04.4.2 network 2026-11-03 + LIVE04.4.1 RECOMPUTE + LIVE04.4 v7 @ 7b4c681) full offline regression from the extracted release ZIP (6 shards), 2026-11-03
 Synthetic mock only - NOT native PTV Visum evidence.
-== shard 0
-251 passed, 9 skipped in 1001.44s (0:16:41)
-EXIT 0
-== shard 1 (hit the 100 min wall-clock limit with 0 failures; rerun split into 4 parts)
-part 0: 109 passed in 54.85s - EXIT 0
-part 1: 38 passed in 141.64s - EXIT 0
-part 2: 117 passed, 1 skipped in 5796.18s (1:36:36) - EXIT 0
-part 3: 19 passed in 48.45s - EXIT 0
-== shard 2
-299 passed in 2062.10s (0:34:22)
-EXIT 0
-== shard 3
-125 passed, 10 skipped in 1313.31s (0:21:53)
-EXIT 0
-TOTAL: 958 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed
-New in LIVE04.4.1: 4 tests in tests/test_transfer2025.py (RECOMPUTE without export, missing station link stops before write, copy-name guard, launcher) - all passed.
-LIVE04.4.2: station mapping/pin chain change recorded in docs/network_20261103/REVIEWED_CHANGES.json; all pin, preserved-bytes and release-integrity tests passed.
+== shard 0: 194 passed, 8 skipped in 203.89s - EXIT 0
+== shard 1: 143 passed in 5394.13s (1:29:54) - EXIT 0
+== shard 2: 225 passed in 2422.36s (0:40:22) - EXIT 0
+== shard 3: 102 passed in 1921.83s (0:32:01) - EXIT 0
+== shard 4: 131 passed, 1 skipped in 1086.61s - EXIT 0
+== shard 5: 165 passed, 11 skipped in 1028.30s - EXIT 0
+TOTAL: 960 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed
+LIVE04.5 changes covered by tests/test_live04.py (envelope/mobility/attraction fence agreement, mg_max_ratio deviation guard, mg_min_ratio drift guard, wider envelope reaches the model >3.0/>5.0 and <=3.15/<=5.5) - all passed.
