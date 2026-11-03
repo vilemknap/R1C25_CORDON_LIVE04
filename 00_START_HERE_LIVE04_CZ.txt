@@ -30,6 +30,12 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
 2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py
 3. Vystupy: %LOCALAPPDATA%\R1C25_LIVE04\LIVE04_TGTD_<id>\  (00_RESULT.json)
 
+SIT 2026-11-03 (LINK-2026-11-03): stanice SDP15 (D1) premapovana na 9800634 (9900317->9900312, smer JZ)
+  a 9800637 (9900314->9900318, smer SV); puvodni hrana 2004239 v nove siti neni (rozdelena na dve
+  jednosmerne vozovky). Ostatnich 30 smerovych hran beze zmeny. data/source/MAPPING_INPUT.* +
+  data/audited/STATION_MAPPING.csv, pin v CORDON_LIVE01_CONFIG.json. Kordonove hrany se do modelu
+  nekoduji - kalibrator je bere z tohoto mapovani.
+
 LIVE04.1: pamet mezi cykly (Jacobian TD s overovaci sondou, korekce zmeny tras v TG, pocet uzlu);
   meni jen predikci a volbu kroku, nikdy prijeti. Vypnuti: memory.enabled=false.
 

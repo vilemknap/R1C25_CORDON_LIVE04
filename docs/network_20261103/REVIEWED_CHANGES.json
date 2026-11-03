@@ -1,0 +1,37 @@
+{
+  "schema": "R1_CORDON_REVIEWED_DATA_CHANGES_V1",
+  "date": "2026-11-03",
+  "reason": "User network LINK-2026-11-03: link 2004239 (SDP15, D1) removed and split into one-way carriageways; SDP15 remapped to 9800634 (9900317->9900312) and 9800637 (9900314->9900318), confirmed by the user. Other 30 directed station links unchanged; observations, targets and C17 budgets unchanged.",
+  "files": {
+    "data/audited/AUTHORITY_AUDIT.json": {
+      "before_sha256": "d3be0aa4d059fb92e54d81c7ae158c1eab519ec00719db12ead832c3a305164c",
+      "after_sha256": "26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d",
+      "in_preserved_v2": true
+    },
+    "data/audited/STATION_MAPPING.csv": {
+      "before_sha256": "b9082462b62cb5b8c1a3076ce30142db1a25c17e0190bc650d61c4fd97ce11cc",
+      "after_sha256": "2071a33a016ab83117eaffe320672f05d73f6e202807333d1e329ba229d5dce6",
+      "in_preserved_v2": true
+    },
+    "data/source/INPUT_MANIFEST.json": {
+      "before_sha256": "11f7d01e4913c7ed69d1babade5dfe6791e69372d0f8b89f95d3fab1b7c500c3",
+      "after_sha256": "c23017d9a31f542e10fe594628472a263d01a5a44d0c50ee9d58ee0ac2c7784f",
+      "in_preserved_v2": true
+    },
+    "data/source/MAPPING_INPUT.csv": {
+      "before_sha256": "e79e4dd89c0cd4143a9d716c51dacd65de7548a018424f17bbb5c8ada69c4819",
+      "after_sha256": "1cfd4db8ec347632423f011b0f7ff93f1b1d837d58a53833319c7a4efcae7ec5",
+      "in_preserved_v2": true
+    },
+    "data/source/MAPPING_INPUT.json": {
+      "before_sha256": "7452f1d9043563c8843a579f075781e949e7e6bc5e78497042753bbba831b283",
+      "after_sha256": "2fb523048c98974d9a03a4a92c878735e30eb9b7e073e5faddd002ff8554f846",
+      "in_preserved_v2": true
+    },
+    "CORDON_LIVE01_CONFIG.json": {
+      "before_sha256": "019406f39fca5e5ddfd9b03d67a75512db9ab32a2a25787bbe0668c3b2cf9b2f",
+      "after_sha256": "237432bcf7d7285e1559e44a35c61f1f28718f909851ae35aed90618c8bcca52",
+      "in_preserved_v2": false
+    }
+  }
+}

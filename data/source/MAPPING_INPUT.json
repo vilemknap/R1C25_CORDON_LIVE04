@@ -1,492 +1,492 @@
 {
-  "source": {
-    "network_links_csv": "/mnt/data/01_LINKS_DIRECTED.csv",
-    "station_map_csv": "/mnt/data/R1_2026_KORDON_STATION_MAP.csv",
-    "crs_assumed": "EPSG:25834",
-    "selection_method": "nearest directed car-usable Visum links, preferring road-type class from station road_report; for D/R roads prefers type_no=2 over nearer ramps/connectors",
-    "manual_revision": "V1 confirmed by user: SDP16 manually changed to link 2004231; SDP13 and all remaining stations accepted.",
-    "selected_mapping_csv": "R1_2026_KORDON_STATION_LINK_MAPPING_CONFIRMED_V1.csv"
-  },
-  "stations": [
+ "source": {
+  "network_links_csv": "/mnt/data/01_LINKS_DIRECTED.csv",
+  "station_map_csv": "/mnt/data/R1_2026_KORDON_STATION_MAP.csv",
+  "crs_assumed": "EPSG:25834",
+  "selection_method": "nearest directed car-usable Visum links, preferring road-type class from station road_report; for D/R roads prefers type_no=2 over nearer ramps/connectors",
+  "manual_revision": "V1 confirmed by user: SDP16 manually changed to link 2004231; SDP13 and all remaining stations accepted. V2 2026-11-03: SDP15 remapped to 9800634/9800637 for the user network LINK-2026-11-03 (link 2004239 removed), confirmed by user.",
+  "selected_mapping_csv": "R1_2026_KORDON_STATION_LINK_MAPPING_CONFIRMED_V1.csv"
+ },
+ "stations": [
+  {
+   "station_id": 1,
+   "station_label": "SDP1",
+   "road_report": "D1",
+   "gpkg_x": 221722.2747382021,
+   "gpkg_y": 5346485.280668469,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
     {
-      "station_id": 1,
-      "station_label": "SDP1",
-      "road_report": "D1",
-      "gpkg_x": 221722.2747382021,
-      "gpkg_y": 5346485.280668469,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 9800209,
-          "from_node_no": 9900155,
-          "to_node_no": 9900151,
-          "type_no": 2,
-          "distance_m": 3.2568424221441625,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        },
-        {
-          "link_no": 9800210,
-          "from_node_no": 9900152,
-          "to_node_no": 9900156,
-          "type_no": 2,
-          "distance_m": 0.25089478677626287,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+     "link_no": 9800209,
+     "from_node_no": 9900155,
+     "to_node_no": 9900151,
+     "type_no": 2,
+     "distance_m": 3.2568424221441625,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
     },
     {
-      "station_id": 2,
-      "station_label": "SDP2",
-      "road_report": "I/61",
-      "gpkg_x": 221133.5093359004,
-      "gpkg_y": 5344874.406662209,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 9800378,
-          "from_node_no": 9900076,
-          "to_node_no": 9900221,
-          "type_no": 10,
-          "distance_m": 6.590541078228863,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 9800378,
-          "from_node_no": 9900221,
-          "to_node_no": 9900076,
-          "type_no": 10,
-          "distance_m": 6.5905410782288385,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 3,
-      "station_label": "SDP3",
-      "road_report": "R1",
-      "gpkg_x": 253722.30813327225,
-      "gpkg_y": 5354223.0194421485,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2004256,
-          "from_node_no": 1003295,
-          "to_node_no": 1003303,
-          "type_no": 2,
-          "distance_m": 40.71383391314695,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        },
-        {
-          "link_no": 2004256,
-          "from_node_no": 1003303,
-          "to_node_no": 1003295,
-          "type_no": 2,
-          "distance_m": 40.71383391314695,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 4,
-      "station_label": "SDP4",
-      "road_report": "I/62",
-      "gpkg_x": 255698.12640639837,
-      "gpkg_y": 5349643.178285494,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2002238,
-          "from_node_no": 1001753,
-          "to_node_no": 1003314,
-          "type_no": 10,
-          "distance_m": 46.17115994931778,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2002238,
-          "from_node_no": 1003314,
-          "to_node_no": 1001753,
-          "type_no": 10,
-          "distance_m": 46.171159949317826,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 5,
-      "station_label": "SDP5",
-      "road_report": "I/35",
-      "gpkg_x": 257610.93195871596,
-      "gpkg_y": 5348326.761023437,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2002315,
-          "from_node_no": 1000321,
-          "to_node_no": 1002980,
-          "type_no": 10,
-          "distance_m": 149.45883380032805,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2002315,
-          "from_node_no": 1002980,
-          "to_node_no": 1000321,
-          "type_no": 10,
-          "distance_m": 149.45883380032808,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 6,
-      "station_label": "SDP6",
-      "road_report": "I/75",
-      "gpkg_x": 253724.53632370743,
-      "gpkg_y": 5343439.893575967,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2002313,
-          "from_node_no": 1000380,
-          "to_node_no": 1000921,
-          "type_no": 10,
-          "distance_m": 90.99083479921546,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2002313,
-          "from_node_no": 1000921,
-          "to_node_no": 1000380,
-          "type_no": 10,
-          "distance_m": 90.9908347992154,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 7,
-      "station_label": "SDP7",
-      "road_report": "I/62",
-      "gpkg_x": 248417.98515157663,
-      "gpkg_y": 5343987.658759493,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2002219,
-          "from_node_no": 1000358,
-          "to_node_no": 1002975,
-          "type_no": 10,
-          "distance_m": 75.1471556752255,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2002219,
-          "from_node_no": 1002975,
-          "to_node_no": 1000358,
-          "type_no": 10,
-          "distance_m": 75.1471556752255,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 8,
-      "station_label": "SDP8",
-      "road_report": "III/1334",
-      "gpkg_x": 248300.53366424097,
-      "gpkg_y": 5345306.707391963,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2002178,
-          "from_node_no": 1000869,
-          "to_node_no": 1002976,
-          "type_no": 32,
-          "distance_m": 249.13698254933539,
-          "cap_prt": 6000.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2002178,
-          "from_node_no": 1002976,
-          "to_node_no": 1000869,
-          "type_no": 32,
-          "distance_m": 249.13698254933522,
-          "cap_prt": 6000.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 9,
-      "station_label": "SDP9",
-      "road_report": "I/62",
-      "gpkg_x": 235263.06505845825,
-      "gpkg_y": 5345482.895410922,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2001825,
-          "from_node_no": 1001046,
-          "to_node_no": 1002950,
-          "type_no": 10,
-          "distance_m": 146.54424864288978,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2001825,
-          "from_node_no": 1002950,
-          "to_node_no": 1001046,
-          "type_no": 10,
-          "distance_m": 146.54424864288978,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 10,
-      "station_label": "SDP10",
-      "road_report": "II/572",
-      "gpkg_x": 220353.43080389337,
-      "gpkg_y": 5337929.609613677,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 8500114,
-          "from_node_no": 1001535,
-          "to_node_no": 1002880,
-          "type_no": 30,
-          "distance_m": 70.33454923801006,
-          "cap_prt": 6500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 8500114,
-          "from_node_no": 1002880,
-          "to_node_no": 1001535,
-          "type_no": 30,
-          "distance_m": 70.33454923801008,
-          "cap_prt": 6500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 11,
-      "station_label": "SDP11",
-      "road_report": "I/61",
-      "gpkg_x": 233185.3547916209,
-      "gpkg_y": 5348836.182247117,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2001653,
-          "from_node_no": 1000182,
-          "to_node_no": 1001797,
-          "type_no": 10,
-          "distance_m": 9.019919015205595,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2001653,
-          "from_node_no": 1001797,
-          "to_node_no": 1000182,
-          "type_no": 10,
-          "distance_m": 9.019919015205588,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 12,
-      "station_label": "SDP12",
-      "road_report": "II/503",
-      "gpkg_x": 231253.1765091256,
-      "gpkg_y": 5347748.697971653,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2001673,
-          "from_node_no": 1002277,
-          "to_node_no": 1002944,
-          "type_no": 30,
-          "distance_m": 0.2825272245519362,
-          "cap_prt": 6500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2001673,
-          "from_node_no": 1002944,
-          "to_node_no": 1002277,
-          "type_no": 30,
-          "distance_m": 0.2825272245519232,
-          "cap_prt": 6500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 13,
-      "station_label": "SDP13",
-      "road_report": "I/61",
-      "gpkg_x": 230695.6431247668,
-      "gpkg_y": 5346233.615307599,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2001567,
-          "from_node_no": 1000180,
-          "to_node_no": 1001060,
-          "type_no": 11,
-          "distance_m": 95.26211882591006,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 2001567,
-          "from_node_no": 1001060,
-          "to_node_no": 1000180,
-          "type_no": 11,
-          "distance_m": 95.26211882591006,
-          "cap_prt": 7500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 14,
-      "station_label": "SDP14",
-      "road_report": "D4",
-      "gpkg_x": 221031.98249391295,
-      "gpkg_y": 5336799.289118847,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 9800107,
-          "from_node_no": 9200066,
-          "to_node_no": 9900107,
-          "type_no": 2,
-          "distance_m": 1.3063715204961213,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        },
-        {
-          "link_no": 9800107,
-          "from_node_no": 9900107,
-          "to_node_no": 9200066,
-          "type_no": 2,
-          "distance_m": 1.3063715204961213,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,C_noT,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 15,
-      "station_label": "SDP15",
-      "road_report": "D1",
-      "gpkg_x": 250815.58125342507,
-      "gpkg_y": 5359748.152104559,
-      "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-      "selection_note": "preferred_road_type",
-      "selected_links": [
-        {
-          "link_no": 2004239,
-          "from_node_no": 1001732,
-          "to_node_no": 1003238,
-          "type_no": 2,
-          "distance_m": 35.16436267045652,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        },
-        {
-          "link_no": 2004239,
-          "from_node_no": 1003238,
-          "to_node_no": 1001732,
-          "type_no": 2,
-          "distance_m": 35.1643626704562,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
-    },
-    {
-      "station_id": 16,
-      "station_label": "SDP16",
-      "road_report": "R1",
-      "gpkg_x": 262642.5373302015,
-      "gpkg_y": 5350980.121290891,
-      "review_status": "USER_CONFIRMED_MANUAL_OVERRIDE_GT150M",
-      "selection_note": "manual_override_sdp16_to_link_2004231; all_other_stations_confirmed_by_user",
-      "selected_links": [
-        {
-          "link_no": 2004231,
-          "from_node_no": 1003319,
-          "to_node_no": 1003321,
-          "type_no": 2,
-          "distance_m": 185.5075985971992,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        },
-        {
-          "link_no": 2004231,
-          "from_node_no": 1003321,
-          "to_node_no": 1003319,
-          "type_no": 2,
-          "distance_m": 185.5075985971992,
-          "cap_prt": 22500.0,
-          "tsysset": "B,C,LNV,NV"
-        }
-      ],
-      "user_confirmation": "USER_CONFIRMED_MANUAL_OVERRIDE"
+     "link_no": 9800210,
+     "from_node_no": 9900152,
+     "to_node_no": 9900156,
+     "type_no": 2,
+     "distance_m": 0.25089478677626287,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
     }
-  ]
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 2,
+   "station_label": "SDP2",
+   "road_report": "I/61",
+   "gpkg_x": 221133.5093359004,
+   "gpkg_y": 5344874.406662209,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 9800378,
+     "from_node_no": 9900076,
+     "to_node_no": 9900221,
+     "type_no": 10,
+     "distance_m": 6.590541078228863,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 9800378,
+     "from_node_no": 9900221,
+     "to_node_no": 9900076,
+     "type_no": 10,
+     "distance_m": 6.5905410782288385,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 3,
+   "station_label": "SDP3",
+   "road_report": "R1",
+   "gpkg_x": 253722.30813327225,
+   "gpkg_y": 5354223.0194421485,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2004256,
+     "from_node_no": 1003295,
+     "to_node_no": 1003303,
+     "type_no": 2,
+     "distance_m": 40.71383391314695,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
+    },
+    {
+     "link_no": 2004256,
+     "from_node_no": 1003303,
+     "to_node_no": 1003295,
+     "type_no": 2,
+     "distance_m": 40.71383391314695,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 4,
+   "station_label": "SDP4",
+   "road_report": "I/62",
+   "gpkg_x": 255698.12640639837,
+   "gpkg_y": 5349643.178285494,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2002238,
+     "from_node_no": 1001753,
+     "to_node_no": 1003314,
+     "type_no": 10,
+     "distance_m": 46.17115994931778,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2002238,
+     "from_node_no": 1003314,
+     "to_node_no": 1001753,
+     "type_no": 10,
+     "distance_m": 46.171159949317826,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 5,
+   "station_label": "SDP5",
+   "road_report": "I/35",
+   "gpkg_x": 257610.93195871596,
+   "gpkg_y": 5348326.761023437,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2002315,
+     "from_node_no": 1000321,
+     "to_node_no": 1002980,
+     "type_no": 10,
+     "distance_m": 149.45883380032805,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2002315,
+     "from_node_no": 1002980,
+     "to_node_no": 1000321,
+     "type_no": 10,
+     "distance_m": 149.45883380032808,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 6,
+   "station_label": "SDP6",
+   "road_report": "I/75",
+   "gpkg_x": 253724.53632370743,
+   "gpkg_y": 5343439.893575967,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2002313,
+     "from_node_no": 1000380,
+     "to_node_no": 1000921,
+     "type_no": 10,
+     "distance_m": 90.99083479921546,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2002313,
+     "from_node_no": 1000921,
+     "to_node_no": 1000380,
+     "type_no": 10,
+     "distance_m": 90.9908347992154,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 7,
+   "station_label": "SDP7",
+   "road_report": "I/62",
+   "gpkg_x": 248417.98515157663,
+   "gpkg_y": 5343987.658759493,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2002219,
+     "from_node_no": 1000358,
+     "to_node_no": 1002975,
+     "type_no": 10,
+     "distance_m": 75.1471556752255,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2002219,
+     "from_node_no": 1002975,
+     "to_node_no": 1000358,
+     "type_no": 10,
+     "distance_m": 75.1471556752255,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 8,
+   "station_label": "SDP8",
+   "road_report": "III/1334",
+   "gpkg_x": 248300.53366424097,
+   "gpkg_y": 5345306.707391963,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2002178,
+     "from_node_no": 1000869,
+     "to_node_no": 1002976,
+     "type_no": 32,
+     "distance_m": 249.13698254933539,
+     "cap_prt": 6000.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2002178,
+     "from_node_no": 1002976,
+     "to_node_no": 1000869,
+     "type_no": 32,
+     "distance_m": 249.13698254933522,
+     "cap_prt": 6000.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 9,
+   "station_label": "SDP9",
+   "road_report": "I/62",
+   "gpkg_x": 235263.06505845825,
+   "gpkg_y": 5345482.895410922,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2001825,
+     "from_node_no": 1001046,
+     "to_node_no": 1002950,
+     "type_no": 10,
+     "distance_m": 146.54424864288978,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2001825,
+     "from_node_no": 1002950,
+     "to_node_no": 1001046,
+     "type_no": 10,
+     "distance_m": 146.54424864288978,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 10,
+   "station_label": "SDP10",
+   "road_report": "II/572",
+   "gpkg_x": 220353.43080389337,
+   "gpkg_y": 5337929.609613677,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 8500114,
+     "from_node_no": 1001535,
+     "to_node_no": 1002880,
+     "type_no": 30,
+     "distance_m": 70.33454923801006,
+     "cap_prt": 6500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 8500114,
+     "from_node_no": 1002880,
+     "to_node_no": 1001535,
+     "type_no": 30,
+     "distance_m": 70.33454923801008,
+     "cap_prt": 6500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 11,
+   "station_label": "SDP11",
+   "road_report": "I/61",
+   "gpkg_x": 233185.3547916209,
+   "gpkg_y": 5348836.182247117,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2001653,
+     "from_node_no": 1000182,
+     "to_node_no": 1001797,
+     "type_no": 10,
+     "distance_m": 9.019919015205595,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2001653,
+     "from_node_no": 1001797,
+     "to_node_no": 1000182,
+     "type_no": 10,
+     "distance_m": 9.019919015205588,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 12,
+   "station_label": "SDP12",
+   "road_report": "II/503",
+   "gpkg_x": 231253.1765091256,
+   "gpkg_y": 5347748.697971653,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2001673,
+     "from_node_no": 1002277,
+     "to_node_no": 1002944,
+     "type_no": 30,
+     "distance_m": 0.2825272245519362,
+     "cap_prt": 6500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2001673,
+     "from_node_no": 1002944,
+     "to_node_no": 1002277,
+     "type_no": 30,
+     "distance_m": 0.2825272245519232,
+     "cap_prt": 6500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 13,
+   "station_label": "SDP13",
+   "road_report": "I/61",
+   "gpkg_x": 230695.6431247668,
+   "gpkg_y": 5346233.615307599,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 2001567,
+     "from_node_no": 1000180,
+     "to_node_no": 1001060,
+     "type_no": 11,
+     "distance_m": 95.26211882591006,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 2001567,
+     "from_node_no": 1001060,
+     "to_node_no": 1000180,
+     "type_no": 11,
+     "distance_m": 95.26211882591006,
+     "cap_prt": 7500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 14,
+   "station_label": "SDP14",
+   "road_report": "D4",
+   "gpkg_x": 221031.98249391295,
+   "gpkg_y": 5336799.289118847,
+   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
+   "selection_note": "preferred_road_type",
+   "selected_links": [
+    {
+     "link_no": 9800107,
+     "from_node_no": 9200066,
+     "to_node_no": 9900107,
+     "type_no": 2,
+     "distance_m": 1.3063715204961213,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    },
+    {
+     "link_no": 9800107,
+     "from_node_no": 9900107,
+     "to_node_no": 9200066,
+     "type_no": 2,
+     "distance_m": 1.3063715204961213,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,C_noT,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+  },
+  {
+   "station_id": 15,
+   "station_label": "SDP15",
+   "road_report": "D1",
+   "gpkg_x": 250815.58125342507,
+   "gpkg_y": 5359748.152104559,
+   "review_status": "USER_CONFIRMED_REMAP_20261103",
+   "selection_note": "network 2026-11-03: old link 2004239 split into one-way carriageways 9800634 (SW) / 9800637 (NE)",
+   "selected_links": [
+    {
+     "link_no": 9800637,
+     "from_node_no": 9900314,
+     "to_node_no": 9900318,
+     "type_no": 2,
+     "distance_m": null,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
+    },
+    {
+     "link_no": 9800634,
+     "from_node_no": 9900317,
+     "to_node_no": 9900312,
+     "type_no": 2,
+     "distance_m": null,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_REMAP_20261103"
+  },
+  {
+   "station_id": 16,
+   "station_label": "SDP16",
+   "road_report": "R1",
+   "gpkg_x": 262642.5373302015,
+   "gpkg_y": 5350980.121290891,
+   "review_status": "USER_CONFIRMED_MANUAL_OVERRIDE_GT150M",
+   "selection_note": "manual_override_sdp16_to_link_2004231; all_other_stations_confirmed_by_user",
+   "selected_links": [
+    {
+     "link_no": 2004231,
+     "from_node_no": 1003319,
+     "to_node_no": 1003321,
+     "type_no": 2,
+     "distance_m": 185.5075985971992,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
+    },
+    {
+     "link_no": 2004231,
+     "from_node_no": 1003321,
+     "to_node_no": 1003319,
+     "type_no": 2,
+     "distance_m": 185.5075985971992,
+     "cap_prt": 22500.0,
+     "tsysset": "B,C,LNV,NV"
+    }
+   ],
+   "user_confirmation": "USER_CONFIRMED_MANUAL_OVERRIDE"
+  }
+ ]
 }

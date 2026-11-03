@@ -26,6 +26,10 @@ def test_v2_bytes_preserved_except_explicit_reviewed_startup_patches():
         if name in fix3:
             assert fix3[name]['before_sha256']==digest
             digest=fix3[name]['after_sha256']
+        net=json.loads((ROOT/'docs/network_20261103/REVIEWED_CHANGES.json').read_text())['files']
+        if name in net:
+            assert net[name]['before_sha256']==digest
+            digest=net[name]['after_sha256']
         assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,name
 
 

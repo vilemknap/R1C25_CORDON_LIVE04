@@ -117,4 +117,8 @@ def test_default_retry_does_not_change_active_scope_and_science():
         if rec['path'] in review:
             assert review[rec['path']]['before_sha256']==digest
             digest=review[rec['path']]['after_sha256']
+        net=json.loads((ROOT/'docs/network_20261103/REVIEWED_CHANGES.json').read_text())['files']
+        if rec['path'] in net:
+            assert net[rec['path']]['before_sha256']==digest
+            digest=net[rec['path']]['after_sha256']
         assert hashlib.sha256((ROOT/rec['path']).read_bytes()).hexdigest()==digest,rec['path']

@@ -62,6 +62,8 @@ Pro kopii 2025, ve které už koeficienty jsou (např. scénářová verze `R1_C
    - uloží novou verzi `<kopie>_LIVE04_BASE_<id>.ver` a spustí READINESS (bez kontroly shody s exportem).
 4. Výsledek: `%LOCALAPPDATA%\R1C25_TRANSFER2025\RECOMPUTE_<id>\00_RESULT.json`, `status = RECOMPUTED_SAVED`, `readiness = READY_FOR_LIVE04`.
 
+Mapování stanic odpovídá síti uživatele LINK-2026-11-03 (SDP15 = 9800634 / 9800637, ostatní beze změny). Kordonové hrany se do modelu nekódují; kalibrátor je čte z `data/audited/STATION_MAPPING.csv`.
+
 Zápisy: jen matice masky LONG (9111–9115, 9291–9295) a nová .ver; guard zakazuje zápis zónových atributů, TD i ADDVAL1.
 
 ## READINESS kontroluje (bez zápisu)
