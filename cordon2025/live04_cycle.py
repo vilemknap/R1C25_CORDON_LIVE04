@@ -113,7 +113,8 @@ def save_accepted_version(visum, folder, state):
     from .io import sha256
     rt = parent_module('r1_15a2_runtime_v1')
     source = Path(state['source_version'])
-    target = Path(folder) / (source.stem + '_LIVE04_ACCEPTED_' + uuid.uuid4().hex[:8] + source.suffix)
+    from .live04_continue import base_stem
+    target = Path(folder) / (base_stem(source) + '_LIVE04_ACCEPTED_' + uuid.uuid4().hex[:8] + source.suffix)
     require(target.resolve() != source.resolve() and not target.exists(), 'LIVE04_SAVE_TARGET_INVALID')
     before = sha256(source)
     rt.save_version(visum, target)
@@ -125,8 +126,39 @@ def save_accepted_version(visum, folder, state):
     return record
 
 
-def run(visum, *, output_root=None, options=None, config_path=None, config_overrides=None):
+def _repair(adapter, ctl, bdir, state, diag):
+    """Restore the assignment after a stop that interrupted a demand-only probe (stops deferred)."""
+    safety = parent_module('r1_15a2_safety_v245')
+    try:
+        ctl.recovery_depth += 1
+        with safety.recovery_scope(ctl, 'LIVE04_ASSIGNMENT_REPAIR_AFTER_STOP'):
+            return adapter.repair_assignment(Path(bdir) / 'ASSIGNMENT_REPAIR_AT_STOP', state, diag)
+    except BaseException as exc:
+        return {'status': 'REPAIR_FAILED', 'error': exception_text(exc)[:500]}
+    finally:
+        ctl.recovery_depth -= 1
+
+
+def planned_blocks(cfg, outer):
+    """Block order of one outer cycle (v7: SupplyMix right after Generation in due cycles)."""
+    from .live04_supply import options as supply_options, due as supply_due
+    sopts = supply_options(cfg)
+    avail = {'GENERATION'}
+    if 'TD_CORDON' in cfg['blocks_per_cycle'] and cfg['td_cordon']['enabled']:
+        avail.add('TD_CORDON')
+    if sopts['enabled']:
+        avail.add('SUPPLY_ADDVAL1')
+    names = []
+    for name in cfg['blocks_per_cycle']:
+        names.append(name)
+        if name == 'GENERATION' and sopts['enabled'] and supply_due(outer, sopts)[0]:
+            names.append('SUPPLY_ADDVAL1')
+    return [n for n in names if n in avail]
+
+
+def run(visum, *, output_root=None, options=None, config_path=None, config_overrides=None, continuation=False):
     require(visum is not None, 'VISUM_NOT_INJECTED')
+    from . import live04_continue as cont
     cfg = load_config(config_path, config_overrides)
     pins = verify_protected_sources()
     output_root = guarded_output_root(output_root or _default_output_root())
@@ -148,7 +180,9 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
     synthetic = isinstance(origin, str) and any(s in origin.upper() for s in ('MOCK', 'SYNTHETIC', 'FIXTURE'))
     execution = 'MOCK' if synthetic else 'NATIVE_INJECTED'
     folder = None; ctl = None; audit = None; adapter = None; v17status = None
-    progress = {'accepted_states': 0, 'cycles': [], 'model_mutated': False, 'accepted_by_block': {}}
+    progress = {'accepted_states': 0, 'cycles': [], 'model_mutated': False, 'accepted_by_block': {},
+                'checkpoints': []}
+    plan = None
     try:
         with HashCachingRunSession('LIVE04_TGTD_' + uuid.uuid4().hex[:12], output_root) as session, \
                 contextlib.ExitStack() as stack:
@@ -165,6 +199,10 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 pre, state = model_preflight(visum, view, base_dir, ctl, opt)
                 copy_guard = isolated_copy_guard(cfg, state['source_version'])
                 write_json(folder / 'ISOLATED_COPY_GUARD.json', copy_guard)
+                if continuation:
+                    plan = cont.resolve(state['source_version'], state['source_file_sha256'],
+                                        lambda o: planned_blocks(cfg, o), cfg['outer_cycle_start'])
+                    write_json(folder / 'CONTINUATION.json', {k: v for k, v in plan.items() if k != 'anchors'})
                 progress['bound_state'] = state
                 mathcfg = calculation_config(view, state['actuatable_zones'])
                 mathcfg['actual_network_sha256'] = pre[0]['network_sha256']
@@ -212,6 +250,19 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     # Cumulative ADDVAL1 bounds are relative to the run start (donor baseline anchors).
                     adapter.baseline_addval = {k: r['addval1'] for k, r in adapter.read_links().items()}
                     require(adapter.snapshot() == snap0, 'LIVE04_SUPPLY_BASELINE_READ_CHANGED_MODEL')
+                if plan is not None and plan['kind'] == 'STATE_MATCH_PENDING':
+                    plan = cont.resolve_by_state(plan, snap0, output_root, lambda o: planned_blocks(cfg, o),
+                                                 cfg['outer_cycle_start'], current_folder=folder)
+                    require(plan['expected_state_hash'] == snap0['state_hash'], 'LIVE04_CONTINUE_STATE_MATCH')
+                if plan is not None:
+                    anchors = dict(plan['anchors'], chain=list(plan['anchors'].get('chain') or []) +
+                                   [{'run_folder': plan['previous_run_folder'], 'kind': plan['kind']}])
+                    plan['opened_state'] = cont.verify_opened_state(plan, snap0)
+                    plan['anchors_applied'] = cont.apply_anchors(adapter, anchors, folder)
+                    write_json(folder / 'CONTINUATION.json', {k: v for k, v in plan.items() if k != 'anchors'})
+                else:
+                    anchors = cont.anchors_from_snapshot(snap0, folder, state['source_version'], cfg['outer_cycle_start'])
+                write_json(folder / cont.ANCHORS_FILE, anchors)
                 from .live04_memory import RunMemory
                 adapter.run_memory = RunMemory(cfg['memory'], folder / 'MEMORY') if cfg['memory']['enabled'] else None
                 reference = evaluator.reference(baseline)
@@ -230,20 +281,26 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 session.checkpoint('LIVE04_BASELINE_AND_RESTORE_POINT_SEALED')
                 current_state, current_diag = snap0, baseline
                 progress['accepted_state_hash'] = snap0['state_hash']
-                for k in range(cfg['max_cycles']):
-                    outer = cfg['outer_cycle_start'] + k
+                ckcfg = cfg['checkpoint']
+                origin_start = int(anchors.get('origin_outer_cycle_start', cfg['outer_cycle_start']))
+                first_outer = plan['outer_cycle'] if plan else cfg['outer_cycle_start']
+                last_outer = origin_start + cfg['max_cycles'] - 1
+                require(first_outer <= last_outer, 'LIVE04_CONTINUE_NO_CYCLE_LEFT_RAISE_MAX_CYCLES:next=%d,last=%d'
+                        % (first_outer, last_outer))
+                for outer in range(first_outer, last_outer + 1):
                     adapter.cfg = adapter_config(cfg, outer, state['actuatable_zones'])
                     if adapter.run_memory is not None:
                         adapter.run_memory.begin_cycle(outer)
                     cycle = {'outer_cycle': outer, 'blocks': []}
                     changed_cycle = False
-                    names = []
-                    for name in cfg['blocks_per_cycle']:
-                        names.append(name)
-                        if name == 'GENERATION' and 'SUPPLY_ADDVAL1' in blocks and supply_due(outer, sopts)[0]:
-                            names.append('SUPPLY_ADDVAL1')      # v7: SupplyMix right after Generation
-                    for name in names:
-                        if name not in blocks:
+                    names = planned_blocks(cfg, outer)      # v7: SupplyMix right after Generation
+                    require(all(n in blocks for n in names), 'LIVE04_PLANNED_BLOCK_NOT_BUILT')
+                    skip = 0
+                    if plan and outer == plan['outer_cycle']:
+                        skip = plan['block_index']; changed_cycle = plan['changed_so_far']
+                        cycle['continued_from_block_index'] = skip
+                    for index, name in enumerate(names):
+                        if index < skip:
                             continue
                         bdir = folder / ('C%02d_%s' % (outer, name))
                         progress['model_mutated'] = True
@@ -253,17 +310,25 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                 outer_cycle=outer)
                         except BaseException:
                             progress['failure_readback'] = failure_readback(adapter, progress)
+                            if getattr(adapter, 'assignment_invalidated', False) and \
+                                    (progress['failure_readback'] or {}).get('matches_last_accepted_or_baseline'):
+                                progress['assignment_repair'] = _repair(adapter, ctl, bdir, current_state, current_diag)
                             raise
                         finally:
                             write_timing(bdir, True)
                             if adapter.run_memory is not None:
                                 adapter.run_memory.save()
                         progress['accepted_state_hash'] = current_state['state_hash']
+                        repair = None
+                        if getattr(adapter, 'assignment_invalidated', False):
+                            repair = adapter.repair_assignment(bdir / 'ASSIGNMENT_REPAIR', current_state, current_diag)
                         entry = {'block': name, 'status': rec.get('status'), 'changed': bool(changed),
                                  'objective_before': (rec.get('objective_before') or {}).get('total'),
                                  'objective_after': (rec.get('objective_after') or {}).get('total'),
                                  'stop_reason': rec.get('stop_reason'),
                                  'native_prediction': bool(rec.get('native_prediction') or rec.get('base_parity'))}
+                        if repair is not None:
+                            entry['assignment_repair'] = repair['status']
                         cycle['blocks'].append(entry)
                         if changed:
                             if lm['enabled']:
@@ -278,6 +343,20 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                 'schema': 'LIVE04_ACCEPTED_STATE_V1', 'outer_cycle': outer, 'block': name,
                                 'snapshot_state_hash': current_state['state_hash'],
                                 'diagnostic_hash': current_diag['diagnostic_hash'], 'ledger': value})
+                            if ckcfg['enabled']:
+                                nxt = dict(cont.next_position(names, index, outer),
+                                           cycle_changed_so_far=bool(index + 1 < len(names) and changed_cycle))
+                                try:
+                                    rec_ck = cont.save_checkpoint(visum, adapter, folder, state, current_state, outer,
+                                                                  name, nxt, progress['accepted_states'],
+                                                                  ckcfg['keep_last'])
+                                    entry['checkpoint'] = Path(rec_ck['path']).name
+                                    progress['checkpoints'].append({'path': rec_ck['path'], 'block': name,
+                                                                    'outer_cycle': outer})
+                                except Exception as ck_exc:
+                                    if 'NOT_AT_ACCEPTED_STATE' in str(ck_exc):
+                                        raise
+                                    entry['checkpoint_error'] = exception_text(ck_exc)[:500]
                         write_json(folder / 'CYCLE_PROGRESS.json', dict(progress, cycles=progress['cycles'] + [cycle]))
                     progress['cycles'].append(cycle)
                     write_json(folder / 'CYCLE_PROGRESS.json', progress)
@@ -370,9 +449,12 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
             else:
                 kind = 'LIVE04_STOPPED_MODEL_STATE_NOT_VERIFIED_REOPEN_SOURCE_OR_SAVED_VERSION'
             saved_at_stop = None
+            repair_stop = progress.get('assignment_repair')
+            # parameters may be fine, but without a valid assignment a saved .ver would have no paths
+            assignment_ok = repair_stop is None or repair_stop.get('status') == 'REPAIRED_VERIFIED'
             # LIVE04.5.2: keep the accepted progress of a stopped run (STOP_REQUESTED, a block
             # error, ...) - but only when the open model was read back AT the last accepted state.
-            if verified is True and progress['accepted_states'] and progress.get('bound_state') \
+            if verified is True and assignment_ok and progress['accepted_states'] and progress.get('bound_state') \
                     and cfg['write_policy'].get('save_accepted_version_new_file'):
                 try:
                     saved_at_stop = save_accepted_version(visum, folder, progress['bound_state'])
@@ -390,6 +472,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     'schema': RESULT_SCHEMA, 'status': kind, 'reason': text, 'execution_kind': execution,
                     'accepted_states': progress['accepted_states'], 'cycles': progress['cycles'],
                     'model_state_verified': verified, 'saved_version_at_stop': saved_at_stop,
+                    'assignment_repair_at_stop': repair_stop,
                     'write_audit': audit.summary() if audit else None,
                     'source_version_overwritten': False, 'direct_od_matrix_writes': False,
                     'load_version_called': False, 'production_ready': False})

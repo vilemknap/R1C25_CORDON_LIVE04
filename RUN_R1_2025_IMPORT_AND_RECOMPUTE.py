@@ -19,4 +19,19 @@ def main(namespace=None):
 
 
 if __name__=='__main__':
-    main(globals())
+    # LIVE04.8 silent entry: nothing may reach Visum's script output (each line would be an
+    # "Information" box).  Any output / error of the launcher goes to
+    # %LOCALAPPDATA%\R1C25_BOOT\LAST_LAUNCHER_OUTPUT.txt; the run result is in the boot/run folders.
+    import io as _io, os as _os, sys as _sys, traceback as _tb
+    _saved=(_sys.stdout,_sys.stderr);_buf=_io.StringIO();_sys.stdout=_sys.stderr=_buf
+    try:
+        main(globals())
+    except BaseException:
+        _buf.write(_tb.format_exc())
+    finally:
+        _sys.stdout,_sys.stderr=_saved
+        try:
+            _d=Path(_os.environ.get('LOCALAPPDATA') or Path.home())/'R1C25_BOOT';_d.mkdir(parents=True,exist_ok=True)
+            (_d/'LAST_LAUNCHER_OUTPUT.txt').write_text(_buf.getvalue() or '(no output)\n',encoding='utf-8')
+        except Exception:
+            pass

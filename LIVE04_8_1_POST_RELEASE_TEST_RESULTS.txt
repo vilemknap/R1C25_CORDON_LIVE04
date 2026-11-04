@@ -1,0 +1,11 @@
+LIVE04.8.1 – testy spuštěné po vydání nad rozbaleným ZIPem
+R1_2025_CORDON_LIVE04_8_1_ASSIGNMENT_REPAIR_20261104_FULL.zip (2026-11-04)
+
+Cílené testy tests/test_live04_8.py: 13 passed in 2475.45s
+Plná regrese (3 shardy):
+  shard 0: 424 passed, 9 skipped
+  shard 1: 237 passed
+  shard 2: 350 passed, 11 skipped
+  celkem:  1011 passed, 20 skipped, 0 failed
+
+Syntetický mock Visum; nejde o nativní důkaz z PTV Visum.

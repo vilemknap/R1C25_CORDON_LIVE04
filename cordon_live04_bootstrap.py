@@ -7,7 +7,7 @@ import json
 import traceback
 
 
-def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,config_overrides=None):
+def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,config_overrides=None,continuation=False):
     root=Path(root or Path(__file__).resolve().parent).resolve()
     boot=None;silent_report=None
     try:
@@ -34,7 +34,7 @@ def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,
             if proof['status']!='RELEASE_INTEGRITY_PASS':raise RuntimeError('LIVE04_RELEASE_INTEGRITY_FAIL:'+str(proof['failures'][:5]))
             run=importlib.import_module('cordon2025.live04_cycle').run
             result=run(namespace['Visum'],output_root=output_root,options=options,config_path=config_path,
-                       config_overrides=config_overrides)
+                       config_overrides=config_overrides,continuation=continuation)
     except BaseException as exc:
         try:message=str(exc)
         except Exception:message='<unprintable '+type(exc).__name__+'>'

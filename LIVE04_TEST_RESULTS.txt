@@ -1,3 +1,9 @@
+LIVE04.8.1 (assignment repair after demand-only predictor probes, continuation by accepted-state match) + LIVE04.8 (checkpoint .ver after every accepted block, continuation of a previous run with original run-start anchors, silent launchers) - 2026-11-04
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_8.py: 10 passed. Launcher/bootstrap tests (test_transfer2025, test_live04, test_visum_bootstrap selection): 18 passed.
+LIVE04.8.1 release built BEFORE its tests finished (user request): tests/test_live04_8.py assignment-repair and state-match tests and the full 3-shard regression run AFTER release; results follow with the next push.
+
+Previous full regression (LIVE04.7.1):
 LIVE04.7.1 (acceptance only on an independent full capture; LIVE04.7 geometry epoch for trial captures; LIVE04.6 fast trial capture with station-link volume cross-check; includes LIVE04.5-5.3) full offline regression from the extracted release ZIP (3 shards), 2026-11-04
 Synthetic mock only - NOT native PTV Visum evidence.
 == shard 0: 310 passed, 8 skipped in 2360.47s (0:39:20) - EXIT 0

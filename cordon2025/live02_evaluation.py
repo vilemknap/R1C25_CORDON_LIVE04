@@ -135,7 +135,10 @@ class CordonEvaluator:
         pre = preflight(visum, self.mathcfg, folder, self.control, opt)
         require(pre[2] == self.baseline_pre[2] and pre[0]['network_sha256'] == self.baseline_pre[0]['network_sha256'],
                 'LIVE02_NETWORK_OR_ZONE_AXIS_CHANGED')
-        require(str(pre[1]) == str(self.baseline_pre[1]), 'LIVE02_CURRENT_VERSION_POINTER_CHANGED')
+        # LIVE04.8: a checkpoint SaveVersion of THIS run moves Visum's current-version pointer to the
+        # checkpoint file (the model in memory is unchanged and was proven to be the accepted state).
+        require(str(pre[1]) == str(self.baseline_pre[1]) or str(pre[1]) in self.__dict__.get('checkpoint_pointers', ()),
+                'LIVE02_CURRENT_VERSION_POINTER_CHANGED')
         cache, epath = capture(visum, self.mathcfg, folder, self.control, opt, pre)
         from .io import read_json
         evidence = read_json(epath)

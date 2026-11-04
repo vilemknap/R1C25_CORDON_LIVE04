@@ -243,3 +243,46 @@ Důkaz v regresi (`tests/test_live04_7.py`, mock):
 - statická kontrola, že všechna tři místa přijetí vedou přes `confirm_before_accept`.
 
 Cena: přijatý pokus stojí jedno rychlé + jedno plné zachycení; zamítnuté pokusy (většina) zůstávají rychlé.
+
+## LIVE04.8 – checkpointy .ver a navázání na předchozí běh (2026-11-04)
+
+Dosud se `.ver` ukládala jen na konci běhu nebo při ověřeném zastavení; pád Visumu znamenal ztrátu
+všech přijatých stavů a nebylo možné rozumně navázat (nový běh by ukotvil meze v už upraveném stavu).
+
+- **Checkpoint.** Po každém bloku, který přijal změnu, se nový snapshot porovná s přijatým stavem a model
+  se uloží jako NOVÝ soubor `<běh>/CHECKPOINTS/<základ>_LIVE04_CKPT_C<cyklus>_<blok>_<hash8>.ver` se
+  sidecarem `<…>.CHECKPOINT.json` (sha256 souboru, hash stavu i jeho složek, pozice dalšího bloku).
+  Drží se posledních `checkpoint.keep_last` (výchozí 2); mažou se jen vlastní checkpointy běhu.
+  Zdrojová `.ver` se nikdy nezapisuje (kontrola sha256 před/po). SaveVersion přesune ve Visumu ukazatel
+  aktuální verze na checkpoint; evaluátor tento ukazatel povolí jen pro checkpointy uložené tímto během.
+- **Navázání** (`RUN_R1_2025_CORDON_LIVE04_CONTINUE.py`): otevřená `.ver` musí být checkpoint nebo
+  `SAVED_ACCEPTED_VERSION` běhu LIVE04 a musí mít stejný sha256 jako při uložení. U checkpointu se navíc
+  vyžaduje přesná shoda hashů ADDVAL1, koeficientů TG a parametrů TD. Převezmou se kotvy PŮVODNÍHO běhu
+  (`RUN_ANCHORS.json`, u starších běhů z `RESTORE_POINT.json`): reference koeficientů pro znaménkové
+  zpřesnění / obálky ZAHR a startovní ADDVAL1 pro kumulativní meze SupplyMix. Číslování cyklů a parita
+  SupplyMix pokračují; běh začne přerušeným blokem (z `CYCLE_PROGRESS.json` nebo ze sidecaru).
+  Nový běh má vlastní BASELINE zachycení; rozhodování je stejné jako v novém běhu. Paměť běhu (TD Jacobián)
+  a stav krokového hledání začínají znovu.
+- Testy: `tests/test_live04_8.py` (10) – checkpoint, navázání dalším cyklem s kotvami původního běhu,
+  navázání z checkpointu i z uložení při zastavení uprostřed cyklu, odmítnutí změněného / cizího souboru,
+  vypnutí checkpointu, pozice skutečného běhu 852bbf8fbea2 (C02 → SUPPLY_ADDVAL1). Jen syntetický mock.
+
+## LIVE04.8.1 – přidělení po sondách predictoru, navázání podle přijatého stavu (2026-11-04)
+
+- **Chyba (živý běh 852bbf8fbea2):** poptávková část posloupnosti procedur, kterou pouští predictor na
+  zmrazených cestách (sondy TG/TD a jejich obnova), obsahuje operace 1 a 15 „reset PrT assignment results“,
+  ale ne přidělení. Každá sonda tak ve Visumu smaže uložené cesty. Když blok skončil jen sondami
+  (TD `NO_TD_CANDIDATE`) nebo se zastavil v návrhu, zůstal model bez cest; další start skončil
+  `NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND` a uložená `.ver` by neměla cesty.
+- **Oprava:** adaptér si po poptávkovém běhu nastaví `assignment_invalidated`; plný přepočet ho zruší.
+  Na konci každého bloku (před checkpointem) a při zastavení (před uložením, se zastavením odloženým)
+  se při nezměněných přijatých parametrech spustí plný nativní přepočet a ověří se snapshot a podpis
+  cest (`ASSIGNMENT_REPAIR.json`, při neshodě plné zachycení s tolerancí řádků). Bez ověřeného přidělení
+  se `.ver` při zastavení neuloží (`assignment_repair_at_stop` v `00_RESULT.json`).
+- **Navázání podle stavu:** otevřená `.ver`, kterou neuložil LIVE04 (ruční uložení + RECOMPUTE), se
+  přiřadí k předchozímu běhu ve stejné výstupní složce, jehož `CYCLE_PROGRESS.accepted_state_hash` je
+  přesně hash otevřeného modelu (a má aspoň 1 přijatý stav).
+- **Tichý start:** spouštěcí skripty LIVE04/TRANSFER zachytí veškerý výstup do
+  `%LOCALAPPDATA%\R1C25_BOOT\LAST_LAUNCHER_OUTPUT.txt` (žádná okna „Information“).
+- Mock: reset maže cesty bez přidělení (testy `test_live04_8.py`).
+

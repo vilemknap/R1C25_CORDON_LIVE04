@@ -21,7 +21,7 @@ from .live03_observations import validate as validate_observations  # noqa: F401
 SCHEMA = 'R1_CORDON_LIVE04_CONFIG_V1'
 STAGE = 'LIVE04_V7_TG_TD_CYCLE'
 CONFIG_FILE = 'CORDON_LIVE04_CONFIG.json'
-LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard')
+LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard', 'checkpoint')
 
 
 def live02_view(cfg):
@@ -154,7 +154,19 @@ def validate_config(cfg, *, allow_donor_overrides=False):
     validate_memory(cfg['memory'])
     validate_supply_mix(cfg)
     validate_row_guard(cfg)
+    validate_checkpoint(cfg)
     return cfg
+
+
+def validate_checkpoint(cfg):
+    """LIVE04.8: .ver checkpoint after every block that accepted a change."""
+    c = cfg.get('checkpoint')
+    require(isinstance(c, dict) and set(c) - {'note'} == {'enabled', 'keep_last'} and isinstance(c['enabled'], bool)
+            and isinstance(c['keep_last'], int) and not isinstance(c['keep_last'], bool) and 1 <= c['keep_last'] <= 10,
+            'LIVE04_INVALID_CHECKPOINT')
+    require(not c['enabled'] or cfg['write_policy']['save_accepted_version_new_file'] is True,
+            'LIVE04_CHECKPOINT_REQUIRES_SAVE_NEW_FILE_POLICY')
+    return c
 
 
 def load_config(path=None, overrides=None):

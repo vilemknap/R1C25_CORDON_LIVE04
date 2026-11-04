@@ -574,5 +574,10 @@
   "row_weight": 1.0,
   "limits": "V7_RUN_OPTIONS_SEV",
   "approval": "USER_DECISION_20261101_GEH_LIMITS_ON_CORDON_ROWS"
+ },
+ "checkpoint": {
+  "enabled": true,
+  "keep_last": 2,
+  "note": "LIVE04.8: after every block that accepted a change the open model is saved as a NEW .ver in <run>/CHECKPOINTS (sidecar .CHECKPOINT.json); open it and run RUN_R1_2025_CORDON_LIVE04_CONTINUE.py to continue."
  }
 }

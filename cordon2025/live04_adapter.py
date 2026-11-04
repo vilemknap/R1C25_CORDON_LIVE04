@@ -85,8 +85,37 @@ class CordonLive04Adapter(CordonLive03Adapter):
     def assign_for_block(self, folder, block):
         with _mask.execution_scope(self):
             if str(block).upper() == 'SUPPLY_ADDVAL1':
-                return self._assign_supply_cold(folder)
-            return super().assign_for_block(folder, block)
+                out = self._assign_supply_cold(folder)
+            else:
+                out = super().assign_for_block(folder, block)
+        self.assignment_invalidated = False
+        return out
+
+    def assign(self, *args, **kwargs):
+        out = super().assign(*args, **kwargs)
+        self.assignment_invalidated = False
+        return out
+
+    # LIVE04.8.1: a demand-only execution (frozen-path predictor probe / restore) runs the
+    # procedure-sequence resets 'reset PrT assignment results' WITHOUT an assignment, so the
+    # saved PrT paths and link volumes of the model are gone until the next full recompute.
+    # A block that ends without a native trial (e.g. NO_TD_CANDIDATE after probes, or a stop
+    # during the design) used to leave the model without paths -> the next run / capture
+    # failed with NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND and a saved .ver had no paths.
+    def repair_assignment(self, folder, state, diag):
+        """Full native recompute at the unchanged accepted parameters + proof of the state."""
+        folder = Path(folder); mkdir(folder)
+        before = self.snapshot()
+        require(before == state, 'LIVE04_ASSIGNMENT_REPAIR_PARENT_NOT_ACCEPTED_STATE')
+        self.assign_for_block(folder / 'RECOMPUTE', 'GENERATION')
+        proof = self.rollback_diagnostic_equivalence(diag, state, folder / 'PROOF')
+        out = {'schema': 'LIVE04_ASSIGNMENT_REPAIR_V1', 'reason': 'DEMAND_ONLY_EXECUTION_RESET_ASSIGNMENT',
+               'snapshot_equal': self.snapshot() == state, 'proof_passes': bool(proof.get('passes')),
+               'proof_basis': proof.get('basis'), 'proof_reason': proof.get('reason')}
+        out['status'] = 'REPAIRED_VERIFIED' if out['snapshot_equal'] and out['proof_passes'] else 'REPAIR_NOT_VERIFIED'
+        write_json(folder / 'ASSIGNMENT_REPAIR.json', out)
+        require(out['status'] == 'REPAIRED_VERIFIED', 'LIVE04_ASSIGNMENT_REPAIR_NOT_VERIFIED:' + str(out['proof_reason']))
+        return out
 
     def _assign_supply_cold(self, folder):
         """v7 SUPPLYMIX cold chain: reset op .. joint assignment (+ active groups)."""
@@ -115,6 +144,7 @@ class CordonLive04Adapter(CordonLive03Adapter):
 
     def execute_demand_only(self, plan, folder):
         perf1 = parent_module('r1_15a2_acceleration_v24915p1')
+        self.assignment_invalidated = True
         if not self._long_post_td_mask_enabled:
             with perf1.activate_operation_plan(self.visum, plan) as active:
                 _rt.execute_procseq(self.visum, folder)
