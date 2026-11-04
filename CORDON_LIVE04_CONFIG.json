@@ -169,6 +169,12 @@
  },
  "evaluation": {
   "trial_full_geometry_check": true,
+  "trial_geometry_proof": "STATION_LINK_VOLUME_CROSSCHECK",
+  "geometry_epoch": {
+   "enabled": true,
+   "max_reuse": 3,
+   "note": "LIVE04.7: trial captures replay the last COM-read path-link sequences when the path key set is unchanged and all-link VOLVEH_DSEG volumes of every DSeg match; BASELINE never replays; after 3 consecutive replays the geometry is read from Visum again"
+  },
   "keep_trial_capture_db": false,
   "rollback_proof": "PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE"
  },

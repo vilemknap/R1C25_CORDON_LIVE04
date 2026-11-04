@@ -87,5 +87,7 @@ class CordonV24917Adapter(CordonTrialAdapter):
         if str(label) == 'STEP1_TRIAL':
             # An eligible STEP1 trial becomes the accepted state: full geometry, keep
             # the capture until the decision (PERF3 removes it for a rejected trial).
-            return self.evaluator.evaluate_candidate(self.raw_visum, folder, label, full_geometry=True, keep_db=True)
+            proof = (getattr(self, 'live02', None) or {}).get('evaluation', {}).get('trial_geometry_proof', 'FULL')
+            return self.evaluator.evaluate_candidate(self.raw_visum, folder, label, full_geometry=True, keep_db=True,
+                                                     geometry_proof=proof)
         return super().diagnostics(folder, label)

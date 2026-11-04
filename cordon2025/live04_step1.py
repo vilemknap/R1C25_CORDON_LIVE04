@@ -35,6 +35,7 @@ import numpy as np
 import math
 from .common import parent_module, ContractError
 from .live02_step1 import CordonStepModel, _drop_capture
+from .live04_confirm import confirm_before_accept
 
 RELEASE = 'LIVE04_V7_GENFIX2_CORDON_STEP1'
 
@@ -393,15 +394,26 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                 after_diag = adapter.diagnostics(trial_folder / 'DIAGNOSTICS', 'STEP1_TRIAL')
                 if adapter.snapshot() != after:
                     raise SupplyContractError('TRIAL_DIAGNOSTICS_CHANGED_MODEL')
-                after_value = base.ledger(after_diag, after, anchors, policy, reference, gen_cfg)
-                decision = adapter.block_gate('GENERATION', diag, after_diag, actual)
-                improvement = baseline_value['total'] - after_value['total']
-                decision.update(shared_ledger_before=baseline_value, shared_ledger_after=after_value,
-                                shared_objective_improvement=improvement)
-                minimum = base.number(gen_cfg.get('shared_objective', {}).get('minimum_improvement', 1e-8))
-                if improvement <= minimum:
-                    decision['accepted'] = False
-                    decision.setdefault('reasons', []).append('SHARED_OBJECTIVE_NOT_IMPROVED')
+                def decide(d, _after=after, _actual=actual):
+                    v = base.ledger(d, _after, anchors, policy, reference, gen_cfg)
+                    dec = adapter.block_gate('GENERATION', diag, d, _actual)
+                    imp = baseline_value['total'] - v['total']
+                    dec.update(shared_ledger_before=baseline_value, shared_ledger_after=v,
+                               shared_objective_improvement=imp)
+                    minimum = base.number(gen_cfg.get('shared_objective', {}).get('minimum_improvement', 1e-8))
+                    if imp <= minimum:
+                        dec['accepted'] = False
+                        dec.setdefault('reasons', []).append('SHARED_OBJECTIVE_NOT_IMPROVED')
+                    return v, dec
+                after_value, decision = decide(after_diag)
+                if decision.get('accepted'):
+                    # LIVE04.7.1: an accelerated capture never accepts; decide again on a full capture.
+                    full, v2, dec2, caudit = confirm_before_accept(adapter, trial_folder / 'DIAGNOSTICS_CONFIRM',
+                                                                   after_diag, after, decide, True)
+                    attempt['acceptance_confirm'] = caudit.get('status')
+                    if dec2 is not None:
+                        _drop_capture(trial_folder / 'DIAGNOSTICS')
+                        after_diag, after_value, decision = full, v2, dec2
                 base._write_acceptance(trial_folder / 'ACCEPTANCE.json', decision)
                 if not decision.get('accepted') and not evaluator.live02['evaluation']['keep_trial_capture_db']:
                     attempt['rejected_capture_removed'] = _drop_capture(trial_folder / 'DIAGNOSTICS')

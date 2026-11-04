@@ -317,25 +317,37 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
         base.assert_freeze(state, after, BLOCK, rows=actual, candidate=candidate, cfg=cfg)
         after_diag = adapter.diagnostics(trial / 'DIAGNOSTICS', 'STEP1_TRIAL')
         require(adapter.snapshot() == after, 'TRIAL_DIAGNOSTICS_CHANGED_MODEL')
-        after_value = base.ledger(after_diag, after, anchors, policy, reference, cfg)
-        decision = adapter.block_gate(BLOCK, diag, after_diag, actual)
-        if guard and after_diag.get('valid', True):
-            try:
-                idp_trial = guard.evaluate('TRIAL')
-            except Exception as exc:
-                idp_trial = {'error': type(exc).__name__ + ':' + str(exc)}
-            gd = guard_decision(idp_trial)
-            decision['idp_guard'] = gd
-            if not gd['passes']:
-                decision['accepted'] = False
-                decision.setdefault('reasons', []).extend(gd['reasons'])
-        improvement = baseline_value['total'] - after_value['total']
-        decision.update(shared_ledger_before=baseline_value, shared_ledger_after=after_value,
-                        shared_objective_improvement=improvement,
-                        predicted_objective=best['objective'], measured_objective=after_value['total'])
-        if improvement <= 1e-8:
-            decision['accepted'] = False
-            decision.setdefault('reasons', []).append('SHARED_OBJECTIVE_NOT_IMPROVED')
+        def decide(d):
+            v = base.ledger(d, after, anchors, policy, reference, cfg)
+            dec = adapter.block_gate(BLOCK, diag, d, actual)
+            if guard and d.get('valid', True):
+                try:
+                    idp_trial = guard.evaluate('TRIAL')
+                except Exception as exc:
+                    idp_trial = {'error': type(exc).__name__ + ':' + str(exc)}
+                gd = guard_decision(idp_trial)
+                dec['idp_guard'] = gd
+                if not gd['passes']:
+                    dec['accepted'] = False
+                    dec.setdefault('reasons', []).extend(gd['reasons'])
+            imp = baseline_value['total'] - v['total']
+            dec.update(shared_ledger_before=baseline_value, shared_ledger_after=v,
+                       shared_objective_improvement=imp,
+                       predicted_objective=best['objective'], measured_objective=v['total'])
+            if imp <= 1e-8:
+                dec['accepted'] = False
+                dec.setdefault('reasons', []).append('SHARED_OBJECTIVE_NOT_IMPROVED')
+            return v, dec
+        after_value, decision = decide(after_diag)
+        if decision.get('accepted'):
+            from .live04_confirm import confirm_before_accept
+            from .live02_step1 import _drop_capture
+            full, v2, dec2, caudit = confirm_before_accept(adapter, trial / 'DIAGNOSTICS_CONFIRM', after_diag, after,
+                                                           decide, True)
+            rec['acceptance_confirm'] = caudit.get('status')
+            if dec2 is not None:
+                _drop_capture(trial / 'DIAGNOSTICS')
+                after_diag, after_value, decision = full, v2, dec2
         write_json(trial / 'ACCEPTANCE.json', decision)
         rec.update(trial={'gap': gap, 'decision': {k: decision.get(k) for k in ('accepted', 'reasons', 'objective_before',
                                                                                'objective_after', 'relative_improvement',

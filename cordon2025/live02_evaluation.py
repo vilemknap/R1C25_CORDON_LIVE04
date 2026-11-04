@@ -13,7 +13,8 @@ from pathlib import Path
 import numpy as np
 from .common import ROOT, require, canonical_hash, parent_module, ContractError
 from .io import write_json, write_csv, mkdir, exception_text
-from .visum_startup import preflight, capture, _new_list, _bounded_rows, retry_policy
+from .visum_startup import preflight, _new_list, _bounded_rows, retry_policy
+from .live04_capture import capture, GEOMETRY_PROOF_MODES
 from .incidence import build_from_snapshot
 from .live01_observations import aggregate_whole
 from .optimizer import build_problem, deadzone
@@ -115,10 +116,21 @@ class CordonEvaluator:
         return None
 
     # ---------------------------------------------------------------- capture
-    def evaluate(self, visum, folder, label, *, full_geometry=True, keep_db=True):
+    def evaluate(self, visum, folder, label, *, full_geometry=True, keep_db=True, geometry_proof='FULL'):
         folder = Path(folder); mkdir(folder)
         self.count += 1
-        opt = dict(self.opt, full_geometry_check=bool(full_geometry))
+        require(geometry_proof in GEOMETRY_PROOF_MODES, 'LIVE02_UNKNOWN_GEOMETRY_PROOF_MODE')
+        if str(label) == 'BASELINE':
+            geometry_proof = 'FULL'          # every run start proves same-mode geometry in full
+        opt = dict(self.opt, full_geometry_check=bool(full_geometry), geometry_proof=geometry_proof)
+        epoch = self.__dict__.get('geometry_epoch_cfg')
+        if epoch is None:
+            ecfg = ((self.live02 or {}).get('evaluation') or {}).get('geometry_epoch') or {}
+            epoch = {'enabled': bool(ecfg.get('enabled', False)), 'max_reuse': int(ecfg.get('max_reuse', 3)),
+                     'dir': str(folder.parent / 'GEOMETRY_EPOCH')}
+            self.geometry_epoch_cfg = epoch
+        if epoch['enabled'] and str(label) != 'BASELINE' and geometry_proof != 'FULL':
+            opt['geometry_epoch'] = {'dir': epoch['dir'], 'max_reuse': epoch['max_reuse']}
         self.control.checkpoint('LIVE02_EVALUATE_' + str(label), force=True)
         pre = preflight(visum, self.mathcfg, folder, self.control, opt)
         require(pre[2] == self.baseline_pre[2] and pre[0]['network_sha256'] == self.baseline_pre[0]['network_sha256'],
@@ -127,11 +139,18 @@ class CordonEvaluator:
         cache, epath = capture(visum, self.mathcfg, folder, self.control, opt, pre)
         from .io import read_json
         evidence = read_json(epath)
+        ge = evidence.get('geometry_epoch') or {}
+        if epoch['enabled'] and ge.get('mode_audits'):
+            from .live04_epoch import write_epoch
+            write_epoch(epoch['dir'], cache, pre[0]['network_sha256'], ge['edge_dictionary_sha256'],
+                        ge['mode_audits'], ge.get('fresh_modes') or [], ge.get('reused_modes') or [], label)
         directed = self.build_incidence(cache, self.station_map, dict(self.mathcfg, **self.extra_mathcfg, actual_network_sha256=pre[0]['network_sha256'],
                                        actual_demand_sha256=evidence['demand_sha256']), evidence,
                                        hits_output=folder / 'STATION_HITS.csv')
         require(set(directed) == set(self.methods), 'LIVE02_ENUMERATION_METHODS_CHANGED')
-        signature = path_volume_signature(visum, pre[4], self.control, opt)
+        signature = evidence.get('final_path_volume_signature')
+        if not signature or set(signature) != {d['norm_code'] for d in pre[4]}:
+            signature = path_volume_signature(visum, pre[4], self.control, opt)
         methods = {}; incidence = {}; pair_rows = []; native_cl = {}; terms_by_method = {}
         for method in self.methods:
             cl = {}
@@ -159,6 +178,9 @@ class CordonEvaluator:
                 'matrix_audit': pre[0]['matrix_audit'], 'path_signature': signature,
                 'capture_cache_sha256': evidence['cache_sha256'], 'folder': str(folder),
                 'full_geometry_check': bool(full_geometry), 'observed_hash': obs,
+                'geometry_identity_basis': evidence.get('geometry_identity_basis',
+                                                        'FULL_SAME_MODE_GEOMETRY_COMPARED_THIS_CAPTURE'
+                                                        if full_geometry else 'PROVISIONAL_REPRESENTATIVE_ONLY'),
                 'native_cl_pair_volume': native_cl,
                 'source': 'FRESH_LEGACY_CAPTURE_OF_CURRENT_ASSIGNMENT'}
         diag['diagnostic_hash'] = self.diagnostic_hash(diag)
@@ -179,10 +201,11 @@ class CordonEvaluator:
             diag['capture_db_retained'] = False
         return diag
 
-    def evaluate_candidate(self, visum, folder, label, *, full_geometry, keep_db):
+    def evaluate_candidate(self, visum, folder, label, *, full_geometry, keep_db, geometry_proof='FULL'):
         """AFTER/ADOPTED: capture parity failures are a candidate property."""
         try:
-            return self.evaluate(visum, folder, label, full_geometry=full_geometry, keep_db=keep_db)
+            return self.evaluate(visum, folder, label, full_geometry=full_geometry, keep_db=keep_db,
+                                 geometry_proof=geometry_proof)
         except ContractError as exc:
             text = exception_text(exc)
             policy = self.live02['acceptance']['candidate_capture_failure_policy']

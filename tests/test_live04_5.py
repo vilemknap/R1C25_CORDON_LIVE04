@@ -108,7 +108,7 @@ class Evaluator:
     def __init__(self, captured):
         self.captured = captured; self.calls = 0
 
-    def evaluate(self, visum, folder, label, full_geometry=True, keep_db=True):
+    def evaluate(self, visum, folder, label, full_geometry=True, keep_db=True, geometry_proof="FULL"):
         self.calls += 1
         return self.captured
 

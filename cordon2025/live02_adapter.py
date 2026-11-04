@@ -130,7 +130,7 @@ class CordonTrialAdapter(_supply.VisumAdapter):
         if label in ('AFTER',):
             return self.evaluator.evaluate_candidate(
                 self.raw_visum, folder, label, full_geometry=ev['trial_full_geometry_check'],
-                keep_db=ev['keep_trial_capture_db'])
+                keep_db=ev['keep_trial_capture_db'], geometry_proof='FULL')
         return self.evaluator.evaluate(self.raw_visum, folder, label, full_geometry=True, keep_db=True)
 
     def block_gate(self, block, before, after, rows):
@@ -212,7 +212,8 @@ class CordonTrialAdapter(_supply.VisumAdapter):
             return dict(result, passes=True, reason=None, full_capture_fallback_required=False,
                         basis='EXACT_SNAPSHOT_PLUS_PATH_SIGNATURE_ALREADY_PROVEN_EQUIVALENT_FOR_THIS_STATE')
         diag = self.evaluator.evaluate(self.raw_visum, Path(folder) / 'TOLERANT_CAPTURE', 'ROLLBACK',
-                                       full_geometry=True, keep_db=False)
+                                       full_geometry=True, keep_db=False,
+                                       geometry_proof='FULL')
         same = self.snapshot() == before_snapshot
         cmp = rows_equivalent(baseline_diag, diag, self.evaluator.methods)
         result.update(tolerant_capture_snapshot_equal=same, tolerant_rows=cmp)

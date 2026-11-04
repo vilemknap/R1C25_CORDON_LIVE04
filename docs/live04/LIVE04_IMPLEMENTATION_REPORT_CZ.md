@@ -204,3 +204,42 @@ Spouštěče `RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py` i `RUN_R1_2025_*` TRA
 - výstup Pythonu (`print`, stderr, `warnings`) jde do `PYTHON_CONSOLE.log` v boot složce, spouštěč nic netiskne; výsledek je v `00_LIVE04_BOOT_RESULT.json` / `00_TRANSFER_BOOT_RESULT.json` a v `00_RESULT.json` běhu;
 - stav je v `SILENT_MODE.json` (boot složka `%LOCALAPPDATA%\R1C25_BOOT\<id>\`). Pokud předvolba v dané verzi Visumu přes COM dostupná není (`NOT_ACCESSIBLE`), běh pokračuje a je třeba ji zapnout ručně: Úpravy > Uživatelská nastavení > Uživatelské rozhraní > Varování > Potlačit výstup varování během provádění procedur.
 Kritické chybové dialogy Visumu tato předvolba nepotlačí a nic se automaticky neodklikává (žádné SendKeys).
+
+## LIVE04.6 – rychlejší zachycení pokusů (2026-11-04)
+Živý běh 2026-11-04: jedno zachycení kordonové diagnostiky trvalo ~66 min (`V24917_TIMING`: 2 volání, 7981 s), přepočet přidělení 43 s. Zachycení tedy tvoří ~98 % času pokusu. Nejdražší část je čtení hierarchie cest a hran (`CreatePrTPathLinkList`, ~31 mil. řádků na DSeg): pro každý mód se čte reprezentativní DSeg a s `full_geometry_check` ještě každý další DSeg téhož módu kvůli důkazu shodné geometrie – 12 čtení geometrie na zachycení.
+
+Změna (`cordon2025/live04_capture.py`, overlay; chráněný `visum_startup.py` LIVE01 zůstává bajtově beze změny):
+1. **Důkaz geometrie v pokusech přes hrany stanic.** Pro STEP1_TRIAL / AFTER / ROLLBACK (`evaluation.trial_geometry_proof = STATION_LINK_VOLUME_CROSSCHECK`) se geometrie čte jen pro reprezentativní DSeg každého módu (2 čtení místo 12). Ostatní DSegy téhož módu mají už teď vynucenou přesně shodnou množinu klíčů cest (`FULL_PARENT_KEYS_DIFFER`); navíc se pro každý z 12 DSegů porovná objem Visumu `VOLVEH_DSEG(<kód>,AP)` na všech 32 hranách stanic s objemem odvozeným z reprezentativní geometrie a objemů cest daného DSegu (tolerance 1 vozidlo + 0,1 %). Kontroluje se i reprezentativní DSeg (ověří jednotky). Při jakékoli neshodě nebo nečitelném atributu proběhne ve stejném zachycení původní plný důkaz (selže-li, běh selže jako dřív). Výsledek `GEOMETRY_CROSSCHECK.json`, `SNAPSHOT_EVIDENCE.json` → `geometry_identity_basis`.
+2. **BASELINE na začátku každého běhu dokazuje geometrii vždy plně** (vynuceno v `CordonEvaluator.evaluate`).
+3. **Podpis objemů cest bez třetího čtení.** `FINAL_PATH_READBACK` uvnitř zachycení počítá přesně týž digest (pořadí řádků COM, součet) jako `path_volume_signature`; evaluátor ho převezme a nečte 12 seznamů cest potřetí. Rollback dál čte podpis živě a porovnává ho se stejným protokolem.
+4. **Měření:** `CAPTURE_TIMING.json` v každé složce zachycení (rodiče+matice, geometrie reprezentanta, křížová kontrola, plný důkaz, závěrečné čtení).
+
+Odhad: 12 → 2 čtení geometrie a 36 → 24 čtení seznamů cest na pokus; skutečné zrychlení ukáže `CAPTURE_TIMING.json` z prvního živého běhu (testy jsou jen na mocku). Testy `tests/test_live04_6.py`.
+
+## LIVE04.7 – epocha geometrie cest pro pokusy (2026-11-04)
+Kordonová obdoba epoch cest profilového kalibrátoru v7 (V2.4.7), `cordon2025/live04_epoch.py`, konfigurace `evaluation.geometry_epoch` (`enabled: true`, `max_reuse: 3`).
+
+Každé zachycení, které čte geometrii z Visumu, uloží sekvence hran cest do `GEOMETRY_EPOCH/epoch.sqlite` ve složce běhu. Další zachycení pokusu (STEP1_TRIAL/AFTER/ROLLBACK) geometrii pro mód z Visumu nečte, ale přehraje ji z epochy, jen pokud platí všechno:
+- stejný hash sítě a slovník hran;
+- přesně stejná množina klíčů cest (orig, dest, PathIndex) módu jako v epoše;
+- pro **každý** DSeg módu (i reprezentativní) a **každou hranu sítě** sedí objem Visumu `VOLVEH_DSEG(<kód>,AP)` s objemem spočteným ze sekvencí epochy a **aktuálních** objemů cest (tolerance 1 voz. + 0,0005 na kladnou cestu na hraně – mřížka 0,001 – + 0,1 %);
+- epocha nebyla pro mód použita 3× za sebou (pak se geometrie znovu čte z Visumu).
+
+Jinak se geometrie čte z Visumu jako v LIVE04.6. Přehrané řádky procházejí nezměněným donorovým parserem (souvislost, existence hran v síti, pokrytí všech cest). BASELINE nikdy nepřehrává. O přijetí kandidáta dál rozhoduje čerstvé nativní přidělení a čerstvě přečtené objemy cest; z epochy se bere jen to, kudy cesty vedou.
+
+Zbývající riziko: shoda objemů na všech hranách nedokazuje matematicky stejné pořadí hran u každé jednotlivé cesty (prakticky by šlo jen o výměnu tras mezi cestami se stejnými objemy na každé hraně). Proto omezení `max_reuse` a plné čtení na začátku každého běhu. Výsledky: `GEOMETRY_EPOCH_CHECK.json` v každé složce zachycení, `GEOMETRY_EPOCH/EPOCH.json`, `SNAPSHOT_EVIDENCE.json` → `geometry_epoch`, časy v `CAPTURE_TIMING.json`.
+
+TD (v7 td-perf): rychlejší FineCDF v7 se týká jejího vlastního TD jádra (FineCDF gapfix, skimy, souřadnicové hledání). Kordonový TD používá referenční FineCDF v1.9, který už má předpočítanou mřížku a vektorizovaný výpočet; čas TD tvoří hlavně přepočet poptávky ve Visumu a čtení matic. Port proto nepřinese měřitelné zrychlení a neprovádí se.
+
+## LIVE04.7.1 – přijetí kandidáta jen na plném zachycení (2026-11-04)
+Připomínka uživatele: shoda intenzit `VOLVEH_DSEG` (na 32 hranách stanic, ale ani na všech hranách sítě) nedokazuje shodu tras ani matice FIRST_LAST. Protipříklad: cesty 1→2 a 3→4 dávají při sdílené střední hraně stejné intenzity na všech hranách jako 1→4 a 3→2, ale jinou kordonovou matici. Intenzity na hranách obecně neurčují rozklad do cest.
+
+Pravidlo: **zrychlené zachycení (LIVE04.6 křížová kontrola, LIVE04.7 epocha) smí kandidáta jen zamítnout nebo řídit hledání, nikdy přijmout.** Když blok (Generation, TD_CORDON, SupplyMix) na zrychleném zachycení rozhodne „přijmout", proběhne nad stejným stavem přidělení nezávislé plné zachycení (`ACCEPTANCE_CONFIRM`): celá hierarchie cest a hran všech 12 DSegů přečtená z Visumu, bez epochy, s plným důkazem shody v módu. Rozhodnutí o přijetí se pak vyhodnotí **znovu celé na plném zachycení** (brána, sdílený cíl, IDP pojistka u TD). Zrychlené řádky se jen porovnají a zapíšou (`ACCEPTANCE_CONFIRM.json`: shoda řádků, rozhodnutí fast/full, `decision_basis: FULL_CAPTURE`). Přijatý stav i jeho úložiště cest (pro SupplyMix, epochu a další cyklus) pochází vždy z plného zachycení. ROLLBACK a AFTER zachycení jsou vždy plná. BASELINE je vždy plný.
+
+Důkaz v regresi (`tests/test_live04_7.py`, mock):
+- protipříklad A/B postavený přesně podle připomínky (stanice 2,4,7,9 se sdílenou hranou): křížová kontrola LIVE04.6 i epocha LIVE04.7 na něm **projdou** (slabina potvrzena), FIRST_LAST z přehrané geometrie (2→4, 7→9) se liší od skutečné (2→9, 7→4); plný důkaz neshodu odhalí;
+- `confirm_before_accept`: matice ze zrychleného zachycení, která by byla přijata, je na plném zachycení zamítnuta (`REJECTED_ON_FULL_CAPTURE`); správná je potvrzena a stav se převezme z plného zachycení;
+- celý mock cyklus: brána nastavená tak, že na každém zrychleném zachycení říká ANO a na plném NE → nepřijme se nic; v běžném cyklu má každé přijaté rozhodnutí `decision_basis = FULL_CAPTURE`;
+- statická kontrola, že všechna tři místa přijetí vedou přes `confirm_before_accept`.
+
+Cena: přijatý pokus stojí jedno rychlé + jedno plné zachycení; zamítnuté pokusy (většina) zůstávají rychlé.

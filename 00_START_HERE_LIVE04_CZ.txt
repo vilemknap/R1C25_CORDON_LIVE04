@@ -45,6 +45,14 @@ Report: docs/live04/LIVE04_IMPLEMENTATION_REPORT_CZ.md, docs/live04/LIVE04_1_MEM
 LIVE02 (V24917) a LIVE03 v tomto stromu nebezi (donory v parent/ jsou v7, jejich piny je zastavi pred
 zapisem). Pro LIVE03 pouzij jeho vlastni ZIP.
 
+RYCHLEJSI POKUSY (LIVE04.6): v pokusech se geometrie cest cte jen pro 1 DSeg na mod,
+ostatni DSegy se overi objemy VOLVEH_DSEG na 32 hranach stanic (pri neshode plny dukaz);
+BASELINE dokazuje geometrii vzdy plne. Casy: CAPTURE_TIMING.json ve slozkach zachyceni.
+EPOCHA (LIVE04.7): pri nezmenenych klicich cest a shode VOLVEH_DSEG na vsech hranach se
+geometrie v pokusu necte vubec (max. 3x po sobe), viz GEOMETRY_EPOCH_CHECK.json.
+PRIJETI (LIVE04.7.1): zrychlene zachyceni smi pokus jen zamitnout; pred kazdym prijetim
+probehne plne zachyceni a rozhodne se znovu na nem (ACCEPTANCE_CONFIRM.json).
+
 TICHY BEH (LIVE04.5.3): skripty nevypisuji nic do okna Visumu a potlaci varovani procedur
 (predvolba SuppressWarningsDuringProcExec, po behu vracena). Vysledek a logy: %LOCALAPPDATA%\R1C25_BOOT\<id>\
 (00_*_BOOT_RESULT.json, SILENT_MODE.json, PYTHON_CONSOLE.log, VISUM_MESSAGES.txt) a slozka behu.

@@ -481,15 +481,26 @@ def supply_block(tx, adapter, cfg, folder, control, state, diag, anchors, refere
             after_diag = adapter.diagnostics(tfolder / 'DIAGNOSTICS', 'STEP1_TRIAL')
             if adapter.snapshot() != after:
                 raise SupplyContractError('TRIAL_DIAGNOSTICS_CHANGED_MODEL')
-            after_value = base.ledger(after_diag, after, anchors, policy, reference, sup_cfg)
-            decision = adapter.block_gate(BLOCK, diag, after_diag, [])
-            improvement = baseline_value['total'] - after_value['total']
-            decision.update(shared_ledger_before=baseline_value, shared_ledger_after=after_value,
-                            shared_objective_improvement=improvement)
-            minimum = base.number(sup_cfg.get('shared_objective', {}).get('minimum_improvement', 1e-8))
-            if improvement <= minimum:
-                decision['accepted'] = False
-                decision.setdefault('reasons', []).append('SHARED_OBJECTIVE_NOT_IMPROVED')
+            def decide(d, _after=after):
+                v = base.ledger(d, _after, anchors, policy, reference, sup_cfg)
+                dec = adapter.block_gate(BLOCK, diag, d, [])
+                imp = baseline_value['total'] - v['total']
+                dec.update(shared_ledger_before=baseline_value, shared_ledger_after=v,
+                           shared_objective_improvement=imp)
+                minimum = base.number(sup_cfg.get('shared_objective', {}).get('minimum_improvement', 1e-8))
+                if imp <= minimum:
+                    dec['accepted'] = False
+                    dec.setdefault('reasons', []).append('SHARED_OBJECTIVE_NOT_IMPROVED')
+                return v, dec
+            after_value, decision = decide(after_diag)
+            if decision.get('accepted'):
+                from .live04_confirm import confirm_before_accept
+                full, v2, dec2, caudit = confirm_before_accept(adapter, tfolder / 'DIAGNOSTICS_CONFIRM', after_diag,
+                                                               after, decide, True)
+                attempt['acceptance_confirm'] = caudit.get('status')
+                if dec2 is not None:
+                    _drop_capture(tfolder / 'DIAGNOSTICS')
+                    after_diag, after_value, decision = full, v2, dec2
             write_json(tfolder / 'ACCEPTANCE.json', decision)
             valid = bool(after_diag.get('valid', True))
             after_table = sm.profile_table(row_semantics(adapter.evaluator, after_diag)['profiles']) if valid else {}
