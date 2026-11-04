@@ -44,3 +44,7 @@ Report: docs/live04/LIVE04_IMPLEMENTATION_REPORT_CZ.md, docs/live04/LIVE04_1_MEM
         docs/live04/LIVE04_4_V7_7B4C681_CZ.md (LIVE04.4)
 LIVE02 (V24917) a LIVE03 v tomto stromu nebezi (donory v parent/ jsou v7, jejich piny je zastavi pred
 zapisem). Pro LIVE03 pouzij jeho vlastni ZIP.
+
+TICHY BEH (LIVE04.5.3): skripty nevypisuji nic do okna Visumu a potlaci varovani procedur
+(predvolba SuppressWarningsDuringProcExec, po behu vracena). Vysledek a logy: %LOCALAPPDATA%\R1C25_BOOT\<id>\
+(00_*_BOOT_RESULT.json, SILENT_MODE.json, PYTHON_CONSOLE.log, VISUM_MESSAGES.txt) a slozka behu.

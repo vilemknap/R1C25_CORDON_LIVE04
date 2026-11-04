@@ -1,10 +1,7 @@
-LIVE04.5 (W/S coefficient envelopes widened by user decision 2026-11-03: ADD_PROD 0.5-3.15, ADD_ATT 0.5-5.5; mg_max_ratio 3.15 declared cordon deviation; on top of LIVE04.4.2 network 2026-11-03 + LIVE04.4.1 RECOMPUTE + LIVE04.4 v7 @ 7b4c681) full offline regression from the extracted release ZIP (6 shards), 2026-11-03
+LIVE04.5.3 (silent Visum run: procedure warnings suppressed via GUI user preference with exact restore, Python console to PYTHON_CONSOLE.log; LIVE04.5.2 robustness: tolerant rollback rows after exact snapshot match, trial ASSIGNMENT_NOT_TIGHT rejection, predictor-unavailable fallback, save of last accepted state on stop; LIVE04.5.1 predictor anchoring on captured rows; LIVE04.5 envelopes P 0.5-3.15 / A 0.5-5.5) full offline regression from the extracted release ZIP (3 shards), 2026-11-04
 Synthetic mock only - NOT native PTV Visum evidence.
-== shard 0: 194 passed, 8 skipped in 203.89s - EXIT 0
-== shard 1: 143 passed in 5394.13s (1:29:54) - EXIT 0
-== shard 2: 225 passed in 2422.36s (0:40:22) - EXIT 0
-== shard 3: 102 passed in 1921.83s (0:32:01) - EXIT 0
-== shard 4: 131 passed, 1 skipped in 1086.61s - EXIT 0
-== shard 5: 165 passed, 11 skipped in 1028.30s - EXIT 0
-TOTAL: 960 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed
-LIVE04.5 changes covered by tests/test_live04.py (envelope/mobility/attraction fence agreement, mg_max_ratio deviation guard, mg_min_ratio drift guard, wider envelope reaches the model >3.0/>5.0 and <=3.15/<=5.5) - all passed.
+== shard 0: 411 passed, 9 skipped in 2782.86s (0:46:22) - EXIT 0
+== shard 1: 223 passed in 4934.28s (1:22:14) - EXIT 0
+== shard 2: 340 passed, 11 skipped in 3384.39s (0:56:24) - EXIT 0
+TOTAL: 974 passed, 20 skipped (18 = LIVE02-V24917/LIVE03 cycle tests marked SUPERSEDED_IN_LIVE04_TREE, 2 pre-existing), 0 failed
+LIVE04.5.1-5.3 changes covered by tests/test_live04_5.py (14 tests) - all passed.

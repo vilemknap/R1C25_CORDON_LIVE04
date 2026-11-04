@@ -165,6 +165,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 pre, state = model_preflight(visum, view, base_dir, ctl, opt)
                 copy_guard = isolated_copy_guard(cfg, state['source_version'])
                 write_json(folder / 'ISOLATED_COPY_GUARD.json', copy_guard)
+                progress['bound_state'] = state
                 mathcfg = calculation_config(view, state['actuatable_zones'])
                 mathcfg['actual_network_sha256'] = pre[0]['network_sha256']
                 from .live04_config import row_guard_policy
@@ -368,6 +369,15 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 kind = 'LIVE04_STOPPED_MODEL_VERIFIED_AT_LAST_ACCEPTED_STATE'
             else:
                 kind = 'LIVE04_STOPPED_MODEL_STATE_NOT_VERIFIED_REOPEN_SOURCE_OR_SAVED_VERSION'
+            saved_at_stop = None
+            # LIVE04.5.2: keep the accepted progress of a stopped run (STOP_REQUESTED, a block
+            # error, ...) - but only when the open model was read back AT the last accepted state.
+            if verified is True and progress['accepted_states'] and progress.get('bound_state') \
+                    and cfg['write_policy'].get('save_accepted_version_new_file'):
+                try:
+                    saved_at_stop = save_accepted_version(visum, folder, progress['bound_state'])
+                except BaseException as save_exc:
+                    saved_at_stop = {'error': type(save_exc).__name__ + ':' + str(save_exc)[:500]}
             try:
                 cp = read_json(folder / 'RUN_CHECKPOINT.json')
                 cp.update(completed=False, stage='LIVE04_FAILED', failure_reason=text)
@@ -379,7 +389,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 write_json(folder / '00_RESULT.json', {
                     'schema': RESULT_SCHEMA, 'status': kind, 'reason': text, 'execution_kind': execution,
                     'accepted_states': progress['accepted_states'], 'cycles': progress['cycles'],
-                    'model_state_verified': verified, 'write_audit': audit.summary() if audit else None,
+                    'model_state_verified': verified, 'saved_version_at_stop': saved_at_stop,
+                    'write_audit': audit.summary() if audit else None,
                     'source_version_overwritten': False, 'direct_od_matrix_writes': False,
                     'load_version_called': False, 'production_ready': False})
                 if ctl:

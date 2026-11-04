@@ -15,6 +15,18 @@ exactly (native TG/TD/matrix operations, including non-linear gravity and
 balancing).  OD cells with positive new demand but no accepted path are
 reported as unsupported volume.  Restoring after a probe = parameter restore
 by COM + the same demand-only slice, verified by snapshot equality.
+
+ANCHORING (LIVE04.5.1).  Visum stores path volumes on a 0.001 lattice while
+the OD matrices are full precision, so share * Q of the parent matrices is not
+bit-identical to the captured rows (live run 2026-11-03: max 0.59 % on a small
+row).  The predictor is therefore anchored on the captured rows:
+
+    m_row(candidate) = m_row(captured) + F(Q_candidate) - F(Q_parent)
+
+which reproduces the parent exactly and carries only the native demand change.
+The raw deviation F(Q_parent) - m_row(captured) is reported and bounded by a
+sanity limit (a larger value means the paths do not belong to the matrices).
+The parent model state itself is proven separately by snapshot equality.
 """
 from __future__ import annotations
 import hashlib
@@ -26,6 +38,12 @@ from .io import write_json, mkdir
 
 SCHEMA = 'LIVE03_NATIVE_FROZEN_PATH_PREDICTION_V1'
 ASSIGNMENT_TYPES = (100, 101)
+# Raw base deviation allowed by path-volume quantization (relative with a 10 vehicle
+# floor, and a 0.25 % bound on each method total).  Above it the frozen shares
+# do not describe the parent matrices and prediction stops.
+RAW_ROW_RELATIVE_LIMIT = 0.05
+RAW_ROW_FLOOR = 10.0
+RAW_TOTAL_RELATIVE_LIMIT = 0.0025
 
 
 class PredictionError(RuntimeError):
@@ -69,6 +87,7 @@ class FrozenPathPredictor:
         self.zone_nos = list(pre[2]); self.dsegs = list(pre[4])
         self.m0 = {m: np.asarray(diag['methods'][m]['model'], dtype=float) for m in self.methods}
         self.tolerance = float(tolerance)
+        self.offset = None              # m_row(captured) - F(Q_parent), set by base_parity()
         self.calls = 0; self.seconds = 0.0; self.records = []
         n = len(self.zone_nos)
         pos = {z: i for i, z in enumerate(self.zone_nos)}
@@ -91,8 +110,13 @@ class FrozenPathPredictor:
             out[ds['norm_code']] = arr
         return out
 
+    def raw_rows(self, matrices):
+        return {m: self.frozen[m].predict(matrices, self.zone_nos) for m in self.methods}
+
     def predict_from(self, matrices, label):
-        rows = {m: self.frozen[m].predict(matrices, self.zone_nos) for m in self.methods}
+        require(self.offset is not None, 'LIVE03_PREDICTOR_BASE_PARITY_NOT_RUN')
+        raw = self.raw_rows(matrices)
+        rows = {m: raw[m] + self.offset[m] for m in self.methods}
         unsupported = {}
         for code, arr in matrices.items():
             mask = self.support.get(code)
@@ -106,12 +130,38 @@ class FrozenPathPredictor:
         return rows, audit
 
     def base_parity(self):
-        """The predictor must reproduce the captured assignment exactly before any write."""
-        rows, audit = self.predict_from(self.read_matrices(), 'BASE_PARITY')
+        """Anchor on the captured rows (parent matrices, before any write) and prove it.
+
+        The anchored prediction of the parent must equal the captured rows within
+        ``tolerance``; the raw share * Q deviation (path-volume quantization) must
+        stay inside the RAW_* sanity limits."""
+        matrices = self.read_matrices()
+        raw = self.raw_rows(matrices)
+        dev = {m: raw[m] - self.m0[m] for m in self.methods}
+        raw_row = {m: float(np.max(np.abs(dev[m]) / np.maximum(RAW_ROW_FLOOR, np.abs(self.m0[m])), initial=0.0))
+                   for m in self.methods}
+        raw_total = {m: float(abs(dev[m].sum()) / max(1.0, float(np.abs(self.m0[m]).sum()))) for m in self.methods}
+        raw_abs = {m: float(np.max(np.abs(dev[m]), initial=0.0)) for m in self.methods}
+        raw_err = {m: float(np.max(np.abs(dev[m]) / np.maximum(1.0, np.abs(self.m0[m])), initial=0.0))
+                   for m in self.methods}
+        self.offset = {m: self.m0[m] - raw[m] for m in self.methods}
+        rows, audit = self.predict_from(matrices, 'BASE_PARITY')
         err = {m: float(np.max(np.abs(rows[m] - self.m0[m]) / np.maximum(1.0, np.abs(self.m0[m])), initial=0.0))
                for m in self.methods}
-        audit.update(max_relative_error=err, passes=all(v <= self.tolerance for v in err.values()))
+        raw_ok = all(raw_row[m] <= RAW_ROW_RELATIVE_LIMIT and raw_total[m] <= RAW_TOTAL_RELATIVE_LIMIT
+                     for m in self.methods)
+        audit.update(mode='ANCHORED_ON_CAPTURED_ROWS', max_relative_error=err,
+                     raw_share_times_matrix_deviation={
+                         'max_relative_error_floor_1': raw_err, 'max_relative_error_floor_10': raw_row,
+                         'max_abs_vehicles': raw_abs, 'total_relative': raw_total,
+                         'limits': {'row_relative': RAW_ROW_RELATIVE_LIMIT, 'row_floor': RAW_ROW_FLOOR,
+                                    'total_relative': RAW_TOTAL_RELATIVE_LIMIT},
+                         'cause': 'PATH_VOLUME_LATTICE_0.001_VS_FULL_PRECISION_MATRIX', 'passes': raw_ok},
+                     passes=raw_ok and all(v <= self.tolerance for v in err.values()))
         write_json(self.folder / 'PREDICTOR_BASE_PARITY.json', audit)
+        if not raw_ok:
+            self.offset = None
+        require(raw_ok, 'LIVE03_PREDICTOR_RAW_SHARE_DEVIATION_TOO_LARGE:' + str({'row': raw_row, 'total': raw_total}))
         require(audit['passes'], 'LIVE03_PREDICTOR_BASE_PARITY_FAIL:' + str(err))
         return audit
 

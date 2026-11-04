@@ -9,7 +9,7 @@ import traceback
 
 def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,config_overrides=None):
     root=Path(root or Path(__file__).resolve().parent).resolve()
-    boot=None
+    boot=None;silent_report=None
     try:
         if namespace.get('Visum') is None:raise RuntimeError('VISUM_NOT_INJECTED')
         if namespace.get('COM') is not None and namespace['COM'] is not namespace['Visum']:
@@ -25,7 +25,9 @@ def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,
         sp=importlib.util.spec_from_file_location('_live04_original_bootstrap',root/'cordon_visum_bootstrap.py')
         original=importlib.util.module_from_spec(sp);sp.loader.exec_module(original)
         boot=original._boot_folder()
-        with original.isolated_imports(root):
+        ss=importlib.util.spec_from_file_location('_live04_silent',root/'cordon_visum_silent.py')
+        silent_mod=importlib.util.module_from_spec(ss);ss.loader.exec_module(silent_mod)
+        with silent_mod.silent(namespace['Visum'],boot) as silent_report, original.isolated_imports(root):
             vs=importlib.util.spec_from_file_location('_live04_verifier',root/'verify_release.py')
             verifier=importlib.util.module_from_spec(vs);vs.loader.exec_module(verifier)
             proof=verifier.verify(root)
@@ -43,9 +45,10 @@ def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,
         if boot:
             try:(boot/'99_TRACEBACK.txt').write_text(traceback.format_exc(),encoding='utf-8')
             except Exception:pass
+    if silent_report is not None:result['silent_mode']=silent_report
     if boot:
         result['boot_log_directory']=str(boot)
         try:(boot/'00_LIVE04_BOOT_RESULT.json').write_text(json.dumps(result,indent=2,ensure_ascii=True,default=str),encoding='utf-8')
         except Exception:pass
-    print(json.dumps(result,ensure_ascii=True,indent=2,default=str))
+    # LIVE04.5.3 silent: no print (Visum would show it in a window); result is in the boot folder.
     return result

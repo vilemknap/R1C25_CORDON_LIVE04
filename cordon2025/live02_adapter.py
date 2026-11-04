@@ -20,6 +20,38 @@ _p1 = parent_module('r1_15a2_trial_adapter_v24915p1')
 _com = parent_module('r1_15a2_com_compat')
 _rt = parent_module('r1_15a2_runtime_v1')
 
+# LIVE04.5.2 rollback equivalence after an EXACT snapshot match (parameters and every
+# demand matrix bit-identical).  The only remaining difference can come from the PrT
+# assignment itself (path set / 0.001 path-volume lattice); a fresh full capture of
+# the cordon rows within these limits proves the parent state.
+ROLLBACK_ROW_ATOL = 1.0          # vehicles per cordon row
+ROLLBACK_ROW_RTOL = 1.0e-3
+ROLLBACK_OBJECTIVE_RTOL = 1.0e-3
+
+
+def rows_equivalent(baseline_diag, diag, methods):
+    """Per method: |m - m0| <= ATOL + RTOL * max(|m|, |m0|) on every row, objective within RTOL."""
+    out = {'atol': ROLLBACK_ROW_ATOL, 'rtol': ROLLBACK_ROW_RTOL, 'objective_rtol': ROLLBACK_OBJECTIVE_RTOL,
+           'methods': {}, 'passes': bool(diag.get('valid', True))}
+    if not out['passes']:
+        out['reason'] = 'ROLLBACK_CAPTURE_INVALID'
+        return out
+    for m in methods:
+        a = [float(x) for x in baseline_diag['methods'][m]['model']]
+        b = [float(x) for x in diag['methods'][m]['model']]
+        if len(a) != len(b):
+            out['methods'][m] = {'passes': False, 'reason': 'ROW_COUNT_CHANGED'}
+            out['passes'] = False
+            continue
+        excess = [abs(x - y) - (ROLLBACK_ROW_ATOL + ROLLBACK_ROW_RTOL * max(abs(x), abs(y))) for x, y in zip(a, b)]
+        j0 = float(baseline_diag['methods'][m]['objective']); j1 = float(diag['methods'][m]['objective'])
+        obj_rel = abs(j1 - j0) / max(abs(j0), 1.0)
+        ok = (max(excess, default=-1.0) <= 0.0) and obj_rel <= ROLLBACK_OBJECTIVE_RTOL
+        out['methods'][m] = {'passes': ok, 'max_abs_row_difference': max((abs(x - y) for x, y in zip(a, b)), default=0.0),
+                             'rows_outside': sum(1 for e in excess if e > 0.0), 'objective_relative_difference': obj_rel}
+        out['passes'] = out['passes'] and ok
+    return out
+
 
 class CordonTrialAdapter(_supply.VisumAdapter):
     runtime_backend = 'CORDON_LIVE02_DONOR_SUPPLY_VISUM_ACTUAL_ZONE_AXIS'
@@ -91,6 +123,10 @@ class CordonTrialAdapter(_supply.VisumAdapter):
     def diagnostics(self, folder, label='CURRENT'):
         ev = self.live02['evaluation']
         label = str(label)
+        cached = self.__dict__.pop('_rollback_capture_cache', None)
+        if label == 'ROLLBACK' and cached is not None and self.snapshot().get('state_hash') == cached[0]:
+            # The tolerant rollback proof already captured THIS state; do not capture it twice.
+            return cached[1]
         if label in ('AFTER',):
             return self.evaluator.evaluate_candidate(
                 self.raw_visum, folder, label, full_geometry=ev['trial_full_geometry_check'],
@@ -159,5 +195,32 @@ class CordonTrialAdapter(_supply.VisumAdapter):
                   'basis': 'EXACT_DONOR_SNAPSHOT_PLUS_12_DSEG_PATH_KEYS_AND_VOLUMES',
                   'full_capture_fallback_required': not passes, 'signature': signature,
                   'reason': None if passes else 'SNAPSHOT_OR_PATH_SIGNATURE_DIFFER'}
+        if not passes and result['snapshot_equal_before_signature'] and result['snapshot_equal_after_signature']:
+            result = self._tolerant_rollback_equivalence(baseline_diag, before_snapshot, folder, signature, result)
         write_json(folder / 'ROLLBACK_DIAGNOSTIC_REUSE_PROOF.json', result)
         return result
+
+    def _tolerant_rollback_equivalence(self, baseline_diag, before_snapshot, folder, signature, result):
+        """Exact parameters + matrices, different path signature: compare the cordon rows."""
+        key = before_snapshot.get('state_hash')
+        known = self.__dict__.setdefault('_equivalent_path_signatures', {})
+        sig_hash = canonical_hash(signature)
+        result = dict(result, exact_signature_equal=False, tolerant_policy={
+            'row_atol': ROLLBACK_ROW_ATOL, 'row_rtol': ROLLBACK_ROW_RTOL, 'objective_rtol': ROLLBACK_OBJECTIVE_RTOL,
+            'requires': 'EXACT_SNAPSHOT_PARAMETERS_AND_ALL_DEMAND_MATRICES'})
+        if sig_hash in known.get(key, ()):
+            return dict(result, passes=True, reason=None, full_capture_fallback_required=False,
+                        basis='EXACT_SNAPSHOT_PLUS_PATH_SIGNATURE_ALREADY_PROVEN_EQUIVALENT_FOR_THIS_STATE')
+        diag = self.evaluator.evaluate(self.raw_visum, Path(folder) / 'TOLERANT_CAPTURE', 'ROLLBACK',
+                                       full_geometry=True, keep_db=False)
+        same = self.snapshot() == before_snapshot
+        cmp = rows_equivalent(baseline_diag, diag, self.evaluator.methods)
+        result.update(tolerant_capture_snapshot_equal=same, tolerant_rows=cmp)
+        if same and cmp['passes']:
+            known.setdefault(key, set()).add(sig_hash)
+            return dict(result, passes=True, reason=None, full_capture_fallback_required=False,
+                        basis='EXACT_SNAPSHOT_PLUS_FULL_CAPTURE_ROWS_WITHIN_TOLERANCE')
+        if same:
+            self._rollback_capture_cache = (key, diag)   # donor fallback reuses this capture
+        return dict(result, passes=False, reason='ROLLBACK_CORDON_ROWS_OUTSIDE_TOLERANCE' if same
+                    else 'SNAPSHOT_CHANGED_DURING_TOLERANT_CAPTURE')

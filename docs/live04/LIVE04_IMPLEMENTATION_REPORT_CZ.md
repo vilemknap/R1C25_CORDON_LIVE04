@@ -173,3 +173,34 @@ Co se změnilo:
 
 Podrobně: `docs/live04/LIVE04_4_V7_7B4C681_CZ.md`.
 
+
+## LIVE04.5.1 – predikce na zmrazených cestách ukotvená na zachycených řádcích (2026-11-03)
+První živý běh LIVE04.5 se zastavil před prvním zápisem: `LIVE03_PREDICTOR_BASE_PARITY_FAIL` (FIRST_LAST max 0,59 %, EXACT_TWO_HITS 0,36 %). Model zůstal ověřeně ve výchozím stavu.
+
+Příčina: Visum ukládá objemy cest na mřížce 0,001, matice OD mají plnou přesnost. Podíl × matice rodiče proto není bitově shodný se zachycenými řádky; tolerance 1e-6 (s podlahou 1 vozidlo) platila jen pro mock, kde jsou objemy cest přesné.
+
+Oprava (`cordon2025/live03_predictor.py`): predikce = zachycené řádky + F(Q_kandidát) − F(Q_rodič). Rodič se reprodukuje přesně (tolerance 1e-6 zůstává), kandidát nese jen změnu nativní poptávky. Surová odchylka F(Q_rodič) − zachycené řádky se zapisuje do `PREDICTOR_BASE_PARITY.json` a je omezená pojistkou (řádek ≤ 5 % s podlahou 10 vozidel, součet metody ≤ 0,25 %); větší odchylka znamená, že cesty nepatří k maticím, a běh se zastaví (`LIVE03_PREDICTOR_RAW_SHARE_DEVIATION_TOO_LARGE`). Platí pro TG uzly STEP1 i pro TD_CORDON. Přijetí kroku se nemění: rozhoduje vždy změřený plný pokus. Testy `tests/test_live04_5.py`.
+
+## LIVE04.5.2 – audit numerických tolerancí a přesných hash kontrol (2026-11-03)
+Prošel jsem všechny kontroly na živé cestě LIVE04 (cycle, step1, TD, SupplyMix, adaptéry, capture, predikce, LONG maska, transfer). Rozdělení:
+
+**Ponecháno přesné – na živém Visumu ověřeno nebo jde jen o čtení:**
+- snapshot po obnově parametrů a přepočtu poptávky (parametry + všechny matice bitově): živý běh 2026-11-03 po chybě obnovil poptávku a `FAILURE_STATE_READBACK` se shodoval; demand je deterministický, tolerance by jen skryla chybu;
+- `assert_freeze` (zapsané hodnoty zón/TD/ADDVAL1 = readback), zápis masky LONG (`array_equal` readback prošel živě), shoda matic mezi preflightem a capture, topologie sítě, observace, integrita souborů a balíčku;
+- `ADOPTION_NOT_REPRODUCIBLE` se v LIVE04 nepoužívá (přijetí „in place", bez opakovaného nasazení).
+
+**Upraveno:**
+1. *Predikce na zmrazených cestách* (LIVE04.5.1): ukotvení na zachycených řádcích, viz výše.
+2. *Ověření rollbacku.* Po rollbacku musí snapshot (parametry + matice) sedět přesně. Pokud se liší jen podpis uložených cest (přidělení není bitově opakovatelné nebo mřížka 0,001), udělá se jedno plné zachycení a kordonové řádky se porovnají s tolerancí: |Δ| ≤ 1 vozidlo + 0,1 % na řádek a cíl ≤ 0,1 %. Při shodě se pokračuje s rodičovskou diagnostikou, prokázaný podpis se pamatuje pro daný stav (další rollback do téhož stavu už nezachytává znovu). Mimo toleranci se běh zastaví jako dosud (`INPLACE_ROLLBACK_DIAGNOSTICS_DIFFER`) a zachycení se nepořizuje dvakrát. Rozdíl ve snapshotu tolerancí nikdy neprojde. Soubor `ROLLBACK_DIAGNOSTIC_REUSE_PROOF.json`.
+3. *Gap přidělení nad limitem v pokusu* (`ASSIGNMENT_NOT_TIGHT`, limit 0,005): u Generation je to zamítnutý pokus (ověřený rollback, pak poloviční krok), u TD zamítnutý pokus bloku. Dřív to zastavilo celý běh. Pokud není těsný přepočet rodiče při rollbacku, běh se zastaví (to je skutečná chyba).
+4. *Nedostupná predikce* (`LIVE03_PREDICTOR_*`, vzniká před jakýmkoli zápisem): Generation pokračuje s predikcí GENFIX2 (o přijetí rozhoduje měřený pokus), TD blok se v daném cyklu přeskočí (`NO_TD_CANDIDATE / PREDICTOR_UNAVAILABLE`). Dřív stop běhu.
+5. *Uložení postupu při zastavení:* když se běh zastaví (STOP_REQUESTED, chyba bloku) a model je ověřeně v posledním přijatém stavu a byl přijat aspoň jeden krok, uloží se nová verze `…_LIVE04_ACCEPTED_….ver` do složky běhu (`saved_version_at_stop` v `00_RESULT.json`). Zdrojová verze se nemění.
+
+Testy: `tests/test_live04_5.py` (mock, ne nativní Visum).
+
+## LIVE04.5.3 – tichý běh bez dialogů (2026-11-03)
+Spouštěče `RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py` i `RUN_R1_2025_*` TRANSFER2025 (RECOMPUTE/READINESS/…) běží v `cordon_visum_silent.py`:
+- varování procedur Visumu: uživatelská předvolba `SuppressWarningsDuringProcExec` = 1 a `SaveWarningsToErrorFile` = 1 (zápis ověřený readbackem), soubor zpráv Visumu přesměrován do boot složky (`VISUM_MESSAGES.txt`); po běhu (i po chybě) se vše vrátí přesně na původní hodnoty – stejný mechanismus jako dřívější tiché TD skripty (`parent/reference_v19`);
+- výstup Pythonu (`print`, stderr, `warnings`) jde do `PYTHON_CONSOLE.log` v boot složce, spouštěč nic netiskne; výsledek je v `00_LIVE04_BOOT_RESULT.json` / `00_TRANSFER_BOOT_RESULT.json` a v `00_RESULT.json` běhu;
+- stav je v `SILENT_MODE.json` (boot složka `%LOCALAPPDATA%\R1C25_BOOT\<id>\`). Pokud předvolba v dané verzi Visumu přes COM dostupná není (`NOT_ACCESSIBLE`), běh pokračuje a je třeba ji zapnout ručně: Úpravy > Uživatelská nastavení > Uživatelské rozhraní > Varování > Potlačit výstup varování během provádění procedur.
+Kritické chybové dialogy Visumu tato předvolba nepotlačí a nic se automaticky neodklikává (žádné SendKeys).

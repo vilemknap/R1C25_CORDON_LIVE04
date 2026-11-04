@@ -22,7 +22,7 @@ import math
 from pathlib import Path
 from types import SimpleNamespace
 import numpy as np
-from .common import require, parent_module
+from .common import require, parent_module, ContractError
 from .io import write_json, write_csv, mkdir
 from .optimizer import deadzone
 from .live03_predictor import FrozenPathPredictor, objective_vector, same_parameters
@@ -143,7 +143,16 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
             return False, state, diag, baseline_value, rec
         write_json(folder / 'IDP_BEFORE.json', idp_before)
     pred = FrozenPathPredictor(adapter, diag, folder / 'PREDICTOR', tolerance=float(tdc.get('base_parity_tolerance', 1e-6)))
-    rec['base_parity'] = pred.base_parity()
+    try:
+        rec['base_parity'] = pred.base_parity()          # before any write
+    except ContractError as exc:
+        if not str(exc).startswith('LIVE03_PREDICTOR_'):
+            raise
+        # LIVE04.5.2: without a valid frozen-path predictor there is no TD search; skip
+        # this TD block (no write happened) instead of stopping the whole run.
+        rec.update(status='NO_TD_CANDIDATE', stop_reason='PREDICTOR_UNAVAILABLE', error=str(exc)[:1000])
+        write_json(folder / 'TD_BLOCK_RESULT.json', rec)
+        return False, state, diag, baseline_value, rec
     terms = diag['_terms'][method]
     w, y, eps = terms['w'], terms['y'], terms['eps']
     m0 = {m: np.asarray(diag['methods'][m]['model'], dtype=float) for m in evaluator.methods}
@@ -342,9 +351,15 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
         rec.update(status='TRIAL_FAILED', error=str(exc))
         write_json(folder / 'TD_BLOCK_RESULT.json', rec)
         with base.recovery_scope(control, 'LIVE03_TD_TRIAL_ROLLBACK'):
-            base._rollback_candidate(adapter, BLOCK, state, baseline_hash, trial / 'ROLLBACK', rows, candidate, diag)
+            rb, rolled = base._rollback_candidate(adapter, BLOCK, state, baseline_hash, trial / 'ROLLBACK', rows,
+                                                  candidate, diag)
         if not isinstance(exc, Exception) or isinstance(exc, (base.UserStopRequested, base.TimeBudgetReached)):
             raise
+        if 'ASSIGNMENT_NOT_TIGHT' in str(exc) and base.diagnostic_hash(rolled) == baseline_hash:
+            # LIVE04.5.2: gap above the limit is a candidate property -> rejected after verified rollback.
+            rec.update(status='TRIAL_REJECTED_ASSIGNMENT_NOT_TIGHT', rollback=rb, predictor=pred.summary())
+            write_json(folder / 'TD_BLOCK_RESULT.json', rec)
+            return False, state, diag, baseline_value, rec
         raise SupplyContractError('LIVE03_TD_TRIAL_ERROR_NOT_A_PLATEAU:' + str(exc)) from exc
     with base.recovery_scope(control, 'LIVE03_TD_TRIAL_ROLLBACK'):
         rb, rolled = base._rollback_candidate(adapter, BLOCK, state, baseline_hash, trial / 'ROLLBACK', rows, candidate, diag)

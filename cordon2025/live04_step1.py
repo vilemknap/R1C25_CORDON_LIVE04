@@ -33,7 +33,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import numpy as np
 import math
-from .common import parent_module
+from .common import parent_module, ContractError
 from .live02_step1 import CordonStepModel, _drop_capture
 
 RELEASE = 'LIVE04_V7_GENFIX2_CORDON_STEP1'
@@ -241,14 +241,24 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
         from .live03_predictor import probe_generation_nodes, FrozenPathPredictor
         if memory is not None:
             ncfg = dict(ncfg, tg_node_fractions=memory.node_fractions(ncfg.get('tg_node_fractions')))
+        nodes, info = None, None
         try:
             nodes, info = probe_generation_nodes(base, adapter, context, state, diag, folder / 'NATIVE_PREDICTION',
                                                  ncfg, opts, control, restore_each=True)
-        except BaseException:
-            with base.recovery_scope(control, 'LIVE04_TG_PROBE_DEMAND_RESTORE'):
-                FrozenPathPredictor(adapter, diag, folder / 'NATIVE_PREDICTION').restore_demand(
-                    'GENERATION', state, folder / 'NATIVE_PREDICTION' / 'RESTORE_AFTER_ERROR')
-            raise
+        except BaseException as exc:
+            # LIVE04.5.2: the predictor's base parity runs BEFORE any write.  If it fails,
+            # STEP1 continues with the GENFIX2 final-effect prediction (the measured trial
+            # decides anyway); the model has not been touched, so nothing is restored.
+            before_write = isinstance(exc, ContractError) and str(exc).startswith('LIVE03_PREDICTOR_')
+            if not before_write:
+                with base.recovery_scope(control, 'LIVE04_TG_PROBE_DEMAND_RESTORE'):
+                    FrozenPathPredictor(adapter, diag, folder / 'NATIVE_PREDICTION').restore_demand(
+                        'GENERATION', state, folder / 'NATIVE_PREDICTION' / 'RESTORE_AFTER_ERROR')
+                raise
+            rec['native_prediction'] = {'status': 'UNAVAILABLE_FALLBACK_GENFIX2_FINAL_EFFECT',
+                                        'reason': str(exc)[:1000], 'model_mutated': False}
+        if info is None:
+            nodes, info = {}, dict(rec['native_prediction'])
         probe['dirty'] = bool(info.get('model_mutated'))
         probe['predictor'] = info.pop('_predictor', None)
         rec['native_prediction'] = info
@@ -420,6 +430,20 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                     upper = float(scale) * 0.75
                     if upper < float(opts['min_scale']):
                         rec['stop_reason'] = 'PRE_APPLY_GATE_NO_FEASIBLE_SCALE'
+                        break
+                    continue
+                if isinstance(exc, Exception) and 'ASSIGNMENT_NOT_TIGHT' in str(exc) and own['rows'] is not None:
+                    # LIVE04.5.2: an assignment above the gap limit is a property of this candidate,
+                    # not of the run: verified rollback to the parent, then a smaller step.
+                    attempt.update(status='REJECTED_ASSIGNMENT_NOT_TIGHT', error=str(exc)[:500])
+                    rec['attempts'].append(attempt)
+                    save_rec()
+                    rollback_full('ASSIGNMENT_NOT_TIGHT')
+                    rec['status'] = 'SEARCHING'
+                    save_rec()
+                    upper = float(scale) * 0.5
+                    if upper < float(opts['min_scale']):
+                        rec['stop_reason'] = 'ASSIGNMENT_NOT_TIGHT_NO_FEASIBLE_SCALE'
                         break
                     continue
                 attempt.update(status='FAILED', error=str(exc))

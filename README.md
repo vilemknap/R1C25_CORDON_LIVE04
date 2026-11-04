@@ -13,7 +13,8 @@ s pamětí mezi cykly (LIVE04.1) a přenosem kalibrace 2022 → 2025 (TRANSFER20
 - LIVE04.4.1 (2026-11-03): `RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py` – příprava verze 2025, ve které už jsou koeficienty (bez exportu/importu): kontrola 32 hran stanic, jeden přepočet v7 s LONG maskou (vzniknou cesty), nová `…_LIVE04_BASE_….ver`, READINESS; `docs/transfer2025/TRANSFER2025_CZ.md`
 - LIVE04.4.2 (2026-11-03): síť 2026-11-03 – stanice SDP15 přemapována na hrany rozdělených pásů 9800634 (9900317→9900312) a 9800637 (9900314→9900318); ostatních 30 hran beze změny; `docs/network_20261103/REVIEWED_CHANGES.json`
 - LIVE04.5 (2026-11-03): obálky koeficientů W/S rozšířeny – ADD_PROD 0,5–3,15, ADD_ATT 0,5–5,5 (obálky TG, pás MOBILITY2/MOBILITYZONE1, plot atrakce, donorový ATTRACTION_BAND); `mg_max_ratio = 3,15` je deklarovaná odchylka od v7; SCHOOL/LONG/ZAHR beze změny
-- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1_2025_CORDON_LIVE04_5_ENVELOPE_P315_A55_20261103`)
-- Offline regrese: `LIVE04_TEST_RESULTS.txt` (954 passed, 20 skipped, 0 failed; syntetický mock, nejde o nativní důkaz z PTV Visum)
+- LIVE04.5.1–5.3 (2026-11-04): prediktor ukotvený na zachycených řádcích (mřížka objemů cest 0,001); tolerantní ověření rollbacku řádků po přesné shodě snapshotu; trial s nedostatečnou konvergencí (ASSIGNMENT_NOT_TIGHT) se odmítne a krok zmenší; při zastavení se uloží poslední přijatý stav; tichý běh ve Visumu (potlačení varování procedur s přesným obnovením, výstup Pythonu do PYTHON_CONSOLE.log, SILENT_MODE.json)
+- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1_2025_CORDON_LIVE04_5_3_SILENT_ROBUST_20261103`)
+- Offline regrese: `LIVE04_TEST_RESULTS.txt` (974 passed, 20 skipped, 0 failed; syntetický mock, nejde o nativní důkaz z PTV Visum)
 
 Stav: `TECHNICAL_TRIAL`, `production_ready=false`, nativně ve Visumu zatím neověřeno.
