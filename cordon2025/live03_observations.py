@@ -22,7 +22,8 @@ compared with the same Transit pair targets (pairs only).
 from __future__ import annotations
 import numpy as np
 from .common import ROOT, require, canonical_hash, sha256
-from .live03_incidence import aggregate_observations, FIRST_LAST, C17_STATION, PROFILE_STATION
+from .live03_incidence import aggregate_observations, FIRST_LAST, C17_STATION, PROFILE_STATION, PROFILE_STATION_B, PROFILE_IDS, DIRECTIONAL
+import json
 from .state import observation_roster
 
 SCHEMA = 'LIVE03_OBSERVATION_CONTRACT_V1'
@@ -31,20 +32,98 @@ STATIONS = tuple(range(1, 17))
 PAIR_MATRICES = ('Transit', 'ALL')
 C17_POLICIES = ('STATION_MARGINS', 'DISABLED')
 ROLES = ('PRIMARY', 'SECONDARY', 'DIAGNOSTIC')
-PROFILE_SOURCES = ('D3_ALL_ROW_PLUS_COLUMN_SUM',)
+PROFILE_SOURCES = ('D3_ALL_ROW_PLUS_COLUMN_SUM', 'E41_RAW_DETECTIONS_DIRECTIONAL')
+RAW_SOURCE = 'E41_RAW_DETECTIONS_DIRECTIONAL'
+EVIDENCE_SCHEMA = 'LIVE04_10_STATION_PROFILE_EVIDENCE_V1'
+SIGN_EDGES_SCHEMA = 'LIVE04_10_STATION_PROFILE_SIGN_EDGES_V1'
 
 
 def validate_profiles(obs):
-    """LIVE04.9 optional station profiles: total crossings per station from the cordon matrix."""
+    """Optional station profiles.
+
+    LIVE04.9  D3_ALL_ROW_PLUS_COLUMN_SUM: 16 bidirectional rows, target = D3 row + column sum.
+    LIVE04.10 E41_RAW_DETECTIONS_DIRECTIONAL: 32 rows (one per directed station edge),
+              target = raw ANPR detections OA per sign x D3 zone coefficient OA_RPDI;
+              which edge is '+' and which '-' is fixed by the report maps (sign_edges, user decision
+              2026-11-05); the agreement of the model paths with it is recorded as a diagnostic."""
     sp = obs.get('station_profiles')
     if sp is None:
         return None
-    require(isinstance(sp, dict) and set(sp) - {'note'} == {'enabled', 'source', 'row_weight'}
-            and isinstance(sp['enabled'], bool) and sp['source'] in PROFILE_SOURCES, 'LIVE04_STATION_PROFILES')
+    require(isinstance(sp, dict) and isinstance(sp.get('enabled'), bool) and sp.get('source') in PROFILE_SOURCES,
+            'LIVE04_STATION_PROFILES')
+    keys = {'enabled', 'source', 'row_weight'}
+    if sp['source'] == RAW_SOURCE:
+        keys |= {'evidence', 'evidence_sha256', 'sign_edges', 'sign_edges_sha256'}
+    require(set(sp) - {'note'} == keys, 'LIVE04_STATION_PROFILES')
     w = sp['row_weight']
     require(not isinstance(w, bool) and isinstance(w, (int, float)) and np.isfinite(float(w)) and 0 < float(w) <= 10,
             'LIVE04_STATION_PROFILE_WEIGHT')
+    if sp['source'] == RAW_SOURCE:
+        require(all(isinstance(sp[k], str) for k in ('evidence', 'evidence_sha256', 'sign_edges', 'sign_edges_sha256')),
+                'LIVE04_STATION_PROFILE_EVIDENCE')
     return sp
+
+
+def _raw_evidence(sp):
+    p = ROOT / sp['evidence']
+    require(p.is_file(), 'LIVE04_STATION_PROFILE_EVIDENCE_MISSING')
+    require(sha256(p) == sp['evidence_sha256'], 'LIVE04_STATION_PROFILE_EVIDENCE_HASH_CHANGED')
+    doc = json.loads(p.read_text(encoding='utf-8'))
+    require(doc.get('schema') == EVIDENCE_SCHEMA, 'LIVE04_STATION_PROFILE_EVIDENCE_SCHEMA')
+    d3 = ROOT / 'data/source/D3.xlsx'
+    require(d3.is_file() and sha256(d3) == doc['source_d3_sha256'], 'LIVE04_STATION_PROFILE_D3_MISMATCH')
+    by = {int(st['station']): st for st in doc['stations']}
+    require(sorted(by) == list(STATIONS), 'LIVE04_STATION_PROFILE_EVIDENCE_STATIONS')
+    for st in by.values():
+        require(set(st['signs']) == {'+', '-'}, 'LIVE04_STATION_PROFILE_EVIDENCE_SIGNS')
+        for g in st['signs'].values():
+            t = float(g['target_rpdi'])
+            require(np.isfinite(t) and t >= 0, 'LIVE04_STATION_PROFILE_EVIDENCE_TARGET')
+            require(abs(t - float(g['oa_12h_with_unrecognized_share']) * float(st['zone_coefficient_oa_rpdi'])) <= 1e-6 * max(1.0, t),
+                    'LIVE04_STATION_PROFILE_EVIDENCE_ARITHMETIC')
+    return p, doc, by
+
+
+def _sign_edges(sp):
+    p = ROOT / sp['sign_edges']
+    require(p.is_file(), 'LIVE04_STATION_PROFILE_SIGN_EDGES_MISSING')
+    require(sha256(p) == sp['sign_edges_sha256'], 'LIVE04_STATION_PROFILE_SIGN_EDGES_HASH_CHANGED')
+    doc = json.loads(p.read_text(encoding='utf-8'))
+    require(doc.get('schema') == SIGN_EDGES_SCHEMA, 'LIVE04_STATION_PROFILE_SIGN_EDGES_SCHEMA')
+    out = {}
+    for st in doc['stations']:
+        plus, minus = tuple(int(x) for x in st['plus_edge']), tuple(int(x) for x in st['minus_edge'])
+        require(len(plus) == 3 and len(minus) == 3 and plus != minus, 'LIVE04_STATION_PROFILE_SIGN_EDGES_INVALID')
+        out[int(st['station'])] = {'plus': plus, 'minus': minus, 'source': st['source']}
+    require(sorted(out) == list(STATIONS), 'LIVE04_STATION_PROFILE_SIGN_EDGES_STATIONS')
+    # LIVE04.10.1: static check against the station mapping, without any path capture.
+    import csv
+    mapped = {}
+    with open(ROOT / 'data/audited/STATION_MAPPING.csv', encoding='utf-8-sig') as f:
+        for r in csv.DictReader(f, delimiter=';'):
+            mapped.setdefault(int(r['station_id']), set()).add((int(r['link_no']), int(r['from_node_no']), int(r['to_node_no'])))
+    for s, e in out.items():
+        require(mapped.get(s) == {e['plus'], e['minus']}, 'LIVE04_PROFILE_SIGN_EDGE_NOT_A_STATION_EDGE:SDP%d' % s)
+    return doc, out
+
+
+def resolve_sign_sides(raw_contexts, model_contexts):
+    """Agreement of the sign '+' with side A (0) of one station.
+
+    raw_contexts:   {'+': {'DEP:t': n, ...}, '-': {...}} (survey, consecutive detections)
+    model_contexts: {0: {'DEP:t': v, ...}, 1: {...}}     (model paths, consecutive station hits)
+    score = sum_c sqrt(w_raw w_mod) r_c m_c / sum_c sqrt(w_raw w_mod), r_c = (n+ - n-)/(n+ + n-),
+    m_c = (vA - vB)/(vA + vB); score > 0: '+' = side A, score < 0: '+' = side B; |score| = agreement."""
+    num = den = 0.0
+    for c in set(raw_contexts['+']) | set(raw_contexts['-']):
+        p, m = float(raw_contexts['+'].get(c, 0)), float(raw_contexts['-'].get(c, 0))
+        a, b = float(model_contexts[0].get(c, 0)), float(model_contexts[1].get(c, 0))
+        if p + m <= 0 or a + b <= 0:
+            continue
+        w = np.sqrt((p + m) * (a + b))
+        num += w * (p - m) / (p + m) * (a - b) / (a + b)
+        den += w
+    return (num / den) if den > 0 else 0.0
 
 
 def validate(obs):
@@ -127,10 +206,30 @@ class Contract:
                                            'target_crossings': self.factor * (row_part + col_part)})
         # LIVE04.9 station profiles: row + column sum of the ALL matrix (pairs, C17, vjazd-vyjazd)
         # = every vehicle crossing of station s; model = station link volume (every hit).
+        # LIVE04.10 directional profiles: one row per directed station edge, target from the raw
+        # ANPR detections (every pass incl. passes in the middle of a multi-station trip).
         self.profile_cells = {}
         self.profile_parts = []
+        self.profile_directional = False
+        self.direction_map = None
+        self.direction_audit = None
         sp = self.obs.get('station_profiles')
-        if sp and sp['enabled']:
+        if sp and sp['enabled'] and sp['source'] == RAW_SOURCE:
+            ev_path, _, by = _raw_evidence(sp)
+            _, self.sign_edges = _sign_edges(sp)
+            self.profile_directional = True
+            self.profile_evidence = by
+            self.profile_sign_targets = {s: {g: self.factor * float(by[s]['signs'][g]['target_rpdi']) for g in '+-'}
+                                         for s in STATIONS}
+            for s in STATIONS:
+                self.profile_parts.append({'station': s, 'zone_coefficient_oa_rpdi': by[s]['zone_coefficient_oa_rpdi'],
+                                           'target_plus': self.profile_sign_targets[s]['+'],
+                                           'target_minus': self.profile_sign_targets[s]['-'],
+                                           'target_crossings': sum(self.profile_sign_targets[s].values())})
+                for pid in PROFILE_IDS:      # placeholders until the sign -> side map is resolved
+                    self.profile_cells[(s, pid)] = None
+                    self.profile_cells[(pid, s)] = 0.0
+        elif sp and sp['enabled']:
             for s in STATIONS:
                 i = s - 1
                 rsum, csum = float(A[i, :].sum()), float(A[:, i].sum())
@@ -158,7 +257,8 @@ class Contract:
             'c17_station_parts': self.station_parts,
             'station_profiles': dict(sp) if sp else None,
             'station_profile_parts': self.profile_parts,
-            'station_profile_target_sum': float(sum(self.profile_cells.values())),
+            'station_profile_target_sum': float(sum(p['target_crossings'] for p in self.profile_parts)),
+            'station_profile_mode': (DIRECTIONAL if self.profile_directional else ('BIDIRECTIONAL' if self.profile_cells else None)),
             'rows': {m: self.row_count(m) for m in self.methods},
             'production_ready': False,
             'observation_status': 'APPROVED_BY_SURVEY_REPORT_AND_USER_FOR_LIVE03_TECHNICAL_CALIBRATION'}
@@ -170,14 +270,61 @@ class Contract:
     def profile_rows(self, method):
         return method == FIRST_LAST and bool(self.profile_cells)
 
+    def profile_row_count(self, method):
+        if not self.profile_rows(method):
+            return 0
+        return 32 if self.profile_directional else 16
+
     def row_count(self, method):
-        return 120 + (16 if self.station_rows(method) else 0) + (16 if self.profile_rows(method) else 0)
+        return 120 + (16 if self.station_rows(method) else 0) + self.profile_row_count(method)
+
+    def resolve_directions(self, inc):
+        """LIVE04.10: which station edge carries the '+' and which the '-' targets.
+
+        Fixed by the report maps (sign_edges; each edge must be one of the two directed station edges
+        of the capture).  The agreement of the model paths (consecutive station hits vs. consecutive
+        raw detections, `resolve_sign_sides`) with the fixed assignment is recorded per station as a
+        diagnostic only (+1 = the model routes agree with the report, -1 = opposite)."""
+        if not self.profile_directional:
+            return None
+        sides = inc.audit.get('profile_sides')
+        ctx = inc.audit.get('profile_side_contexts')
+        require(sides is not None and ctx is not None, 'LIVE04_PROFILE_SIDES_NOT_CAPTURED')
+        model = {s: {0: {}, 1: {}} for s in STATIONS}
+        for s, side, role, t, v in ctx:
+            k = '%s:%d' % (role, int(t))
+            model[int(s)][int(side)][k] = model[int(s)][int(side)].get(k, 0.0) + float(v)
+        mapping, rows = {}, []
+        for s in STATIONS:
+            edges = [tuple(int(x) for x in e) for e in sides[str(s)]]
+            fixed = self.sign_edges[s]
+            require(set(edges) == {fixed['plus'], fixed['minus']}, 'LIVE04_PROFILE_SIGN_EDGE_NOT_A_STATION_EDGE:SDP%d' % s)
+            plus_side = edges.index(fixed['plus'])
+            raw = {g: self.profile_evidence[s]['signs'][g]['contexts'] for g in '+-'}
+            score = resolve_sign_sides(raw, model[s])
+            rows.append({'station': s, 'plus_side': plus_side, 'plus_edge': list(fixed['plus']),
+                         'minus_edge': list(fixed['minus']), 'source': fixed['source'],
+                         'model_agreement_with_fixed': float(score if plus_side == 0 else -score),
+                         'model_context_volume': float(sum(sum(model[s][k].values()) for k in (0, 1)))})
+            mapping[s] = plus_side
+        if self.direction_map is None:
+            self.direction_map = mapping
+            self.direction_audit = {'authority': 'REPORT_MAPS_SIGN_EDGES', 'resolved_from': 'FIRST_AGGREGATED_CAPTURE',
+                                    'stations': rows}
+            for s in STATIONS:
+                for side in (0, 1):
+                    g = '+' if side == mapping[s] else '-'
+                    self.profile_cells[(s, PROFILE_IDS[side])] = self.profile_sign_targets[s][g]
+        else:
+            require(mapping == self.direction_map, 'LIVE04_PROFILE_DIRECTION_CHANGED')
+        return rows
 
     def targets(self, method):
         out = dict(self.pair_cells)
         if self.station_rows(method):
             out.update(self.station_cells)
         if self.profile_rows(method):
+            require(all(v is not None for v in self.profile_cells.values()), 'LIVE04_PROFILE_DIRECTIONS_NOT_RESOLVED')
             out.update(self.profile_cells)
         return out
 
@@ -186,19 +333,21 @@ class Contract:
                'first_last_station_rows': bool(self.station_cells),
                'full_share_methods': list(self.enumeration)}
         if self.profile_cells:
-            ext['first_last_profile_rows'] = True
+            ext['first_last_profile_rows'] = DIRECTIONAL if self.profile_directional else True
         return ext
 
 
 def aggregate(inc, contract, method):
     """Bidirectional aggregation of one method; rows = 120 pairs (+16 C17 for FIRST_LAST)."""
+    if contract.profile_rows(method) and contract.profile_directional:
+        contract.resolve_directions(inc)
     targets = contract.targets(method)
     roles = {}
     for (a, b) in targets:
         roles[tuple(sorted((a, b)))] = 'CALIBRATION'
     expected = contract.row_count(method)
     keys = [(int(r['origin_station']), int(r['destination_station'])) for r in inc.rows]
-    require(len(keys) == (240 + (16 if contract.station_rows(method) else 0) + (16 if contract.profile_rows(method) else 0)),
+    require(len(keys) == (240 + (16 if contract.station_rows(method) else 0) + contract.profile_row_count(method)),
             'LIVE03_DIRECTED_ROW_COUNT:' + method)
     result = aggregate_observations(inc, targets, bidirectional=True, roles=roles)
     roster = observation_roster(result.rows)
@@ -208,7 +357,7 @@ def aggregate(inc, contract, method):
     for r in result.rows:
         if r['destination_station'] == C17_STATION:
             r['observation_type'] = 'KORDON_C17_STATION'; r['weight'] = w
-        elif r['destination_station'] == PROFILE_STATION:
+        elif r['destination_station'] in PROFILE_IDS:
             r['observation_type'] = 'KORDON_STATION_PROFILE'
             r['weight'] = float(contract.obs['station_profiles']['row_weight'])
     # Directed -> aggregated row map, applied to the frozen share operator too.
@@ -228,6 +377,8 @@ def aggregate(inc, contract, method):
                       'effective_model': float(result.model[i]), 'weight': r.get('weight', 1.0),
                       'residual': float(result.model[i]) - r['observed']})
     result.frozen = frozen
+    if contract.direction_audit is not None:
+        result.audit['station_profile_directions'] = contract.direction_audit
     result.audit.update(observation_policy=SCHEMA, contract_sha256=contract.audit['contract_sha256'],
                         whole_matrix_roster=roster, directed_to_row=mapping.tolist())
     return result, trace, roster

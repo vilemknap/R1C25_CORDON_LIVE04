@@ -75,9 +75,13 @@
   },
   "station_profiles": {
    "enabled": true,
-   "source": "D3_ALL_ROW_PLUS_COLUMN_SUM",
+   "source": "E41_RAW_DETECTIONS_DIRECTIONAL",
    "row_weight": 1.0,
-   "note": "LIVE04.9: 16 profilu kordonovych stanovist; cil = radkovy + sloupcovy soucet matice D3 OA ALL RPDI (pary, C17, vjazd-vyjazd); model = intenzita na hranach stanice (vsechny pruchody). Scitace se nepouzivaji (rozhodnuti uzivatele 2026-11-04)."
+   "evidence": "data/audited/STATION_PROFILE_EVIDENCE.json",
+   "evidence_sha256": "772a8a3692893362a153635b8744cd80fd01aba370feb1f3c6cc61a19c1c4a7f",
+   "sign_edges": "data/audited/STATION_PROFILE_SIGN_EDGES.json",
+   "sign_edges_sha256": "28cf494b141516008306616d8a8dbc9cbdfd5796aa76585754606d392c7e76e9",
+   "note": "LIVE04.10: 32 smerovych profilu (jeden na orientovanou hranu stanoviste); cil = surove detekce OA z E41 (vcetne podilu nerozpoznanych, SDP5 vcetne kamery 5 nove) x koeficient zony OA_RPDI z D3; ktera hrana je + a ktera - urcuji mapy reportu (sign_edges). Shoda tras modelu se jen zapisuje. Rozhodnuti uzivatele 2026-11-05."
   }
  },
  "native_prediction": {

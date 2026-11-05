@@ -1,0 +1,335 @@
+{
+ "schema": "LIVE04_10_STATION_PROFILE_SIGN_EDGES_V1",
+ "decision": "USER_DECISION_20261105: smery +/- podle map reportu (konzistence s reportem)",
+ "method": "Georeferencovane obrazky reportu (obr1-5, WGS84) s promitnutymi hranami modelu; znamenko u sipky odecteno vizualne. SDP5 lezi na obr5 u dolniho okraje (bod mapovani asi 150 m pod okrajem); + = SSV = hrana B, shodne s daty E41.",
+ "report_maps_sha256": {
+  "obr1-pol3.tif": "a3d5e7caad1daace8fe37512e5761a7e7247b72e07da79f1b5917e10a93fc993",
+  "obr2-pol3.tif": "33d8812339b7641194da4fd649a883870e7d15d126ccf878e1a47a531a3a1635",
+  "obr3-pol2.tif": "fb027a11d80bafc24231723336efe0fb905e58e3b07d79ec0d4d2942f99995c9",
+  "obr4-pol2.tif": "e3bd05cd3a7a15af438fc4e1139b9ef09b4b16edb340b24f93f3d3a70dfe8222",
+  "obr5-pol3.tif": "51a8e252366c35ad808d69eb92fab9b4f5994c3fbb0b8faae42237ffcec87919"
+ },
+ "note": "SDP8 a SDP10: data E41 ukazuji opacne prirazeni nez mapa (u SDP8 vozidla od SDP6 jedouci na SZ maji -, u SDP10 vozidla k SDP14/SDP1 na JV maji +); podle rozhodnuti uzivatele plati mapa. Smery jsou tam temer vyrovnane (1238/1213, 3753/3658).",
+ "stations": [
+  {
+   "station": 1,
+   "plus_edge": [
+    9800210,
+    9900152,
+    9900156
+   ],
+   "minus_edge": [
+    9800209,
+    9900155,
+    9900151
+   ],
+   "source": "REPORT_MAP_obr4",
+   "e41_data_and_geometry_plus_edge": [
+    9800210,
+    9900152,
+    9900156
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 2,
+   "plus_edge": [
+    9800378,
+    9900076,
+    9900221
+   ],
+   "minus_edge": [
+    9800378,
+    9900221,
+    9900076
+   ],
+   "source": "REPORT_MAP_obr4",
+   "e41_data_and_geometry_plus_edge": [
+    9800378,
+    9900076,
+    9900221
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 3,
+   "plus_edge": [
+    2004256,
+    1003303,
+    1003295
+   ],
+   "minus_edge": [
+    2004256,
+    1003295,
+    1003303
+   ],
+   "source": "REPORT_MAP_obr5",
+   "e41_data_and_geometry_plus_edge": [
+    2004256,
+    1003303,
+    1003295
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 4,
+   "plus_edge": [
+    2002238,
+    1001753,
+    1003314
+   ],
+   "minus_edge": [
+    2002238,
+    1003314,
+    1001753
+   ],
+   "source": "REPORT_MAP_obr5",
+   "e41_data_and_geometry_plus_edge": [
+    2002238,
+    1001753,
+    1003314
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 5,
+   "plus_edge": [
+    2002315,
+    1002980,
+    1000321
+   ],
+   "minus_edge": [
+    2002315,
+    1000321,
+    1002980
+   ],
+   "source": "REPORT_MAP_obr5",
+   "e41_data_and_geometry_plus_edge": [
+    2002315,
+    1002980,
+    1000321
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 6,
+   "plus_edge": [
+    2002313,
+    1000921,
+    1000380
+   ],
+   "minus_edge": [
+    2002313,
+    1000380,
+    1000921
+   ],
+   "source": "REPORT_MAP_obr3",
+   "e41_data_and_geometry_plus_edge": [
+    2002313,
+    1000921,
+    1000380
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 7,
+   "plus_edge": [
+    2002219,
+    1000358,
+    1002975
+   ],
+   "minus_edge": [
+    2002219,
+    1002975,
+    1000358
+   ],
+   "source": "REPORT_MAP_obr3",
+   "e41_data_and_geometry_plus_edge": [
+    2002219,
+    1000358,
+    1002975
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 8,
+   "plus_edge": [
+    2002178,
+    1002976,
+    1000869
+   ],
+   "minus_edge": [
+    2002178,
+    1000869,
+    1002976
+   ],
+   "source": "REPORT_MAP_obr3",
+   "e41_data_and_geometry_plus_edge": [
+    2002178,
+    1000869,
+    1002976
+   ],
+   "agrees_with_e41_data": false
+  },
+  {
+   "station": 9,
+   "plus_edge": [
+    2001825,
+    1001046,
+    1002950
+   ],
+   "minus_edge": [
+    2001825,
+    1002950,
+    1001046
+   ],
+   "source": "REPORT_MAP_obr2",
+   "e41_data_and_geometry_plus_edge": [
+    2001825,
+    1001046,
+    1002950
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 10,
+   "plus_edge": [
+    8500114,
+    1001535,
+    1002880
+   ],
+   "minus_edge": [
+    8500114,
+    1002880,
+    1001535
+   ],
+   "source": "REPORT_MAP_obr1",
+   "e41_data_and_geometry_plus_edge": [
+    8500114,
+    1002880,
+    1001535
+   ],
+   "agrees_with_e41_data": false
+  },
+  {
+   "station": 11,
+   "plus_edge": [
+    2001653,
+    1001797,
+    1000182
+   ],
+   "minus_edge": [
+    2001653,
+    1000182,
+    1001797
+   ],
+   "source": "REPORT_MAP_obr2",
+   "e41_data_and_geometry_plus_edge": [
+    2001653,
+    1001797,
+    1000182
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 12,
+   "plus_edge": [
+    2001673,
+    1002277,
+    1002944
+   ],
+   "minus_edge": [
+    2001673,
+    1002944,
+    1002277
+   ],
+   "source": "REPORT_MAP_obr2",
+   "e41_data_and_geometry_plus_edge": [
+    2001673,
+    1002277,
+    1002944
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 13,
+   "plus_edge": [
+    2001567,
+    1000180,
+    1001060
+   ],
+   "minus_edge": [
+    2001567,
+    1001060,
+    1000180
+   ],
+   "source": "REPORT_MAP_obr2",
+   "e41_data_and_geometry_plus_edge": [
+    2001567,
+    1000180,
+    1001060
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 14,
+   "plus_edge": [
+    9800107,
+    9200066,
+    9900107
+   ],
+   "minus_edge": [
+    9800107,
+    9900107,
+    9200066
+   ],
+   "source": "REPORT_MAP_obr1",
+   "e41_data_and_geometry_plus_edge": [
+    9800107,
+    9200066,
+    9900107
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 15,
+   "plus_edge": [
+    9800634,
+    9900317,
+    9900312
+   ],
+   "minus_edge": [
+    9800637,
+    9900314,
+    9900318
+   ],
+   "source": "REPORT_MAP_obr5",
+   "e41_data_and_geometry_plus_edge": [
+    9800634,
+    9900317,
+    9900312
+   ],
+   "agrees_with_e41_data": true
+  },
+  {
+   "station": 16,
+   "plus_edge": [
+    2004231,
+    1003321,
+    1003319
+   ],
+   "minus_edge": [
+    2004231,
+    1003319,
+    1003321
+   ],
+   "source": "REPORT_MAP_obr5",
+   "e41_data_and_geometry_plus_edge": [
+    2004231,
+    1003321,
+    1003319
+   ],
+   "agrees_with_e41_data": true
+  }
+ ]
+}

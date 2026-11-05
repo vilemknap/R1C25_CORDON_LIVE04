@@ -1,4 +1,4 @@
-# R1 2025 – kordónová kalibrace LIVE04.9 (v7 @ 7b4c681)
+# R1 2025 – kordónová kalibrace LIVE04.10.1 (v7 @ 7b4c681)
 
 Kordónový kalibrátor TG + TD (ANPR průzkum 2026, FIRST_LAST + C17) portovaný na profilový kalibrátor
 [`vilemknap/R1_15A2_V24917_v7`](https://github.com/vilemknap/R1_15A2_V24917_v7) @ `977cef4` (P2.5/A4),
@@ -19,7 +19,9 @@ s pamětí mezi cykly (LIVE04.1) a přenosem kalibrace 2022 → 2025 (TRANSFER20
 - LIVE04.8.1 (2026-11-04): oprava modelu bez cest – sondy prediktoru jen s poptávkou (operace 1/15 mažou výsledky přidělení) po bloku nebo při zastavení vyvolají přepočet přidělení s ověřením ekvivalence (ASSIGNMENT_REPAIR.json) a `.ver` se bez cest neuloží; navázání i z ručně uložené a přepočítané verze podle hashe přijatého stavu (ACCEPTED_STATE_MATCH); spouštěče zcela tiché (výstup do `%LOCALAPPDATA%\R1C25_BOOT\LAST_LAUNCHER_OUTPUT.txt`)
 - LIVE04.8.2 (2026-11-04): `CORDON_LIVE04_CONFIG.json` a `TRANSFER_2025_CONFIG.json` jsou uživatelsky upravitelné (mimo hashovaný manifest; výchozí kopie v `provenance/live04_user_config/`); `max_cycles` LIVE04 1–200
 - LIVE04.9 (2026-11-04): 16 obousměrných profilů kordonových stanovišť – cíl = řádkový + sloupcový součet D3 OA ALL RPDI, model = všechna vozidla projíždějící stanovištěm; 152 kordonových řádků (`observations.station_profiles`, váha 1,0); sčítače se nepoužívají
-- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1_2025_CORDON_LIVE04_9_STATION_PROFILES_20261104`)
-- Offline regrese: `LIVE04_TEST_RESULTS.txt` (LIVE04.9 po vydání: 1023 passed, 20 skipped, 0 failed po opravě jednoho testu; syntetický mock, nejde o nativní důkaz z PTV Visum)
+- LIVE04.10 (2026-11-05): 32 směrových profilů stanovišť (jeden na orientovanou hranu) – cíl = surové detekce OA kamer E41 po směrech × koeficient zóny OA_RPDI z D3 (`data/audited/STATION_PROFILE_EVIDENCE.json`, jen agregace); průjezdy uprostřed tras přes více stanovišť (SDP3/7/9) okraje matice FIRST_LAST neobsahují; hrana +/− podle georeferencovaných map reportu (`data/audited/STATION_PROFILE_SIGN_EDGES.json`); 168 kordonových řádků
+- LIVE04.10.1 (2026-11-05): READINESS bez zdvojeného zachycení cest (`readiness_baseline_capture = false`), kontrakt pozorování a tabulka směrů se kontrolují staticky (`OBSERVATION_CONTRACT`)
+- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1_2025_CORDON_LIVE04_10_1_READINESS_20261105`)
+- Offline regrese: `LIVE04_TEST_RESULTS.txt` (LIVE04.10: 1042 passed, 20 skipped, 0 failed; syntetický mock, nejde o nativní důkaz z PTV Visum)
 
 Stav: `TECHNICAL_TRIAL`, `production_ready=false`, nativně ve Visumu zatím neověřeno.

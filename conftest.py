@@ -1,6 +1,6 @@
-"""LIVE04.9 test-only switch (tests/conftest.py is a protected LIVE01 source, so this lives at the root).
+"""LIVE04.9/10 test-only switch (tests/conftest.py is a protected LIVE01 source, so this lives at the root).
 
-The release config enables 16 station profile rows (152 FIRST_LAST rows).  Mock tests written for the
+The release config enables the station profile rows (LIVE04.10: 32 directional rows, 168 FIRST_LAST rows).  Mock tests written for the
 136-row contract keep it; tests marked ``station_profiles`` see the release config unchanged."""
 import pytest
 

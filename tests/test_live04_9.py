@@ -1,6 +1,9 @@
 """LIVE04.9: 16 station profile rows (total crossings per cordon station) next to the 120 FIRST_LAST
 pairs and the 16 C17 margins.  Target = row + column sum of the D3 OA ALL RPDI cordon matrix;
-model = station link volume (every hit of every saved path).  Synthetic mock only."""
+model = station link volume (every hit of every saved path).  Synthetic mock only.
+Since LIVE04.10 the release config uses the directional raw-detection profiles; these tests run the
+LIVE04.9 mode (source D3_ALL_ROW_PLUS_COLUMN_SUM) from an explicit config file."""
+import json
 import csv
 import sqlite3
 import struct
@@ -19,6 +22,18 @@ from fake_live04 import Live04Visum
 pytestmark = pytest.mark.station_profiles
 
 OPT = {'min_free_disk_gib': 0, 'com_retry_initial_delay_seconds': 0., 'com_retry_max_delay_seconds': 0.}
+D3_PROFILES = {'enabled': True, 'source': 'D3_ALL_ROW_PLUS_COLUMN_SUM', 'row_weight': 1.0}
+
+
+@pytest.fixture
+def d3cfg(tmp_path):
+    cfg = json.loads((ROOT / 'CORDON_LIVE04_CONFIG.json').read_text(encoding='utf-8'))
+    cfg['observations']['station_profiles'] = dict(D3_PROFILES)
+    p = tmp_path / 'CORDON_LIVE04_CONFIG_D3_PROFILES.json'
+    p.write_text(json.dumps(cfg), encoding='utf-8')
+    return p
+
+
 GEN_ONLY = {'max_cycles': 1, 'blocks_per_cycle': ['GENERATION'], 'td_cordon': {'enabled': False},
             'write_policy': {'td_parameter_writes': False}}
 
@@ -34,8 +49,8 @@ def test_contributions_count_every_hit():
     assert first_last_contributions([], True, True) == ()
 
 
-def test_release_contract_has_152_rows_with_d3_row_plus_column_targets():
-    cfg = load_config()
+def test_d3_mode_contract_has_152_rows_with_d3_row_plus_column_targets(d3cfg):
+    cfg = load_config(d3cfg)
     sp = cfg['observations']['station_profiles']
     assert sp['enabled'] is True and sp['source'] == 'D3_ALL_ROW_PLUS_COLUMN_SUM'
     c = obs.Contract(cfg['observations'])
@@ -86,9 +101,9 @@ def _station_volumes(cache):
     return out
 
 
-def test_mock_run_profile_rows_equal_station_link_volumes(tmp_path):
+def test_mock_run_profile_rows_equal_station_link_volumes(tmp_path, d3cfg):
     v = Live04Visum(tmp_path / 'model')
-    run(v, output_root=tmp_path / 'runs', options=OPT, config_overrides=GEN_ONLY)
+    run(v, output_root=tmp_path / 'runs', options=OPT, config_path=d3cfg, config_overrides=GEN_ONLY)
     f = next((tmp_path / 'runs').glob('LIVE04_TGTD_*'))
     contract = read_json(f / 'OBSERVATION_CONTRACT.json')
     assert contract['rows']['FIRST_LAST'] == 152 and len(contract['station_profile_parts']) == 16
@@ -109,11 +124,11 @@ def test_mock_run_profile_rows_equal_station_link_volumes(tmp_path):
     assert res['observation_semantics'].endswith('_PLUS_STATION_PROFILES')
 
 
-def test_supply_mix_runs_on_152_rows(tmp_path):
+def test_supply_mix_runs_on_152_rows(tmp_path, d3cfg):
     """SupplyMix maps every directed key incl. the 16 profiles; accepted or exactly rolled back."""
     v = Live04Visum(tmp_path / 'model', route_gamma=0.3, addval_beta=0.4, bypass_anchor=True)
     over = dict(GEN_ONLY, v7={'run_options': {'sp_start_cycle': 1}}, _allow_donor_overrides=True)
-    r = run(v, output_root=tmp_path / 'runs', options=OPT, config_overrides=over)
+    r = run(v, output_root=tmp_path / 'runs', options=OPT, config_path=d3cfg, config_overrides=over)
     f = next((tmp_path / 'runs').glob('LIVE04_TGTD_*'))
     rec = read_json(f / 'C01_SUPPLY_ADDVAL1' / 'SUPPLYMIX_BLOCK_RESULT.json')
     assert 'error' not in rec or not rec['error'], rec
@@ -126,9 +141,9 @@ def test_supply_mix_runs_on_152_rows(tmp_path):
     assert r['status'] != 'LIVE04_STOPPED_WITH_ERROR'
 
 
-def test_td_block_runs_on_152_rows(tmp_path):
+def test_td_block_runs_on_152_rows(tmp_path, d3cfg):
     v = Live04Visum(tmp_path / 'model')
-    r = run(v, output_root=tmp_path / 'runs', options=OPT, config_overrides={'max_cycles': 1, 'blocks_per_cycle': ['TD_CORDON']})
+    r = run(v, output_root=tmp_path / 'runs', options=OPT, config_path=d3cfg, config_overrides={'max_cycles': 1, 'blocks_per_cycle': ['TD_CORDON']})
     blocks = [(b['block'], b['status']) for c in r['cycles'] for b in c['blocks']]
     assert blocks and blocks[0][0] == 'TD_CORDON' and 'ERROR' not in blocks[0][1], blocks
     f = next((tmp_path / 'runs').glob('LIVE04_TGTD_*'))

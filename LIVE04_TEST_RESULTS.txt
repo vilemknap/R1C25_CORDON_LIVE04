@@ -1,3 +1,17 @@
+LIVE04.10.1 (READINESS without the duplicated path capture by default; observation contract incl. the station profile sign table checked statically) - 2026-11-05
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_transfer2025.py + tests/test_live04_10.py (20, incl. the static sign-table check) + tests/test_live04_8_2.py: 37 passed.
+Full 3-shard regression of the LIVE04.10 build (13:03, sign table from the report maps; 10.1 changes only READINESS
+defaults, the static contract check and docs/tests):
+== shard 0: 435 passed, 9 skipped - EXIT 0
+== shard 1: 250 passed - EXIT 0
+== shard 2: 357 passed, 11 skipped - EXIT 0
+TOTAL: 1042 passed, 20 skipped, 0 failed
+
+LIVE04.10 (32 directional station profiles from E41 raw ANPR detections x D3 zone coefficient; sign -> edge fixed by the report maps; 168 FIRST_LAST rows) - 2026-11-05
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_10.py: 19 passed. tests/test_live04_9.py (LIVE04.9 mode from an explicit D3 config): 9 passed. Full regression runs after release.
+
 LIVE04.9 (16 station profile rows from D3 OA ALL RPDI row+column sums; 152 FIRST_LAST rows) - 2026-11-04
 Synthetic mock only - NOT native PTV Visum evidence.
 tests/test_live04_9.py: 9 passed (contract, contributions, profile = independent station link volume, GENERATION/SUPPLY/TD blocks on 152 rows).

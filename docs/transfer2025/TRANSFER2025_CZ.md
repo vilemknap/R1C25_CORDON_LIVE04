@@ -76,7 +76,11 @@ Zápisy: jen matice masky LONG (9111–9115, 9291–9295) a nová .ver; guard za
 6. Čistou podporu LONG (osoby i vozidla ≥ 80 km).
 7. Autoritu mobility: produkční poměr W/S, MOBILITYZONE1.
 8. Shodu parametrů s exportem (po IMPORTu, nebo když je nastavený `parameter_file`).
-9. Plný capture kordónu: cíl a GEH všech tří metod, tedy výchozí stav pro LIVE04.
+9. Kontrakt pozorování (LIVE04.10.1, `OBSERVATION_CONTRACT`): cíle, hashe dokladů a tabulka směrů profilů
+   proti mapování stanic – bez zachycení cest.
+   Plný capture kordónu (`CORDON_BASELINE_CAPTURE`) je od LIVE04.10.1 ve výchozím stavu vypnutý
+   (`TRANSFER_2025_CONFIG.json → readiness_baseline_capture = false`): kalibrace si výchozí stav zachytí sama
+   (`01_BASELINE_CAPTURE`), capture v READINESS by byl jen zdvojený čas. Zapnout jde pro samostatnou diagnostiku.
 10. Že během kontroly nedošlo k žádnému zápisu.
 
 Výsledek `READY_FOR_LIVE04` znamená, že LIVE04 na otevřené verzi projde vstupními kontrolami. Jinak `NOT_READY` se seznamem nesplněných kontrol.

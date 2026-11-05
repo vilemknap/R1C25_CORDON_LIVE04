@@ -315,3 +315,50 @@ autorita jako OD vazby, sha256 beze změny), tj. vazby, C17 (bez páru) i vjazd�
   v navazujícím běhu spočte znovu nad 152 řádky.
 - Testy `tests/test_live04_9.py` (profil v mocku = nezávisle spočtená intenzita na hranách stanic). Starší mock
   testy běží na 136 řádcích přes `conftest.py` v kořeni (`tests/conftest.py` je chráněný zdroj LIVE01).
+
+## LIVE04.10 – směrové profily stanovišť ze surových detekcí (2026-11-05)
+
+Rozhodnutí uživatele 2026-11-05: profily se kalibrují po směrech a cíl se bere ze surových detekcí kamer.
+
+**Proč ne okraje matice.** Matice FIRST_LAST zapisuje cestu jen prvním a posledním stanovištěm. Průjezd
+stanovištěm uprostřed trasy přes více stanovišť (např. SDP16 → SDP3 → SDP1) v okrajích matice není. V
+surovém datasetu E41 (OA, 6–18 h) jsou takové průjezdy (do hodiny před i po zachycení na jiném stanovišti)
+na SDP3 11 897 z 29 231 detekcí, SDP7 2 742 z 6 926, SDP9 2 820 z 5 585, SDP1 3 738, SDP12 1 887,
+SDP13 2 104; vysvětlují téměř celý rozdíl surové detekce − okraje D2. Model počítá do profilu každý průjezd
+hranou, proto by cíl z okrajů D3 (LIVE04.9) na SDP3/7/9 tlačil intenzity asi o 40 % dolů. Nerozpoznaná
+vozidla (1 218) ani netranzit (3 843 jízd) rozdíl nevysvětlují – v matici ALL už jsou.
+
+**Cíl.** `data/audited/STATION_PROFILE_EVIDENCE.json` (vytváří `tools/live04_10/build_station_profile_evidence.py`
+ze souboru *E41 – SDP_RAW_dataset_FINAL.xlsx*, list „Opravený dataset“; soubor obsahuje jen agregace, žádné SPZ):
+- detekce OA po stanovišti a znaménku +/−; nerozpoznaná vozidla přidána podílem OA mezi rozpoznanými;
+  kamera „5 nové“ (jen směr −, 16–18 h, doplňuje výpadek hlavní kamery) se počítá do SDP5;
+- × koeficient zóny `OA_RPDI` z D3 (`Koeficienty_vypocet`, stejný přepočet 12 h → RPDI jako matice);
+- kontrola: SDP3 39 108, SDP7 8 930, SDP9 7 171 proti sčítačům C3/C7/C9 38 190 / 8 962 / 6 981 (do 3 %).
+
+**Které znaménko patří ke které hraně.** Rozhodnutí uživatele 2026-11-05: podle map reportu (konzistence s
+reportem). Uživatel dodal georeferencované obrázky reportu (obr1–5, WGS84); do nich byly promítnuty orientované
+hrany modelu a u každého stanoviště odečteno, která hrana nese šipku „+“ →
+`data/audited/STATION_PROFILE_SIGN_EDGES.json` (hrana +, hrana −, zdroj, sha256 map); náhledy s promítnutými hranami `docs/live04/live04_10_sign_check/`. SDP5 leží na obr5 u spodního
+okraje (+ = SSV, hrana B, shodně s daty). Kontrola proti datům E41 (kontexty sousedních stanovišť: kterým směrem
+jedou vozidla se znaménkem + k sousedovi) souhlasí u 14 z 16 stanovišť; u **SDP8** (vozidla od SDP6 jedoucí
+na SZ mají −) a **SDP10** (vozidla k SDP14/SDP1 na JV mají +) ukazují data opačné přiřazení než mapa – platí
+mapa, směry jsou tam téměř vyrovnané (1 238/1 213, 3 753/3 658). Na znaménko kamer se nelze spolehnout jako na
+jednotný směr (SDP1: + = do Bratislavy = výjezd z kordonu; jinde + = vjezd).
+
+Shoda tras modelu s tabulkou se při prvním zachycení spočte a jen zapíše (`00_RESULT.json →
+station_profile_directions`, `model_agreement_with_fixed`): pro každou dvojici po sobě jdoucích průjezdů
+stanicemi na uložené cestě kontext `DEP:t` / `ARR:t`, stejně jako po sobě jdoucí detekce jedné SPZ v E41
+(do 2 h); shoda `Σ √(w_raw w_mod)·r_c·m_c / Σ √(w_raw w_mod)` (+1 = trasy modelu souhlasí s tabulkou,
+−1 = opačně). Běh nezastavuje. Hrana, která není hranou stanice, běh zastaví před zápisem
+(`LIVE04_PROFILE_SIGN_EDGE_NOT_A_STATION_EDGE:SDPx`); přiřazení je po celý běh pevné
+(`LIVE04_PROFILE_DIRECTION_CHANGED`). Hrana A/B = menší/větší klíč `(link_no, from_node, to_node)` stanice.
+
+**Řádky.** FIRST_LAST: 120 vazeb + 16 C17 + **32 profilů** = 168 (`KORDON_STATION_PROFILE`, klíče `(s, 18)`
+hrana A a `(s, 19)` hrana B). Vazby a C17 se nemění (z D3). SupplyMix bere u profilového řádku jako skupinu
+právě jednu orientovanou hranu. Režim LIVE04.9 zůstává volitelný (`source = D3_ALL_ROW_PLUS_COLUMN_SUM`).
+
+**Testy.** `tests/test_live04_10.py` (19): příspěvky po hranách, kontexty, míra shody na skutečných datech E41,
+konzistence a hash dokladu i tabulky znamének (SDP1 + = 9800210, SDP8/SDP10 podle mapy), odmítnutí neplatné
+konfigurace, mock běh s release konfigurací (cíle podle tabulky reportu) a s oběma syntetickými přiřazeními
+(+ = A i + = B; profil v mocku = nezávisle spočtená intenzita na orientované hraně, cíl = cíl znaménka),
+hrana mimo stanici → zastavení před zápisem, SupplyMix a TD na 168 řádcích. Nativně ve Visumu neověřeno.

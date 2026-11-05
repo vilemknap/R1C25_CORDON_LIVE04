@@ -648,6 +648,15 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
     lcfg, acfg = _adapter_cfg()
     check('RELEASE_PINS', lambda: {'protected': verify_protected_sources()['status'],
                                    'v7_donors': len(v7.verify_donor_files())})
+
+    def observation_contract():
+        """LIVE04.10.1: the observation contract (targets, evidence hashes, the station profile sign table
+        against the station mapping) is checked statically - no path capture needed."""
+        from .live03_observations import Contract
+        c = Contract(lcfg['observations'])
+        return {'rows_first_last': c.row_count('FIRST_LAST'), 'station_profile_mode': c.audit['station_profile_mode'],
+                'contract_sha256': c.audit['contract_sha256']}
+    check('OBSERVATION_CONTRACT', observation_contract)
     configured = read_json(ROOT / 'CORDON_2025_STARTUP_OPTIONS.json'); configured.update(options or {})
     opt = settings(configured)
     parent_ctrl = parent_module('r1_15a2_overnight_controller_v24915p2')

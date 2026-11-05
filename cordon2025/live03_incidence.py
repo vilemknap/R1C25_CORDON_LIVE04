@@ -26,10 +26,31 @@ from .incidence import (METHODS, Incidence, station_pairs, _snapshot_open, aggre
 FIRST_LAST='FIRST_LAST'
 EXTENDED_METHODS=METHODS+(FIRST_LAST,)
 C17_STATION=17
-PROFILE_STATION=18   # LIVE04.9: station profile row (all crossings at s)
+PROFILE_STATION=18   # LIVE04.9: station profile row (all crossings at s); LIVE04.10: side A of station s
+PROFILE_STATION_B=19 # LIVE04.10: side B of station s (directional profiles)
+PROFILE_IDS=(PROFILE_STATION,PROFILE_STATION_B)
+DIRECTIONAL='DIRECTIONAL'
 
 
-def first_last_contributions(hits, station_rows=True, profile_rows=False):
+def station_sides(station_map):
+    """LIVE04.10: directed station edge key -> side 0/1 (A/B = sorted (link_no, from_no, to_no) per station)."""
+    by=defaultdict(list)
+    for key,s in station_map.items():
+        by[int(s)].append(tuple(int(x) for x in key))
+    require(all(len(v)==2 for v in by.values()),'LIVE04_PROFILE_SIDES_NEED_TWO_EDGES_PER_STATION')
+    out={}
+    for s,keys in by.items():
+        for i,k in enumerate(sorted(keys)):
+            out[k]=i
+    return out
+
+
+def profile_mode(value):
+    require(value in (False,True,DIRECTIONAL),'LIVE04_PROFILE_ROW_MODE')
+    return value
+
+
+def first_last_contributions(hits, station_rows=True, profile_rows=False, sides=None):
     """Survey-equivalent contributions of one saved path (row key, multiplicity).
 
     * no cordon hit                -> nothing
@@ -37,13 +58,19 @@ def first_last_contributions(hits, station_rows=True, profile_rows=False):
     * first != last                -> (first, last) x1, intermediate hits ignored
     * first == last (cyclic)       -> (s, C17) x2   (entry + exit crossing at s)
     Units of the C17 row are station crossings.
-    LIVE04.9 profile_rows: additionally (s, PROFILE) x(number of hits at s) for
+    LIVE04.9 profile_rows=True: additionally (s, PROFILE) x(number of hits at s) for
     EVERY hit (intermediate hits included) = the station link volume.
+    LIVE04.10 profile_rows='DIRECTIONAL': (s, 18) / (s, 19) per station side
+    (sides[i] = 0/1 of hit i) = the volume of each directed station edge.
     """
     if not hits:
         return ()
     prof = ()
-    if profile_rows:
+    if profile_rows == DIRECTIONAL:
+        require(sides is not None and len(sides) == len(hits), 'LIVE04_PROFILE_SIDES_MISSING')
+        c = Counter(zip(hits, sides))
+        prof = tuple(((s, PROFILE_IDS[k]), float(c[(s, k)])) for s, k in sorted(c))
+    elif profile_rows:
         c = Counter(hits)
         prof = tuple(((s, PROFILE_STATION), float(c[s])) for s in sorted(c))
     first, last = hits[0], hits[-1]
@@ -52,6 +79,18 @@ def first_last_contributions(hits, station_rows=True, profile_rows=False):
     if not station_rows:
         return prof
     return (((first, C17_STATION), 1.0 if len(hits) == 1 else 2.0),) + prof
+
+
+def side_contexts(hits, sides):
+    """LIVE04.10 direction evidence of one path: consecutive hits at different stations.
+    (s, side, 'DEP', t) at the earlier station s, (t, side, 'ARR', s) at the later one."""
+    out = []
+    for i in range(len(hits) - 1):
+        a, b = hits[i], hits[i + 1]
+        if a != b:
+            out.append((a, sides[i], 'DEP', b))
+            out.append((b, sides[i + 1], 'ARR', a))
+    return out
 
 
 @dataclass
@@ -145,7 +184,7 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
     methods=tuple(cfg.get('enumeration_methods') or METHODS)
     require(set(methods).issubset(EXTENDED_METHODS) and len(set(methods))==len(methods),'UNKNOWN_ENUMERATION_METHOD')
     station_rows=bool(cfg.get('first_last_station_rows',True))
-    profile_rows=bool(cfg.get('first_last_profile_rows',False))
+    profile_rows=profile_mode(cfg.get('first_last_profile_rows',False))
     full_share=tuple(cfg.get('full_share_methods') or ())
     require(set(full_share).issubset(methods),'FULL_SHARE_METHOD_NOT_ENUMERATED')
     p,db,digest=_snapshot_open(path,evidence)
@@ -177,12 +216,16 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
         require(set(station_map).issubset(set(edges.values())),'MAPPING_EDGES_MISSING_FROM_CACHE')
         eid_station={eid:station_map[key] for eid,key in edges.items() if key in station_map}
         stations=sorted(set(station_map.values()));pairs=[(a,b) for a in stations for b in stations if a!=b]
-        require(C17_STATION not in stations and PROFILE_STATION not in stations,'C17_ID_COLLIDES_WITH_STATION')
+        require(C17_STATION not in stations and not set(PROFILE_IDS)&set(stations),'C17_ID_COLLIDES_WITH_STATION')
+        side_of=station_sides(station_map) if profile_rows==DIRECTIONAL else {}
+        eid_side={eid:side_of[key] for eid,key in edges.items() if key in side_of}
+        ctx_vol=defaultdict(float)
         keys_by={m:list(pairs) for m in methods}
         if FIRST_LAST in methods and station_rows:
             keys_by[FIRST_LAST]=list(pairs)+[(s,C17_STATION) for s in stations]
         if FIRST_LAST in methods and profile_rows:
-            keys_by[FIRST_LAST]=keys_by[FIRST_LAST]+[(s,PROFILE_STATION) for s in stations]
+            keys_by[FIRST_LAST]=keys_by[FIRST_LAST]+([(s,PROFILE_STATION) for s in stations] if profile_rows!=DIRECTIONAL else
+                                                     [(s,p) for s in stations for p in PROFILE_IDS])
         index_by={m:{key:i for i,key in enumerate(keys_by[m])} for m in methods}
         totals={m:np.zeros(len(keys_by[m])) for m in methods};mtotals={m:np.zeros(len(keys_by[m])) for m in methods}
         per_dseg={m:{c:np.zeros(len(keys_by[m])) for c in codes} for m in methods}
@@ -208,11 +251,13 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
             require(all(e in edges for e in eids),'UNKNOWN_GEOMETRY_EDGE')
             require(all(edges[a][2]==edges[b][1] for a,b in zip(eids,eids[1:])),'DISCONNECTED_SAVED_PATH')
             hits=[eid_station[e] for e in eids if e in eid_station]
+            sides=[eid_side[e] for e in eids if e in eid_station] if eid_side else None
+            ctx=side_contexts(hits,sides) if sides else ()
             pr,repeat=station_pairs(hits,cfg.get('repeat_policy','EXCLUDE_FLAGGED'))
             # (row index, multiplicity) per method; legacy methods keep their exclusion rule.
             contrib={m:tuple((index_by[m][pair],1.0) for pair in pr[m]) for m in methods if m in pr}
             if FIRST_LAST in methods:
-                contrib[FIRST_LAST]=tuple((index_by[FIRST_LAST][k],w) for k,w in first_last_contributions(hits,station_rows,profile_rows))
+                contrib[FIRST_LAST]=tuple((index_by[FIRST_LAST][k],w) for k,w in first_last_contributions(hits,station_rows,profile_rows,sides))
                 metrics['first_last_max_station_multiplicity']=max(metrics['first_last_max_station_multiplicity'],max(Counter(hits).values()) if hits else 0)
                 metrics['first_last_single_hit_geometry']+=int(len(hits)==1)
                 metrics['first_last_cyclic_geometry']+=int(len(hits)>=2 and hits[0]==hits[-1])
@@ -227,6 +272,7 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
                 require(code in segments and segments[code][1]==mode,'SEGMENT_GEOMETRY_MODE_MISMATCH')
                 if code not in codes:continue
                 metrics['segment_path_rows']+=1;dseg_vol[code]+=v
+                for cx in ctx:ctx_vol[cx]+=v
                 if count:covered_vol[code]+=v
                 elif o!=d:zero_inter[code]+=v
                 if excluded:metrics['excluded_segment_volume']+=v
@@ -283,6 +329,8 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
                'mode_by_dseg':{c:segments[c][1] for c in codes},'blocked':blocked,
                'semantics_approved':False,'production_ready':False,'apply_permitted':False,
                'external_com_calls':0,'geometry_decode_policy':'ONCE_PER_GID',
+               'profile_sides':{str(s):[list(k) for k,_ in sorted(((k,i) for k,i in side_of.items() if station_map[k]==s),key=lambda x:x[1])] for s in stations} if side_of else None,
+               'profile_side_contexts':[[s,sd,role,t,float(v)] for (s,sd,role,t),v in sorted(ctx_vol.items())] if side_of else None,
                'all_od_totals':[{'dseg':c,'orig':o,'dest':d,'volume':v} for (c,o,d),v in sorted(q.items())]}
         result={};supported=None
         for meth in methods:
@@ -293,7 +341,7 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
             bound=max(2.0,float(metrics['first_last_max_station_multiplicity'])) if meth==FIRST_LAST else 1.0
             require(np.all(share.values>=0) and np.all(share.values<=bound+1e-10),'PAIR_SHARE_OUT_OF_BOUNDS')
             require(np.allclose(op.forward(np.ones(len(var_keys))),mtotals[meth],atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']),'MUTABLE_PREDICTION_PARITY_FAIL')
-            rows=[{'observation_type':{C17_STATION:'KORDON_C17_STATION',PROFILE_STATION:'KORDON_STATION_PROFILE'}.get(b,'KORDON_PAIR'),'category':'OA','origin_station':a,'destination_station':b,
+            rows=[{'observation_type':{C17_STATION:'KORDON_C17_STATION',PROFILE_STATION:'KORDON_STATION_PROFILE',PROFILE_STATION_B:'KORDON_STATION_PROFILE'}.get(b,'KORDON_PAIR'),'category':'OA','origin_station':a,'destination_station':b,
               'role':'DIAGNOSTIC','method':meth,'basis':'RPDI','model':float(totals[meth][i]),
               'per_dseg':{c:float(per_dseg[meth][c][i]) for c in codes}} for i,(a,b) in enumerate(keys_by[meth])]
             frozen=None

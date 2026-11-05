@@ -104,7 +104,7 @@ def supply_policy(opts):
 # ------------------------------------------------------------- row semantics
 def row_semantics(evaluator, diag):
     """Directed station keys -> aggregated acceptance rows, and the driver profiles."""
-    from .live03_incidence import C17_STATION, PROFILE_STATION
+    from .live03_incidence import C17_STATION, PROFILE_STATION, PROFILE_IDS, station_sides
     method = evaluator.method
     inc = diag['_incidence'][method]
     stations = sorted(set(evaluator.station_map.values()))
@@ -113,7 +113,10 @@ def row_semantics(evaluator, diag):
     if station_rows:
         keys += [(s, C17_STATION) for s in stations]
     profile_rows = bool(getattr(evaluator.contract, 'profile_rows', lambda m: False)(method))
-    if profile_rows:
+    directional = profile_rows and bool(getattr(evaluator.contract, 'profile_directional', False))
+    if directional:
+        keys += [(s, p) for s in stations for p in PROFILE_IDS]
+    elif profile_rows:
         keys += [(s, PROFILE_STATION) for s in stations]
     directed_to_row = list(inc.audit['directed_to_row'])
     require(len(directed_to_row) == len(keys), 'LIVE04_SUPPLY_DIRECTED_ROW_MAP_MISMATCH')
@@ -125,15 +128,17 @@ def row_semantics(evaluator, diag):
         profiles.append({'countlocation_no': str(pair_key(pair[0], pair[1])), 'role': 'CALIBRATION',
                          'observed': float(observed), 'model': float(model), 'profile_weight': 1.0,
                          'row_index': i, 'origin_station': int(pair[0]), 'destination_station': int(pair[1])})
-    return {'method': method, 'key_row': key_row, 'station_rows': station_rows, 'profile_rows': profile_rows,
+    return {'method': method, 'key_row': key_row, 'station_rows': station_rows,
+            'profile_rows': ('DIRECTIONAL' if directional else profile_rows),
+            'side_of': station_sides(evaluator.station_map) if directional else None,
             'profiles': profiles,
             'selected_dsegs': list(inc.audit['selected_dsegs'])}
 
 
-def path_contributions(hits, sem):
+def path_contributions(hits, sem, sides=None):
     from .live03_incidence import first_last_contributions
     out = defaultdict(float)
-    for key, w in first_last_contributions(hits, sem['station_rows'], sem.get('profile_rows', False)):
+    for key, w in first_last_contributions(hits, sem['station_rows'], sem.get('profile_rows', False), sides):
         out[sem['key_row'][key]] += float(w)
     return out
 
@@ -161,12 +166,15 @@ def make_collector(*args, **kwargs):
             by_station = defaultdict(set)
             for key, s in self.station_map.items():
                 by_station[int(s)].add(tuple(int(x) for x in key))
-            from .live03_incidence import C17_STATION, PROFILE_STATION
+            from .live03_incidence import C17_STATION, PROFILE_STATION, PROFILE_IDS
+            side_of = sem.get('side_of')
             self.key_groups = []
             for p in self.profiles:
                 a, b = p['origin_station'], p['destination_station']
                 group = set(by_station.get(a, ()))
-                if b not in (C17_STATION, PROFILE_STATION):
+                if side_of and b in PROFILE_IDS:      # LIVE04.10: the one directed edge of this side
+                    group = {k for k in group if side_of[k] == PROFILE_IDS.index(b)}
+                if b not in (C17_STATION,) + PROFILE_IDS:
                     group |= by_station.get(b, set())
                 self.key_groups.append(tuple(sorted(group)))
             self.drivers = []
@@ -236,7 +244,9 @@ def make_collector(*args, **kwargs):
                     eids = struct.unpack('<%dI' % count, blob) if count else ()
                     seq = tuple(edges[e] for e in eids)
                     hits = [self.station_map[e] for e in seq if e in self.station_map]
-                    contrib = path_contributions(hits, self.sem)
+                    side_of = self.sem.get('side_of')
+                    sides = [side_of[e] for e in seq if e in self.station_map] if side_of else None
+                    contrib = path_contributions(hits, self.sem, sides)
                     multiplicity = Counter(seq)
                     rid = self._store(key, int(pi), vol, seq, multiplicity, contrib)
                     routes.append({'pk': (*key, int(pi)), 'route_id': rid, 'volume': vol, 'seq': seq,

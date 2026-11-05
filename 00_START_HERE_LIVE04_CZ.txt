@@ -67,7 +67,23 @@ TICHY BEH (LIVE04.5.3): skripty nevypisuji nic do okna Visumu a potlaci varovani
 (predvolba SuppressWarningsDuringProcExec, po behu vracena). Vysledek a logy: %LOCALAPPDATA%\R1C25_BOOT\<id>\
 (00_*_BOOT_RESULT.json, SILENT_MODE.json, PYTHON_CONSOLE.log, VISUM_MESSAGES.txt) a slozka behu.
 
-PROFILY KORDONOVYCH STANOVIST (LIVE04.9)
+SMEROVE PROFILY KORDONOVYCH STANOVIST (LIVE04.10, plati misto LIVE04.9)
+32 profilu = jeden na kazdou orientovanou hranu stanoviste; spolu se 120 vazbami a 16 C17 = 168 radku.
+Cil = surove detekce kamer OA z E41 (6-18 h, vcetne podilu nerozpoznanych) po smerech +/- x koeficient
+zony OA_RPDI z D3 (data/audited/STATION_PROFILE_EVIDENCE.json). Matice D3 neobsahuje pruchody uprostred
+trasy pres vice stanovist (napr. 16 -> 3 -> 1), proto se cil profilu nebere z jejich okraju.
+Ktera hrana je + a ktera -, urcuji mapy reportu (georeferencovane obr1-5)
+v data/audited/STATION_PROFILE_SIGN_EDGES.json (rozhodnuti uzivatele 2026-11-05). U SDP8 a SDP10 ukazuji data
+E41 opacne prirazeni nez mapa; plati mapa. Shoda tras modelu s tabulkou se jen zapisuje
+(00_RESULT.json -> station_profile_directions, model_agreement_with_fixed: +1 souhlas, -1 opacne).
+Tabulka se kontroluje proti mapovani stanic uz pri sestaveni kontraktu (READINESS: OBSERVATION_CONTRACT).
+READINESS od LIVE04.10.1 nezachycuje cesty (readiness_baseline_capture = false) - kalibrace si vychozi stav
+zachyti sama, zachyceni dvakrat by jen zdvojilo cas.
+Nastaveni: CORDON_LIVE04_CONFIG.json -> observations.station_profiles (enabled, row_weight, evidence,
+sign_edges + jejich sha256). Rezim LIVE04.9 (16 obousmernych profilu z D3): source = D3_ALL_ROW_PLUS_COLUMN_SUM
+bez klicu evidence/sign_edges.
+
+PROFILY KORDONOVYCH STANOVIST (LIVE04.9, nahrazeno LIVE04.10)
 Kazde stanoviste je zaroven profil: k 120 OD vazbam (FIRST_LAST) a 16 radkum C17 pribylo 16 profilovych
 radku = 152 radku. Cil profilu = radkovy + sloupcovy soucet matice D3 OA ALL RPDI (vazby, C17,
 vjazd-vyjazd), model = intenzita na hranach stanice (vsechny pruchody). Scitace se nepouzivaji.

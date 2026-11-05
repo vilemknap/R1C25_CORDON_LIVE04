@@ -15,5 +15,5 @@
  "recompute": true,
  "save_new_version": true,
  "readiness_after_import": true,
- "readiness_baseline_capture": true
+ "readiness_baseline_capture": false
 }

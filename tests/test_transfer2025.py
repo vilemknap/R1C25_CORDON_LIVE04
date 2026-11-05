@@ -74,7 +74,10 @@ def test_export_import_recompute_save_and_ready(tmp_path):
     ready = sorted(tr.Path(tmp_path / 'out').glob('READINESS_*/00_RESULT.json'))
     checks = {c['check']: c for c in read_json(ready[-1])['checks']}
     assert checks['PARAMETERS_EQUAL_EXPORT']['status'] == 'PASS'
-    assert set(checks['CORDON_BASELINE_CAPTURE']['detail']) == {'FIRST_LAST', 'EXACT_TWO_HITS', 'ALL_ORDERED_UNIQUE_PAIRS'}
+    # LIVE04.10.1: no path capture in READINESS by default (the calibration captures its own baseline);
+    # the observation contract incl. the station profile sign table is checked statically.
+    assert 'CORDON_BASELINE_CAPTURE' not in checks
+    assert checks['OBSERVATION_CONTRACT']['status'] == 'PASS'
 
 
 def test_zone_set_mismatch_stops_before_any_write(tmp_path):
@@ -209,7 +212,13 @@ def test_recompute_base_without_export_writes_no_parameter_and_is_ready(tmp_path
     assert audit['direct_od_matrix_writes'] == 0 and not b.writes
     ready = sorted(tr.Path(tmp_path / 'out').glob('READINESS_*/00_RESULT.json'))
     checks = {c['check']: c['status'] for c in read_json(ready[-1])['checks']}
-    assert 'PARAMETERS_EQUAL_EXPORT' not in checks and checks['CORDON_BASELINE_CAPTURE'] == 'PASS'
+    assert 'PARAMETERS_EQUAL_EXPORT' not in checks and 'CORDON_BASELINE_CAPTURE' not in checks
+    assert checks['OBSERVATION_CONTRACT'] == 'PASS'
+    # the capture can still be requested explicitly
+    again = tr.readiness(b, output_root=tmp_path / 'out2', options=OPT, baseline_capture=True)
+    caps = {c['check']: c for c in again['checks']}
+    assert caps['CORDON_BASELINE_CAPTURE']['status'] == 'PASS', caps['CORDON_BASELINE_CAPTURE']
+    assert set(caps['CORDON_BASELINE_CAPTURE']['detail']) == {'FIRST_LAST', 'EXACT_TWO_HITS', 'ALL_ORDERED_UNIQUE_PAIRS'}
 
 
 def test_recompute_base_missing_station_link_stops_before_any_write(tmp_path):
