@@ -72,6 +72,12 @@
    "FIRST_LAST": "PRIMARY",
    "EXACT_TWO_HITS": "SECONDARY",
    "ALL_ORDERED_UNIQUE_PAIRS": "DIAGNOSTIC"
+  },
+  "station_profiles": {
+   "enabled": true,
+   "source": "D3_ALL_ROW_PLUS_COLUMN_SUM",
+   "row_weight": 1.0,
+   "note": "LIVE04.9: 16 profilu kordonovych stanovist; cil = radkovy + sloupcovy soucet matice D3 OA ALL RPDI (pary, C17, vjazd-vyjazd); model = intenzita na hranach stanice (vsechny pruchody). Scitace se nepouzivaji (rozhodnuti uzivatele 2026-11-04)."
   }
  },
  "native_prediction": {

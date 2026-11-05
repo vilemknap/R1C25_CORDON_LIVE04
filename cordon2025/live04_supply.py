@@ -104,7 +104,7 @@ def supply_policy(opts):
 # ------------------------------------------------------------- row semantics
 def row_semantics(evaluator, diag):
     """Directed station keys -> aggregated acceptance rows, and the driver profiles."""
-    from .live03_incidence import C17_STATION
+    from .live03_incidence import C17_STATION, PROFILE_STATION
     method = evaluator.method
     inc = diag['_incidence'][method]
     stations = sorted(set(evaluator.station_map.values()))
@@ -112,6 +112,9 @@ def row_semantics(evaluator, diag):
     station_rows = bool(evaluator.contract.station_rows(method))
     if station_rows:
         keys += [(s, C17_STATION) for s in stations]
+    profile_rows = bool(getattr(evaluator.contract, 'profile_rows', lambda m: False)(method))
+    if profile_rows:
+        keys += [(s, PROFILE_STATION) for s in stations]
     directed_to_row = list(inc.audit['directed_to_row'])
     require(len(directed_to_row) == len(keys), 'LIVE04_SUPPLY_DIRECTED_ROW_MAP_MISMATCH')
     key_row = {k: int(directed_to_row[i]) for i, k in enumerate(keys)}
@@ -122,14 +125,15 @@ def row_semantics(evaluator, diag):
         profiles.append({'countlocation_no': str(pair_key(pair[0], pair[1])), 'role': 'CALIBRATION',
                          'observed': float(observed), 'model': float(model), 'profile_weight': 1.0,
                          'row_index': i, 'origin_station': int(pair[0]), 'destination_station': int(pair[1])})
-    return {'method': method, 'key_row': key_row, 'station_rows': station_rows, 'profiles': profiles,
+    return {'method': method, 'key_row': key_row, 'station_rows': station_rows, 'profile_rows': profile_rows,
+            'profiles': profiles,
             'selected_dsegs': list(inc.audit['selected_dsegs'])}
 
 
 def path_contributions(hits, sem):
     from .live03_incidence import first_last_contributions
     out = defaultdict(float)
-    for key, w in first_last_contributions(hits, sem['station_rows']):
+    for key, w in first_last_contributions(hits, sem['station_rows'], sem.get('profile_rows', False)):
         out[sem['key_row'][key]] += float(w)
     return out
 
@@ -157,12 +161,12 @@ def make_collector(*args, **kwargs):
             by_station = defaultdict(set)
             for key, s in self.station_map.items():
                 by_station[int(s)].add(tuple(int(x) for x in key))
-            from .live03_incidence import C17_STATION
+            from .live03_incidence import C17_STATION, PROFILE_STATION
             self.key_groups = []
             for p in self.profiles:
                 a, b = p['origin_station'], p['destination_station']
                 group = set(by_station.get(a, ()))
-                if b != C17_STATION:
+                if b not in (C17_STATION, PROFILE_STATION):
                     group |= by_station.get(b, set())
                 self.key_groups.append(tuple(sorted(group)))
             self.drivers = []

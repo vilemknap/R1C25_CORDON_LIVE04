@@ -1,4 +1,4 @@
-# R1 2025 – kordónová kalibrace LIVE04.8.1 (v7 @ 7b4c681)
+# R1 2025 – kordónová kalibrace LIVE04.9 (v7 @ 7b4c681)
 
 Kordónový kalibrátor TG + TD (ANPR průzkum 2026, FIRST_LAST + C17) portovaný na profilový kalibrátor
 [`vilemknap/R1_15A2_V24917_v7`](https://github.com/vilemknap/R1_15A2_V24917_v7) @ `977cef4` (P2.5/A4),
@@ -17,7 +17,9 @@ s pamětí mezi cykly (LIVE04.1) a přenosem kalibrace 2022 → 2025 (TRANSFER20
 - LIVE04.6–7.1 (2026-11-04): rychlejší zachycení pokusů – geometrie cest se čte jen pro reprezentativní DSeg a ostatní DSegy se ověří intenzitami VOLVEH_DSEG na 32 hranách stanic (CAPTURE_TIMING.json); epocha geometrie – při stejné množině cest se geometrie přehraje a ověří intenzitami na všech hranách (GEOMETRY_EPOCH_CHECK.json, max 3 opakování); zrychlené zachycení smí kandidáta jen odmítnout nebo řídit hledání – před přijetím se vždy pořídí nezávislé plné zachycení a o přijetí se rozhoduje na něm (ACCEPTANCE_CONFIRM.json); regrese dokazuje protipříklad 1→2+3→4 vs 1→4+3→2 (stejné intenzity, jiná FIRST_LAST)
 - LIVE04.8 (2026-11-04): checkpointy – po každém bloku se změnou se uloží `CHECKPOINTS/…_LIVE04_CKPT_Cxx_<blok>_<hash>.ver` + `.CHECKPOINT.json` (posledních `keep_last`); `RUN_R1_2025_CORDON_LIVE04_CONTINUE.py` naváže z checkpointu nebo z verze uložené při zastavení na dalším bloku s kotvami původního běhu (generation reference, baseline ADDVAL1; RUN_ANCHORS.json)
 - LIVE04.8.1 (2026-11-04): oprava modelu bez cest – sondy prediktoru jen s poptávkou (operace 1/15 mažou výsledky přidělení) po bloku nebo při zastavení vyvolají přepočet přidělení s ověřením ekvivalence (ASSIGNMENT_REPAIR.json) a `.ver` se bez cest neuloží; navázání i z ručně uložené a přepočítané verze podle hashe přijatého stavu (ACCEPTED_STATE_MATCH); spouštěče zcela tiché (výstup do `%LOCALAPPDATA%\R1C25_BOOT\LAST_LAUNCHER_OUTPUT.txt`)
-- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1_2025_CORDON_LIVE04_8_1_ASSIGNMENT_REPAIR_20261104`)
-- Offline regrese: `LIVE04_TEST_RESULTS.txt` (LIVE04.8.1 po vydání: 1011 passed, 20 skipped, 0 failed; syntetický mock, nejde o nativní důkaz z PTV Visum)
+- LIVE04.8.2 (2026-11-04): `CORDON_LIVE04_CONFIG.json` a `TRANSFER_2025_CONFIG.json` jsou uživatelsky upravitelné (mimo hashovaný manifest; výchozí kopie v `provenance/live04_user_config/`); `max_cycles` LIVE04 1–200
+- LIVE04.9 (2026-11-04): 16 obousměrných profilů kordonových stanovišť – cíl = řádkový + sloupcový součet D3 OA ALL RPDI, model = všechna vozidla projíždějící stanovištěm; 152 kordonových řádků (`observations.station_profiles`, váha 1,0); sčítače se nepoužívají
+- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1_2025_CORDON_LIVE04_9_STATION_PROFILES_20261104`)
+- Offline regrese: `LIVE04_TEST_RESULTS.txt` (LIVE04.9 po vydání: 1023 passed, 20 skipped, 0 failed po opravě jednoho testu; syntetický mock, nejde o nativní důkaz z PTV Visum)
 
 Stav: `TECHNICAL_TRIAL`, `production_ready=false`, nativně ve Visumu zatím neověřeno.

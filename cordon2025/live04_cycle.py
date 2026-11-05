@@ -411,7 +411,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                           'write_audit': audit.summary()['counts'], 'gate_events': len(tx.gate_events),
                           'evaluations': evaluator.count, 'real_visum_verified': not synthetic, 'production_ready': False,
                           'observation_contract_sha256': contract.audit['contract_sha256'],
-                          'observation_semantics': 'FIRST_LAST_TRANSIT_PAIRS_PLUS_C17_STATION_MARGINS',
+                          'observation_semantics': 'FIRST_LAST_TRANSIT_PAIRS_PLUS_C17_STATION_MARGINS' + ('_PLUS_STATION_PROFILES' if contract.profile_cells else ''),
                           'year_bridge_factor': contract.factor,
                           'prediction': ('NATIVE_DEMAND_ON_FROZEN_PATHS' if cfg['native_prediction']['enabled']
                                          else 'GENFIX2_FINAL_EFFECT_LINEAR'),

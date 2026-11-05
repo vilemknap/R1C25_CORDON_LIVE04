@@ -286,3 +286,32 @@ všech přijatých stavů a nebylo možné rozumně navázat (nový běh by ukot
   `%LOCALAPPDATA%\R1C25_BOOT\LAST_LAUNCHER_OUTPUT.txt` (žádná okna „Information“).
 - Mock: reset maže cesty bez přidělení (testy `test_live04_8.py`).
 
+
+## LIVE04.8.2 – upravitelná konfigurace (2026-11-04)
+
+- `CORDON_LIVE04_CONFIG.json` a `TRANSFER_2025_CONFIG.json` nejsou v `SOURCE_MANIFEST.json`: jejich úprava
+  (např. `max_cycles`, `parameter_file`) už nezpůsobí `RELEASE_INTEGRITY_FAIL … HASH_OR_SIZE_MISMATCH`.
+  Obsah dál přísně ověřuje zavaděč konfigurace (schéma, pole, rozsahy, zakázané zápisy). Výchozí hodnoty
+  vydání jsou hashované v `provenance/live04_user_config/*.RELEASE_DEFAULT.json`; změna kódu se dál odhalí.
+- `max_cycles` pro LIVE04 1–200 (dříve 10 převzaté z LIVE03; LIVE03 si limit 10 ponechává).
+- Testy `tests/test_live04_8_2.py`.
+
+## LIVE04.9 – profily kordonových stanovišť (2026-11-04)
+
+Rozhodnutí uživatele 2026-11-04: kordonová stanoviště jsou zároveň sčítací profily; kalibruje se na OD vazby
+i na celkový počet průjezdů stanovištěm. Data sčítačů (ASD 1–14) se **nepoužívají**; cíl profilu je pro všech
+16 stanovišť řádkový + sloupcový součet matice D3 `OA_ALL_RPDI` (`data/audited/AUDITED_MATRICES.npz`, stejná
+autorita jako OD vazby, sha256 beze změny), tj. vazby, C17 (bez páru) i vjazd‑výjazd.
+
+- Řádky FIRST_LAST: 120 vazeb + 16 C17 + **16 profilů** = 152 (`KORDON_STATION_PROFILE`, klíč `(s, 18)`).
+- Model profilu = intenzita na hranách stanice: každý průjezd každé uložené cesty (i průběžná stanoviště,
+  cyklická cesta 2×) – `first_last_contributions(..., profile_rows=True)`.
+- Profilové řádky jdou do cílové funkce s vahou `observations.station_profiles.row_weight` (výchozí 1,0),
+  do pojistky GEH po řádcích, do prediktoru TG/TD (zmrazené podíly cest) a do SupplyMix (řídicí profily).
+- Sekundární metoda EXACT_TWO_HITS zůstává jen na vazbách – krok, který by kvůli profilům zhoršil vazby,
+  se dál odmítne (`SECONDARY_METHOD_DEGRADED`).
+- Vypnutí: `station_profiles.enabled = false` → původních 136 řádků.
+- Navázání (CONTINUE) funguje i z běhu se 136 řádky: kontrolují se jen hashe stavu modelu; cílová funkce se
+  v navazujícím běhu spočte znovu nad 152 řádky.
+- Testy `tests/test_live04_9.py` (profil v mocku = nezávisle spočtená intenzita na hranách stanic). Starší mock
+  testy běží na 136 řádcích přes `conftest.py` v kořeni (`tests/conftest.py` je chráněný zdroj LIVE01).

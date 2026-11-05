@@ -58,9 +58,17 @@ LAST_CHECKPOINT.json). Navazani: otevri checkpoint .ver nebo ..._LIVE04_ACCEPTED
 (konec behu / overeny STOP_REQUESTED) a spust RUN_R1_2025_CORDON_LIVE04_CONTINUE.py.
 Beh overi sha256 souboru, prevezme meze ze startu PUVODNIHO behu (reference koeficientu,
 ADDVAL1 start) a pokracuje prerusenym cyklem/blokem (CONTINUATION.json, RUN_ANCHORS.json).
-Posledni cyklus = outer_cycle_start + max_cycles - 1 puvodniho behu; pro dalsi cykly zvys max_cycles.
+Posledni cyklus = outer_cycle_start + max_cycles - 1 puvodniho behu; pro dalsi cykly zvys max_cycles (LIVE04: 1..200).
+CORDON_LIVE04_CONFIG.json a TRANSFER_2025_CONFIG.json smis upravovat - kontrola integrity je nehashuje
+(obsah overi zavadec konfigurace). Puvodni hodnoty: provenance/live04_user_config/*.RELEASE_DEFAULT.json.
 STOP: prazdny soubor STOP_REQUESTED (bez pripony) do slozky behu LIVE04_TGTD_..., ne o uroven vys.
 
 TICHY BEH (LIVE04.5.3): skripty nevypisuji nic do okna Visumu a potlaci varovani procedur
 (predvolba SuppressWarningsDuringProcExec, po behu vracena). Vysledek a logy: %LOCALAPPDATA%\R1C25_BOOT\<id>\
 (00_*_BOOT_RESULT.json, SILENT_MODE.json, PYTHON_CONSOLE.log, VISUM_MESSAGES.txt) a slozka behu.
+
+PROFILY KORDONOVYCH STANOVIST (LIVE04.9)
+Kazde stanoviste je zaroven profil: k 120 OD vazbam (FIRST_LAST) a 16 radkum C17 pribylo 16 profilovych
+radku = 152 radku. Cil profilu = radkovy + sloupcovy soucet matice D3 OA ALL RPDI (vazby, C17,
+vjazd-vyjazd), model = intenzita na hranach stanice (vsechny pruchody). Scitace se nepouzivaji.
+Nastaveni: CORDON_LIVE04_CONFIG.json -> observations.station_profiles (enabled, row_weight).

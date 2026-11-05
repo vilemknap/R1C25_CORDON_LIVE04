@@ -1,3 +1,21 @@
+LIVE04.9 (16 station profile rows from D3 OA ALL RPDI row+column sums; 152 FIRST_LAST rows) - 2026-11-04
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_9.py: 9 passed (contract, contributions, profile = independent station link volume, GENERATION/SUPPLY/TD blocks on 152 rows).
+Full 3-shard regression from the released LIVE04.9 ZIP:
+== shard 0: 323 passed, 8 skipped - EXIT 0
+== shard 1: 290 passed, 1 skipped, 1 failed - EXIT 1
+== shard 2: 409 passed, 11 skipped - EXIT 0
+The failure was in the test, not the release code: test_live04.py::test_live04_launcher_and_import_restoration goes through the bootstrap,
+which re-imports cordon2025, so the root conftest 136-row switch did not apply and the mock ran on 152 rows (NO_ACCEPTED_CHANGE).
+The test now disables station_profiles via config_overrides; it and tests/test_live04_8_2.py + tests/test_live04_9.py: 13 passed.
+TOTAL: 1023 passed, 20 skipped, 0 failed after the test fix.
+
+LIVE04.8.2 (user-editable CORDON_LIVE04_CONFIG.json / TRANSFER_2025_CONFIG.json outside the hashed manifest; LIVE04 max_cycles 1..200) - 2026-11-04
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_8_2.py: 3 passed. Config/manifest/bootstrap tests: see below; full regression runs after release.
+
+LIVE04.8.1 post-release (from the released ZIP): tests/test_live04_8.py 13 passed; full 3-shard regression 1011 passed, 20 skipped, 0 failed.
+
 LIVE04.8.1 (assignment repair after demand-only predictor probes, continuation by accepted-state match) + LIVE04.8 (checkpoint .ver after every accepted block, continuation of a previous run with original run-start anchors, silent launchers) - 2026-11-04
 Synthetic mock only - NOT native PTV Visum evidence.
 tests/test_live04_8.py: 10 passed. Launcher/bootstrap tests (test_transfer2025, test_live04, test_visum_bootstrap selection): 18 passed.

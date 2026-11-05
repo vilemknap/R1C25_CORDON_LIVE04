@@ -21,6 +21,8 @@ from .live03_observations import validate as validate_observations  # noqa: F401
 SCHEMA = 'R1_CORDON_LIVE04_CONFIG_V1'
 STAGE = 'LIVE04_V7_TG_TD_CYCLE'
 CONFIG_FILE = 'CORDON_LIVE04_CONFIG.json'
+# LIVE04.8.2: checkpoints + continuation make long runs safe; LIVE03 keeps its own cap of 10.
+LIVE04_MAX_CYCLES = 200
 LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard', 'checkpoint')
 
 
@@ -149,7 +151,8 @@ def validate_config(cfg, *, allow_donor_overrides=False):
                                          'load_version', 'overwrite_source_version', 'save_accepted_version_new_file',
                                          'long_post_td_mask_matrix_writes', 'supply_addval1_writes'},
             'LIVE04_WRITE_POLICY_FIELDS')
-    l3.validate_sections(cfg)
+    l2._int(cfg.get('max_cycles'), 'max_cycles', 1, LIVE04_MAX_CYCLES)
+    l3.validate_sections(dict(cfg, max_cycles=min(cfg['max_cycles'], l3.MAX_CYCLES)))
     validate_v7(cfg, allow_donor_overrides)
     validate_memory(cfg['memory'])
     validate_supply_mix(cfg)

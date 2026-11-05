@@ -22,7 +22,7 @@ compared with the same Transit pair targets (pairs only).
 from __future__ import annotations
 import numpy as np
 from .common import ROOT, require, canonical_hash, sha256
-from .live03_incidence import aggregate_observations, FIRST_LAST, C17_STATION
+from .live03_incidence import aggregate_observations, FIRST_LAST, C17_STATION, PROFILE_STATION
 from .state import observation_roster
 
 SCHEMA = 'LIVE03_OBSERVATION_CONTRACT_V1'
@@ -31,6 +31,20 @@ STATIONS = tuple(range(1, 17))
 PAIR_MATRICES = ('Transit', 'ALL')
 C17_POLICIES = ('STATION_MARGINS', 'DISABLED')
 ROLES = ('PRIMARY', 'SECONDARY', 'DIAGNOSTIC')
+PROFILE_SOURCES = ('D3_ALL_ROW_PLUS_COLUMN_SUM',)
+
+
+def validate_profiles(obs):
+    """LIVE04.9 optional station profiles: total crossings per station from the cordon matrix."""
+    sp = obs.get('station_profiles')
+    if sp is None:
+        return None
+    require(isinstance(sp, dict) and set(sp) - {'note'} == {'enabled', 'source', 'row_weight'}
+            and isinstance(sp['enabled'], bool) and sp['source'] in PROFILE_SOURCES, 'LIVE04_STATION_PROFILES')
+    w = sp['row_weight']
+    require(not isinstance(w, bool) and isinstance(w, (int, float)) and np.isfinite(float(w)) and 0 < float(w) <= 10,
+            'LIVE04_STATION_PROFILE_WEIGHT')
+    return sp
 
 
 def validate(obs):
@@ -52,6 +66,7 @@ def validate(obs):
     f = float(yb.get('factor', float('nan')))
     require(np.isfinite(f) and 0.5 <= f <= 2.0, 'LIVE03_YEAR_FACTOR')
     require(bool(yb.get('approval')), 'LIVE03_YEAR_BRIDGE_APPROVAL_MISSING')
+    validate_profiles(obs)
     methods = obs.get('methods') or {}
     require(methods.get(FIRST_LAST) == 'PRIMARY', 'LIVE03_FIRST_LAST_MUST_BE_PRIMARY')
     require(all(r in ROLES for r in methods.values()) and list(methods.values()).count('PRIMARY') == 1
@@ -110,6 +125,19 @@ class Contract:
                                            'cyclic_row': cyc_a, 'cyclic_col': cyc_b, 'cyclic_crossings_per_trip': k_cyc,
                                            'nontransit_row_sum': nt_out, 'nontransit_col_sum': nt_in,
                                            'target_crossings': self.factor * (row_part + col_part)})
+        # LIVE04.9 station profiles: row + column sum of the ALL matrix (pairs, C17, vjazd-vyjazd)
+        # = every vehicle crossing of station s; model = station link volume (every hit).
+        self.profile_cells = {}
+        self.profile_parts = []
+        sp = self.obs.get('station_profiles')
+        if sp and sp['enabled']:
+            for s in STATIONS:
+                i = s - 1
+                rsum, csum = float(A[i, :].sum()), float(A[:, i].sum())
+                self.profile_cells[(s, PROFILE_STATION)] = self.factor * rsum
+                self.profile_cells[(PROFILE_STATION, s)] = self.factor * csum
+                self.profile_parts.append({'station': s, 'all_row_sum': rsum, 'all_column_sum': csum,
+                                           'target_crossings': self.factor * (rsum + csum)})
         self.methods = dict(self.obs['methods'])
         self.primary = next(m for m, r in self.methods.items() if r == 'PRIMARY')
         self.secondary = next((m for m, r in self.methods.items() if r == 'SECONDARY'), None)
@@ -128,27 +156,38 @@ class Contract:
             'pair_target_unordered_sum': float(sum(self.pair_cells.values())),
             'c17_target_crossings_sum': float(sum(self.station_cells.values())),
             'c17_station_parts': self.station_parts,
+            'station_profiles': dict(sp) if sp else None,
+            'station_profile_parts': self.profile_parts,
+            'station_profile_target_sum': float(sum(self.profile_cells.values())),
             'rows': {m: self.row_count(m) for m in self.methods},
             'production_ready': False,
             'observation_status': 'APPROVED_BY_SURVEY_REPORT_AND_USER_FOR_LIVE03_TECHNICAL_CALIBRATION'}
-        self.audit['contract_sha256'] = canonical_hash({k: v for k, v in self.audit.items() if k != 'c17_station_parts'})
+        self.audit['contract_sha256'] = canonical_hash({k: v for k, v in self.audit.items() if k not in ('c17_station_parts', 'station_profile_parts')})
 
     def station_rows(self, method):
         return method == FIRST_LAST and bool(self.station_cells)
 
+    def profile_rows(self, method):
+        return method == FIRST_LAST and bool(self.profile_cells)
+
     def row_count(self, method):
-        return 120 + (16 if self.station_rows(method) else 0)
+        return 120 + (16 if self.station_rows(method) else 0) + (16 if self.profile_rows(method) else 0)
 
     def targets(self, method):
         out = dict(self.pair_cells)
         if self.station_rows(method):
             out.update(self.station_cells)
+        if self.profile_rows(method):
+            out.update(self.profile_cells)
         return out
 
     def mathcfg_extension(self):
-        return {'enumeration_methods': list(self.enumeration),
-                'first_last_station_rows': bool(self.station_cells),
-                'full_share_methods': list(self.enumeration)}
+        ext = {'enumeration_methods': list(self.enumeration),
+               'first_last_station_rows': bool(self.station_cells),
+               'full_share_methods': list(self.enumeration)}
+        if self.profile_cells:
+            ext['first_last_profile_rows'] = True
+        return ext
 
 
 def aggregate(inc, contract, method):
@@ -159,7 +198,8 @@ def aggregate(inc, contract, method):
         roles[tuple(sorted((a, b)))] = 'CALIBRATION'
     expected = contract.row_count(method)
     keys = [(int(r['origin_station']), int(r['destination_station'])) for r in inc.rows]
-    require(len(keys) == (240 + (16 if contract.station_rows(method) else 0)), 'LIVE03_DIRECTED_ROW_COUNT:' + method)
+    require(len(keys) == (240 + (16 if contract.station_rows(method) else 0) + (16 if contract.profile_rows(method) else 0)),
+            'LIVE03_DIRECTED_ROW_COUNT:' + method)
     result = aggregate_observations(inc, targets, bidirectional=True, roles=roles)
     roster = observation_roster(result.rows)
     require((roster['rows'], roster['calibration'], roster['validation']) == (expected, expected, 0),
@@ -168,6 +208,9 @@ def aggregate(inc, contract, method):
     for r in result.rows:
         if r['destination_station'] == C17_STATION:
             r['observation_type'] = 'KORDON_C17_STATION'; r['weight'] = w
+        elif r['destination_station'] == PROFILE_STATION:
+            r['observation_type'] = 'KORDON_STATION_PROFILE'
+            r['weight'] = float(contract.obs['station_profiles']['row_weight'])
     # Directed -> aggregated row map, applied to the frozen share operator too.
     index = {(r['origin_station'], r['destination_station']): i for i, r in enumerate(result.rows)}
     mapping = np.array([index[tuple(sorted(k))] for k in keys], dtype=np.int64)
