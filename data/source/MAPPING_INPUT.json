@@ -4,7 +4,7 @@
   "station_map_csv": "/mnt/data/R1_2026_KORDON_STATION_MAP.csv",
   "crs_assumed": "EPSG:25834",
   "selection_method": "nearest directed car-usable Visum links, preferring road-type class from station road_report; for D/R roads prefers type_no=2 over nearer ramps/connectors",
-  "manual_revision": "V1 confirmed by user: SDP16 manually changed to link 2004231; SDP13 and all remaining stations accepted. V2 2026-11-03: SDP15 remapped to 9800634/9800637 for the user network LINK-2026-11-03 (link 2004239 removed), confirmed by user. V3 2026-11-15: SDP15 remapped to 99811302 (+) / 99811293 (-) for network R1_VARIANTYBase 2026-11-15 (rebuilt D1), confirmed by user.",
+  "manual_revision": "V1 confirmed by user: SDP16 manually changed to link 2004231; SDP13 and all remaining stations accepted. V2 2026-11-03: SDP15 remapped to 9800634/9800637 for the user network LINK-2026-11-03 (link 2004239 removed), confirmed by user. V3 2026-11-15: SDP15 remapped to 99811302 (+) / 99811293 (-) for network R1_VARIANTYBase 2026-11-15 (rebuilt D1), confirmed by user. V4 2026-11-15: SDP2 moved to 99811413 after the split of 9800378 (same directions).",
   "selected_mapping_csv": "R1_2026_KORDON_STATION_LINK_MAPPING_CONFIRMED_V1.csv"
  },
  "stations": [
@@ -44,29 +44,29 @@
    "road_report": "I/61",
    "gpkg_x": 221133.5093359004,
    "gpkg_y": 5344874.406662209,
-   "review_status": "USER_CONFIRMED_AUTO_SELECTION",
-   "selection_note": "preferred_road_type",
+   "review_status": "REMAP_20261115B_SPLIT_SAME_DIRECTION",
+   "selection_note": "network R1_VARIANTYBase 2026-11-15 18:37: I/61 link 9800378 split at new node 99800605; SDP2 on 99811413 (99800605->9900221 = + as before 9900076->9900221; reverse = -), 0.5 m from the station",
    "selected_links": [
     {
-     "link_no": 9800378,
-     "from_node_no": 9900076,
+     "link_no": 99811413,
+     "from_node_no": 99800605,
      "to_node_no": 9900221,
      "type_no": 10,
-     "distance_m": 6.590541078228863,
+     "distance_m": 0.5,
      "cap_prt": 7500.0,
      "tsysset": "B,C,C_noT,LNV,NV"
     },
     {
-     "link_no": 9800378,
+     "link_no": 99811413,
      "from_node_no": 9900221,
-     "to_node_no": 9900076,
+     "to_node_no": 99800605,
      "type_no": 10,
-     "distance_m": 6.5905410782288385,
+     "distance_m": 0.5,
      "cap_prt": 7500.0,
      "tsysset": "B,C,C_noT,LNV,NV"
     }
    ],
-   "user_confirmation": "USER_CONFIRMED_AUTO_SELECTION"
+   "user_confirmation": "REMAP_20261115B_SPLIT_SAME_DIRECTION"
   },
   {
    "station_id": 3,

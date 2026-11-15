@@ -1,0 +1,35 @@
+{
+  "schema": "R1_CORDON_REVIEWED_DATA_CHANGES_V1",
+  "date": "2026-11-15",
+  "reason": "network R1_VARIANTYBase 2026-11-15 18:37: I/61 link 9800378 split at new node 99800605; SDP2 on 99811413 (99800605->9900221 = + as before 9900076->9900221; reverse = -), 0.5 m from the station. Other 30 directed station links unchanged; observations, targets and C17 budgets unchanged.",
+  "files": {
+    "data/audited/STATION_MAPPING.csv": {
+      "before_sha256": "e765b16f5a209bb674031bb25d692afee25321caf806dab6cc1517e13513e1ec",
+      "after_sha256": "ecf646d619b2c2419bd96eae14af66b5eff44471dfe3230804872c27df890eef"
+    },
+    "data/source/MAPPING_INPUT.csv": {
+      "before_sha256": "64f16b41650f0a2370b27840e2dadd2c8ef7969ed9fb7e5a04c8059db147773b",
+      "after_sha256": "45ad2a23bcfb85ad7cdf71ea7b5d81cf7a3c0e126fa7bbb460634513e927345a"
+    },
+    "data/source/MAPPING_INPUT.json": {
+      "before_sha256": "d7ed1b06a3b0b2a4a325f0152589bff4d3c74d70f5175fe65d920da0c3e73dac",
+      "after_sha256": "ec4137d26085199a2457f8ffd19f884db93f54cfe68c5570d49e39d557e669de"
+    },
+    "data/audited/AUTHORITY_AUDIT.json": {
+      "before_sha256": "76b51be525695cf710278086129b92875cf338471f56bbe8e67e4cd9ba1b868d",
+      "after_sha256": "3f50d76b56d9498a8019727e5a34500465b34f4f21f9c5af233882a0b567ad49"
+    },
+    "data/source/INPUT_MANIFEST.json": {
+      "before_sha256": "5f56a577a1d8a6e4c4b9935bd77600177e45241a7fe842979a7479c56597c2f7",
+      "after_sha256": "1dc9146f2d1d6c6baa71b38d090b61a82933ebc114a7dd73d60bf51df78fd974"
+    },
+    "data/audited/STATION_PROFILE_SIGN_EDGES.json": {
+      "before_sha256": "7bab8f619e3fff6e245ff6043b56e7513adb08a441f1567cc08db36c5ef0fe25",
+      "after_sha256": "a2396725a6439e791c70d9b18e682fba110ee0a86186264b763cc1dcd6d1a17e"
+    },
+    "CORDON_LIVE01_CONFIG.json": {
+      "before_sha256": "a2bf7318de811a3f76372c16a6436ec37214d37bdecedd336149db917e849d21",
+      "after_sha256": "eabd288f49a3fe3f6ee51dbc3acb9da337df46959c4c5743d04f786e0d68c483"
+    }
+  }
+}

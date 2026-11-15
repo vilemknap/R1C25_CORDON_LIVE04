@@ -3,7 +3,7 @@
  "live_stage": "LIVE04_V7_TG_TD_CYCLE",
  "execution_mode": "TECHNICAL_TRIAL",
  "live01_contract_file": "CORDON_LIVE01_CONFIG.json",
- "live01_contract_sha256": "a2bf7318de811a3f76372c16a6436ec37214d37bdecedd336149db917e849d21",
+ "live01_contract_sha256": "eabd288f49a3fe3f6ee51dbc3acb9da337df46959c4c5743d04f786e0d68c483",
  "outer_cycle_start": 1,
  "max_cycles": 100,
  "blocks_per_cycle": [
@@ -80,7 +80,7 @@
    "evidence": "data/audited/STATION_PROFILE_EVIDENCE.json",
    "evidence_sha256": "772a8a3692893362a153635b8744cd80fd01aba370feb1f3c6cc61a19c1c4a7f",
    "sign_edges": "data/audited/STATION_PROFILE_SIGN_EDGES.json",
-   "sign_edges_sha256": "7bab8f619e3fff6e245ff6043b56e7513adb08a441f1567cc08db36c5ef0fe25",
+   "sign_edges_sha256": "a2396725a6439e791c70d9b18e682fba110ee0a86186264b763cc1dcd6d1a17e",
    "note": "LIVE04.10: 32 smerovych profilu (jeden na orientovanou hranu stanoviste); cil = surove detekce OA z E41 (vcetne podilu nerozpoznanych, SDP5 vcetne kamery 5 nove) x koeficient zony OA_RPDI z D3; ktera hrana je + a ktera - urcuji mapy reportu (sign_edges). Shoda tras modelu se jen zapisuje. Rozhodnuti uzivatele 2026-11-05."
   }
  },

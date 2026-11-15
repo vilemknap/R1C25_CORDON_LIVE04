@@ -34,22 +34,23 @@
   {
    "station": 2,
    "plus_edge": [
-    9800378,
-    9900076,
+    99811413,
+    99800605,
     9900221
    ],
    "minus_edge": [
-    9800378,
+    99811413,
     9900221,
-    9900076
+    99800605
    ],
    "source": "REPORT_MAP_obr4",
    "e41_data_and_geometry_plus_edge": [
-    9800378,
-    9900076,
+    99811413,
+    99800605,
     9900221
    ],
-   "agrees_with_e41_data": true
+   "agrees_with_e41_data": true,
+   "remap_20261115b": "9800378 split at 99800605; plus/minus directions unchanged"
   },
   {
    "station": 3,

@@ -30,7 +30,7 @@
   "explicit_excluded_zone_nos": [],
   "authority_pins": {
     "physical_targets": "9e5018da5dc3887bd3f17a0b1a006d43a067f3315d46144bf3ceaba4f94d8733",
-    "station_mapping": "e765b16f5a209bb674031bb25d692afee25321caf806dab6cc1517e13513e1ec",
+    "station_mapping": "ecf646d619b2c2419bd96eae14af66b5eff44471dfe3230804872c27df890eef",
     "c17": "1fef9c4b3e6f2dfe782a399e8e37657e491aa98528b0063b2f9dbf1851b11a09"
   }
 }
