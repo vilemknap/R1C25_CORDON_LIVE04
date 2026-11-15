@@ -1,4 +1,6 @@
-# R1 2025 – kordónová kalibrace LIVE04.10.1 (v7 @ 7b4c681)
+# R1 2025 – kordónová kalibrace LIVE05.5 + path pipeline
+
+Optimalizace zachycení cest nad commitem `99a7a57` (OPMAP1 zachován): COM čtení na původním vlákně se překrývá se zpracováním předchozí dávky. Návod, měření a omezení: [docs/path_pipeline/PERFORMANCE_REVIEW_CZ.md](docs/path_pipeline/PERFORMANCE_REVIEW_CZ.md).
 
 Kordónový kalibrátor TG + TD (ANPR průzkum 2026, FIRST_LAST + C17) portovaný na profilový kalibrátor
 [`vilemknap/R1_15A2_V24917_v7`](https://github.com/vilemknap/R1_15A2_V24917_v7) @ `977cef4` (P2.5/A4),

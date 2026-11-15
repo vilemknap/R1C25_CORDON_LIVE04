@@ -1,0 +1,9 @@
+{
+  "status": "IMPLEMENTED_TARGETED_TESTED_FULL_REGRESSION_RUNNING",
+  "base_commit": "99a7a576b29faa95c6c1f81ded191eb6c44ae07d",
+  "pipeline_tests_passed": 33,
+  "capture_regression_passed": 86,
+  "capture_regression_deselected": 2,
+  "native_visum_tested": false,
+  "note": "Checkpoint zalohy zdrojoveho kodu. Zaverecny report a mereni budou doplneny dalsim commitem."
+}

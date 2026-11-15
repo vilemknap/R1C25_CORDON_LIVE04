@@ -198,8 +198,14 @@ def capture(visum,cfg,folder,control,opt,pre):
             max_geometry_rows_per_mode=opt['max_geometry_rows_per_mode'],
             com_retry_policy=retry_policy(opt))
     fast_parser=bool(opt.get('fast_geometry_parser',False))
+    pipeline=bool(opt.get('geometry_pipeline',False));pipeline_stats=[]
     class CordonCollector(two.TwoModeRouteCollector):
-        def add_geometry(self,mode,raw_rows):
+        def add_geometry(self,mode,raw_rows,*,native=False):
+            if pipeline and native:
+                from .live04_pipeline import add_geometry as pipelined_add
+                audit,stats=pipelined_add(self,mode,raw_rows,batch_size=int(opt['page_size']),fast_parser=fast_parser)
+                pipeline_stats.append(dict(stats,mode=mode))
+                return audit
             if fast_parser:
                 # LIVE04.10.4: behaviour-identical faster ingestion (see live04_fastgeom)
                 from .live04_fastgeom import add_geometry as fast_add
@@ -289,7 +295,7 @@ def capture(visum,cfg,folder,control,opt,pre):
                 continue
             epoch_fresh.append(mode)
             obj=_new_list(visum,'CreatePrTPathLinkList',ds['code'],control,opt)
-            collector.add_geometry(mode,_bounded_rows(obj,two.GEOMETRY_COLUMNS,st,control,opt,'GEOMETRY',dseg=ds['code']))
+            collector.add_geometry(mode,_bounded_rows(obj,two.GEOMETRY_COLUMNS,st,control,opt,'GEOMETRY',dseg=ds['code']),native=True)
             del obj
             geometry_checks.append({'dseg':ds['norm_code'],'check':'FULL_REPRESENTATIVE'})
             lap('geometry_representative')
@@ -342,7 +348,7 @@ def capture(visum,cfg,folder,control,opt,pre):
                                 report['matrix_audit'][ds['norm_code']],saved['values'],saved['zone_nos'],opt)
                         require(proof_parity['status']=='PASS','PROOF_STORE_PER_OD_PARITY_FAIL:'+ds['code'])
                         obj=_new_list(visum,'CreatePrTPathLinkList',ds['code'],control,opt)
-                        probe.add_geometry(mode,_bounded_rows(obj,two.GEOMETRY_COLUMNS,st,control,opt,'FULL_GEOMETRY_CHECK',dseg=ds['code']))
+                        probe.add_geometry(mode,_bounded_rows(obj,two.GEOMETRY_COLUMNS,st,control,opt,'FULL_GEOMETRY_CHECK',dseg=ds['code']),native=True)
                         _geometry_equal(collector.db,probe.db,mode)
                         geometry_checks.append({'dseg':ds['norm_code'],'check':'FULL_SAME_MODE_MATCH'})
                     finally:
@@ -428,12 +434,14 @@ def capture(visum,cfg,folder,control,opt,pre):
             'geometry_station_crosschecks':crosschecks,
             'full_proof_method':full_method,'geometry_all_link_proofs':all_link_proofs,
             'final_readback_basis':final_basis,'fast_geometry_parser':fast_parser,'com_page_size':int(opt['page_size']),
+            'geometry_pipeline':{'enabled':pipeline,'scope':'NATIVE_COM_GEOMETRY_ONLY','streams':pipeline_stats},
             'capture_timing_seconds':{k:round(v,3) for k,v in timing.items()},
             'apply_permitted':False,'live_calibration_verified':False}
         write_json(folder/'SNAPSHOT_EVIDENCE.json',evidence)
         write_json(folder/'GEOMETRY_PROOF.json',{'full':opt['full_geometry_check'],'checks':geometry_checks,
                    'identity':identity,'station_crosschecks':crosschecks})
         write_json(folder/'CAPTURE_TIMING.json',{k:round(v,3) for k,v in timing.items()})
+        write_json(folder/'GEOMETRY_PIPELINE_TIMING.json',evidence['geometry_pipeline'])
         return path,folder/'SNAPSHOT_EVIDENCE.json'
     finally:
         if collector is not None:_cleanup_store(collector,None,control)
