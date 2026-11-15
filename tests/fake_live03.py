@@ -18,7 +18,8 @@ from cordon2025.common import parent_core
 
 FAMILIES = {'WORK': ['1_WORK_E_C', '1_WORK_E_noC', '1_WORK_noE_C', '1_WORK_noE_noC', '1_WORK_stud'],
             'SERVICE': ['2_SERV_E_C', '2_SERV_E_noC', '2_SERV_noE_C', '2_SERV_noE_noC', '2_SERV_stud'],
-            'SCHOOL': ['5_SCHOOL']}
+            'SCHOOL': ['5_SCHOOL'],
+            'LONG': ['3_LONG_E_C', '3_LONG_E_noC', '3_LONG_noE_C', '3_LONG_noE_noC', '3_LONG_stud']}
 
 
 class GravAttr(Attr):

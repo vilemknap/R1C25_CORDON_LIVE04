@@ -56,7 +56,12 @@ class TDSpace:
         require(self.groups, 'LIVE03_TD_NO_ACTIVE_GROUP')
         self.n = 2 * len(self.groups)
         self.lo = np.concatenate([g['lo'] for g in self.groups]); self.hi = np.concatenate([g['hi'] for g in self.groups])
-        self.trust = np.array([float(tdc['trust_b']), float(tdc['trust_logc'])] * len(self.groups))
+        # LIVE05: LONG components move with a smaller trust region (v7 LONG gain multipliers 0.25/0.5)
+        from .common import parent_module as _pm
+        reg = _pm('r1_15a2_multiblock').COMPONENT_REGISTRY
+        ls = float(tdc.get('long_trust_scale', 1.0))
+        f = [ls if all(reg.get(c, {}).get('family') == 'LONG' for c in g['components']) else 1.0 for g in self.groups]
+        self.trust = np.array([x for k in f for x in (k * float(tdc['trust_b']), k * float(tdc['trust_logc']))])
         self.probe = np.array([float(tdc['probe_b']), float(tdc['probe_logc'])] * len(self.groups))
 
     def names(self):

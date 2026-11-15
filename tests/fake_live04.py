@@ -183,8 +183,9 @@ class Live04Visum(Live03Visum):
         if active[4]:            # TG: FP_* follow the production coefficients
             self._realize_fp()
         if active[5]:            # TD: unmasked LONG person demand (v7 masks it afterwards)
+            long_person = self._long_person()
             for no in LONG_PERSON:
-                self.component[no].values = self.long_base.copy()
+                self.component[no].values = long_person.copy()
         if active[19]:           # assignment 20: route choice reacts to the new demand
             self._assign_routes()
         if active[10]:           # 20B realization: vehicle components + repaired reverse support
@@ -192,6 +193,10 @@ class Live04Visum(Live03Visum):
             for k, no in enumerate(LONG_VEHICLE):
                 person = self.component[9111 + k].values
                 self.component[no].values = self._vehicle(person, leak=self.long_leak)
+
+    def _long_person(self):
+        """LIVE05: LONG person demand reacts to the LONG gravity b/c (as WORK/SERVICE do)."""
+        return self._td_factor('LONG', self.long_base)
 
     # ------------------------------------------------------------ route choice
     BYPASS = (990001, 990001, 990002)

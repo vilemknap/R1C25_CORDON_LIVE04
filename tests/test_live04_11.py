@@ -63,7 +63,8 @@ def test_release_config_is_component_level_with_v7_weights():
     td = load_config()['td_cordon']
     assert td['grouping'] == 'COMPONENT' and td['idp_objective_weight'] == 0.45
     assert td['acceptance'] == 'BLENDED' and td['blended_max_cordon_degradation'] == 0.01
-    assert sum(len(v) for v in td['groups'].values()) == 11
+    assert sum(len(v) for v in td['groups'].values()) == 16           # LIVE05: + 5 LONG components
+    assert td['long_td'] is True and td['long_trust_scale'] == 0.5
     assert read_json(ROOT / 'provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json')['td_cordon'] == td
 
 
@@ -94,12 +95,16 @@ def synthetic_idp(monkeypatch):
 
 def test_component_td_moves_components_of_one_family_differently(tmp_path, synthetic_idp):
     v = Live04Visum(tmp_path / 'model'); synthetic_idp['v'] = v
-    run(v, output_root=tmp_path / 'runs', options=OPT,
-        config_overrides={'max_cycles': 1, 'blocks_per_cycle': ['TD_CORDON']})
+    r = run(v, output_root=tmp_path / 'runs', options=OPT,
+            config_overrides={'max_cycles': 1, 'blocks_per_cycle': ['TD_CORDON']})
     f = list((tmp_path / 'runs').glob('LIVE04_TGTD_*'))[0]
     td = read_json(f / 'C01_TD_CORDON/TD_BLOCK_RESULT.json')
+    # LIVE05: LONG b/c move with half the trust region; the post-TD mask keeps LONG >= 80 km
+    st0 = dict(zip(td['idp_step_model']['parameters'], td['inner'][0]['step']))
+    assert abs(st0['LONG_E_C.db']) <= 0.5 * 0.25 + 1e-9 and abs(st0['LONG_E_C.dlog_c']) > 1e-6
+    assert r['long_post_td_mask']['final_support_clean']
     names = [p['parameter'] for p in td['jacobian_probes']]
-    assert len(names) == 22 and 'WORK_noE_C.dlog_c' in names and 'SCHOOL.db' in names
+    assert len(names) == 32 and 'WORK_noE_C.dlog_c' in names and 'SCHOOL.db' in names and 'LONG_stud.dlog_c' in names
     assert td['objective_blend']['idp_weight'] == 0.45 and len(td['objective_blend']['components']) == 11
     first = dict(zip(td['idp_step_model']['parameters'], td['inner'][0]['step']))
     # same family, same cordon response in the mock; only WORK_E_C is held back by its IDP

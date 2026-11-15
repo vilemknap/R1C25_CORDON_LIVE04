@@ -76,7 +76,9 @@ def validate_sections(cfg):
     seen = []
     for name, comps in groups.items():
         require(isinstance(comps, list) and comps and all(c in registry for c in comps), 'LIVE03_TD_GROUP_COMPONENT:' + name)
-        require(all(registry[c]['family'] != 'LONG' for c in comps), 'LIVE03_TD_LONG_NOT_IN_CORDON_TD_SCOPE')
+        # LIVE05 (user decision 2026-11-15): LONG b/c only on explicit opt-in (td_cordon.long_td = true)
+        require(td.get('long_td') is True or all(registry[c]['family'] != 'LONG' for c in comps),
+                'LIVE03_TD_LONG_NOT_IN_CORDON_TD_SCOPE')
         seen += comps
     require(len(seen) == len(set(seen)), 'LIVE03_TD_COMPONENT_IN_TWO_GROUPS')
     for key, lo, hi in (('probe_b', 1e-4, 1.0), ('probe_logc', 1e-4, 1.0), ('trust_b', 1e-3, 4.0),
@@ -95,6 +97,10 @@ def validate_sections(cfg):
     if 'idp_objective_weight' in td:
         _num(td, 'idp_objective_weight', 0.0, 0.9)
     require(td.get('acceptance', 'CORDON') in ('CORDON', 'BLENDED'), 'LIVE04_TD_ACCEPTANCE')
+    if 'long_td' in td:
+        require(isinstance(td['long_td'], bool), 'LIVE05_TD_LONG_FLAG')
+    if 'long_trust_scale' in td:
+        _num(td, 'long_trust_scale', 0.05, 1.0)
     for key in ('blended_min_relative_improvement', 'blended_max_cordon_degradation'):
         if key in td:
             _num(td, key, 0.0, 0.1)

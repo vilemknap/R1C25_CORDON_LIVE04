@@ -459,7 +459,7 @@ def test_memory_td_rejected_jacobian_falls_back_to_probes(tmp_path, monkeypatch)
     f = folder_of(tmp_path)
     c2 = read_json(f / 'C02_TD_CORDON/TD_BLOCK_RESULT.json')
     assert c2['jacobian_source'] == 'NATIVE_PROBES_MEMORY_REJECTED'
-    assert len(list((f / 'C02_TD_CORDON/NATIVE').glob('JAC_*'))) == 6
+    assert len(list((f / 'C02_TD_CORDON/NATIVE').glob('JAC_*'))) == 8      # WORK, SERVICE, SCHOOL, LONG
 
 
 def test_memory_route_correction_improves_tg_prediction(tmp_path, monkeypatch):
