@@ -18,11 +18,15 @@ from .common import require
 from .io import write_json
 
 FULL_BASIS = 'FULL_SAME_MODE_GEOMETRY_COMPARED_THIS_CAPTURE'
+# LIVE04.10.2 (user decision 2026-11-05): the cheaper full proof - identical path key sets and every DSeg's
+# VOLVEH_DSEG on ALL network links implied by the read geometry - counts as a full capture.
+ALL_LINK_BASIS = 'ALL_LINK_VOLUMES_SAME_PATH_KEYS_PROVEN_THIS_CAPTURE'
+FULL_BASES = (FULL_BASIS, ALL_LINK_BASIS)
 CONFIRM_LABEL = 'ACCEPTANCE_CONFIRM'
 
 
 def is_fully_proven(diag):
-    return diag.get('geometry_identity_basis', FULL_BASIS) == FULL_BASIS and bool(diag.get('full_geometry_check', True))
+    return diag.get('geometry_identity_basis', FULL_BASIS) in FULL_BASES and bool(diag.get('full_geometry_check', True))
 
 
 def compare_rows(fast, full, methods):
@@ -51,7 +55,7 @@ def confirm_before_accept(adapter, folder, fast_diag, after_snapshot, decide, ac
     full = adapter.evaluator.evaluate(adapter.raw_visum, folder, CONFIRM_LABEL, full_geometry=True, keep_db=True,
                                       geometry_proof='FULL')
     require(adapter.snapshot() == after_snapshot, 'ACCEPTANCE_CONFIRM_CHANGED_MODEL')
-    require(full.get('geometry_identity_basis', FULL_BASIS) == FULL_BASIS, 'ACCEPTANCE_CONFIRM_NOT_FULL')
+    require(full.get('geometry_identity_basis', FULL_BASIS) in FULL_BASES, 'ACCEPTANCE_CONFIRM_NOT_FULL')
     cmp = compare_rows(fast_diag, full, adapter.evaluator.methods)
     after_value, decision = decide(full)
     audit = {'schema': 'LIVE04_ACCEPTANCE_CONFIRM_V1', 'status': 'CONFIRMED' if decision.get('accepted') else

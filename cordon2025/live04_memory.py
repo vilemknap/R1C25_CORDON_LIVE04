@@ -84,11 +84,21 @@ class RunMemory:
             return None
         return {m: J.copy() for m, J in self.td['J'].items()}
 
-    def store_td(self, names, J, source):
+    def td_idp_jacobian(self, names, n_components):
+        """LIVE04.10.5: IDP guard Jacobian stored with the TD Jacobian (same probes), or None."""
+        if not (self.cfg['enabled'] and self.cfg['td_jacobian_reuse']) or not self._fresh(self.td):
+            return None
+        F = self.td.get('idp')
+        if F is None or list(self.td['names']) != list(names) or F.shape != (2 * int(n_components), len(names)):
+            return None
+        return F.copy()
+
+    def store_td(self, names, J, source, idp=None):
         if not self.cfg['enabled']:
             return
         self.td = {'names': list(names), 'J': {m: np.array(v, dtype=float, copy=True) for m, v in J.items()},
-                   'cycle': self.cycle, 'source': source}
+                   'cycle': self.cycle, 'source': source,
+                   'idp': None if idp is None else np.array(idp, dtype=float, copy=True)}
         self._event('TD_JACOBIAN_STORED', source=source)
 
     # --------------------------------------------------------------- TG
@@ -145,7 +155,8 @@ class RunMemory:
     def summary(self):
         return {'schema': SCHEMA, 'config': self.cfg, 'cycle': self.cycle,
                 'td': None if self.td is None else {'names': self.td['names'], 'cycle': self.td['cycle'],
-                                                   'source': self.td['source']},
+                                                   'source': self.td['source'],
+                                                   'idp_jacobian': self.td.get('idp') is not None},
                 'tg': None if self.tg is None else {'cycle': self.tg['cycle'], 'scale': self.tg['scale'],
                                                    'direction_size': len(self.tg['direction']), 'norm': self.tg['norm']},
                 'curvature': self.curvature, 'events': self.events}
@@ -156,4 +167,7 @@ class RunMemory:
         mkdir(self.folder)
         write_json(self.folder / 'RUN_MEMORY.json', self.summary())
         if self.td is not None:
-            np.savez(self.folder / 'RUN_MEMORY_TD_J.npz', **{m: J for m, J in self.td['J'].items()})
+            arrays = {m: J for m, J in self.td['J'].items()}
+            if self.td.get('idp') is not None:
+                arrays['IDP_GUARD_FEATURES'] = self.td['idp']
+            np.savez(self.folder / 'RUN_MEMORY_TD_J.npz', **arrays)

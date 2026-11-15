@@ -59,6 +59,17 @@ LAST_CHECKPOINT.json). Navazani: otevri checkpoint .ver nebo ..._LIVE04_ACCEPTED
 Beh overi sha256 souboru, prevezme meze ze startu PUVODNIHO behu (reference koeficientu,
 ADDVAL1 start) a pokracuje prerusenym cyklem/blokem (CONTINUATION.json, RUN_ANCHORS.json).
 Posledni cyklus = outer_cycle_start + max_cycles - 1 puvodniho behu; pro dalsi cykly zvys max_cycles (LIVE04: 1..200).
+TD PO SLOZKACH (LIVE04.11): td_cordon.grouping = COMPONENT (vlastni b a c pro kazdou z 11 slozek jako v7 TDJOINT1);
+hledani i prijeti podle F = 0,55 kordon + 0,45 FineCDF (acceptance = BLENDED, F min. -0,1 %, kordon max. +1 %).
+DOLNI MEZ PRODUKCE 0,25 (LIVE04.11): coefficient_envelope.PROD = [0.25, 3.15] a mg_min_ratio = 0.25.
+AUDIT _noT A ZNAMKA (LIVE04.11.1): RUN_R1_2025_NOT_SHARE_AUDIT.py (jen cteni, Scripts -> Execute script file)
+vypise postup, podily _noT, sit jen pro C, rez pres D1 u SDP1 a katalog vsech matic (skimy, vzorce 9231-9234).
+Vysledek: %LOCALAPPDATA%\R1C25_BOOT\NOT_SHARE_AUDIT_<cas>\NOT_SHARE_AUDIT.json - poslat zpet.
+CELOCISELNY SUPPLYMIX (LIVE04.11): supply_mix.integer_design = true - navrhuji se jen cele hodnoty ADDVAL1.
+RYCHLEJSI ROLLBACK (LIVE04.10.7): geometry_epoch.rollback_replay = true - overeni rollbacku prevezme geometrii
+cest obnoveneho stavu (GEOMETRY_EPOCH_PREV) po dukazu intenzitami na vsech hranach (~21 min -> ~10 min).
+NOCNI BEH (LIVE04.10.6): vychozi max_cycles = 100. Beh skonci az kdyz vsechny bloky (i SupplyMix, ktery je na rade
+jen kazdy 2. cyklus) od posledni prijate zmeny probehly bez zmeny. Pocitac nesmi usnout (Rezim spanku: Nikdy).
 CORDON_LIVE04_CONFIG.json a TRANSFER_2025_CONFIG.json smis upravovat - kontrola integrity je nehashuje
 (obsah overi zavadec konfigurace). Puvodni hodnoty: provenance/live04_user_config/*.RELEASE_DEFAULT.json.
 STOP: prazdny soubor STOP_REQUESTED (bez pripony) do slozky behu LIVE04_TGTD_..., ne o uroven vys.
@@ -66,6 +77,19 @@ STOP: prazdny soubor STOP_REQUESTED (bez pripony) do slozky behu LIVE04_TGTD_...
 TICHY BEH (LIVE04.5.3): skripty nevypisuji nic do okna Visumu a potlaci varovani procedur
 (predvolba SuppressWarningsDuringProcExec, po behu vracena). Vysledek a logy: %LOCALAPPDATA%\R1C25_BOOT\<id>\
 (00_*_BOOT_RESULT.json, SILENT_MODE.json, PYTHON_CONSOLE.log, VISUM_MESSAGES.txt) a slozka behu.
+
+RYCHLEJSI CTENI GEOMETRIE (LIVE04.10.4): fast_geometry_parser = true (zpracovani radku 1,8x rychlejsi, stejny vysledek),
+com_page_size = 1024. Mereni: RUN_R1_2025_CAPTURE_BENCHMARK.py (jen cte, ~1 min).
+KROK TD S OHLEDEM NA DELKY CEST (LIVE04.10.5): td_cordon.idp_constrained_step = true - krok TD se pocita
+rovnou s omezenim kontroly IDP (model z tychz sond, 70 % rezervy); nativni kontrola IDP dal rozhoduje.
+
+POKUSY BEZ POTVRZOVACIHO ZACHYCENI (LIVE04.10.3): pokusy se dokazuji intenzitami na vsech hranach jako plne
+zachyceni, potvrzeni pred prijetim odpada; zaverecne cteni zachyceni pres intenzity misto 12 seznamu cest.
+
+RYCHLEJSI PLNE ZACHYCENI (LIVE04.10.2): evaluation.full_geometry_proof = ALL_LINK_VOLUMES - geometrie se cte jen
+jednou za mod, ostatni segmenty se overi klici cest a intenzitami na vsech hranach (~20 min misto ~70 min);
+pri nesouladu se automaticky cte vse. READ_ALL_DSEGS = puvodni plne cteni. Pri behu pres noc nenechavej
+notebook usnout (zavrene viko = spanek, beh stoji).
 
 SMEROVE PROFILY KORDONOVYCH STANOVIST (LIVE04.10, plati misto LIVE04.9)
 32 profilu = jeden na kazdou orientovanou hranu stanoviste; spolu se 120 vazbami a 16 C17 = 168 radku.

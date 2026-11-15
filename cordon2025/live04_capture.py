@@ -29,6 +29,11 @@ from .visum_startup import (retry_policy, _call, _bounded_rows, _columns, _netwo
 
 
 STATION_CROSSCHECK='STATION_LINK_VOLUME_CROSSCHECK'
+# LIVE04.10.2: how a FULL capture proves the geometry of the non-representative same-mode DSegs.
+READ_ALL_DSEGS='READ_ALL_DSEGS'          # re-read every DSeg's path-link hierarchy (LIVE04.7.1, ~50 min native)
+ALL_LINK_VOLUMES='ALL_LINK_VOLUMES'      # same path keys + VOLVEH_DSEG on ALL links = implied by the read geometry
+FULL_PROOF_METHODS=(READ_ALL_DSEGS,ALL_LINK_VOLUMES)
+ALL_LINK_BASIS='ALL_LINK_VOLUMES_SAME_PATH_KEYS_PROVEN_THIS_CAPTURE'
 GEOMETRY_PROOF_MODES=('FULL',STATION_CROSSCHECK)
 STOP_EXCEPTIONS=('UserStopRequested','TimeBudgetReached','DesignStopRequested','KeyboardInterrupt')
 CROSSCHECK_ATOL=1.0
@@ -112,6 +117,64 @@ def _station_crosscheck(visum,db,dsegs,mode,control,opt,cache):
             'failures':bad[:40]}
 
 
+FINAL_PATH_LISTS='PATH_LISTS'
+FINAL_ALL_LINK_VOLUMES='ALL_LINK_VOLUMES'
+FINAL_READBACK_METHODS=(FINAL_PATH_LISTS,FINAL_ALL_LINK_VOLUMES)
+
+
+def _tap_parent_rows(rows,sums,code):
+    """Pass the PARENTS rows through unchanged; record the path count and the volume sum in COM row order
+    (the exact protocol of live02_evaluation.path_volume_signature)."""
+    com=parent_module('r1_15a2_com_compat')
+    s=0;n=0
+    for r in rows:
+        s+=com.finite_float(r[3],'Vol(AP)');n+=1
+        yield r
+    sums[code]={'paths':n,'volume_sum':float(s)}
+
+
+def _implied_all_link_volumes(db,mode,dseg_codes):
+    """Per-DSeg volume on every edge implied by THIS capture's geometry (edge postings) x each DSeg's own
+    path volumes.  Returns (pred[n_edges,k], npos[n_edges,k], {eid: link key})."""
+    import zlib
+    edge_keys={int(e):(int(n),int(f),int(t)) for e,n,f,t in db.execute('SELECT eid,link_no,from_no,to_no FROM edges')}
+    n_edges=max(edge_keys)+1 if edge_keys else 1
+    gids=np.asarray([int(g) for (g,) in db.execute('SELECT gid FROM geometry WHERE mode=? ORDER BY gid',(mode,))],dtype=np.int64)
+    require(len(gids)>0,'ALL_LINK_PROOF_NO_PATHS:'+str(mode))
+    index=np.full(int(gids.max())+1,-1,dtype=np.int64);index[gids]=np.arange(len(gids))
+    vol=np.zeros((len(gids),len(dseg_codes)))
+    for j,code in enumerate(dseg_codes):
+        for g,v in db.execute('SELECT gid,volume FROM volumes WHERE dseg=?',(code,)):
+            g=int(g)
+            if g<len(index) and index[g]>=0:vol[index[g],j]=float(v)
+    pos=(vol>0).astype(float)
+    pred=np.zeros((n_edges,len(dseg_codes)));npos=np.zeros((n_edges,len(dseg_codes)))
+    for eid,blob in db.execute('SELECT eid,pairs FROM edge_postings ORDER BY eid,chunk'):
+        a=np.frombuffer(zlib.decompress(blob),dtype='<u4').astype(np.int64)
+        require(len(a)%2==0,'ALL_LINK_PROOF_CORRUPT_POSTING')
+        g=a[0::2];n=a[1::2].astype(float)
+        keep=g<len(index)
+        g,n=g[keep],n[keep];ii=index[g];keep=ii>=0
+        if not keep.any():continue
+        ii,n=ii[keep],n[keep]
+        pred[int(eid)]+=(vol[ii]*n[:,None]).sum(axis=0)
+        npos[int(eid)]+=(pos[ii]*n[:,None]).sum(axis=0)
+    return pred,npos,edge_keys
+
+
+def _all_link_proof(visum,db,dsegs,mode,control,opt,cache):
+    """LIVE04.10.2 full proof without re-reading the hierarchy: every DSeg of the mode has the representative's
+    path key set (enforced by the collector: FULL_PARENT_KEYS_DIFFER) and its Visum VOLVEH_DSEG on ALL network
+    links equals the volume implied by the read geometry x its own path volumes."""
+    from .live04_epoch import all_link_crosscheck
+    codes=[d['norm_code'] for d in dsegs]
+    pred,npos,edge_keys=_implied_all_link_volumes(db,mode,codes)
+    rec=all_link_crosscheck(pred,npos,edge_keys,_all_link_volumes(visum,dsegs,control,opt,cache),codes)
+    rec.update(mode=mode,dsegs=codes,representative=codes[0],method=ALL_LINK_VOLUMES,
+               path_key_sets='IDENTICAL_ENFORCED_BY_COLLECTOR')
+    return rec
+
+
 def capture(visum,cfg,folder,control,opt,pre):
     report,source,zones,links,dsegs=pre
     two=parent_module('r1_15a2_two_mode_v238');supply=parent_module('r1_15a2_supply')
@@ -122,7 +185,14 @@ def capture(visum,cfg,folder,control,opt,pre):
             max_parent_rows_per_dseg=opt['max_parent_rows_per_dseg'],
             max_geometry_rows_per_mode=opt['max_geometry_rows_per_mode'],
             com_retry_policy=retry_policy(opt))
+    fast_parser=bool(opt.get('fast_geometry_parser',False))
     class CordonCollector(two.TwoModeRouteCollector):
+        def add_geometry(self,mode,raw_rows):
+            if fast_parser:
+                # LIVE04.10.4: behaviour-identical faster ingestion (see live04_fastgeom)
+                from .live04_fastgeom import add_geometry as fast_add
+                return fast_add(self,mode,raw_rows)
+            return super().add_geometry(mode,raw_rows)
         def check_resources(self,force=False):
             now=time.monotonic()
             if not force and now-self._last_resource_check<5:return
@@ -137,7 +207,13 @@ def capture(visum,cfg,folder,control,opt,pre):
                 raise two.DesignStopRequested('LOW_FREE_DISK_SPACE')
     path=folder/'p.sqlite';collector=None;checks=[];geometry_checks=[]
     proof_mode=str(opt.get('geometry_proof') or 'FULL');crosschecks=[];link_volume_cache={}
-    epoch_cfg=opt.get('geometry_epoch') or None;epoch_records=[];epoch_reused=[];epoch_fresh=[]
+    full_method=str(opt.get('full_proof_method') or READ_ALL_DSEGS)
+    final_method=str(opt.get('final_readback') or FINAL_PATH_LISTS)
+    require(final_method in FINAL_READBACK_METHODS,'UNKNOWN_FINAL_READBACK:'+final_method)
+    start_sums={};final_basis=FINAL_PATH_LISTS
+    require(full_method in FULL_PROOF_METHODS,'UNKNOWN_FULL_PROOF_METHOD:'+full_method)
+    all_link_proofs=[]
+    epoch_cfg=opt.get('geometry_epoch') or None;epoch_records=[];epoch_reused=[];epoch_fresh=[];epoch_source={}
     timing=defaultdict(float);t_phase=time.monotonic()
     def lap(name):
         nonlocal t_phase
@@ -157,7 +233,8 @@ def capture(visum,cfg,folder,control,opt,pre):
                 require(authority==report['matrix_audit'][ds['norm_code']],'MATRIX_CHANGED_SINCE_PREFLIGHT:'+ds['code'])
                 write_npz(matrix_dir/(ds['norm_code']+'.npz'),values=arr,zone_nos=np.asarray(zones,dtype=np.int64))
                 obj=_new_list(visum,'CreatePrTPathList',ds['code'],control,opt)
-                rows=_bounded_rows(obj,two.PARENT_COLUMNS,st,control,opt,'PARENTS',dseg=ds['code'])
+                rows=_tap_parent_rows(_bounded_rows(obj,two.PARENT_COLUMNS,st,control,opt,'PARENTS',dseg=ds['code']),
+                                      start_sums,ds['norm_code'])
                 parity=_add_parents_with_precision(collector,ds,mode,rows,authority,arr,zones,opt);checks.append(parity)
                 write_json(folder/'OD_PARITY.json',checks)
                 require(parity['status']=='PASS','PER_OD_PATH_MATRIX_PARITY_FAIL:'+ds['code'])
@@ -165,31 +242,37 @@ def capture(visum,cfg,folder,control,opt,pre):
             lap('parents_and_matrices')
             ds=groups[mode][0]
             replayed=False
-            if epoch_cfg and proof_mode==STATION_CROSSCHECK and opt['full_geometry_check']:
+            replay_allowed=bool(epoch_cfg) and (proof_mode==STATION_CROSSCHECK or bool(epoch_cfg.get('full_proof_replay'))) \
+                and opt['full_geometry_check']
+            if replay_allowed:
                 # LIVE04.7 geometry epoch (see live04_epoch): replay only after an
                 # all-link, all-DSeg volume proof against the CURRENT assignment.
+                # LIVE04.10.7: a rollback capture may also replay the PREVIOUS epoch (the
+                # geometry of the restored parent state) under the same proof.
                 from . import live04_epoch as epm
-                ok,why=epm.usable(epoch_cfg['dir'],mode,report['network_sha256'],edge_dictionary,
-                                  collector.mode_audits[mode]['parent_keys_sha256'],epoch_cfg['max_reuse'])
-                rec={'mode':mode,'usable':ok,'reason':why}
-                if ok:
-                    try:
-                        codes=[d['norm_code'] for d in groups[mode]]
-                        pred,npos,ekeys=epm.implied_link_volumes(epoch_cfg['dir'],collector.db,mode,codes)
-                        rec.update(epm.all_link_crosscheck(pred,npos,ekeys,
-                                   _all_link_volumes(visum,groups[mode],control,opt,link_volume_cache),codes))
-                        del pred,npos
-                    except Exception as exc:
-                        if type(exc).__name__ in STOP_EXCEPTIONS:raise
-                        rec.update(status='UNAVAILABLE',error=exception_text(exc)[:500])
-                    lap('geometry_epoch_crosscheck')
+                for edir,etag in epm.candidates(epoch_cfg['dir'],bool(epoch_cfg.get('include_previous'))):
+                    ok,why=epm.usable(edir,mode,report['network_sha256'],edge_dictionary,
+                                      collector.mode_audits[mode]['parent_keys_sha256'],epoch_cfg['max_reuse'])
+                    rec={'mode':mode,'usable':ok,'reason':why,'epoch':etag}
+                    if ok:
+                        try:
+                            codes=[d['norm_code'] for d in groups[mode]]
+                            pred,npos,ekeys=epm.implied_link_volumes(edir,collector.db,mode,codes)
+                            rec.update(epm.all_link_crosscheck(pred,npos,ekeys,
+                                       _all_link_volumes(visum,groups[mode],control,opt,link_volume_cache),codes))
+                            del pred,npos
+                        except Exception as exc:
+                            if type(exc).__name__ in STOP_EXCEPTIONS:raise
+                            rec.update(status='UNAVAILABLE',error=exception_text(exc)[:500])
+                        lap('geometry_epoch_crosscheck')
+                    epoch_records.append(rec);write_json(folder/'GEOMETRY_EPOCH_CHECK.json',epoch_records)
                     if rec.get('status')=='PASS':
-                        collector.add_geometry(mode,epm.replay_rows(epoch_cfg['dir'],mode))
-                        replayed=True;epoch_reused.append(mode)
+                        collector.add_geometry(mode,epm.replay_rows(edir,mode))
+                        replayed=True;epoch_reused.append(mode);epoch_source[mode]=etag
                         geometry_checks.extend({'dseg':d['norm_code'],'check':'EPOCH_REPLAY_ALL_LINK_VOLUME_MATCH'}
                                                for d in groups[mode])
                         lap('geometry_epoch_replay')
-                epoch_records.append(rec);write_json(folder/'GEOMETRY_EPOCH_CHECK.json',epoch_records)
+                        break
             if replayed:
                 continue
             epoch_fresh.append(mode)
@@ -219,6 +302,21 @@ def capture(visum,cfg,folder,control,opt,pre):
                 else:
                     xc['fallback']='FULL_SAME_MODE_GEOMETRY_PROOF'
                     write_json(folder/'GEOMETRY_CROSSCHECK.json',crosschecks)
+            if need_full and proof_mode!=STATION_CROSSCHECK and full_method==ALL_LINK_VOLUMES:
+                try:
+                    xa=_all_link_proof(visum,collector.db,groups[mode],mode,control,opt,link_volume_cache)
+                except Exception as exc:
+                    if type(exc).__name__ in STOP_EXCEPTIONS:raise
+                    xa={'mode':mode,'status':'UNAVAILABLE','error':exception_text(exc)[:500],'method':ALL_LINK_VOLUMES}
+                all_link_proofs.append(xa);write_json(folder/'GEOMETRY_ALL_LINK_PROOF.json',all_link_proofs)
+                lap('geometry_all_link_proof')
+                if xa['status']=='PASS':
+                    geometry_checks.extend({'dseg':d['norm_code'],'check':'ALL_LINK_VOLUME_MATCH'}
+                                           for d in groups[mode][1:])
+                    need_full=False
+                else:
+                    xa['fallback']='FULL_SAME_MODE_GEOMETRY_PROOF'
+                    write_json(folder/'GEOMETRY_ALL_LINK_PROOF.json',all_link_proofs)
             if need_full:
                 # Reuse the ORIGINAL hierarchy parser in a bounded temporary store.
                 # This first-run proof is intentionally more expensive than samples.
@@ -240,7 +338,24 @@ def capture(visum,cfg,folder,control,opt,pre):
                 lap('geometry_full_proof')
         # Check for source changes, including assignment path volumes with stable OD.
         final_signature={}
-        for ds in dsegs:
+        all_cached=set(link_volume_cache.get('all',{}))>={d['norm_code'] for d in dsegs}
+        if final_method==FINAL_ALL_LINK_VOLUMES and all_cached and set(start_sums)>={d['norm_code'] for d in dsegs}:
+            # LIVE04.10.3: the path keys + volumes read at the start were proven against VOLVEH_DSEG on every
+            # link of every DSeg; an unchanged model must give the identical link volumes now (exact floats from
+            # the same COM attribute).  Cheaper than re-reading all 12 path lists.
+            fresh={}
+            _all_link_volumes(visum,dsegs,control,opt,fresh)
+            for ds in dsegs:
+                require(fresh['all'][ds['norm_code']]==link_volume_cache['all'][ds['norm_code']],
+                        'LINK_VOLUMES_CHANGED_DURING_CAPTURE:'+ds['code'])
+                _,authority=_matrix(ds,len(zones),control,opt)
+                require(authority==report['matrix_audit'][ds['norm_code']],'MATRIX_CHANGED_DURING_CAPTURE:'+ds['code'])
+                a=collector.parents[ds['norm_code']];s=start_sums[ds['norm_code']]
+                require(s['paths']==a['path_rows'],'START_PATH_COUNT_MISMATCH:'+ds['code'])
+                final_signature[ds['norm_code']]={'paths':s['paths'],'volume_sum':s['volume_sum'],
+                                                  'keys_and_volumes_sha256':a['keys_and_volumes_sha256']}
+            final_basis=FINAL_ALL_LINK_VOLUMES
+        for ds in (dsegs if final_basis==FINAL_PATH_LISTS else ()):
             _,authority=_matrix(ds,len(zones),control,opt)
             require(authority==report['matrix_audit'][ds['norm_code']],'MATRIX_CHANGED_DURING_CAPTURE:'+ds['code'])
             obj=_new_list(visum,'CreatePrTPathList',ds['code'],control,opt)
@@ -267,9 +382,11 @@ def capture(visum,cfg,folder,control,opt,pre):
         sums={d:float(a['saved_path_volume_sum']) for d,a in collector.parents.items()}
         lap('final_readback')
         crosschecked=any(c.get('check')=='STATION_LINK_VOLUME_MATCH' for c in geometry_checks)
+        all_linked=any(c.get('check')=='ALL_LINK_VOLUME_MATCH' for c in geometry_checks)
         if not opt['full_geometry_check']:identity='PROVISIONAL_REPRESENTATIVE_ONLY'
         elif epoch_reused:identity='EPOCH_REPLAY_ALL_LINK_VOLUME_CROSSCHECKED_THIS_CAPTURE'
         elif crosschecked:identity='STATION_LINK_VOLUME_CROSSCHECKED_THIS_CAPTURE'
+        elif all_linked:identity=ALL_LINK_BASIS
         else:identity='FULL_SAME_MODE_GEOMETRY_COMPARED_THIS_CAPTURE'
         collector.db.execute('UPDATE metadata SET value=? WHERE key=?',(identity,'geometry_identity'))
         from .parity import from_options
@@ -294,9 +411,11 @@ def capture(visum,cfg,folder,control,opt,pre):
             'geometry_identity_basis':identity,'geometry_proof_mode':proof_mode,
             'final_path_volume_signature':final_signature,
             'geometry_epoch':{'enabled':bool(epoch_cfg),'reused_modes':epoch_reused,'fresh_modes':epoch_fresh,
-                              'checks':epoch_records,'edge_dictionary_sha256':edge_dictionary,
+                              'checks':epoch_records,'edge_dictionary_sha256':edge_dictionary,'source_by_mode':epoch_source,
                               'mode_audits':mode_keys},
             'geometry_station_crosschecks':crosschecks,
+            'full_proof_method':full_method,'geometry_all_link_proofs':all_link_proofs,
+            'final_readback_basis':final_basis,'fast_geometry_parser':fast_parser,'com_page_size':int(opt['page_size']),
             'capture_timing_seconds':{k:round(v,3) for k,v in timing.items()},
             'apply_permitted':False,'live_calibration_verified':False}
         write_json(folder/'SNAPSHOT_EVIDENCE.json',evidence)

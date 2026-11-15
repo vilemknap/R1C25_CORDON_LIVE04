@@ -92,7 +92,10 @@ def test_unit_mismatch_on_representative_falls_back(setup):
 
 def test_config_enables_crosscheck_for_trials_only():
     cfg = json.loads((ROOT / 'CORDON_LIVE04_CONFIG.json').read_text(encoding='utf-8'))
-    assert cfg['evaluation']['trial_geometry_proof'] == 'STATION_LINK_VOLUME_CROSSCHECK'
+    # LIVE04.10.3: trials are proven like a full capture (all-link volumes); the station cross-check
+    # remains available as an explicit option (tested in this module with explicit options).
+    assert cfg['evaluation']['trial_geometry_proof'] == 'FULL'
+    assert cfg['evaluation']['full_geometry_proof'] == 'ALL_LINK_VOLUMES'
     src = (ROOT / 'cordon2025/live02_evaluation.py').read_text(encoding='utf-8')
     assert "if str(label) == 'BASELINE':\n            geometry_proof = 'FULL'" in src
 
@@ -200,4 +203,5 @@ def test_config_epoch_validation():
     cfg = json.loads((ROOT / 'CORDON_LIVE04_CONFIG.json').read_text(encoding='utf-8'))
     assert cfg['evaluation']['geometry_epoch'] == dict(cfg['evaluation']['geometry_epoch'], enabled=True, max_reuse=3)
     src = (ROOT / 'cordon2025/live02_evaluation.py').read_text(encoding='utf-8')
-    assert "str(label) != 'BASELINE' and geometry_proof != 'FULL'" in src
+    # LIVE04.10.7: FULL-proof captures replay only for the rollback check (label ROLLBACK)
+    assert "str(label) != 'BASELINE' and (geometry_proof != 'FULL' or rollback_replay)" in src

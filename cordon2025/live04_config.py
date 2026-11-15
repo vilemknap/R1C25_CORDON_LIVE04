@@ -110,8 +110,11 @@ def validate_supply_mix(cfg):
     """LIVE04.4: v7 SupplyMix on the cordon rows (options = pinned v7 sp_* run options)."""
     from .live04_supply import POLICY_SOURCE
     s = cfg.get('supply_mix')
-    require(isinstance(s, dict) and set(s) == {'enabled', 'role', 'drivers', 'options', 'policy_source', 'approval'},
+    base_fields = {'enabled', 'role', 'drivers', 'options', 'policy_source', 'approval'}
+    # LIVE04.11: optional integer_design (+ note) - design only whole-ADDVAL1 step units
+    require(isinstance(s, dict) and base_fields <= set(s) <= base_fields | {'integer_design', 'integer_design_note'},
             'LIVE04_SUPPLY_MIX_FIELDS')
+    require(isinstance(s.get('integer_design', False), bool), 'LIVE04_SUPPLY_MIX_INTEGER_DESIGN')
     require(isinstance(s['enabled'], bool) and s['role'] == 'V7_SUPPLYMIX_ON_CORDON_ROWS_AFTER_GENERATION'
             and s['drivers'] == 'ACCEPTANCE_METHOD_ROWS_FIRST_LAST_PAIRS_AND_C17' and s['options'] == 'V7_RUN_OPTIONS_SP'
             and s['policy_source'] == POLICY_SOURCE and isinstance(s['approval'], str) and s['approval'],

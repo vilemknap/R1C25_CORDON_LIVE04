@@ -1,3 +1,53 @@
+LIVE04.11.1 (read-only _noT audit with matrix catalogue for vignette pricing variant b; stale test fixed) - 2026-11-06
+Synthetic mock only - NOT native PTV Visum evidence.
+Full 3-shard regression of LIVE04.11: 1119 passed, 20 skipped, 1 failed - the failure was a stale assertion
+(test_v7_donors_pinned...: CORDON_DEVIATIONS now intentionally contains mg_min_ratio 0.25); fixed, passes.
+tests/test_live04_11_not_audit.py: 2 passed (screenline/shares, matrix catalogue + FORMULA editability).
+
+LIVE04.11 (component-level TD: own b/log c for 11 components; v7 TDBLEND1 search and acceptance 55 % cordon / 45 % FineCDF) - 2026-11-06
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_11.py: 12 passed (component space, blend identity, blended gate accept/reject/hard reasons, config, mock run).
+tests/test_live04_10_7.py: 7 passed (incl. failed directory renames). FAMILY-specific tests (10.5, LIVE04.7 memory) pin grouping FAMILY.
+tests/test_live04_11_supply.py: 4 passed (production floor 0.25 in envelope/mobility/policy, integer SupplyMix design).
+Full regression of LIVE04.11 runs after release (supersedes the 10.6 / 10.7 regressions that were stopped).
+
+LIVE04.10.7 (rollback check capture replays the restored parent geometry from the PREVIOUS epoch after the all-link all-DSeg proof) - 2026-11-06
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_10_7.py: 6 passed. tests/test_live04_5/6/7: 37 passed + 1 source-text assertion updated to the 10.7 condition (passes).
+Partial regression of 10.6 (shard 0): 378 passed, 9 skipped, 0 failed (superseded by this build). Full regression of 10.7 runs after release.
+
+LIVE04.10.6 (overnight: max_cycles 100; stop without change only after every due block incl. SupplyMix ran unchanged) - 2026-11-06
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_10_6.py: 3 passed. Full 3-shard regression of LIVE04.10.4: 1072 passed, 20 skipped, 0 failed.
+Full regression of 10.6 runs after release (the 10.5 regression was superseded by this build).
+
+LIVE04.10.5 (IDP-aware TD_CORDON step: linear IDP guard model from the same Jacobian probes, 70 % slack) - 2026-11-05
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_10_5.py: 22 passed (solver, IDP model == guard rule, Broyden, memory, config, mock end-to-end with a
+synthetic IDP: old step rejected by IDP, new steps all pass and the trial is accepted).
+tests/test_live04.py + test_live04_5 + test_live04_8 + test_live04_6: 27 passed, 1 failed before the manifest was
+regenerated (launcher integrity check of the edited docs); passes after the manifest. Full regression runs after release.
+
+LIVE04.10.4 (fast geometry row parser, behaviour-identical to the donor; COM pages of 1024 rows) - 2026-11-05
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_10_4.py: 18 passed (identical stores for 4 row-shape variants, identical errors for 11 corruptions,
+whole add_geometry best-of-3 < 0.9x donor, capture equality). tests/test_live04_6/10/10_2 + test_transfer2025: passed.
+Full 3-shard regression of the LIVE04.10.3 build:
+== shard 0: 374 passed, 9 skipped, 1 failed - EXIT 1
+== shard 1: 362 passed, 1 skipped - EXIT 0
+== shard 2: 317 passed, 10 skipped - EXIT 0
+The one failure was test_live04_6::test_config_enables_crosscheck_for_trials_only asserting the pre-10.3 trial
+default (trial_geometry_proof=REPRESENTATIVE); the test was updated in 10.4 to the 10.3 defaults. Full regression of
+10.4 runs after release.
+
+LIVE04.10.3 (trials proven like a full capture -> no ACCEPTANCE_CONFIRM; final readback by all-link volumes) - 2026-11-05
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_10_2.py: 11 passed. Full regression runs after release.
+
+LIVE04.10.2 (FULL capture proves non-representative same-mode DSegs by identical path keys + all-link VOLVEH_DSEG; fallback to the full read) - 2026-11-05
+Synthetic mock only - NOT native PTV Visum evidence.
+tests/test_live04_10_2.py: 6 passed. tests/test_live04_7.py + test_live04_6.py + test_live04_10.py: 44 passed. Full regression runs after release.
+
 LIVE04.10.1 (READINESS without the duplicated path capture by default; observation contract incl. the station profile sign table checked statically) - 2026-11-05
 Synthetic mock only - NOT native PTV Visum evidence.
 tests/test_transfer2025.py + tests/test_live04_10.py (20, incl. the static sign-table check) + tests/test_live04_8_2.py: 37 passed.

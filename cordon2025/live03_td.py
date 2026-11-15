@@ -35,6 +35,11 @@ class TDSpace:
     def __init__(self, td_values, groups, tdc):
         by = {r['component']: r for r in td_values}
         self.groups = []; self.audit = []
+        self.grouping = str(tdc.get('grouping', 'FAMILY'))
+        if self.grouping == 'COMPONENT':
+            # LIVE04.11: every TD component gets its own b and log(c) step (v7 TDJOINT1 granularity);
+            # the family lists only define which components take part.
+            groups = {c: [c] for comps in groups.values() for c in comps}
         for name, comps in groups.items():
             comps = [c for c in comps]
             missing = [c for c in comps if c not in by]
@@ -83,6 +88,186 @@ def box_least_squares(A, r, lo, hi, scale, damping, iterations=4000):
         tn = 0.5 * (1 + math.sqrt(1 + 4 * t * t))
         y = xn + ((t - 1) / tn) * (xn - x); x, t = xn, tn
     return x * scale
+
+
+def constrained_least_squares(A, r, lo, hi, scale, damping, C, d, iterations=6000):
+    """LIVE04.10.5: the box_least_squares step with extra linear constraints C x <= d.
+
+    Same objective as ``box_least_squares`` (trust-scaled LM), solved by ADMM on
+    l <= [I; C] z <= u.  Requires d >= 0 (x = 0 is feasible: the trust-region centre
+    already passed the guard).  The ADMM point is clipped to the box and then pulled
+    back along the ray towards 0 until every constraint holds exactly, so the returned
+    step is always feasible for the linear model."""
+    A = A * scale[None, :]
+    los = lo / scale; his = hi / scale
+    Cs = np.asarray(C, dtype=float) * scale[None, :]
+    d = np.maximum(np.asarray(d, dtype=float), 0.0)
+    n = A.shape[1]
+    H = A.T @ A
+    H = H + float(damping) * max(float(np.mean(np.diag(H))), 1e-300) * np.eye(n)
+    g = A.T @ r
+    norm = max(float(np.mean(np.diag(H))), 1e-300)
+    H = H / norm; g = g / norm
+    rn = np.linalg.norm(Cs, axis=1)
+    keep = rn > 1e-14
+    Cs = Cs[keep] / rn[keep, None]; dn = d[keep] / rn[keep]
+    M = np.vstack([np.eye(n), Cs])
+    l = np.concatenate([los, np.full(len(dn), -np.inf)]); u = np.concatenate([his, dn])
+    sigma, rho, alpha = 1e-6, 0.1, 1.6
+    K = np.linalg.inv(H + sigma * np.eye(n) + rho * M.T @ M)
+    x = np.zeros(n); z = np.clip(M @ x, l, u); y = np.zeros(len(l))
+    for _ in range(iterations):
+        xt = K @ (sigma * x - g + M.T @ (rho * z - y))
+        zt = M @ xt
+        zr = alpha * zt + (1 - alpha) * z
+        zn = np.clip(zr + y / rho, l, u)
+        y = y + rho * (zr - zn)
+        x, z = xt, zn
+    x = np.clip(x, los, his)
+    t = 1.0
+    if len(dn):
+        cx = Cs @ x
+        over = cx > dn
+        if np.any(over):
+            t = float(min(1.0, np.min(dn[over] / cx[over])))
+    return x * t * scale
+
+
+class IdpStepModel:
+    """LIVE04.10.5: linear model of the IDP guard quantities around the trust-region centre.
+
+    Features per guarded component: mean relative distance error and fine-CDF RMSE.
+    The Jacobian F (features x TD parameters) comes from the same native Jacobian
+    probes as the cordon Jacobian (the IDP of every probe is already evaluated), and is
+    Broyden-updated by every verified inner step.  ``constraints`` turns the guard of
+    ``IdpGuard.decide`` (always relative to IDP_BEFORE) into C s <= d for the step s,
+    using only ``slack_use`` of the remaining slack (safety for the non-linearity).
+    The native IDP guard still decides every step; the model only aims the step."""
+
+    def __init__(self, guard, before, F, slack_use):
+        self.guard = guard; self.before = before; self.F = np.array(F, dtype=float)
+        self.slack_use = float(slack_use)
+        self.features = [(k, 'mean_relative_error') for k in guard.guarded] + [(k, 'fine_cdf_rmse') for k in guard.guarded]
+
+    @staticmethod
+    def vector(guard, idp):
+        return np.array([float(idp[k]['mean_relative_error']) for k in guard.guarded]
+                        + [float(idp[k]['fine_cdf_rmse']) for k in guard.guarded])
+
+    @classmethod
+    def from_probes(cls, guard, before, probes, n, slack_use):
+        """probes: [(j, h, idp_after)] for the active parameters; None if any IDP failed."""
+        if guard is None or before is None:
+            return None
+        f0 = cls.vector(guard, before)
+        F = np.zeros((len(f0), n))
+        for j, h, idp in probes:
+            if idp is None or 'error' in idp:
+                return None
+            F[:, j] = (cls.vector(guard, idp) - f0) / h
+        return cls(guard, before, F, slack_use)
+
+    def constraints(self, center_idp):
+        g = self.guard; K = len(g.guarded)
+        fc = self.vector(g, center_idp)
+        rows, rhs = [], []
+        for i, k in enumerate(g.guarded):
+            b = self.before[k]
+            allowed = max(abs(float(b['mean_relative_error'])), g.mean_floor) + g.mean_tol
+            rows.append(self.F[i]); rhs.append(self.slack_use * (allowed - fc[i]))
+            rows.append(-self.F[i]); rhs.append(self.slack_use * (allowed + fc[i]))
+            rows.append(self.F[K + i])
+            rhs.append(self.slack_use * (float(b['fine_cdf_rmse']) + g.rmse_tol - fc[K + i]))
+        return np.array(rows), np.maximum(np.array(rhs), 0.0)
+
+    def predict(self, center_idp, step):
+        f = self.vector(self.guard, center_idp) + self.F @ step
+        K = len(self.guard.guarded)
+        return {k: {'mean_relative_error': float(f[i]), 'fine_cdf_rmse': float(f[K + i])}
+                for i, k in enumerate(self.guard.guarded)}
+
+    def update(self, center_idp, idp_x, step):
+        dd = float(step @ step)
+        if dd <= 0 or idp_x is None or 'error' in idp_x:
+            return False
+        fc = self.vector(self.guard, center_idp); fx = self.vector(self.guard, idp_x)
+        self.F += np.outer(fx - fc - self.F @ step, step) / dd
+        return True
+
+
+class IdpBlend:
+    """LIVE04.11: IDP part of the blended TD inner objective.
+
+    f = [fine_cdf_rmse_k ; 0.5 * mean_relative_error_k] for the TD components k, so that
+    sum(f^2) = sum_k J_k (sealed FineCDF v1.9 component objective RMSE^2 + 0.25 mean^2).
+    Normalised at the block start: weight w on J/J_ref, (1-w) on the cordon Q/Q_ref."""
+
+    def __init__(self, guard, components, before, weight, q_ref):
+        self.components = [k for k in guard.guarded if k in set(components)]
+        require(self.components, 'LIVE04_TD_BLEND_NO_GUARDED_TD_COMPONENT')
+        self.idx = [guard.guarded.index(k) for k in self.components]
+        self.K = len(guard.guarded)
+        self.weight = float(weight)
+        f0 = self.features(before)
+        self.j_ref = max(float(f0 @ f0), 1e-12)
+        self.q_ref = max(float(q_ref), 1e-12)
+        self.a_cordon = math.sqrt((1.0 - self.weight) / self.q_ref)
+        self.a_idp = math.sqrt(2.0 * self.weight / self.j_ref)
+
+    def features(self, idp):
+        return np.array([float(idp[k]['fine_cdf_rmse']) for k in self.components]
+                        + [0.5 * float(idp[k]['mean_relative_error']) for k in self.components])
+
+    def jacobian(self, model):
+        rmse = [self.K + i for i in self.idx]; mean = list(self.idx)
+        return np.vstack([model.F[rmse], 0.5 * model.F[mean]])
+
+    def value(self, q, idp):
+        f = self.features(idp)
+        return (1.0 - self.weight) * float(q) / self.q_ref + self.weight * float(f @ f) / self.j_ref
+
+    def audit(self):
+        return {'schema': 'LIVE04_11_TD_BLEND_V1', 'idp_weight': self.weight, 'cordon_weight': 1.0 - self.weight,
+                'components': self.components, 'cordon_ref': self.q_ref, 'idp_ref': self.j_ref,
+                'form': '(1-w) Q/Q_ref + w sum_k(RMSE_k^2 + 0.25 mean_k^2)/J_ref',
+                'role': 'INNER_STEP_DIRECTION_ONLY_ACCEPTANCE_UNCHANGED'}
+
+
+SOFT_CORDON_REASONS = ('CORDON_OBJECTIVE_NOT_IMPROVED', 'CORDON_RELATIVE_IMPROVEMENT_BELOW_MINIMUM',
+                       'SECONDARY_METHOD_DEGRADED')
+
+
+def blended_gate(dec, blend, q0, q1, idp0, idp1, tdc, q_base=None):
+    """LIVE04.11 (user decision 2026-11-06, v7 TDBLEND1 outer acceptance): a TD step is accepted when
+    F = (1-w) q1/q0 + w J(idp1)/J(idp0) <= 1 - min_rel, the cordon objective (and the secondary
+    method) worsens by at most max_deg, and every other (hard) gate reason is absent.  The plain
+    'cordon must improve' reasons of the shared gate become soft and are replaced by this rule."""
+    min_rel = float(tdc.get('blended_min_relative_improvement', 0.001))
+    max_deg = float(tdc.get('blended_max_cordon_degradation', 0.01))
+    hard = [r for r in (dec.get('reasons') or []) if r not in SOFT_CORDON_REASONS]
+    if idp1 is None or 'error' in idp1:
+        return dict(dec, accepted=False, reasons=hard + ['TD_BLENDED_IDP_UNAVAILABLE'])
+    f0 = blend.features(idp0); f1 = blend.features(idp1)
+    j0 = max(float(f0 @ f0), 1e-12); j1 = float(f1 @ f1)
+    w = blend.weight
+    value = (1.0 - w) * float(q1) / max(abs(float(q0)), 1e-12) + w * j1 / j0
+    # cordon loss is always measured against the block start (q_base), so inner steps cannot
+    # accumulate more than max_deg in total; F improvement is measured against q0 / idp0
+    qb = float(q0 if q_base is None else q_base)
+    cordon_deg = (float(q1) - qb) / max(abs(qb), 1e-12)
+    sec = dec.get('secondary_relative_degradation')
+    reasons = list(hard)
+    if value > 1.0 - min_rel:
+        reasons.append('TD_BLENDED_OBJECTIVE_NOT_IMPROVED')
+    if cordon_deg > max_deg:
+        reasons.append('TD_CORDON_DEGRADED_TOO_MUCH')
+    if sec is not None and float(sec) > max_deg:
+        reasons.append('TD_SECONDARY_DEGRADED_TOO_MUCH')
+    audit = {'rule': 'V7_TDBLEND1_OUTER', 'idp_weight': w, 'blended_value': value,
+             'blended_relative_improvement': 1.0 - value, 'cordon_relative_degradation': cordon_deg,
+             'idp_ratio': j1 / j0, 'min_relative_improvement': min_rel, 'max_cordon_degradation': max_deg,
+             'soft_reasons_replaced': [r for r in (dec.get('reasons') or []) if r in SOFT_CORDON_REASONS]}
+    return dict(dec, accepted=not reasons, reasons=reasons, td_blended_acceptance=audit)
 
 
 def _verify_memory_jacobian(J, native, space, tdc, mcfg, m0, method, w, y, eps, methods):
@@ -215,6 +400,7 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
             with base.recovery_scope(control, 'LIVE03_TD_DEMAND_RESTORE_AFTER_ERROR'):
                 pred.restore_demand(BLOCK, state, folder / 'DEMAND_RESTORE_AFTER_ERROR')
         raise
+    idp_probes = []
     try:
         # ---- Jacobian: one native probe per parameter (frozen paths)
         for j in (range(space.n) if J is None else ()):
@@ -225,7 +411,8 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
                 h = -h if space.lo[j] <= -h else (space.hi[j] if space.hi[j] >= -space.lo[j] else space.lo[j])
             require(abs(h) > 1e-12, 'LIVE03_TD_NO_ROOM_FOR_PROBE:' + space.names()[j])
             x = np.zeros(space.n); x[j] = h
-            rows_j, _, a = native(x, 'JAC_%02d' % (j + 1))
+            rows_j, idp_j, a = native(x, 'JAC_%02d' % (j + 1))
+            idp_probes.append((j, float(h), idp_j))
             for m in evaluator.methods:
                 J[m][:, j] = (rows_j[m] - m0[m]) / h
             probes.append({'parameter': space.names()[j], 'step': float(h), 'unsupported_share': a['unsupported_share'],
@@ -238,6 +425,38 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
         require(active.any(), 'LIVE03_TD_NO_PARAMETER_WITH_CORDON_RESPONSE')
         rec['jacobian_probes'] = probes
         J_local = {m: v.copy() for m, v in J.items()}   # probe-size (local) Jacobian, before secant updates
+        # ---- LIVE04.10.5: IDP-aware step (linear IDP guard model from the same probes)
+        idp_model = None
+        idp_mode = 'OFF'
+        if guard is not None and bool(tdc.get('idp_constrained_step', False)):
+            slack_use = float(tdc.get('idp_constraint_slack_use', 0.7))
+            if idp_probes:
+                idp_model = IdpStepModel.from_probes(guard, idp_before, idp_probes, space.n, slack_use)
+                idp_mode = 'NATIVE_PROBES' if idp_model else 'UNAVAILABLE_PROBE_IDP_FAILED'
+            else:
+                F = memory.td_idp_jacobian(space.names(), len(guard.guarded)) if memory else None
+                if F is not None:
+                    idp_model = IdpStepModel(guard, idp_before, F, slack_use)
+                    idp_mode = 'MEMORY'
+                else:
+                    idp_mode = 'UNAVAILABLE_NO_IDP_JACOBIAN'
+        F_local = None if idp_model is None else idp_model.F.copy()
+        rec['idp_step_model'] = {'mode': idp_mode, 'slack_use': None if idp_model is None else idp_model.slack_use,
+                                 'parameters': space.names(),
+                                 'jacobian': None if idp_model is None else {
+                                     '%s.%s' % f: dict(zip(space.names(), idp_model.F[i].tolist()))
+                                     for i, f in enumerate(idp_model.features)}}
+        center_idp = idp_before
+        blend = None
+        bw = float(tdc.get('idp_objective_weight', 0.0))
+        if idp_model is not None and bw > 0:
+            td_comps = [c for g in space.groups for c in g['components']]
+            blend = IdpBlend(guard, td_comps, idp_before, bw, float(diag['methods'][method]['objective']))
+        rec['objective_blend'] = None if blend is None else blend.audit()
+        blended_acceptance = blend is not None and str(tdc.get('acceptance', 'CORDON')) == 'BLENDED'
+        rec['acceptance_mode'] = 'BLENDED' if blended_acceptance else 'CORDON'
+        if str(tdc.get('acceptance', 'CORDON')) == 'BLENDED' and not blended_acceptance:
+            rec['acceptance_mode_note'] = 'BLENDED_REQUESTED_BUT_IDP_MODEL_UNAVAILABLE_CORDON_USED'
         write_csv(folder / 'TD_JACOBIAN_PRIMARY.csv', [dict(zip(['row'] + space.names(), [i] + list(J[method][i])))
                                                       for i in range(J[method].shape[0])])
         # ---- inner box Gauss-Newton with trust region, native verification
@@ -252,28 +471,54 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
             A = w[:, None] * J[method]
             lo = np.where(active, np.maximum(space.lo - center, -space.trust * radius), 0.0)
             hi = np.where(active, np.minimum(space.hi - center, space.trust * radius), 0.0)
-            step = box_least_squares(A, r, lo, hi, space.trust, float(tdc['damping']))
+            if blend is not None:
+                # LIVE04.11: 0.5||[sqrt((1-w)/Q_ref) r_cordon ; sqrt(2w/J_ref) f_idp]||^2
+                #          = (1-w) Q/Q_ref + w J/J_ref   (v7 TDBLEND1 form, normalised at the block start)
+                fv = blend.features(center_idp)
+                A = np.vstack([blend.a_cordon * A, blend.a_idp * blend.jacobian(idp_model)])
+                r = np.concatenate([blend.a_cordon * r, blend.a_idp * fv])
+            if idp_model is not None:
+                Cm, dm = idp_model.constraints(center_idp)
+                Cm = Cm * active[None, :]
+                step = constrained_least_squares(A, r, lo, hi, space.trust, float(tdc['damping']), Cm, dm)
+            else:
+                step = box_least_squares(A, r, lo, hi, space.trust, float(tdc['damping']))
             entry = {'iteration': it + 1, 'radius': radius, 'step': step.tolist(),
                      'linear_predicted_objective': float(0.5 * np.sum((w * deadzone(center_rows[method] + J[method] @ step - y, eps)) ** 2))}
+            if idp_model is not None:
+                entry['idp_constrained'] = True
+                entry['idp_predicted'] = idp_model.predict(center_idp, step)
             if np.max(np.abs(step) / np.maximum(space.trust, 1e-12)) < 1e-4:
                 entry['status'] = 'STEP_NEGLIGIBLE'; rec['inner'].append(entry); break
             x = center + step
             rows_x, idp_after, a = native(x, 'GN_%02d' % (it + 1)); evals += 1
+            if idp_model is not None:
+                entry['idp_model_updated'] = idp_model.update(center_idp, idp_after, step)
             pdiag = predicted_objective(rows_x)
             gate = evaluator.block_gate(BLOCK, diag, pdiag, space.rows(x))
             obj = float(pdiag['methods'][method]['objective'])
             rel_vs_center = (center_obj - obj) / max(abs(center_obj), 1e-12)
             gd = guard_decision(idp_after)
+            if blended_acceptance:
+                # relative to the trust-region centre (inner) - the trial is judged against the block start
+                gate = blended_gate(dict(gate, secondary_relative_degradation=None), blend, center_obj, obj,
+                                    center_idp, idp_after, tdc, q_base=float(diag['methods'][method]['objective']))
             entry.update(x=x.tolist(), native_frozen_objective=obj, relative_vs_center=rel_vs_center,
                          gate_reasons=gate.get('reasons'), idp=gd, unsupported_share=a['unsupported_share'])
+            if blend is not None and idp_after is not None and 'error' not in idp_after:
+                entry.update(blend_center=blend.value(center_obj, center_idp), blend_measured=blend.value(obj, idp_after))
             # Broyden rank-1 correction of all method Jacobians.
             dd = float(step @ step)
             if dd > 0:
                 for m in evaluator.methods:
                     J[m] += np.outer(rows_x[m] - center_rows[m] - J[m] @ step, step) / dd
-            if rel_vs_center > 0 and gate.get('accepted') and gd['passes']:
+            improved = gate.get('accepted') if blended_acceptance else rel_vs_center > 0
+            if improved and gate.get('accepted') and gd['passes']:
                 center, center_rows, center_obj = x, rows_x, obj
-                best = {'x': x.copy(), 'objective': obj, 'idp': gd}
+                if idp_after is not None and 'error' not in idp_after:
+                    center_idp = idp_after
+                best = {'x': x.copy(), 'objective': obj, 'idp': gd,
+                        'blend': None if blend is None else blend.value(obj, idp_after)}
                 entry['status'] = 'INNER_ACCEPTED'
                 radius = min(float(tdc['trust_radius_max']), radius * float(tdc['trust_growth']))
             else:
@@ -288,11 +533,17 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
             # Local frozen-path Jacobian: the next block verifies it with a probe-size step, so
             # neither the large-step Broyden secants nor the measured trial (route choice) are
             # folded in.
-            memory.store_td(space.names(), J_local, 'LOCAL_FROZEN_PATH_JACOBIAN')
+            memory.store_td(space.names(), J_local, 'LOCAL_FROZEN_PATH_JACOBIAN', idp=F_local)
         if best is None:
+            if idp_model is not None and rec['inner'] and rec['inner'][-1].get('status') == 'STEP_NEGLIGIBLE' \
+                    and len(rec['inner']) == 1:
+                return finish_without_trial('NO_IDP_FEASIBLE_IMPROVING_STEP')
             return finish_without_trial('NO_INNER_IMPROVEMENT_WITH_GUARD')
         j0 = float(diag['methods'][method]['objective'])
         rec['predicted_relative_improvement'] = (j0 - best['objective']) / max(abs(j0), 1e-12)
+        if blended_acceptance:
+            rec['predicted_cordon_relative_improvement'] = rec['predicted_relative_improvement']
+            rec['predicted_relative_improvement'] = 1.0 - float(best['blend'])
         if rec['predicted_relative_improvement'] < min_rel:
             return finish_without_trial('PREDICTED_IMPROVEMENT_BELOW_MINIMUM')
     except BaseException:
@@ -320,11 +571,15 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
         def decide(d):
             v = base.ledger(d, after, anchors, policy, reference, cfg)
             dec = adapter.block_gate(BLOCK, diag, d, actual)
+            idp_trial = None
             if guard and d.get('valid', True):
                 try:
                     idp_trial = guard.evaluate('TRIAL')
                 except Exception as exc:
                     idp_trial = {'error': type(exc).__name__ + ':' + str(exc)}
+            if blended_acceptance and d.get('valid', True):
+                dec = blended_gate(dec, blend, baseline_value['total'], v['total'], idp_before, idp_trial, tdc)
+            if guard and d.get('valid', True):
                 gd = guard_decision(idp_trial)
                 dec['idp_guard'] = gd
                 if not gd['passes']:
@@ -334,7 +589,7 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
             dec.update(shared_ledger_before=baseline_value, shared_ledger_after=v,
                        shared_objective_improvement=imp,
                        predicted_objective=best['objective'], measured_objective=v['total'])
-            if imp <= 1e-8:
+            if imp <= 1e-8 and not blended_acceptance:
                 dec['accepted'] = False
                 dec.setdefault('reasons', []).append('SHARED_OBJECTIVE_NOT_IMPROVED')
             return v, dec

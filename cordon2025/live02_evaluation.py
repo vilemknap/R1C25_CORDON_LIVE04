@@ -123,14 +123,23 @@ class CordonEvaluator:
         if str(label) == 'BASELINE':
             geometry_proof = 'FULL'          # every run start proves same-mode geometry in full
         opt = dict(self.opt, full_geometry_check=bool(full_geometry), geometry_proof=geometry_proof)
+        # LIVE04.10.2: how a FULL capture proves the non-representative same-mode DSegs.
+        opt['full_proof_method'] = ((self.live02 or {}).get('evaluation') or {}).get('full_geometry_proof', 'READ_ALL_DSEGS')
+        opt['final_readback'] = ((self.live02 or {}).get('evaluation') or {}).get('final_readback', 'PATH_LISTS')
+        opt['fast_geometry_parser'] = bool(((self.live02 or {}).get('evaluation') or {}).get('fast_geometry_parser', False))
         epoch = self.__dict__.get('geometry_epoch_cfg')
         if epoch is None:
             ecfg = ((self.live02 or {}).get('evaluation') or {}).get('geometry_epoch') or {}
             epoch = {'enabled': bool(ecfg.get('enabled', False)), 'max_reuse': int(ecfg.get('max_reuse', 3)),
+                     'rollback_replay': bool(ecfg.get('rollback_replay', False)),
                      'dir': str(folder.parent / 'GEOMETRY_EPOCH')}
             self.geometry_epoch_cfg = epoch
-        if epoch['enabled'] and str(label) != 'BASELINE' and geometry_proof != 'FULL':
-            opt['geometry_epoch'] = {'dir': epoch['dir'], 'max_reuse': epoch['max_reuse']}
+        # LIVE04.10.7: the tolerant rollback capture (label ROLLBACK) may replay the epoch of the
+        # restored parent state (PREVIOUS) or the current one, after the all-link all-DSeg proof.
+        rollback_replay = bool(epoch.get('rollback_replay')) and str(label) == 'ROLLBACK'
+        if epoch['enabled'] and str(label) != 'BASELINE' and (geometry_proof != 'FULL' or rollback_replay):
+            opt['geometry_epoch'] = {'dir': epoch['dir'], 'max_reuse': epoch['max_reuse'],
+                                     'full_proof_replay': rollback_replay, 'include_previous': rollback_replay}
         self.control.checkpoint('LIVE02_EVALUATE_' + str(label), force=True)
         pre = preflight(visum, self.mathcfg, folder, self.control, opt)
         require(pre[2] == self.baseline_pre[2] and pre[0]['network_sha256'] == self.baseline_pre[0]['network_sha256'],
@@ -144,9 +153,12 @@ class CordonEvaluator:
         evidence = read_json(epath)
         ge = evidence.get('geometry_epoch') or {}
         if epoch['enabled'] and ge.get('mode_audits'):
-            from .live04_epoch import write_epoch
+            from .live04_epoch import write_epoch, promote_previous
+            if 'PREVIOUS' in (ge.get('source_by_mode') or {}).values() and not ge.get('fresh_modes'):
+                promote_previous(epoch['dir'])
             write_epoch(epoch['dir'], cache, pre[0]['network_sha256'], ge['edge_dictionary_sha256'],
-                        ge['mode_audits'], ge.get('fresh_modes') or [], ge.get('reused_modes') or [], label)
+                        ge['mode_audits'], ge.get('fresh_modes') or [], ge.get('reused_modes') or [], label,
+                        keep_previous=bool(epoch.get('rollback_replay')))
         directed = self.build_incidence(cache, self.station_map, dict(self.mathcfg, **self.extra_mathcfg, actual_network_sha256=pre[0]['network_sha256'],
                                        actual_demand_sha256=evidence['demand_sha256']), evidence,
                                        hits_output=folder / 'STATION_HITS.csv')

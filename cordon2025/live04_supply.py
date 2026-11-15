@@ -64,7 +64,8 @@ def options(cfg):
             'max_groups': int(o['sp_max_groups']), 'max_edges': int(o['sp_max_edges']),
             'min_driver_geh': float(o['sp_min_driver_geh']), 'drivers': str(o['sp_drivers']).upper(),
             'reset_position': int(o['sp_cold_reset_position']),
-            'min_attribution_coverage': float(o['sp_min_attribution_coverage'])}
+            'min_attribution_coverage': float(o['sp_min_attribution_coverage']),
+            'integer_design': bool(cfg['supply_mix'].get('integer_design', False))}
 
 
 def due(outer_cycle, opts):
@@ -345,6 +346,31 @@ def make_collector(*args, **kwargs):
     return CordonRouteEvidence(*args, **kwargs)
 
 
+def integer_design_steps(adapter, policy, design_steps, opts):
+    """LIVE04.11 integer proposer (user decision 2026-11-06).
+
+    Visum stores Link ADDVAL1 as an integer, but the sealed design lattice is 0.5 ADDVAL1 per step
+    unit, so odd step units design half-unit changes.  The donor COSTFIX1 then (correctly) refuses
+    them (INTEGER_ADDVAL1_FRACTIONAL_STEP) - in the native run 2026-11-05 the worst cordon row
+    (profile 118, SDP1 side A) lost branches that way.  With integer_design the design itself only
+    builds step units whose amplitude unit * lattice is a whole ADDVAL1 value, so the candidate
+    budget is spent on proposals Visum can store; every other contract (proved branches, path
+    impedance budget, generalized cost guard, COSTFIX1) is unchanged."""
+    sm = parent_module('r1_15a2_supply_mix_v24917')
+    av = sm.addval_integer(adapter)
+    lattice = float(policy.lattice)
+    out = {'enabled': bool(opts.get('integer_design')), 'addval1_value_type': av, 'lattice': lattice,
+           'design_step_units_before': list(design_steps)}
+    if out['enabled'] and av['integer']:
+        kept = [u for u in design_steps if abs(u * lattice - round(u * lattice)) <= 1e-9]
+        require(kept, 'LIVE04_SUPPLY_INTEGER_DESIGN_NO_STEP_LEFT')
+        out.update(design_step_units=kept, removed=[u for u in design_steps if u not in kept],
+                   rule='STEP_UNIT_TIMES_LATTICE_IS_WHOLE_ADDVAL1')
+    else:
+        out.update(design_step_units=list(design_steps), removed=[], rule='UNCHANGED')
+    return out
+
+
 def design(adapter, diag, folder, state, opts):
     """Donor sequence design on the cordon rows; returns (design, policy audit)."""
     seq_mod = parent_module('r1_15a2_sequence_v23')
@@ -353,6 +379,8 @@ def design(adapter, diag, folder, state, opts):
             'LIVE04_SUPPLY_PARENT_PATH_STORE_NOT_RETAINED')
     store = Path(diag['folder']) / 'p.sqlite'
     policy, seq, design_steps, overrides = supply_policy(opts)
+    integer_audit = integer_design_steps(adapter, policy, design_steps, opts)
+    design_steps = integer_audit['design_step_units']
     links = adapter.read_links()
     require(adapter.baseline_addval is not None, 'LIVE04_SUPPLY_BASELINE_ADDVAL_MISSING')
     sem = row_semantics(adapter.evaluator, diag)
@@ -370,6 +398,7 @@ def design(adapter, diag, folder, state, opts):
         collector.close()
     out['design_step_units'] = design_steps
     out['design_policy_override'] = overrides
+    out['integer_design'] = integer_audit
     out['drivers'] = [sem['profiles'][i]['countlocation_no'] for i in collector.drivers]
     adapter.supply_path_proof = {'parent_hash': state['state_hash'],
                                  'assignment_path_hash': out['authority']['assignment_path_hash']}
@@ -426,6 +455,7 @@ def supply_block(tx, adapter, cfg, folder, control, state, diag, anchors, refere
             raise SupplyContractError('COSTFIX1_LINK_READ_CHANGED_PARENT')
         rec['design_step_units'] = design_['design_step_units']
         rec['design_policy_override'] = design_['design_policy_override']
+        rec['integer_design'] = design_.get('integer_design')
         rec['design_candidates'] = len(design_.get('candidates') or [])
         rec['drivers'] = design_['drivers']
         skipped = Counter(str(r.get('reason')) for r in design_.get('skipped') or [])

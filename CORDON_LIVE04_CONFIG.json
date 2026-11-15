@@ -5,7 +5,7 @@
  "live01_contract_file": "CORDON_LIVE01_CONFIG.json",
  "live01_contract_sha256": "237432bcf7d7285e1559e44a35c61f1f28718f909851ae35aed90618c8bcca52",
  "outer_cycle_start": 1,
- "max_cycles": 3,
+ "max_cycles": 100,
  "blocks_per_cycle": [
   "GENERATION",
   "TD_CORDON"
@@ -95,7 +95,7 @@
  },
  "td_cordon": {
   "enabled": true,
-  "grouping": "FAMILY",
+  "grouping": "COMPONENT",
   "groups": {
    "WORK": [
     "WORK_E_C",
@@ -128,7 +128,17 @@
   "min_predicted_relative_improvement": 0.001,
   "base_parity_tolerance": 1e-06,
   "min_relative_column_norm": 1e-06,
-  "objective": "CORDON_PRIMARY_METHOD_ONLY"
+  "objective": "CORDON_PRIMARY_METHOD_ONLY",
+  "idp_constrained_step": true,
+  "idp_constraint_slack_use": 0.7,
+  "idp_constrained_step_note": "LIVE04.10.5: the inner Gauss-Newton step respects a linear model of the IDP guard (mean distance error and fine-CDF RMSE per component) built from the same Jacobian probes; only 70 % of the remaining slack is used. The native IDP guard still decides every step and the trial.",
+  "idp_objective_weight": 0.45,
+  "grouping_note": "LIVE04.11: COMPONENT = own b and log(c) step for each of the 11 TD components (WORK x5, SERVICE x5, SCHOOL), as TDJOINT1 in the v7 profile calibrator; 22 native Jacobian probes per block (reused from run memory in later cycles). FAMILY = one shared step per family (6 parameters, LIVE03-LIVE04.10).",
+  "idp_objective_weight_note": "LIVE04.11 (user decision 2026-11-06): TD inner search and acceptance use the v7 TDBLEND1 form with 55 % cordon / 45 % FineCDF: F = 0.55 * cordon/cordon_before + 0.45 * sum FineCDF J_k / J_before (v7 profile calibrator: 60/40). 0 = cordon only.",
+  "acceptance": "BLENDED",
+  "blended_min_relative_improvement": 0.001,
+  "blended_max_cordon_degradation": 0.01,
+  "acceptance_note": "LIVE04.11 (user decision 2026-11-06): BLENDED = a TD trial is accepted when F improves by at least blended_min_relative_improvement (0.1 %), the cordon objective and the secondary method worsen by at most blended_max_cordon_degradation (1 %), the IDP guard and all other hard gates (row GEH, LONG, mobility) pass. CORDON = the cordon objective must improve (LIVE04.10)."
  },
  "idp_guard": {
   "enabled": true,
@@ -179,11 +189,20 @@
  },
  "evaluation": {
   "trial_full_geometry_check": true,
-  "trial_geometry_proof": "STATION_LINK_VOLUME_CROSSCHECK",
+  "trial_geometry_proof": "FULL",
+  "full_geometry_proof": "ALL_LINK_VOLUMES",
+  "full_geometry_proof_note": "LIVE04.10.2 (rozhodnuti uzivatele 2026-11-05): plne zachyceni (vychozi stav, potvrzeni prijeti, zaver) cte geometrii jen reprezentativniho segmentu kazdeho modu; ostatni segmenty se overi shodnou mnozinou klicu cest a intenzitami VOLVEH_DSEG na vsech hranach site (~20 min misto ~70 min). READ_ALL_DSEGS = puvodni plne cteni vsech segmentu.",
+  "final_readback": "ALL_LINK_VOLUMES",
+  "trial_and_final_readback_note": "LIVE04.10.3: pokusy se dokazuji stejne jako plne zachyceni (trial_geometry_proof = FULL s full_geometry_proof = ALL_LINK_VOLUMES; intenzity na vsech hranach se ctou stejne jako u kontroly stanic), takze potvrzovaci zachyceni pred prijetim odpada. final_readback = ALL_LINK_VOLUMES: konec zachyceni znovu precte intenzity na vsech hranach misto 12 seznamu cest (pri jinem dukazu se cte postaru). Puvodni: trial_geometry_proof = STATION_LINK_VOLUME_CROSSCHECK, final_readback = PATH_LISTS.",
+  "fast_geometry_parser": true,
+  "com_page_size": 1024,
+  "speed_note": "LIVE04.10.4: fast_geometry_parser = rychlejsi zpracovani ~52 mil. radku geometrie na zachyceni (stejny vysledek i kontroly jako puvodni parser); com_page_size = 1024 radku na jedno cteni COM (mereni na modelu 2026-11-05: nejlevnejsi na radek, 4096 neni rychlejsi). Puvodni: false / 256.",
   "geometry_epoch": {
    "enabled": true,
    "max_reuse": 3,
-   "note": "LIVE04.7: trial captures replay the last COM-read path-link sequences when the path key set is unchanged and all-link VOLVEH_DSEG volumes of every DSeg match; BASELINE never replays; after 3 consecutive replays the geometry is read from Visum again"
+   "note": "LIVE04.7: trial captures replay the last COM-read path-link sequences when the path key set is unchanged and all-link VOLVEH_DSEG volumes of every DSeg match; BASELINE never replays; after 3 consecutive replays the geometry is read from Visum again",
+   "rollback_replay": true,
+   "rollback_replay_note": "LIVE04.10.7: after a rejected trial the rollback check capture may replay the path-link geometry of the restored parent state (kept as PREVIOUS epoch) instead of reading it again from Visum, but only when the saved-path key set is identical and the VOLVEH_DSEG volumes of every DSeg on every network link match the replayed geometry; otherwise the geometry is read from Visum as before (~22 min -> ~10 min per rollback)."
   },
   "keep_trial_capture_db": false,
   "rollback_proof": "PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE"
@@ -513,7 +532,7 @@
    "rb_roster_reuse_proof": true,
    "td_max_survey_degradation": 1.25,
    "mg_enabled": true,
-   "mg_min_ratio": 0.5,
+   "mg_min_ratio": 0.25,
    "mg_max_ratio": 3.15,
    "td_joint_enabled": true,
    "td_joint_outer_isolates": true,
@@ -523,19 +542,20 @@
    "long_generation_enabled": "LONG zonal TG needs the profile LONG cache incidence; deferred as in v7 without it",
    "long_composite_td_enabled": "LONG TD is calibrated only by the profile/FineCDF runner",
    "fa_enabled": "STEP1 always uses the full assignment (v7 STEP1 too)",
-   "mg_max_ratio": "User decision 2026-11-03: W/S production envelope/mobility band upper bound 3.15 (v7 @ 7b4c681: 3.0)"
+   "mg_max_ratio": "User decision 2026-11-03: W/S production envelope/mobility band upper bound 3.15 (v7 @ 7b4c681: 3.0)",
+   "mg_min_ratio": "User decision 2026-11-06 (LIVE04.11): W/S production envelope/mobility band lower bound 0.25 (v7 @ 7b4c681: 0.5); in the last native run 138 of 536 changed ADD_PROD_S and 89 of 552 ADD_PROD_W sat on 0.5"
   },
   "targeted_generation_policy": "DONOR_DEFAULT_POLICY_V7_ROLE_ENVELOPES",
   "coefficient_envelope": {
    "PROD": [
-    0.5,
+    0.25,
     3.15
    ],
    "ATT": [
     0.5,
     5.5
    ],
-   "approval": "USER_DECISION_20261103_P0.5-3.15_A0.5-5.5"
+   "approval": "USER_DECISION_20261103_P0.5-3.15_A0.5-5.5;USER_DECISION_20261106_PROD_FLOOR_0.25"
   },
   "catchup_until_model_obs_ratio": 0.8,
   "boundary_zone_policy": "CONFIGURED_ZONES_POSITIVE_WS_PA_AND_NO_ADD_ZAHR_ACTUATOR",
@@ -575,7 +595,9 @@
   "drivers": "ACCEPTANCE_METHOD_ROWS_FIRST_LAST_PAIRS_AND_C17",
   "options": "V7_RUN_OPTIONS_SP",
   "policy_source": "provenance/live01/DONOR_EFFECTIVE_CONFIG_FORENSIC_ONLY.json",
-  "approval": "USER_DECISION_20261101_SUPPLYMIX_CORDON_DRIVEN"
+  "approval": "USER_DECISION_20261101_SUPPLYMIX_CORDON_DRIVEN",
+  "integer_design": true,
+  "integer_design_note": "LIVE04.11 (user decision 2026-11-06): with integer Link ADDVAL1 the SupplyMix design only builds step units whose amplitude (unit x 0.5) is a whole ADDVAL1 value (16/8/6/4/2, not 1), so no proposal is lost as INTEGER_ADDVAL1_FRACTIONAL_STEP; all proofs and guards unchanged. false = previous design."
  },
  "row_geh_guard": {
   "enabled": true,

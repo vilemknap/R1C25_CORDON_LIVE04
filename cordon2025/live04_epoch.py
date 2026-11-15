@@ -70,6 +70,77 @@ def usable(epoch_dir, mode, network_sha256, edge_dictionary, keys_sha256, max_re
     return True, None
 
 
+PREV_SUFFIX = '_PREV'
+
+
+def previous_dir(epoch_dir):
+    """LIVE04.10.7: the epoch written before the current one (the parent state of a trial)."""
+    return Path(str(epoch_dir) + PREV_SUFFIX)
+
+
+def candidates(epoch_dir, include_previous):
+    out = [(Path(epoch_dir), 'CURRENT')]
+    if include_previous:
+        out.append((previous_dir(epoch_dir), 'PREVIOUS'))
+    return out
+
+
+def _retry(fn, attempts=5, delay=0.5):
+    """Directory renames on Windows can fail transiently (indexer / antivirus handles)."""
+    import time
+    for i in range(attempts):
+        try:
+            return fn()
+        except OSError:
+            if i == attempts - 1:
+                raise
+            time.sleep(delay)
+
+
+def promote_previous(epoch_dir):
+    """Swap CURRENT and PREVIOUS (a rollback replayed the PREVIOUS epoch, which is the
+    geometry of the restored state; the trial geometry becomes PREVIOUS).  Best effort:
+    on a failed rename the epochs stay as they were (every replay is proven anyway).
+    Returns True when swapped."""
+    cur, prev = Path(epoch_dir), previous_dir(epoch_dir)
+    if meta(prev) is None:
+        return False
+    tmp = Path(str(epoch_dir) + '_SWAP')
+    import shutil
+    try:
+        if tmp.exists():
+            _retry(lambda: shutil.rmtree(tmp))
+        _retry(lambda: os.replace(cur, tmp))
+    except OSError:
+        return False
+    try:
+        _retry(lambda: os.replace(prev, cur))
+    except OSError:
+        _retry(lambda: os.replace(tmp, cur))          # undo: CURRENT back in place
+        return False
+    try:
+        _retry(lambda: os.replace(tmp, prev))
+    except OSError:
+        pass                                          # PREVIOUS lost; CURRENT is the restored state
+    return True
+
+
+def _rotate(epoch_dir):
+    """Before a fresh epoch is written, keep the current one as PREVIOUS (best effort)."""
+    cur, prev = Path(epoch_dir), previous_dir(epoch_dir)
+    if meta(cur) is None:
+        return False
+    import shutil
+    try:
+        if prev.exists():
+            _retry(lambda: shutil.rmtree(prev))
+        _retry(lambda: os.replace(cur, prev))
+    except OSError:
+        return False                                  # the new epoch simply overwrites CURRENT
+    cur.mkdir(parents=True, exist_ok=True)
+    return True
+
+
 def _edge_keys(db):
     return {int(e): (int(n), int(f), int(t)) for e, n, f, t in db.execute('SELECT eid,link_no,from_no,to_no FROM edges')}
 
@@ -162,7 +233,7 @@ def all_link_crosscheck(pred, npos, edge_keys, visum_volumes, dseg_codes):
 
 
 def write_epoch(epoch_dir, store_path, network_sha256, edge_dictionary, mode_audits, fresh_modes, reused_modes,
-                label):
+                label, keep_previous=False):
     """Rebuild the epoch from a completed capture store (atomic replace)."""
     epoch_dir = Path(epoch_dir); epoch_dir.mkdir(parents=True, exist_ok=True)
     old = meta(epoch_dir) or {}
@@ -173,6 +244,8 @@ def write_epoch(epoch_dir, store_path, network_sha256, edge_dictionary, mode_aud
         m = dict(old, modes=modes, last_reuse_label=str(label))
         write_json(epoch_dir / 'EPOCH.json', m)
         return m
+    if keep_previous and old and _rotate(epoch_dir):
+        old = {}
     tmp = epoch_dir / ('epoch.%d.tmp' % os.getpid())
     if tmp.exists():
         tmp.unlink()

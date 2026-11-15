@@ -124,10 +124,17 @@ def validate_config(cfg, *, allow_donor_overrides=False):
     ev = cfg['evaluation']
     require(ev.get('trial_geometry_proof', 'FULL') in ('FULL', 'STATION_LINK_VOLUME_CROSSCHECK'),
             'LIVE02_INVALID_TRIAL_GEOMETRY_PROOF')
+    require(ev.get('full_geometry_proof', 'READ_ALL_DSEGS') in ('READ_ALL_DSEGS', 'ALL_LINK_VOLUMES'),
+            'LIVE02_INVALID_FULL_GEOMETRY_PROOF')
+    require(ev.get('final_readback', 'PATH_LISTS') in ('PATH_LISTS', 'ALL_LINK_VOLUMES'), 'LIVE02_INVALID_FINAL_READBACK')
+    require(isinstance(ev.get('fast_geometry_parser', False), bool), 'LIVE02_INVALID_FAST_GEOMETRY_PARSER')
+    ps = ev.get('com_page_size', 256)
+    require(type(ps) is int and 80 <= ps <= 4096, 'LIVE02_INVALID_COM_PAGE_SIZE')
     ge = ev.get('geometry_epoch')
     require(ge is None or (isinstance(ge, dict) and isinstance(ge.get('enabled'), bool) and
                            type(ge.get('max_reuse', 3)) is int and 1 <= ge.get('max_reuse', 3) <= 20),
             'LIVE02_INVALID_GEOMETRY_EPOCH')
+    require(ge is None or isinstance(ge.get('rollback_replay', False), bool), 'LIVE02_INVALID_GEOMETRY_EPOCH_ROLLBACK_REPLAY')
     require(isinstance(ev.get('trial_full_geometry_check'), bool) and isinstance(ev.get('keep_trial_capture_db'), bool),
             'LIVE02_EVALUATION_FLAGS')
     require(ev.get('rollback_proof') in ('PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE', 'FULL_CAPTURE'), 'LIVE02_ROLLBACK_PROOF')

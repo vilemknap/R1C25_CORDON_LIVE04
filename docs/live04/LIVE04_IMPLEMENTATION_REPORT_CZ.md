@@ -362,3 +362,201 @@ konzistence a hash dokladu i tabulky znamének (SDP1 + = 9800210, SDP8/SDP10 pod
 konfigurace, mock běh s release konfigurací (cíle podle tabulky reportu) a s oběma syntetickými přiřazeními
 (+ = A i + = B; profil v mocku = nezávisle spočtená intenzita na orientované hraně, cíl = cíl znaménka),
 hrana mimo stanici → zastavení před zápisem, SupplyMix a TD na 168 řádcích. Nativně ve Visumu neověřeno.
+
+## LIVE04.10.1–10.2 – READINESS bez zdvojení a rychlejší plné zachycení (2026-11-05)
+
+**Měření z nativního běhu (LIVE04_TGTD_83592c6d1efe).** Přepočet modelu ≈ 1 min; rychlé zachycení pokusu
+≈ 17 min (objemy cest 184 s, reprezentativní geometrie 659 s, kontrola stanic 11 s, závěrečné čtení ~140 s);
+plné zachycení ≈ 66–71 min, z toho **plný důkaz geometrie 2 951–3 282 s**: znovu se čte geometrie
+10 nereprezentativních segmentů (≈ 31 mil. záznamů cesta–hrana na mód) a výsledek byl vždy
+`FULL_SAME_MODE_MATCH`. (10 h ve fázi `final_readback` u TRY_01 = uspaný notebook 23:40–9:45.)
+
+**10.1:** READINESS nedělá zachycení cest (`readiness_baseline_capture = false`), kontrakt pozorování
+a tabulka směrů se ověří staticky (`OBSERVATION_CONTRACT`).
+
+**10.2 (rozhodnutí uživatele):** `evaluation.full_geometry_proof = ALL_LINK_VOLUMES`. Plné zachycení (výchozí
+stav, potvrzení přijetí, závěr) čte geometrii jen reprezentativního segmentu každého módu; ostatní segmenty
+prokáže:
+1. shodnou množinou klíčů cest (orig, dest, index) – vynucuje sběrač (`FULL_PARENT_KEYS_DIFFER`);
+2. intenzitou `VOLVEH_DSEG(<kód>,AP)` na **všech** hranách sítě = intenzita z přečtené geometrie × vlastní
+   objemy cest daného segmentu (tolerance jako epocha LIVE04.7: 1 voz. + 0,0005 na kladnou cestu + 0,1 %).
+
+Při nesouladu nebo nečitelném atributu se v tomtéž zachycení provede původní plné čtení (fail-closed).
+Báze `ALL_LINK_VOLUMES_SAME_PATH_KEYS_PROVEN_THIS_CAPTURE` se pro potvrzení přijetí počítá jako plná.
+Vědomý kompromis: protipříklad z LIVE04.7.1 (prohozené cesty se stejnými intenzitami na všech hranách) tento
+důkaz nerozliší; `READ_ALL_DSEGS` vrátí původní chování. Odhad nativně ≈ 20 min místo ≈ 70 min na plné
+zachycení. Záznam: `GEOMETRY_ALL_LINK_PROOF.json`, `capture_timing_seconds.geometry_all_link_proof`.
+Testy `tests/test_live04_10_2.py` (stejné úložiště a FIRST_LAST jako při plném čtení, fallback při jiném
+směrování, zdokumentovaný protipříklad, beze změny u pokusů, konfigurace). Mock modely kalibrace atribut
+`VOLVEH_DSEG` nemají, proto u nich proběhne fallback na plné čtení.
+
+## LIVE04.10.3 – pokusy bez potvrzovacího zachycení, rychlejší závěrečné čtení (2026-11-05)
+
+1. **Pokusy dokázané jako plné zachycení.** `evaluation.trial_geometry_proof = FULL` spolu s
+   `full_geometry_proof = ALL_LINK_VOLUMES`: zachycení pokusu čte geometrii reprezentativního segmentu a ostatní
+   segmenty prokáže klíči cest a intenzitami na všech hranách (stejné čtení `VOLVEH_DSEG`, které dělala kontrola
+   stanic, jen se porovnají všechny hrany). Báze je plná (`is_fully_proven`), takže potvrzovací zachycení
+   `ACCEPTANCE_CONFIRM` (≈ 20 min za každý přijatý krok po 10.2) odpadá. Při nesouladu se v tomtéž zachycení
+   přečte vše.
+2. **Závěrečné čtení přes intenzity.** `evaluation.final_readback = ALL_LINK_VOLUMES`: konec zachycení místo
+   opětovného čtení 12 seznamů cest (≈ 140 s) znovu přečte `VOLVEH_DSEG` na všech hranách a porovná je přesně
+   s hodnotami z důkazu; plus kontrola matic, sítě, segmentů a otevřené verze jako dříve. Podpis cest
+   (počet, součet v pořadí COM, hash klíčů a objemů) se bere z prvního čtení – je bit po bitu shodný
+   s `path_volume_signature` (test). Když důkaz přes hrany neproběhl, čte se postaru.
+
+Testy `tests/test_live04_10_2.py` (11). Původní nastavení pokusů (`STATION_LINK_VOLUME_CROSSCHECK`,
+`PATH_LISTS`) se nepoužívá (rozhodnutí uživatele); starší testy, které jej předpokládají, ho nastavují výslovně.
+
+## LIVE04.10.4 – rychlejší zpracování geometrie a stránky COM po 1 024 (2026-11-05)
+
+**Nativní měření** (`RUN_R1_2025_CAPTURE_BENCHMARK.py`, jen čte, 2026-11-05): čtení stránky seznamu cest–hran
+nezávisí na poloze v seznamu (1,4–4 ms za 256 řádků na začátku i na konci); stránka 1 024 řádků je o 15–30 %
+levnější na řádek, 4 096 už ne; 5 sloupců místo 7 nepomáhá; celý seznam cest segmentu (437 tis. řádků)
+9 s; `VOLVEH_DSEG` 12 segmentů na všech hranách 0,36 s. COM tedy na geometrii obou módů (~52 mil. řádků)
+spotřebuje ~340–420 s z 659 s; zbytek je zpracování v Pythonu.
+
+1. `evaluation.fast_geometry_parser = true`: `cordon2025/live04_fastgeom.py` – stejné zpracování jako dárcovský
+   `TwoModeRouteCollector.add_geometry` (soubor dárce se nemění), ale dva tvary řádků, které Visum skutečně
+   vrací (čistý rodič cesty, čistý potomek hrany), jdou rychlou cestou se stejnými kontrolami ve stejném
+   pořadí; ostatní tvary původním kódem. Samotné zpracování řádků je 1,8× rychlejší (3,22 → 1,79 µs/řádek); zápis do úložiště po každé trase je stejný jako dřív, takže celé add_geometry je v testu rychlejší asi o 15–20 %. Testy porovnávají celé
+   úložiště obou implementací a chybová hlášení u 11 druhů poškozených dat.
+2. `evaluation.com_page_size = 1024` (dříve 256 z chráněného `CORDON_2025_STARTUP_OPTIONS.json`; kalibrace
+   hodnotu přebije svým nastavením).
+
+Odhad úspory ~1–2 min na zachycení (opraveno: zrychluje se jen zpracování řádků). Výpočet intenzit z geometrie pro důkaz přes hrany: 0,43 µs/záznam
+(~20–40 s na zachycení). Testy `tests/test_live04_10_4.py` (18).
+
+
+## LIVE04.10.5 – krok TD respektuje kontrolu délek cest (IDP) už při výpočtu (2026-11-05)
+
+Nativní běh (C01, 2026-11-05): TD_CORDON skončil `NO_TD_CANDIDATE`. Všechny 4 kroky Gauss-Newton předpovídaly
+zlepšení kordonu (10,5 % → 2,5 %), ale všechny vypadly jen na kontrole IDP: kordon tlačí na kratší cesty WORK
+(`WORK.dlog_c` > 0), průzkum říká, že WORK už je v modelu krátké (WORK_noE_C −43 %). Zmenšování poloměru směr
+neměnilo, takže každý další krok vypadl znovu.
+
+Nově (`td_cordon.idp_constrained_step = true`, `idp_constraint_slack_use = 0.7`):
+
+1. Stejné nativní sondy, které počítají Jacobián kordonu, už vyhodnocovaly IDP (výsledek se zahazoval). Teď z nich
+   vzniká lineární model kontroly IDP: pro každou složku průměrná relativní chyba délky a RMSE jemné CDF, citlivost
+   na 6 parametrů TD. Žádné vyhodnocení navíc.
+2. Krok Gauss-Newton se počítá s omezeními přesně podle pravidla `IdpGuard.decide` (vždy vůči IDP_BEFORE):
+   |průměr| ≤ max(|před|, 0,03) + 0,02 a RMSE ≤ před + 0,01, přičemž se využije jen 70 % zbývající rezervy.
+   Řešič: ADMM pro box + lineární nerovnosti, výsledek se nakonec zkrátí směrem k nule, aby omezení platila
+   přesně; bez aktivních omezení dává stejný krok jako dosavadní řešič.
+3. Po každém nativním kroku se model IDP opraví Broydenovou aktualizací (stejně jako Jacobián kordonu); po
+   přijatém kroku se střed modelu posune na naměřené IDP.
+4. Jacobián IDP se ukládá do paměti běhu spolu s Jacobiánem TD (`RUN_MEMORY_TD_J.npz`, `IDP_GUARD_FEATURES`),
+   takže i opakovaně použitý Jacobián v dalším cyklu má model IDP (`idp_step_model.mode = MEMORY`).
+5. Rozhoduje dál nativní kontrola IDP u každého kroku i u pokusu – model jen míří krok. Když se IDP sondy
+   nepodaří vyhodnotit, běží se postaru (`mode = UNAVAILABLE_*`).
+
+Audit: `TD_BLOCK_RESULT.json → idp_step_model` (režim, Jacobián IDP podle složek), u každého kroku
+`idp_constrained`, `idp_predicted` (předpověď) vedle naměřeného `idp`. Nový důvod zastavení
+`NO_IDP_FEASIBLE_IMPROVING_STEP`, když žádný krok nesplní IDP a zároveň nezlepší kordon.
+
+Testy `tests/test_live04_10_5.py` (22): řešič (shoda s dosavadním bez omezení, přípustnost, lepší než zkrácený
+neomezený krok), model IDP = pravidlo guardu pro lineární odezvu, Broyden, paměť, konfigurace, a konec-konců na
+simulaci se syntetickou IDP: postaru první krok vypadne na IDP, nově žádný krok na IDP nevypadne a pokus je přijat.
+Pouze syntetická simulace, ne nativní důkaz.
+
+## LIVE04.10.6 – noční běh: 100 cyklů a zastavení až po klidném SupplyMixu (2026-11-06)
+
+- Výchozí `max_cycles` je **100** (dříve 3) v `CORDON_LIVE04_CONFIG.json` i v hashovaném výchozím nastavení
+  vydání. Časový limit běhu LIVE04 nemá; běh skončí po 100 cyklech, na `STOP` nebo podle pravidla níže.
+- `stop_after_cycle_without_change` dřív ukončilo běh po prvním cyklu bez přijaté změny – i když v něm
+  neběžel SupplyMix (ten je na řadě jen každý 2. cyklus). Nově běh skončí, až všechny bloky, které ještě
+  mohou přijít na řadu (GENERATION, TD_CORDON, SUPPLY_ADDVAL1), od poslední přijaté změny proběhly bez změny.
+  Důvod v `CYCLE_PROGRESS.json`: `stop_reason = NO_CHANGE_IN_ANY_BLOCK_SINCE_LAST_ACCEPTED_CHANGE`,
+  `unchanged_since_last_change`.
+- Testy `tests/test_live04_10_6.py` (3).
+
+## LIVE04.10.7 – rychlejší ověření rollbacku (2026-11-06)
+
+Nativní běh (C1–C3, 2026-11-05/06): ověření rollbacku po odmítnutém pokusu trvalo 2 × ~21 min. Podpis uložených
+cest se po opakovaném přidělení nikdy přesně neshodoval (přidělení není bitově opakovatelné), takže pokaždé následovalo
+plné zachycení (`TOLERANT_CAPTURE`) včetně čtení geometrie cest z Visumu (~11 min).
+
+Nově (`evaluation.geometry_epoch.rollback_replay = true`):
+
+1. Epocha geometrie si při každém zachycení, které geometrii čte z Visumu, ponechá předchozí verzi jako
+   `GEOMETRY_EPOCH_PREV`. Před pokusem je to tedy geometrie přijatého stavu, do kterého se rollback vrací.
+2. Zachycení rollbacku (`ROLLBACK`) smí geometrii převzít z aktuální nebo předchozí epochy – jen když je
+   množina klíčů uložených cest každého módu stejná a intenzity `VOLVEH_DSEG` **všech segmentů na všech
+   hranách sítě** odpovídají převzaté geometrii a čerstvě načteným intenzitám cest (stejný důkaz jako u epochy
+   v LIVE04.7 a u plného zachycení v 10.2). Jinak se geometrie čte z Visumu jako dosud.
+3. Kordonové řádky se pak porovnají s rodičovskými stejnou tolerancí jako dřív (1 vozidlo + 0,1 % na řádek,
+   cíl ≤ 0,1 %). Rozdíl ve snapshotu (parametry, matice) tolerancí nikdy neprojde.
+4. Po převzetí z předchozí epochy se epochy prohodí (aktuální = obnovený stav), takže i další pokus v témže bloku
+   najde při rollbacku geometrii rodiče.
+5. Pokusy ani výchozí zachycení geometrii nepřebírají; čtou ji z Visumu jako v 10.3.
+
+Odhad: ověření rollbacku ~21 min → ~10 min (podpis cest ~2 min + zachycení bez čtení geometrie ~8 min).
+Disk: druhá kopie epochy (~0,2–0,5 GB) ve složce běhu. Audit: `ROLLBACK\...\TOLERANT_CAPTURE\GEOMETRY_EPOCH_CHECK.json`
+(`epoch` = CURRENT/PREVIOUS, `status`), `SNAPSHOT_EVIDENCE.json → geometry_epoch.source_by_mode`.
+Testy `tests/test_live04_10_7.py` (6).
+
+## LIVE04.11 – TD po jednotlivých složkách, smíšená cílová funkce a smíšené přijetí (podle v7) (2026-11-06)
+
+Do LIVE04.10.7 měl kordonový TD jen 6 proměnných: jeden společný posun b a log(c) pro celé rodiny WORK (5 složek),
+SERVICE (5 složek) a SCHOOL. Profilový kalibrátor v7 (TDJOINT1) ladí každou složku zvlášť a hledá i přijímá podle
+smíšené cílové funkce (TDBLEND1). Délkové chyby složek jedné rodiny jdou přitom proti sobě (např. WORK_noE_C −42 %,
+WORK_E_C −1 %; SERV_stud +56 %, SERV_noE_noC −20 %), takže společný posun rodiny jednu složku zlepší a jinou zhorší.
+
+Nově (rozhodnutí uživatele 2026-11-06):
+
+1. `td_cordon.grouping = COMPONENT`: každá z 11 složek má vlastní krok b a log(c) – 22 proměnných. Jacobián
+   = 22 nativních sond na zmrazených cestách (~42 s každá, ~15 min na blok); v dalších cyklech se Jacobián
+   převezme z paměti běhu a ověří jednou sondou. `FAMILY` = dosavadních 6 proměnných.
+2. `td_cordon.idp_objective_weight = 0.45`: hledání minimalizuje
+   F = 0,55 · Q/Q_před + 0,45 · Σ_k J_k / J_před, kde Q je kordonová cílová funkce (FIRST_LAST) a
+   J_k = RMSE_k² + 0,25 · průměr_k² je zapečetěná FineCDF v1.9 složky k (v7 má 60/40).
+   Citlivost J_k se bere ze stejných sond (model IDP z 10.5). `0` = jen kordon.
+3. `td_cordon.acceptance = BLENDED`: krok i pokus se přijme, když F klesne aspoň o 0,1 %
+   (`blended_min_relative_improvement`), kordonová cílová funkce i sekundární metoda se zhorší nejvýš o 1 %
+   (`blended_max_cordon_degradation`) a projdou všechny tvrdé kontroly (kontrola IDP po složkách, GEH řádků, LONG,
+   mobilita). Důvody „kordon se nezlepšil“ sdílené brány se v tomto režimu nahradí tímto pravidlem.
+   Zhoršení kordonu se měří vždy od začátku bloku, takže ani několik přijatých vnitřních kroků nepřekročí 1 % celkem.
+   `CORDON` = dosavadní přijetí jen při zlepšení kordonu.
+4. Omezení kroku kontrolou IDP (10.5) zůstává.
+
+Audit: `TD_BLOCK_RESULT.json → objective_blend`, `acceptance_mode`, u kroků `blend_center`, `blend_measured`;
+`TRIAL\ACCEPTANCE.json → td_blended_acceptance` (hodnota F, zhoršení kordonu, poměr IDP). Přijatý TD tak může
+kordonovou cílovou funkci mírně zvýšit (nejvýš o 1 %), pokud výrazně zlepší délky cest.
+Testy `tests/test_live04_11.py` (12). Mock: gravitační odezva fake modelu je jen po rodinách, takže kordonový přínos
+složkového TD v simulaci ověřit nejde; test ověřuje, že složky jedné rodiny se pohnou různě, když je odliší IDP.
+Skutečný přínos ukáže až nativní běh.
+
+### LIVE04.11 – dolní mez produkce 0,25 a celočíselný návrh SupplyMix (2026-11-06)
+
+- **Dolní mez ADD_PROD_W/S 0,25** (dříve 0,5; rozhodnutí uživatele): v posledním nativním běhu skončilo 138 z 536
+  změněných ADD_PROD_S a 89 z 552 ADD_PROD_W na 0,5. Mez je v obálce koeficientů generace (`coefficient_envelope.PROD
+  = [0.25, 3.15]`) i v pásmu kontroly mobility (`mg_min_ratio = 0.25`, nová dokumentovaná odchylka od v7); obě musí
+  být stejné. Krok generace zůstává omezen (REFINE ±5 % za cyklus), z 0,5 na 0,25 je to ~14 cyklů.
+- **Celočíselný návrh SupplyMix** (`supply_mix.integer_design = true`): Visum ukládá Link ADDVAL1 jako celé číslo,
+  ale mřížka návrhu je 0,5 ADDVAL1 na jednotku kroku. Liché jednotky kroku (1) navrhovaly půlkové změny, které pak
+  COSTFIX1 správně odmítl (`INTEGER_ADDVAL1_FRACTIONAL_STEP`) – v C2 tak přišel o větve i nejhorší řádek, profil 118
+  (SDP1 strana A). Nově se navrhují jen kroky s celou hodnotou ADDVAL1 (16/8/6/4/2), rozpočet kandidátů se tak
+  nevyplýtvá. Důkazy větví, rozpočet impedance cest, kontrola kladné zobecněné ceny i COSTFIX1 beze změny.
+- Testy `tests/test_live04_11_supply.py` (4).
+
+### LIVE04.11 – audit _noT a návrh cenotvorby dálniční známky (2026-11-06)
+
+`RUN_R1_2025_NOT_SHARE_AUDIT.py` (jen čtení) vypíše postup, součty matic 91xx/93xx/94xx, síť
+otevřenou jen pro C (bez C_noT), řez přes D1 u SDP1 a nově **katalog všech matic** (typ, zdroj
+dat, vzorec, součet), matice podobné skimům a to, zda je `FORMULA` matic 9231–9234 upravitelný.
+
+Rozhodnutí uživatele (2026-11-06): **varianta (b)** – podíl vozidel se známkou počítá sám Visum
+viditelným vzorcem (kontrolovatelné NDS, reaguje na cenu i síť ve scénářích); kalibrátor mění jen
+skalární parametry ve vzorci, nikdy buňky OD matic. Hodnota času: **Príručka CBA SR, tab. 26**
+(2025, €/h/os.): služobné 21,28, dochádzanie 10,04, súkromné 6,56; pro W vážený průměr podle
+tab. 28 (7,3 % / 24,4 %) ≈ 12,6 €/h, pro S 6,56 €/h; na vozidlo přes obsazenost (κ z op. 11).
+
+Návrh vzorce (dvě skupiny řidičů: držitelé ročního/dlouhodobého kuponu h, ostatní 1−h):
+
+    9231 = h_W + (1 − h_W) / (1 + Exp(−μ · (VOT_W,veh · ΔT_od / 60 − p)))
+    9232 = 1 − Matrix(9231)            (obdobně 9233/9234 pro S)
+    ΔT_od = max(0; skim_C_noT − skim_C)  [min]
+
+Kalibruje se h_W, h_S, μ (případně p v mezích 1denní kupon/2 … 1denní kupon); VOT je pevně z CBA.
+Stav: NÁVRH – čeká na výstup auditu (čísla skimů C a C_noT a jejich dostupnost před op. 14,
+upravitelnost FORMULA). Nic z toho zatím nebylo nativně ověřeno.

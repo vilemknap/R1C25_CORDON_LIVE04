@@ -163,6 +163,9 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
     pins = verify_protected_sources()
     output_root = guarded_output_root(output_root or _default_output_root())
     configured = read_json(ROOT / 'CORDON_2025_STARTUP_OPTIONS.json')
+    # LIVE04.10.4: COM page size for the bounded path/geometry reads (native benchmark 2026-11-05:
+    # 1024 rows per SaveToArray call is the cheapest per row; 4096 is not faster)
+    configured['page_size'] = int(cfg['evaluation'].get('com_page_size', configured['page_size']))
     configured.update(options or {})
     from .live04_v7 import run_options
     wait = float(run_options(cfg)['cb_max_wait_seconds'])
@@ -287,6 +290,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 last_outer = origin_start + cfg['max_cycles'] - 1
                 require(first_outer <= last_outer, 'LIVE04_CONTINUE_NO_CYCLE_LEFT_RAISE_MAX_CYCLES:next=%d,last=%d'
                         % (first_outer, last_outer))
+                unchanged_blocks = set()
                 for outer in range(first_outer, last_outer + 1):
                     adapter.cfg = adapter_config(cfg, outer, state['actuatable_zones'])
                     if adapter.run_memory is not None:
@@ -360,8 +364,20 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                         write_json(folder / 'CYCLE_PROGRESS.json', dict(progress, cycles=progress['cycles'] + [cycle]))
                     progress['cycles'].append(cycle)
                     write_json(folder / 'CYCLE_PROGRESS.json', progress)
+                    # LIVE04.10.6: stop only when every block that can still run (incl. SupplyMix, which is
+                    # due only every n-th cycle) has run since the last accepted change without a change.
+                    if changed_cycle:
+                        unchanged_blocks = set()
+                    else:
+                        unchanged_blocks |= {b['block'] for b in cycle['blocks']}
                     if not changed_cycle and cfg['stop_after_cycle_without_change']:
-                        break
+                        upcoming = set().union(*[set(planned_blocks(cfg, o))
+                                                 for o in range(outer + 1, min(last_outer, outer + 24) + 1)] or [set()])
+                        progress['unchanged_since_last_change'] = sorted(unchanged_blocks)
+                        if upcoming <= unchanged_blocks:
+                            progress['stop_reason'] = 'NO_CHANGE_IN_ANY_BLOCK_SINCE_LAST_ACCEPTED_CHANGE'
+                            write_json(folder / 'CYCLE_PROGRESS.json', progress)
+                            break
                 ctl.checkpoint('LIVE04_FINAL_VERIFICATION', force=True)
                 final = adapter.snapshot()
                 require(final == current_state, 'LIVE04_FINAL_STATE_NOT_LAST_ACCEPTED_OR_BASELINE')

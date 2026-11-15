@@ -67,7 +67,7 @@ def validate_sections(cfg):
             and len(set(fr)) == len(fr), 'LIVE03_TG_NODE_FRACTIONS')
     _num(npred, 'base_parity_tolerance', 0.0, 1e-3, positive=True)
     td = cfg['td_cordon']
-    require(isinstance(td.get('enabled'), bool) and td.get('grouping') == 'FAMILY'
+    require(isinstance(td.get('enabled'), bool) and td.get('grouping') in ('FAMILY', 'COMPONENT')
             and td.get('objective') == 'CORDON_PRIMARY_METHOD_ONLY', 'LIVE03_TD_POLICY')
     from .common import parent_module
     registry = parent_module('r1_15a2_multiblock').COMPONENT_REGISTRY
@@ -86,6 +86,18 @@ def validate_sections(cfg):
                         ('min_relative_column_norm', 0.0, 0.1)):
         _num(td, key, lo, hi)
     l2._int(td.get('max_inner_evaluations'), 'max_inner_evaluations', 1, 20)
+    # LIVE04.10.5: IDP-aware TD step (optional keys; absent = previous behaviour)
+    if 'idp_constrained_step' in td:
+        require(isinstance(td['idp_constrained_step'], bool), 'LIVE04_TD_IDP_CONSTRAINED_STEP')
+    if 'idp_constraint_slack_use' in td:
+        _num(td, 'idp_constraint_slack_use', 0.05, 1.0)
+    # LIVE04.11: blended inner objective (v7 TDBLEND1 analogue): (1-w) cordon/cordon_ref + w IDP/IDP_ref
+    if 'idp_objective_weight' in td:
+        _num(td, 'idp_objective_weight', 0.0, 0.9)
+    require(td.get('acceptance', 'CORDON') in ('CORDON', 'BLENDED'), 'LIVE04_TD_ACCEPTANCE')
+    for key in ('blended_min_relative_improvement', 'blended_max_cordon_degradation'):
+        if key in td:
+            _num(td, key, 0.0, 0.1)
     scope = cfg['donor_runtime']['matrix_scope_by_block'].get('TD_CORDON')
     require(scope and set(scope) == {'dseg_codes', 'matrix_nos'}, 'LIVE03_TD_MATRIX_SCOPE')
     require(cfg['donor_runtime']['min_changed_matrices_by_block'].get('TD_CORDON') == 1, 'LIVE03_TD_MIN_CHANGED')
