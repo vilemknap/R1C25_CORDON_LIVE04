@@ -1,0 +1,35 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_commit": "8f0f4d509bbe9315edac2dd926d1018bd3098094",
+  "suites": {
+    "FOCUSED": {
+      "tests": 72,
+      "passed": 72,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "E2E": {
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "E2E_INTERMEDIATE": {
+      "tests": 2,
+      "passed": 1,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "new_utility_tests": 23,
+  "large_e2e_scope": "Legacy M9002 model: accepted TG/TD, LONG mask and STOP/path preservation",
+  "active_utility_scope": "Small simulation using the supplied original script and replacement, plus production adapter/predictor hooks",
+  "intermediate_failure": "The test path-loss fixture modeled a reset while declaring operation type 0. Metadata corrected to real type 9; the same preservation assertions then passed.",
+  "live_visum_tested": false,
+  "full_historical_suite_run": false,
+  "od_demand_restored_by_direct_write": false,
+  "standalone_replacement_algorithm_parity_tested": true
+}

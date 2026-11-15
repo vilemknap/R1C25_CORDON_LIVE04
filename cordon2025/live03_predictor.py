@@ -64,12 +64,14 @@ def demand_plan(visum, cfg, block):
     selected = [int(p) for p in plan['selected_operation_positions']]
     groups = [p for p in selected if types.get(p) == com.GROUP]
     other_assign = [p for p in selected if p < first and types.get(p) in ASSIGNMENT_TYPES]
-    demand = sorted({p for p in selected if p < first and types.get(p) not in ASSIGNMENT_TYPES} | set(groups))
+    resets = [p for p in selected if p < first and types.get(p) == 9]
+    demand = sorted({p for p in selected if p < first and types.get(p) not in ASSIGNMENT_TYPES + (9,)} | set(groups))
     require(any(types.get(p) in (com.TG, com.TD) for p in demand), 'LIVE03_DEMAND_PLAN_HAS_NO_TG_TD_OPERATION')
     out = dict(plan, schema=SCHEMA + '_PLAN', block='DEMAND_ONLY:' + str(block), mode='DEMAND_PREFIX_BEFORE_FIRST_ASSIGNMENT',
                selected_operation_positions=demand, source_plan_mode=plan.get('mode'),
                first_approved_assignment=first, excluded_assignment_positions=sorted(set(selected) - set(demand)),
                skipped_other_assignments_in_prefix=other_assign,
+               skipped_assignment_resets_in_prefix=resets,
                approved_assignment_positions=[])
     out['exact_demand_of_full_trial'] = not other_assign and len(approved) == 1
     return out
@@ -167,11 +169,13 @@ class FrozenPathPredictor:
         return audit
 
     # ------------------------------------------------------------ execution
-    def run_demand(self, block, folder):
+    def run_demand(self, block, folder, *, restore_state=None):
         perf1 = parent_module('r1_15a2_acceleration_v24915p1')
         rt = parent_module('r1_15a2_runtime_v1')
         folder = Path(folder); mkdir(folder)
         plan = demand_plan(self.adapter.visum, self.adapter.cfg, block)
+        if restore_state is not None:
+            plan['restore_parent_state_hash'] = restore_state['state_hash']
         write_json(folder / 'DEMAND_ONLY_PLAN.json', plan)
         t0 = time.monotonic()
         hook = getattr(self.adapter, 'execute_demand_only', None)
@@ -201,13 +205,18 @@ class FrozenPathPredictor:
 
     def restore_demand(self, block, state, folder):
         """After parameters are restored by COM: same demand slice, prove the parent state."""
-        self.run_demand(block, folder)
+        self.run_demand(block, folder, restore_state=state)
         snap = self.adapter.snapshot()
         same = snap == state
         write_json(Path(folder) / 'DEMAND_RESTORE_PROOF.json', {
             'schema': SCHEMA + '_RESTORE', 'snapshot_equal': same, 'state_hash': snap.get('state_hash'),
             'expected_state_hash': state.get('state_hash'),
-            'matrix_hash_equal': snap.get('matrix_hash') == state.get('matrix_hash')})
+            'matrix_hash_equal': snap.get('matrix_hash') == state.get('matrix_hash'),
+            'utility_and_skim_state_equal': snap.get('td_utility_state') == state.get('td_utility_state'),
+            'differing_snapshot_fields': sorted(k for k in set(snap) | set(state) if snap.get(k) != state.get(k)),
+            'differing_matrix_numbers': sorted({r['matrix_no'] for r in snap.get('matrices', [])
+                if r not in state.get('matrices', [])} | {r['matrix_no'] for r in state.get('matrices', [])
+                if r not in snap.get('matrices', [])})})
         require(same, 'LIVE03_DEMAND_RESTORE_SNAPSHOT_DIFFERS')
         return snap
 

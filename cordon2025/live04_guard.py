@@ -9,6 +9,10 @@ and every other matrix remain forbidden, as do all other LIVE02/LIVE03 rules.
 To make the matrix number visible to the policy, ItemByKey on the matrix
 collection carries its key in the audit label.
 
+The auxiliary-state transaction can also restore 9700..9715 and the ten validated
+DATA TTC/TT0 skim inputs. Its short-lived scope permits only the exact captured
+hashes, never demand matrices or arbitrary utility/skim changes.
+
 LIVE04.4 (audit.supply_addval_writes, from write_policy.supply_addval1_writes):
     <Net.Links link>.SetAttValue('ADDVAL1', <finite number>)
 the v7 SupplyMix write (donor apply_supply / restore_supply_parameters, each with
@@ -35,6 +39,8 @@ class Live04WriteAudit(WriteAudit):
 
     def summary(self):
         out = super().summary()
+        out['td_utility_state_restores'] = sum(e['kind'] == 'TD_UTILITY_STATE_RESTORE' for e in self.events)
+        out['td_input_skim_restores'] = sum(e['kind'] == 'TD_INPUT_SKIM_STATE_RESTORE' for e in self.events)
         out['long_mask_matrix_writes'] = sum(1 for e in self.events if e['kind'] == 'LONG_MASK_MATRIX_WRITE')
         out['long_mask_matrices_written'] = sorted({e['matrix_no'] for e in self.events
                                                     if e['kind'] == 'LONG_MASK_MATRIX_WRITE'})
@@ -59,6 +65,18 @@ def _policy(label, name, args, audit):
         return
     if name == 'SetValues':
         no = _matrix_no(label)
+        expected = getattr(audit, 'td_utility_restore_expected', None) or {}
+        time_numbers = getattr(audit, 'td_time_restore_numbers', None) or ()
+        if ((no in range(9700, 9716) or no in time_numbers) and no in expected and len(args) == 2 and args[1] is False
+                and type(args[0]).__module__ == 'numpy' and getattr(args[0], 'ndim', 0) == 2
+                and str(getattr(args[0], 'dtype', '')) == 'float64'):
+            import numpy as np
+            from .live04_utility_state import values_hash
+            a = args[0]
+            if np.isfinite(a).all() and (no in time_numbers or (a >= 0).all()) and values_hash(a) == expected[no]:
+                kind = 'TD_INPUT_SKIM_STATE_RESTORE' if no in time_numbers else 'TD_UTILITY_STATE_RESTORE'
+                audit.record(kind, label, matrix_no=no, sha256=expected[no], shape=list(a.shape))
+                return
         if (no is not None and no in LONG_MASK_WRITABLE and getattr(audit, 'long_mask_writes', False)
                 and len(args) == 2 and args[1] is False and type(args[0]).__module__ == 'numpy'
                 and getattr(args[0], 'ndim', 0) == 2 and str(getattr(args[0], 'dtype', '')) == 'float64'):

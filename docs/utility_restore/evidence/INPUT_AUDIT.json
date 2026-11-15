@@ -1,0 +1,139 @@
+{
+  "base_commit": "8f0f4d509bbe9315edac2dd926d1018bd3098094",
+  "branch": "live05-8-integrated",
+  "files": [
+    {
+      "name": "NATIVE_PREDICTION.json",
+      "bytes": 14317,
+      "sha256": "59d0c369f0fdc9354888d487215f209c49323115bc457c1006de62229e019e07"
+    },
+    {
+      "name": "LONG_MASK_DEMAND_ONLY_PLAN_A.json",
+      "bytes": 1128,
+      "sha256": "28f02659508861a47a6c41e39746ae2553ab351d917dac55d83e5b71cea18845"
+    },
+    {
+      "name": "GENFIX2_FINAL_MOBILITY_AND_PREDICTION.json",
+      "bytes": 14983,
+      "sha256": "b4e36a8092ada1e336b0ade0fbe00181f1cd341c663384cf73cd2ce60f6020e6"
+    },
+    {
+      "name": "DEMAND_ONLY_EXECUTION_A.json",
+      "bytes": 94,
+      "sha256": "aa9446dae03134db9c23a5b05c2e10388d91cd322436cfd41bd5b76d528b0d8c"
+    },
+    {
+      "name": "DEMAND_ONLY_PLAN_A.json",
+      "bytes": 12158,
+      "sha256": "2d7177b3f73591d11990475e5cd05066e0171a006071fce47f4360f55cfe0d9c"
+    },
+    {
+      "name": "GENERATION_DESIGN.json",
+      "bytes": 4336217,
+      "sha256": "18cea33c59f34c23f7b73322360886bd63c408cdd0a7c2b2af81efc8b0bde377"
+    },
+    {
+      "name": "GENERATION_SIGNED_REFINEMENT_AUDIT.json",
+      "bytes": 1895,
+      "sha256": "b85e8fd37590bae04bf5855dcd89bc45ca258b8fec7e17307d8210b8bdd5a56c"
+    },
+    {
+      "name": "PREDICTOR_BASE_PARITY.json",
+      "bytes": 1740,
+      "sha256": "ba5d11d9193d771ddcf5574a0f14a01c75bc8745be50940a6509dc5ff6bea2ac"
+    },
+    {
+      "name": "DEMAND_ONLY_PLAN_B.json",
+      "bytes": 12158,
+      "sha256": "2d7177b3f73591d11990475e5cd05066e0171a006071fce47f4360f55cfe0d9c"
+    },
+    {
+      "name": "DEMAND_RESTORE_PROOF.json",
+      "bytes": 305,
+      "sha256": "02e36618a6b4a4dc0c56255912be09fbf771543e11cc3f047142490ef9392288"
+    },
+    {
+      "name": "DEMAND_ONLY_EXECUTION_B.json",
+      "bytes": 94,
+      "sha256": "aa9446dae03134db9c23a5b05c2e10388d91cd322436cfd41bd5b76d528b0d8c"
+    },
+    {
+      "name": "LONG_MASK_DEMAND_ONLY_PLAN_B.json",
+      "bytes": 1128,
+      "sha256": "28f02659508861a47a6c41e39746ae2553ab351d917dac55d83e5b71cea18845"
+    },
+    {
+      "name": "WRITE_AUDIT.jsonl",
+      "bytes": 35827,
+      "sha256": "9263b5d23aed88cea70b78637b72f1c479e7f07159781a37b51a6dbd0454004c"
+    },
+    {
+      "name": "V7_RUNTIME_STATUS.json",
+      "bytes": 12737,
+      "sha256": "eab783b453d7fa3d50515814c395a770538b8f29558829a836ef78a17b32b0fe"
+    },
+    {
+      "name": "00_GENERATION_COEFFICIENT_REFERENCE.json",
+      "bytes": 471997,
+      "sha256": "79d7cedaef98e64edf0560b94210380d5c6a2e710a1d70dda482171e39948f54"
+    },
+    {
+      "name": "00_PROGRESS.json",
+      "bytes": 431,
+      "sha256": "decafe3cb7d6e30708b3e216c8492e273052e82706a9cd06c884b84ad59951dd"
+    },
+    {
+      "name": "00_RESULT.json",
+      "bytes": 1329,
+      "sha256": "e1ebea236bbef38b87275dfd5143289bd4be471a1d869d6494a2218d161bbe12"
+    },
+    {
+      "name": "99_TRACEBACK.txt",
+      "bytes": 3306,
+      "sha256": "c311c419638de2e2f62800571acd189e40b15f95b6709088dece3fd405334b23"
+    },
+    {
+      "name": "RUN_CHECKPOINT.json",
+      "bytes": 9778,
+      "sha256": "767a1316653575bef20d188812c69a3e4821f8e29f5fd709aa71322829b28e91"
+    },
+    {
+      "name": "RUN_ANCHORS.json",
+      "bytes": 868688,
+      "sha256": "83f4dd4f240d5a0529623ca524353030cb570f6bdee465d7b0f6bcdbe6b40bce"
+    },
+    {
+      "name": "TRACEBACK.txt",
+      "bytes": 3306,
+      "sha256": "c311c419638de2e2f62800571acd189e40b15f95b6709088dece3fd405334b23"
+    },
+    {
+      "name": "OPERATION_15_SCRIPT.txt",
+      "bytes": 24878,
+      "sha256": "c86fc648a5995e6b2e2dfad712cdf1ed57f5f262573f3c4a2330483466775ce1"
+    }
+  ],
+  "failure_reason": "LIVE03_DEMAND_RESTORE_SNAPSHOT_DIFFERS",
+  "accepted_states": 0,
+  "model_state_verified_reported": false,
+  "restore_proof": {
+    "expected_state_hash": "1d3979aa4857c5c6efb5e4c53f962a989074d6248a4b33827c6a37d6dbecc6a4",
+    "matrix_hash_equal": false,
+    "schema": "LIVE03_NATIVE_FROZEN_PATH_PREDICTION_V1_RESTORE",
+    "snapshot_equal": false,
+    "state_hash": "3770b34f017ce428a04ba8f41f624a83c7ddf5de16001954161ef6ad25f9e0a4"
+  },
+  "reset_operations_selected": [
+    30
+  ],
+  "utility_operation_selected": true,
+  "supplied_utility_lambda": 0.5,
+  "supplied_script_uses_previous_utility": true,
+  "supplied_script_reads_vehicle_weights": [
+    9301,
+    9302,
+    9303,
+    9304
+  ],
+  "live_model_or_matrix_values_not_available_here": true
+}

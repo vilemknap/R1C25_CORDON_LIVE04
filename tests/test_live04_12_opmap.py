@@ -258,7 +258,9 @@ def test_sue_supply_cold_plan_and_demand_plan(monkeypatch):
     plan = pr.demand_plan(Visum(sue_layout()), CFG, 'GENERATION')
     assert plan['first_approved_assignment'] == 36
     assert plan['skipped_other_assignments_in_prefix'] == [32, 33, 34, 35]
-    assert {13, 17, 30} <= set(plan['selected_operation_positions'])
+    assert {13, 17} <= set(plan['selected_operation_positions'])
+    assert 30 not in plan['selected_operation_positions']
+    assert 30 in plan['skipped_assignment_resets_in_prefix']
 
 
 class _Quality:

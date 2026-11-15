@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_INTEGRATED_20261115",
+  "release": "R1C25_LIVE05_8_UTILITY_STATE_RESTORE_20261115",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -488,8 +488,8 @@
     },
     {
       "path": "README.md",
-      "size": 5941,
-      "sha256": "78370ca290962abab5fd521ca7eb48b218adc95df36f4d49f6279d8b33c1897a"
+      "size": 6178,
+      "sha256": "1ed25aec1e6d2d14f956861a05b96b0d7f1246de6ed616c01d6bb0c96aa16fe8"
     },
     {
       "path": "README_CZ.md",
@@ -610,6 +610,11 @@
       "path": "RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py",
       "size": 1917,
       "sha256": "5ab55ebd9885a761639126e7e2c356b87366e901d74d5ea63120af116c789ab7"
+    },
+    {
+      "path": "RUN_R1_TD_UTILITY_TRANSACTIONAL.py",
+      "size": 25048,
+      "sha256": "4a04d0d776d77c18d6dfefd7b07c8a33e489c826a3287295cd6e6632a1268b08"
     },
     {
       "path": "SOURCE_PINS_AND_MERGE_DECISIONS.csv",
@@ -1378,8 +1383,8 @@
     },
     {
       "path": "cordon2025/live02_config.py",
-      "size": 15005,
-      "sha256": "3210c5ca0cdf68b072d97244068e754d39bc3bf0ff909083656451adf2555f06"
+      "size": 15157,
+      "sha256": "88f2d50b40e9b6146c5656f3034ad23dcf46c67314efb5144bf319121f75090f"
     },
     {
       "path": "cordon2025/live02_cycle.py",
@@ -1448,8 +1453,8 @@
     },
     {
       "path": "cordon2025/live03_predictor.py",
-      "size": 15981,
-      "sha256": "d565a6f167e0caa48ea796436b089cccc979b7402c2389fae43e7c4029b61801"
+      "size": 16758,
+      "sha256": "a926d8bd3ba68c9f8334c1f65b1289f714eeef29f894d8ab5a257979dabd611b"
     },
     {
       "path": "cordon2025/live03_td.py",
@@ -1458,8 +1463,8 @@
     },
     {
       "path": "cordon2025/live04_adapter.py",
-      "size": 18587,
-      "sha256": "905ae5f4919b834ef80da561347486aa8f2f47a8c84ac3db9cc0fcc36727399b"
+      "size": 19701,
+      "sha256": "8a6045ff0dacf70a26eadb1effe303875f4aa0fd98ed77bb9ef54bfb6ce99591"
     },
     {
       "path": "cordon2025/live04_capture.py",
@@ -1483,8 +1488,8 @@
     },
     {
       "path": "cordon2025/live04_cycle.py",
-      "size": 35467,
-      "sha256": "2deb5787f87e192a5c8ffaf5099f00931be768cb175a2f2d8d6c2cfd47de4f33"
+      "size": 35693,
+      "sha256": "2525731a6419daa4e21d025d5393558b4d52a0584ab81879ee01366cf3938a62"
     },
     {
       "path": "cordon2025/live04_epoch.py",
@@ -1508,13 +1513,13 @@
     },
     {
       "path": "cordon2025/live04_guard.py",
-      "size": 6034,
-      "sha256": "2184d57cfd192e4ec641a663cad6cfe374b126d03c075480b2f8f15a28589e03"
+      "size": 7372,
+      "sha256": "3d74008a73ed03d9b90940ba5057fee35a833c217b0224ad4b7146902538050d"
     },
     {
       "path": "cordon2025/live04_long_mask.py",
-      "size": 8449,
-      "sha256": "eeca2538bc2792a7c2d4bff02e34317ae3f7a47fd5995df5432811b345604aeb"
+      "size": 8550,
+      "sha256": "653585a860b4c3d47e6208dca0b50b7d138eac53e6727196715cd2693506d09e"
     },
     {
       "path": "cordon2025/live04_memory.py",
@@ -1550,6 +1555,11 @@
       "path": "cordon2025/live04_supply.py",
       "size": 35457,
       "sha256": "f133679bc3dc691a6b91596d089aae0fc9249d519c84ef50469d9dd0a66079c1"
+    },
+    {
+      "path": "cordon2025/live04_utility_state.py",
+      "size": 20576,
+      "sha256": "6f1450ff241e04881fba9f8daa33c1ceb78ab5d4711438d7bf0e15ecb33355ed"
     },
     {
       "path": "cordon2025/live04_v7.py",
@@ -4715,6 +4725,61 @@
       "path": "docs/update_v2/evidence/V2_CP05_parent_compatibility.xml",
       "size": 119295,
       "sha256": "4e3af3129f34ece685f1c639428f2db9f385a2876b99025d07b2396fd1cd7cb4"
+    },
+    {
+      "path": "docs/utility_restore/RESTORE_FIX_CZ.md",
+      "size": 8905,
+      "sha256": "7b9a5290ff6205ede8ab3fcd65d35a8d1131a3254b02acbeee4a77d18e8e38ea"
+    },
+    {
+      "path": "docs/utility_restore/evidence/CHECKS.json",
+      "size": 1113,
+      "sha256": "8dbb384119e99248d792b59ad3aeb64450c5554e0ba5468c3ca4243d4cbdce27"
+    },
+    {
+      "path": "docs/utility_restore/evidence/E2E.log",
+      "size": 110,
+      "sha256": "6767f3258782a27df07d8dedfccfd4197bd11da793c409c311350df0a559f266"
+    },
+    {
+      "path": "docs/utility_restore/evidence/E2E.xml",
+      "size": 487,
+      "sha256": "ff2ee397ca09212df10c780e166e3b6548fa863c3ff5980bf89029471148a9ed"
+    },
+    {
+      "path": "docs/utility_restore/evidence/E2E_INTERMEDIATE.log",
+      "size": 1953,
+      "sha256": "46082f8a0fb592d18dfd7c7a388d07009ba35698a13480796e5ee06aa61dcd60"
+    },
+    {
+      "path": "docs/utility_restore/evidence/E2E_INTERMEDIATE.xml",
+      "size": 2066,
+      "sha256": "56c24845b7664de2aa0e59a6ca64893124ab0e08156333c57158294e3d9f038a"
+    },
+    {
+      "path": "docs/utility_restore/evidence/FOCUSED.log",
+      "size": 110,
+      "sha256": "81274944b789f4bc70494ef57dfe938f64accc3c7db426e3b889a98e1afb24d3"
+    },
+    {
+      "path": "docs/utility_restore/evidence/FOCUSED.xml",
+      "size": 9744,
+      "sha256": "e4538181ea27cd9a675dd3097c3987c999cbb998d685a70d1367fd7ec740e53e"
+    },
+    {
+      "path": "docs/utility_restore/evidence/INPUT_AUDIT.json",
+      "size": 4407,
+      "sha256": "6093f1ca1c7afbd961aac767266d009eec78f0ed613b011fe4c5fc8b50fd6bb9"
+    },
+    {
+      "path": "docs/utility_restore/evidence/STATIC.json",
+      "size": 527,
+      "sha256": "ed0601026761488baee6b3d56ca904710905827389ce0c0c28a2ba2d02ff89cf"
+    },
+    {
+      "path": "docs/utility_restore/evidence/TEXT_NORMALIZATION.json",
+      "size": 37,
+      "sha256": "08948c0884ab65638bf27ae68cabb1a701a6e623e3bf361e878cfe505fde353d"
     },
     {
       "path": "parent/11D_FIRST_RUN_FORENSIC_REMEDIATION.json",
@@ -8913,8 +8978,8 @@
     },
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
-      "size": 20776,
-      "sha256": "5771565af9eef8e803fcd5aa650a8544314d3f1d5352ed5e47ffa18c9cda0a6c"
+      "size": 20812,
+      "sha256": "5bfea728dbcafa307a3f0810f505f841db6918b8343437283e3c09863747d6fd"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -8985,6 +9050,16 @@
       "path": "provenance/startup_fix3/STARTUP_FIX2_SOURCE_MANIFEST.json",
       "size": 241885,
       "sha256": "139b30519a0e3f1956f57af230d02956ffaae4f4675191f2775898dbb484e255"
+    },
+    {
+      "path": "provenance/utility_restore/OPERATION_15_READABLE.txt",
+      "size": 24425,
+      "sha256": "fd8d25c61bbce56be8bba14d8d7c07f93b76c5b3fa4d8bc2db2e14fe22c9a25e"
+    },
+    {
+      "path": "provenance/utility_restore/OPERATION_15_SOURCE.json",
+      "size": 10492,
+      "sha256": "478cd2edc0edcb074dbf8634c8b9fe78f4b4868e030ab78cc444d40880d8e9a2"
     },
     {
       "path": "provenance/v24917/R1_RUN_OPTIONS_V24917.json",
@@ -9218,8 +9293,8 @@
     },
     {
       "path": "tests/test_live04_12_opmap.py",
-      "size": 15059,
-      "sha256": "13d4c908a633bb1676c49829a3486842ca40347368a9a3185f7b72e50516712f"
+      "size": 15174,
+      "sha256": "44f8df70cb9c0f0f4774521b63427b50c036aa21877f1bb7a06f694b11a4ca3d"
     },
     {
       "path": "tests/test_live04_4.py",
@@ -9243,8 +9318,8 @@
     },
     {
       "path": "tests/test_live04_8.py",
-      "size": 13507,
-      "sha256": "1ece6ff41e206beffa16e3b5d5e73983fde86f322d4c86c3297ffdc2440849a0"
+      "size": 13770,
+      "sha256": "a7bd7fb6d8c707eb9f889382162cb640a6ccd2a876a768e4b95472863b5cac20"
     },
     {
       "path": "tests/test_live04_8_2.py",
@@ -9260,6 +9335,11 @@
       "path": "tests/test_live04_pipeline.py",
       "size": 13318,
       "sha256": "bfae7262c90cec0ad0214b375e873a24896232e8826ebfae9c7b152a4e4a0104"
+    },
+    {
+      "path": "tests/test_live04_utility_state.py",
+      "size": 20252,
+      "sha256": "a4360670748300a3fa376d38d497c6bd5a2c547629c622cdedfbf2f062092d08"
     },
     {
       "path": "tests/test_live05_extra.py",

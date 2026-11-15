@@ -1,3 +1,7 @@
+# Oprava transakce utility TG/TD (LIVE05.8)
+
+Aktuální oprava a postup spuštění: [docs/utility_restore/RESTORE_FIX_CZ.md](docs/utility_restore/RESTORE_FIX_CZ.md). Základ `8f0f4d5` zachovává ASD3, TD skip i geometrickou pipeline.
+
 # R1 2025 – kordónová kalibrace LIVE05.5 + path pipeline
 
 Optimalizace zachycení cest nad commitem `99a7a57` (OPMAP1 zachován): COM čtení na původním vlákně se překrývá se zpracováním předchozí dávky. Návod, měření a omezení: [docs/path_pipeline/PERFORMANCE_REVIEW_CZ.md](docs/path_pipeline/PERFORMANCE_REVIEW_CZ.md).

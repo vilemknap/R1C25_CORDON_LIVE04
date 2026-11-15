@@ -220,7 +220,8 @@
    "rollback_replay_note": "LIVE04.10.7: after a rejected trial the rollback check capture may replay the path-link geometry of the restored parent state (kept as PREVIOUS epoch) instead of reading it again from Visum, but only when the saved-path key set is identical and the VOLVEH_DSEG volumes of every DSeg on every network link match the replayed geometry; otherwise the geometry is read from Visum as before (~22 min -> ~10 min per rollback)."
   },
   "keep_trial_capture_db": false,
-  "rollback_proof": "PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE"
+  "rollback_proof": "PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE",
+  "td_utility_update_position": 15
  },
  "donor_runtime": {
   "source": "provenance/live01/DONOR_EFFECTIVE_CONFIG_FORENSIC_ONLY.json",

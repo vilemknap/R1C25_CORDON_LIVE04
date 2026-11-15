@@ -84,7 +84,8 @@ def execute_demand_only(adapter, plan, folder, original_execute):
     selected = sorted(int(p) for p in plan['selected_operation_positions'])
     groups = sorted(p for p in selected if types.get(p) == com.GROUP)
     leaves = [p for p in selected if types.get(p) != com.GROUP]
-    require(not any(types.get(p) == com.ASSIGNMENT_PRT for p in leaves), 'LIVE04_DEMAND_ONLY_PLAN_CONTAINS_ASSIGNMENT')
+    require(not any(types.get(p) in (100, 101) for p in leaves), 'LIVE04_DEMAND_ONLY_PLAN_CONTAINS_ASSIGNMENT')
+    require(not any(types.get(p) == 9 for p in leaves), 'LIVE04_DEMAND_ONLY_PLAN_CONTAINS_ASSIGNMENT_RESET')
     td = [p for p in leaves if types.get(p) == com.TD]
     require(len(td) <= 1, 'LIVE04_LONGMASK_EXPECTED_ONE_UNIFIED_TD_OPERATION')
     all_long = lg.MATRIX_NOS + li.COMPONENT_MATRICES + (li.FINAL_MATRIX,)

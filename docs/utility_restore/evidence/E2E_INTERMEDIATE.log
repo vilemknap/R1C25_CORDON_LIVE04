@@ -1,0 +1,16 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+__________ test_stop_during_probe_preserves_assignment_before_saving ___________
+tests/test_live04_8.py:248: in test_stop_during_probe_preserves_assignment_before_saving
+    assert res['saved_version_at_stop'] and not v.saves_without_paths and not v.paths_gone
+E   AssertionError: assert ({'bytes': 221, 'note': 'Visum may now report the saved file as the current version.', 'path': '/tmp/pytest-of-agent/py..._COPY_LIVE04_ACCEPTED_6879feea.ver', 'sha256': '3a1059b3098f80bf4a76a6c7b18f894023cdc23382a314bd9b320ee0e6a2c3b7', ...} and not ['/tmp/pytest-of-agent/pytest-19/test_stop_during_probe_preserv0/runs/LIVE04_TGTD_1e90b78cedf5/R1_2025_SYNTHETIC_LIVE04_COPY_LIVE04_ACCEPTED_6879feea.ver'])
+E    +  where ['/tmp/pytest-of-agent/pytest-19/test_stop_during_probe_preserv0/runs/LIVE04_TGTD_1e90b78cedf5/R1_2025_SYNTHETIC_LIVE04_COPY_LIVE04_ACCEPTED_6879feea.ver'] = <fake_live04.Live04Visum object at 0x7fe284968380>.saves_without_paths
+----------------------------- Captured stdout call -----------------------------
+R1 CORDON LIVE04 OPMAP1 LEGACY_IDENTITY: TG=[5] TD=6 reset=15 assignments 17-20 -> [17, 18, 19, 20]
+R1 CORDON LIVE04 v7@7b4c681: STEP1=True catch-up=False P=[0.25, 3.5] A=[0.5, 7.0] LSGEN=False BNDGEN=False LONGMASK=True COMBUSY2 900s
+R1 CORDON LIVE04 TG: phase=REFINE ratio=0.046 rows=160 clipped=0 mobility=OK predicted_ratio=0.046
+R1 CORDON V24917 TIMING: cordon_capture_and_evaluation 6s/1, design 0s/1, procedure_sequence 7s/1, snapshot 18s/9
+R1 CORDON V24917 TIMING: cordon_capture_and_evaluation 6s/1, design 0s/1, procedure_sequence 7s/1, snapshot 24s/12
+=========================== short test summary info ============================
+FAILED tests/test_live04_8.py::test_stop_during_probe_preserves_assignment_before_saving
+1 failed, 1 passed in 421.34s (0:07:01)

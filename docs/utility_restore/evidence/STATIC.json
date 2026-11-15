@@ -1,0 +1,17 @@
+{
+  "parent_and_data_unchanged": true,
+  "config_release_default_identical": true,
+  "modified_python_sources": [
+    "RUN_R1_TD_UTILITY_TRANSACTIONAL.py",
+    "cordon2025/live02_config.py",
+    "cordon2025/live03_predictor.py",
+    "cordon2025/live04_adapter.py",
+    "cordon2025/live04_cycle.py",
+    "cordon2025/live04_guard.py",
+    "cordon2025/live04_long_mask.py",
+    "cordon2025/live04_utility_state.py",
+    "tests/test_live04_12_opmap.py",
+    "tests/test_live04_8.py",
+    "tests/test_live04_utility_state.py"
+  ]
+}

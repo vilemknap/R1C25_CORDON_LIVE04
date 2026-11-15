@@ -234,6 +234,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 session.checkpoint('LIVE04_CURRENT_MODEL_BOUND')
                 baseline = evaluator.evaluate(visum, folder / '01_BASELINE_CAPTURE', 'BASELINE', full_geometry=True, keep_db=True)
                 snap0 = adapter.snapshot()
+                adapter.set_calibration_parent(snap0, folder / 'TD_UTILITY_BASELINE')
                 require(not audit.events or all(e['kind'] == 'READ_LIST_CREATE' for e in audit.events),
                         'LIVE04_BASELINE_MUTATED_MODEL')
                 long_support0 = None
@@ -335,6 +336,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             if adapter.run_memory is not None:
                                 adapter.run_memory.save()
                         progress['accepted_state_hash'] = current_state['state_hash']
+                        if changed:
+                            adapter.set_calibration_parent(current_state, bdir / 'TD_UTILITY_ACCEPTED')
                         repair = None
                         if getattr(adapter, 'assignment_invalidated', False):
                             repair = adapter.repair_assignment(bdir / 'ASSIGNMENT_REPAIR', current_state, current_diag)

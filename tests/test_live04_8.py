@@ -174,6 +174,9 @@ def _pathless_tracking(v):
     """Fixture extension: the procedure-sequence reset (op 1 / op 15, type 9) deletes the saved PrT
     paths unless the same execution also runs the assignment (op 20) - as in Visum."""
     orig = v.execute
+    # The original generic fixture leaves op 1 as type 0. This extension models
+    # a real reset, so its metadata must declare the same type 9 as its behavior.
+    v.ops[0].values['OPERATIONTYPE'] = 9
     v.paths_gone = False
     v.saves_without_paths = []
 
@@ -225,7 +228,7 @@ def test_demand_only_probes_never_leave_a_pathless_model(tmp_path, monkeypatch):
     assert r['status'].startswith('MOCK_LIVE04_')
 
 
-def test_stop_during_probe_repairs_assignment_before_saving(tmp_path, monkeypatch):
+def test_stop_during_probe_preserves_assignment_before_saving(tmp_path, monkeypatch):
     v = _pathless_tracking(Live04Visum(tmp_path / 'model'))
     from cordon2025.live04_adapter import CordonLive04Adapter
     orig_do = CordonLive04Adapter.execute_demand_only
@@ -243,7 +246,8 @@ def test_stop_during_probe_repairs_assignment_before_saving(tmp_path, monkeypatc
     f = runs(tmp_path)[0]
     res = read_json(f / '00_RESULT.json')
     assert 'STOP' in res['reason'] and res['status'] == 'LIVE04_STOPPED_MODEL_VERIFIED_AT_LAST_ACCEPTED_STATE'
-    assert res['assignment_repair_at_stop']['status'] == 'REPAIRED_VERIFIED'
+    # Demand-only probes preserve the accepted assignment, so no repair is needed.
+    assert res['assignment_repair_at_stop'] is None
     assert res['saved_version_at_stop'] and not v.saves_without_paths and not v.paths_gone
 
 
