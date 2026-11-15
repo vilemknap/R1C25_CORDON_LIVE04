@@ -319,7 +319,8 @@ def test_live04_launcher_and_import_restoration(tmp_path):
                               config_overrides=dict(GEN_ONLY, max_cycles=1,
                                                     # The bootstrap re-imports cordon2025, so the root conftest
                                                     # switch does not reach it; keep the 136-row contract here.
-                                                    observations={'station_profiles': {'enabled': False}}))
+                                                    observations={'station_profiles': {'enabled': False},
+                                                                  'extra_observations': {'enabled': False}}))
     assert result['status'] == 'MOCK_LIVE04_ACCEPTED', result
     assert list(sys.path) == path_before
     assert {k: m for k, m in sys.modules.items() if original._owned(k)} == mods

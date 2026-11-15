@@ -54,7 +54,7 @@ def test_d3_mode_contract_has_152_rows_with_d3_row_plus_column_targets(d3cfg):
     sp = cfg['observations']['station_profiles']
     assert sp['enabled'] is True and sp['source'] == 'D3_ALL_ROW_PLUS_COLUMN_SUM'
     c = obs.Contract(cfg['observations'])
-    assert c.row_count('FIRST_LAST') == 152 and c.row_count('EXACT_TWO_HITS') == 120
+    assert c.row_count('FIRST_LAST') == 152 + c.extra_row_count('FIRST_LAST') and c.row_count('EXACT_TWO_HITS') == 120
     with np.load(ROOT / 'data/audited/AUDITED_MATRICES.npz') as d:
         A = np.asarray(d['OA_ALL_D3_RPDI'], dtype=float)
     for s in range(1, 17):
@@ -65,7 +65,7 @@ def test_d3_mode_contract_has_152_rows_with_d3_row_plus_column_targets(d3cfg):
     assert c.mathcfg_extension()['first_last_profile_rows'] is True
     # disabled -> the 136-row LIVE03 contract, same hash as without the key
     off = dict(cfg['observations'], station_profiles=dict(sp, enabled=False))
-    assert obs.Contract(off).row_count('FIRST_LAST') == 136
+    assert obs.Contract(off).row_count('FIRST_LAST') == 136 + obs.Contract(off).extra_row_count('FIRST_LAST')
     assert 'first_last_profile_rows' not in obs.Contract(off).mathcfg_extension()
 
 

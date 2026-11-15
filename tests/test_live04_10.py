@@ -105,7 +105,8 @@ def test_release_contract_has_168_rows_with_raw_targets():
     sp = cfg['observations']['station_profiles']
     assert sp['enabled'] is True and sp['source'] == 'E41_RAW_DETECTIONS_DIRECTIONAL'
     c = obs.Contract(cfg['observations'])
-    assert c.profile_directional and c.row_count('FIRST_LAST') == 168 and c.row_count('EXACT_TWO_HITS') == 120
+    assert c.profile_directional and c.row_count('FIRST_LAST') == 168 + c.extra_row_count('FIRST_LAST') \
+        and c.row_count('EXACT_TWO_HITS') == 120     # LIVE05: + NDS/ASD/K rows
     assert c.mathcfg_extension()['first_last_profile_rows'] == 'DIRECTIONAL'
     doc = json.loads(EVIDENCE.read_text(encoding='utf-8'))
     for st, part in zip(doc['stations'], c.audit['station_profile_parts']):
@@ -116,7 +117,7 @@ def test_release_contract_has_168_rows_with_raw_targets():
         c.targets('FIRST_LAST')
     assert len(c.targets('EXACT_TWO_HITS')) == 240
     off = dict(cfg['observations'], station_profiles=dict(sp, enabled=False))
-    assert obs.Contract(off).row_count('FIRST_LAST') == 136
+    assert obs.Contract(off).row_count('FIRST_LAST') == 136 + obs.Contract(off).extra_row_count('FIRST_LAST')
 
 
 def test_report_sign_edges():

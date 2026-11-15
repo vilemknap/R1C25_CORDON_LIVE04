@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_5_LIVE01_OPMAP_POSITIONS_20261115",
+  "release": "R1C25_LIVE05_7_ASD3_REMAP_20261115",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -1653,13 +1653,13 @@
     },
     {
       "path": "data/audited/EXTRA_OBSERVATIONS_LIVE05.csv",
-      "size": 14787,
-      "sha256": "ef502d849c6e27b1b506b2d64ad073a86b1aed59d468e4198c024613fbd9fd9e"
+      "size": 14791,
+      "sha256": "07d3aa8468b9eef215f5a26a58a4e40948c24a4a016cbff1fa8b85ccab2681b3"
     },
     {
       "path": "data/audited/EXTRA_OBSERVATIONS_LIVE05_PROVENANCE.json",
-      "size": 3731,
-      "sha256": "19d667c131d46796045cadc66613d8c1df3e1ebdd9274dbd58e734d9a45decfe"
+      "size": 4318,
+      "sha256": "604d013fae4e30e001eec0e9a3836147659d4715798ec2cdbd1e3a30afb0f54d"
     },
     {
       "path": "data/audited/PHYSICAL_TARGETS.csv",
@@ -8749,7 +8749,7 @@
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
       "size": 20215,
-      "sha256": "fbc1dfb4598cc08c2420186a7781cc5935229e7980a9fd678aa3d0694bc31e0c"
+      "sha256": "ece28c74d1ca645df02cab711cc43f036527396c1aa09d6b4526fd3b492265b1"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -9003,13 +9003,13 @@
     },
     {
       "path": "tests/test_live04.py",
-      "size": 30651,
-      "sha256": "a913fe9b0d9d61a32937ddc93d5084276868ddaf6e2e771ef4dc483d65b75586"
+      "size": 30759,
+      "sha256": "def5f24de316a717d66af8efbef28736c9c774a7e363c49781853b3df3a38f2f"
     },
     {
       "path": "tests/test_live04_10.py",
-      "size": 17429,
-      "sha256": "c0270f7b4ed01bb4e4b4efb6217cf5ed29b9ae738e19a07971225366b285a478"
+      "size": 17554,
+      "sha256": "e3b8886d81c08ceac0ccdd5514c6994dd1de24ce1abb514468d5a46e76db0d5e"
     },
     {
       "path": "tests/test_live04_10_2.py",
@@ -9088,8 +9088,8 @@
     },
     {
       "path": "tests/test_live04_9.py",
-      "size": 8427,
-      "sha256": "fdab83e0a0ca2f0b20d98056e36c50df46dd7e30e8be1d97132c72015aed66aa"
+      "size": 8511,
+      "sha256": "602621aac240176bd15131ac997b1db82f562e20dc85d207e1b58683c7d7e800"
     },
     {
       "path": "tests/test_live05_extra.py",
