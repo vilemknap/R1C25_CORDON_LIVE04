@@ -328,6 +328,14 @@ def execute_sequence(adapter, folder, original_execute):
     }
     final_live = _tr(20)
     expected_partial = {_tr(k): v for k, v in expected_partial.items()}
+    # LIVE04.12.1: exact live scopes of the role assignments (SUE layout: LNV and NV as two
+    # partial preloads, 12-DSeg final); identity on the legacy layout.
+    try:
+        _live_scopes = {int(k): set(v) for k, v in _roles.expected_dsegs_by_live(inventory).items()}
+    except Exception:
+        _live_scopes = None
+    if _live_scopes and final_live in _live_scopes and not _roles._is_legacy_layout(inventory):
+        expected_partial = {k: v for k, v in _live_scopes.items() if k != final_live}
     if partial and (approved != {final_live} or not partial <= set(expected_partial)):
         raise SupplyContractError('LONGMASK_ASSIGNMENT_AUTHORITY_MISMATCH')
 
@@ -357,6 +365,8 @@ def execute_sequence(adapter, folder, original_execute):
         by_no = {int(row['no']): row for row in leaves}
         for rule in rules:
             expected_final = rule.get('expected_dsegs', [])
+            if _live_scopes and not _roles._is_legacy_layout(inventory) and _tr(int(rule['no'])) in _live_scopes:
+                expected_final = sorted(_live_scopes[_tr(int(rule['no']))])
             if not expected_final:
                 if partial:
                     raise SupplyContractError('LONGMASK_FINAL_ASSIGNMENT_SCOPE_AUTHORITY_MISSING')
@@ -406,7 +416,7 @@ def execute_sequence(adapter, folder, original_execute):
                  'final_assignment_authority': sorted(approved),
                  'validated_partial_assignments': sorted(scoped_partial or partial),
                  'temporarily_activated_partial_assignments': sorted(promoted_partial),
-                 'expected_final_assignment_sequence': ([_tr(p) for p in (17, 18, 19, 20)]
+                 'expected_final_assignment_sequence': (sorted(set(expected_partial) | {final_live})
                                                         if scoped_partial else sorted(approved)),
                  'operation_definitions_unchanged': True,
                  'original_active_flags_restored_after_each_phase': True,

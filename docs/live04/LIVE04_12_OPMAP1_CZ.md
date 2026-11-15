@@ -26,3 +26,20 @@ Modely R1 mají od 2026-11 kroky poptávky vnořené do dalších skupin, takže
 ## Ověření
 `tests/test_live04_12_opmap.py` (7 testů, starý 43-op i nový 53-op layout). Jen syntetické mocky – první nativní běh
 musí potvrdit Visum.
+
+## LIVE04.12.1 – postup 2025 se SUE nákladní dopravou (2026-11-15)
+Aktuální postup `R1_BASE_PROCEDURE_2025_SUE_V3_NODESVDF` (61 operací) verbatim OPMAP1 nerozpozná:
+nákladní doprava jsou dvě SUE přiřazení (op. 32 = LNV, op. 33 = NV), společné přiřazení op. 36 má jen
+12 osobních DSegů a před TG není žádný reset. Rozhodnutí uživatele 2026-11-15: **záměr – nákladní jen SUE**.
+
+LIVE04 proto přijímá právě tento jeden další podpis (`RESOLVED_BY_SIGNATURE_LIVE04_SUE_FREIGHT_SPLIT`):
+- nákladní = dvě po sobě jdoucí aktivní přiřazení s DSEGSET přesně {LNV} a {NV};
+- finální (GAP/COUNT autorita) = přesně 12 osobních DSegů (EXOG_EE_* + NATIVE_*); LNV/NV z SUE jsou předzatížení;
+- reset před TG nepovinný, reset mezi TD a prvním přiřazením povinný právě jeden (op. 30);
+- TG 13, TD 17, CF+CL 34, CS/CW 35; GEH skript 37 je neaktivní (nevadí);
+- jakékoli jiné aktivní přiřazení, chybějící role nebo jiné pořadí = stop `OPMAP1_SUE_*` před zápisem.
+
+V běhu: pravidlo přiřazení 20 → op. 36 s jeho 12 DSegy, `freight_dsegs` se při kontrole plánu přiřazení
+nevyžadují (nákladní nejsou součástí finální autority, ale v každém přepočtu se spouští: reset 30 je smaže,
+op. 32/33 je znovu přiřadí). Maska LONG a READINESS ověřují přesné DSEGSETy op. 32–36.
+Ověřit v prvním živém běhu: čtení GAP z PrT quality listu (op. 36, 12 DSegů) při přítomnosti SUE řádků LNV/NV.

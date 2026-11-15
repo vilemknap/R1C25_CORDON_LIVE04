@@ -168,3 +168,94 @@ def test_demand_plan_cuts_before_the_live_joint_assignment(monkeypatch):
     assert max(out['selected_operation_positions']) < 25          # no partial assignment 25-27
     assert 6 in out['selected_operation_positions'] and 10 in out['selected_operation_positions']
     assert out['skipped_other_assignments_in_prefix'] == [25, 26, 27]
+
+
+# ---------------------------------------------------------------- LIVE04.12.1 SUE freight layout
+PASS12 = ("EXOG_EE_CF,EXOG_EE_CL,EXOG_EE_CS,EXOG_EE_CS_noT,EXOG_EE_CW,EXOG_EE_CW_noT,"
+          "NATIVE_CF,NATIVE_CL,NATIVE_CS,NATIVE_CS_noT,NATIVE_CW,NATIVE_CW_noT")
+
+
+def sue_layout():
+    """R1_BASE_PROCEDURE_2025_SUE_V3_NODESVDF_aktualni.xml (2026-11-15, 61 operations)."""
+    G, S, E = 75, 65, 20
+    ops = [Op(G), Op(S, comment="R1 00 - truck speeds"), Op(G), Op(S, comment="R1 00b - truck surcharge"),
+           Op(G), Op(E, comment="R1_TOLL"), Op(E, comment="R1_TOLL"), Op(E, comment="R1_TOLL"),
+           Op(G), Op(S, comment="14A COUTRY_ADD Preset"), Op(G), Op(G), Op(45), Op(G), Op(S, comment="OSRM"),
+           Op(G), Op(46), Op(G), Op(S, comment="Foreign Matrix Post Processing"), Op(G), Op(G),
+           Op(S, comment="kappa audit"), Op(S, comment="kappa-band"), Op(G, comment="R1 20D"), Op(S), Op(G),
+           Op(91, comment="kappa-fixed"), Op(G), Op(S, comment="Matrix Symmetrization"),
+           Op(9, comment="reset after demand"), Op(G), Op(101, dseg="LNV"), Op(101, dseg="NV"),
+           Op(101, dseg="NATIVE_CF,NATIVE_CL"), Op(101, dseg=CSCW), Op(101, dseg=PASS12),
+           Op(S, active=0, comment="GEH (EXOG_EE_CF, ...)"), Op(G)]
+    ops += [Op(103, active=0) for _ in range(8)] + [Op(103) for _ in range(6)]
+    ops += [Op(9, active=0), Op(101, active=0, dseg="LNV,NV"), Op(101, active=0, dseg=FINAL + ",R1_OA_CAL_2022"),
+            Op(G, active=0), Op(107, active=0), Op(101, active=0, dseg=FINAL + ",R1_OA_CAL_2022"),
+            Op(S, active=0), Op(G, active=0), Op(1, active=0)]
+    assert len(ops) == 61
+    return ops
+
+
+def test_sue_layout_resolved_with_split_freight_and_12_dseg_final():
+    v = Visum(sue_layout())
+    info = om.resolve(v)
+    assert info['mode'] == om.SUE_MODE
+    assert info['roles']['RESET_PRE'] is None and info['roles']['RESET_POST'] == 30
+    assert info['freight_positions'] == [32, 33] and info['roles']['ASG_FINAL'] == 36
+    assert om.tg_td_positions(v) == (13, 17)
+    assert om.live_position(v, 15) == 30 and om.live_position(v, 20) == 36
+    assert {k: sorted(s) for k, s in om.expected_scopes(v).items()}[32] == ['LNV']
+    assert len(om.expected_scopes(v)[36]) == 12
+    # the verbatim resolver is untouched outside the LIVE04 scope
+    roles = parent_module('r1_15a2_procseq_roles_v24917')
+    with pytest.raises(roles.OpmapError, match='ASG_FREIGHT_FOUND_0'):
+        roles.resolve(v)
+
+
+def test_sue_live_cfg_and_assignment_authority():
+    v = Visum(sue_layout())
+    cfg = {"supply": {"assignment_operations": [{"no": 20, "operation_type": 101,
+                                                 "expected_dsegs": sorted(FINAL.upper().split(','))}],
+                      "freight_dsegs": ["LNV", "NV"],
+                      "gap_readback": {"operation_no": 20, "source": "PRT_ASS_QUALITY_LIST"}}}
+    live = om.live_cfg(v, cfg)
+    rule = live['supply']['assignment_operations'][0]
+    assert rule['no'] == 36 and len(rule['expected_dsegs']) == 12 and 'LNV' not in rule['expected_dsegs']
+    assert live['supply']['freight_dsegs'] == [] and live['supply']['opmap1_freight_preload_positions'] == [32, 33]
+    assert live['supply']['gap_readback']['operation_no'] == 36
+    assert cfg['supply']['freight_dsegs'] == ['LNV', 'NV']          # original untouched
+    a239 = parent_module('r1_15a2_assignment_authority_v239')
+    patched, restore = om.install()
+    try:
+        rep = a239.audit_assignment_scope(v)
+    finally:
+        restore()
+    assert rep['passes'], rep['failures']
+    assert rep['selected_trial_assignment_operations'] == [20] and rep['gap_operation_live_no'] == 36
+    assert [(d['no'], d['live_no']) for d in rep['verified_operations']] == [(17, 32), (17, 33), (18, 34), (19, 35), (20, 36)]
+    bad = sue_layout()
+    bad[33].PrTAssignmentParameters = Params("NATIVE_CF")              # CF_CL scope broken
+    with pytest.raises(ContractError, match='OPMAP1_SUE_ROLE_ASG_CF_CL_FOUND_0'):
+        om.resolve(Visum(bad))
+    bad = sue_layout()
+    bad[53].active = 1                                                 # a second active LNV,NV operation (54)
+    with pytest.raises(ContractError, match='OPMAP1_SUE_UNEXPECTED_ACTIVE_ASSIGNMENT'):
+        om.resolve(Visum(bad))
+
+
+def test_sue_supply_cold_plan_and_demand_plan(monkeypatch):
+    sm = parent_module('r1_15a2_supply_mix_v24917')
+    inv = _plan_inventory(sue_layout())
+    out = sm.cold_supply_plan({"inventory": inv, "approved_assignment_positions": [36],
+                               "selected_operation_positions": [36]}, {}, 15)
+    info = out["v24917_supplymix_plan"]
+    assert info["applied"] and info["reset_position"] == 30
+    assert {30, 32, 33, 34, 35, 36} <= set(out["selected_operation_positions"])   # freight SUE re-runs after reset
+    from cordon2025 import live03_predictor as pr
+    perf1 = parent_module('r1_15a2_acceleration_v24915p1')
+    sel = [r['no'] for r in inv if r['active'] and r['no'] <= 36]
+    monkeypatch.setattr(perf1, 'phase_recompute_plan',
+                        lambda visum, cfg, block: {'inventory': inv, 'selected_operation_positions': sel, 'mode': 'X'})
+    plan = pr.demand_plan(Visum(sue_layout()), CFG, 'GENERATION')
+    assert plan['first_approved_assignment'] == 36
+    assert plan['skipped_other_assignments_in_prefix'] == [32, 33, 34, 35]
+    assert {13, 17, 30} <= set(plan['selected_operation_positions'])

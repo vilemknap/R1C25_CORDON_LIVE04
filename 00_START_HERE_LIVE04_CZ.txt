@@ -70,6 +70,8 @@ se urci z ziveho modelu modulem OPMAP1 z kalibratoru R1_15A2_V24917_v7 (vetev cl
 parent/r1_15a2_procseq_roles_v24917.py beze zmeny). Model s puvodnim poradim = identita (beze zmeny chovani);
 jine poradi (vnorene skupiny 2026-11) se rozpozna podle typu, ACTIVE a presneho DSEGSET, nejednoznacnost = stop
 OPMAP1_* pred zapisem. Postup se nemeni. Vystup: OPMAP1_ROLES.json ve slozce behu. Viz docs/live04/LIVE04_12_OPMAP1_CZ.md.
+LIVE04.12.1: prijat i postup 2025 SUE_V3 (nakladni LNV op. 32 + NV op. 33 jako SUE predzatizeni, spolecne prirazeni
+op. 36 jen 12 osobnich DSegu, bez resetu pred TG) - rozhodnuti 2026-11-15 "nakladni jen SUE".
 CELOCISELNY SUPPLYMIX (LIVE04.11): supply_mix.integer_design = true - navrhuji se jen cele hodnoty ADDVAL1.
 RYCHLEJSI ROLLBACK (LIVE04.10.7): geometry_epoch.rollback_replay = true - overeni rollbacku prevezme geometrii
 cest obnoveneho stavu (GEOMETRY_EPOCH_PREV) po dukazu intenzitami na vsech hranach (~21 min -> ~10 min).

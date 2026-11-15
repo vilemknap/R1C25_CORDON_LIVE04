@@ -684,24 +684,23 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
         by = {int(r['no']): r for r in rows}
         tds = [int(r['no']) for r in rows if int(r['type']) == com.TD and r['active']]
         require(len(tds) == 1, 'EXPECTED_ONE_ACTIVE_TD:%s' % tds)
-        # LIVE04.12 OPMAP1: legacy role numbers 17-20 translated to the live sequence
-        from .live04_opmap import resolve as opmap_resolve, live_position
+        # LIVE04.12 OPMAP1: role assignments (legacy 17-20) at their live positions with their
+        # exact live DSEGSET (SUE layout: LNV + NV preloads and the 12-DSeg final, user decision 2026-11-15)
+        from .live04_opmap import resolve as opmap_resolve, live_position, expected_scopes
         roles = opmap_resolve(guarded)
+        scopes = expected_scopes(guarded)
         rules = acfg['supply']['assignment_operations']
-        for rule in rules:
-            mask._verify_assignment_scope(by[live_position(guarded, int(rule['no']))], rule['expected_dsegs'])
-        partial = {17: {'LNV', 'NV'}, 18: {'NATIVE_CF', 'NATIVE_CL'},
-                   19: {'NATIVE_CS', 'NATIVE_CS_NOT', 'NATIVE_CW', 'NATIVE_CW_NOT'}}
-        live = {no: live_position(guarded, no) for no in partial}
-        for no, dsegs in partial.items():
-            require(live[no] in by and int(by[live[no]]['type']) == com.ASSIGNMENT_PRT,
-                    'PARTIAL_ASSIGNMENT_MISSING:%d' % no)
-            mask._verify_assignment_scope(by[live[no]], dsegs)
+        finals = {live_position(guarded, int(rule['no'])) for rule in rules}
+        for live, dsegs in sorted(scopes.items()):
+            require(live in by and int(by[live]['type']) == com.ASSIGNMENT_PRT,
+                    'ROLE_ASSIGNMENT_MISSING:%d' % live)
+            mask._verify_assignment_scope(by[live], dsegs)
+        require(finals <= set(scopes), 'FINAL_ASSIGNMENT_NOT_A_ROLE:%s' % sorted(finals))
         return {'td_position': tds[0], 'opmap1_mode': roles['mode'], 'opmap1_roles': roles['roles'],
                 'assignments_verified': sorted([17, 18, 19] + [int(r['no']) for r in rules]),
-                'assignments_verified_live': sorted(set(live.values()) |
-                                                    {live_position(guarded, int(r['no'])) for r in rules}),
-                'partial_active': {no: bool(by[live[no]]['active']) for no in partial}}
+                'assignments_verified_live': sorted(scopes),
+                'live_scopes': {str(k): sorted(v) for k, v in scopes.items()},
+                'partial_active': {str(p): bool(by[p]['active']) for p in sorted(set(scopes) - finals)}}
     check('OPERATIONS_TD_17_20', operations)
 
     def supply_cold_chain():

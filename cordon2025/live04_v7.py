@@ -53,8 +53,8 @@ DONOR_FILES = {
     'r1_15a2_mobility_guard_v24917.py': 'e079d63af6cafe7dc371689e769de0924d4c68d090ee08743a6e03803b2e5120',
     'r1_15a2_mobility_zone_v24917.py': '7d664e8022ba6e95c3a11a458edd046b412ee1b0b460ec9e05cfdd1f3b7372f4',
     # LIVE04.12 OPMAP1: role-position hunks from vilemknap/R1_15A2_V24917_v7 branch
-    # claude-opmap1-procseq-roles-20261111 (identity on the legacy 43-op layout)
-    'r1_15a2_long_post_td_mask_v24917.py': 'a7ea9d7d78d4ca693afc335e6c2b2e5c81b34d5aebbb2459ca6deaede4920857',
+    # claude-opmap1-procseq-roles-20261111 (identity on the legacy 43-op layout) + LIVE04.12.1 live scopes (SUE layout)
+    'r1_15a2_long_post_td_mask_v24917.py': 'fd59b85ff6c57247a5450ea88a8834f6e1acf65c9cb96fd17d4fc2fa230ce0fd',
     'r1_15a2_long_support_distance_v24917.py': '79765255b057b1f09345ce4b7ac9874cd4b1fe91a09d996ba20d4c63223c02e9',
     'r1_15a2_long_distance_guard_v24917.py': 'c98bcf5013eaab983ed8ac52f946d008e795f9ad05d9748918acef826c15bee6',
     'r1_15a2_long_profile_incidence_v24917.py': 'b86614ab75a8ccae40918a7028b2d7e0455b41a2aa2b9197ea550dc55d9329db',
