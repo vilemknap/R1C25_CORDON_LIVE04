@@ -56,7 +56,8 @@ def demand_plan(visum, cfg, block):
     com = parent_module('r1_15a2_com_compat')
     plan = perf1.phase_recompute_plan(visum, cfg, block)
     inventory = plan['inventory']
-    approved = sorted(int(r['no']) for r in (cfg.get('supply', {}).get('assignment_operations') or []))
+    from .live04_opmap import approved_live_positions
+    approved = approved_live_positions(visum, cfg)     # LIVE04.12 OPMAP1 (identity on legacy)
     require(approved, 'LIVE03_DEMAND_PLAN_NO_APPROVED_ASSIGNMENT')
     first = min(approved)
     types = {int(r['no']): int(r['type']) for r in inventory}

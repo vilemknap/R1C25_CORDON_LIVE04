@@ -684,16 +684,24 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
         by = {int(r['no']): r for r in rows}
         tds = [int(r['no']) for r in rows if int(r['type']) == com.TD and r['active']]
         require(len(tds) == 1, 'EXPECTED_ONE_ACTIVE_TD:%s' % tds)
+        # LIVE04.12 OPMAP1: legacy role numbers 17-20 translated to the live sequence
+        from .live04_opmap import resolve as opmap_resolve, live_position
+        roles = opmap_resolve(guarded)
         rules = acfg['supply']['assignment_operations']
         for rule in rules:
-            mask._verify_assignment_scope(by[int(rule['no'])], rule['expected_dsegs'])
+            mask._verify_assignment_scope(by[live_position(guarded, int(rule['no']))], rule['expected_dsegs'])
         partial = {17: {'LNV', 'NV'}, 18: {'NATIVE_CF', 'NATIVE_CL'},
                    19: {'NATIVE_CS', 'NATIVE_CS_NOT', 'NATIVE_CW', 'NATIVE_CW_NOT'}}
+        live = {no: live_position(guarded, no) for no in partial}
         for no, dsegs in partial.items():
-            require(no in by and int(by[no]['type']) == com.ASSIGNMENT_PRT, 'PARTIAL_ASSIGNMENT_MISSING:%d' % no)
-            mask._verify_assignment_scope(by[no], dsegs)
-        return {'td_position': tds[0], 'assignments_verified': sorted([17, 18, 19] + [int(r['no']) for r in rules]),
-                'partial_active': {no: bool(by[no]['active']) for no in partial}}
+            require(live[no] in by and int(by[live[no]]['type']) == com.ASSIGNMENT_PRT,
+                    'PARTIAL_ASSIGNMENT_MISSING:%d' % no)
+            mask._verify_assignment_scope(by[live[no]], dsegs)
+        return {'td_position': tds[0], 'opmap1_mode': roles['mode'], 'opmap1_roles': roles['roles'],
+                'assignments_verified': sorted([17, 18, 19] + [int(r['no']) for r in rules]),
+                'assignments_verified_live': sorted(set(live.values()) |
+                                                    {live_position(guarded, int(r['no'])) for r in rules}),
+                'partial_active': {no: bool(by[live[no]]['active']) for no in partial}}
     check('OPERATIONS_TD_17_20', operations)
 
     def supply_cold_chain():
@@ -705,8 +713,9 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
         com = parent_module('r1_15a2_com_compat')
         rows = com.operation_rows(guarded)
         by = {int(r['no']): r for r in rows}
-        pos = int(sopts['reset_position'])
-        last = max(int(r['no']) for r in acfg['supply']['assignment_operations'])
+        from .live04_opmap import live_position
+        pos = live_position(guarded, int(sopts['reset_position']))      # LIVE04.12 OPMAP1
+        last = max(live_position(guarded, int(r['no'])) for r in acfg['supply']['assignment_operations'])
         require(pos in by and int(by[pos]['type']) == parent_module('r1_15a2_supply_mix_v24917').RESET_TYPE
                 and bool(by[pos]['active']), 'SUPPLYMIX_RESET_OPERATION:%d' % pos)
         require(last > pos and bool(by[last]['active']), 'SUPPLYMIX_RESET_NOT_BEFORE_ASSIGNMENT')

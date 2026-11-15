@@ -150,18 +150,24 @@ def read_donor_state(visum,zones,folder,control,opt,live):
     require(current==zones,'LIVE01_ZONE_AXIS_CHANGED')
     tg=audit_current_tg(vp,proxy,cfg)
     require(tg['passes'],'TG_CONTRACT_MISSING:'+','.join(tg['failures']))
+    from .live04_opmap import tg_td_positions,install as opmap_install
+    tg_pos,td_pos=tg_td_positions(proxy)   # LIVE04.12 OPMAP1: (5, 6) on the legacy layout
     selected=[r for r in tg['operation_rows'] if r.get('selected')]
-    require(len(selected)==1 and selected[0]['index']==5,'LIVE01_TG_OPERATION_POSITION')
+    require(len(selected)==1 and selected[0]['index']==tg_pos,'LIVE01_TG_OPERATION_POSITION')
     zrows,attrs=zone_state_rows(proxy,zones,cfg,zone_indices=indices,retry_policy=com_busy.NO_RETRY)
     eligible,scope=generation_actuator_zone_scope(proxy,zones,cfg,folder,zone_indices=indices,retry_policy=com_busy.NO_RETRY)
     scope_rows=read_json(folder/'00_ZONE_ACTUATOR_SCOPE_SUMMARY.json')
     for r in zrows:
         for name in attrs:finite(r[name],name,nonnegative=False)
-    assignment=parent_module('r1_15a2_assignment_authority_v239').audit_assignment_scope(proxy)
+    _patched,_restore=opmap_install()
+    try:
+        assignment=parent_module('r1_15a2_assignment_authority_v239').audit_assignment_scope(proxy)
+    finally:
+        _restore()
     require(assignment['passes'],'LIVE01_ASSIGNMENT_SCOPE:'+','.join(assignment['failures']))
     td=vp.read_td_parameter_state(proxy)
     selected=[r for r in td['operation_rows'] if r.get('selected')]
-    require(len(selected)==1 and selected[0]['index']==6,'LIVE01_TD_OPERATION_POSITION')
+    require(len(selected)==1 and selected[0]['index']==td_pos,'LIVE01_TD_OPERATION_POSITION')
     expected=read_json(ROOT/'provenance/live01/TD_COMPONENT_REGISTRY_FROM_DONOR.json')
     require(len(td['rows'])==16 and set(td['objects'])==set(expected),'LIVE01_TD_COMPONENT_SCOPE')
     tdrows=[]

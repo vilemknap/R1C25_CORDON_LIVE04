@@ -52,14 +52,17 @@ DONOR_FILES = {
     'r1_15a2_td_count_blend_v24917.py': 'b9f9756f3215b07b6e53bd544328df3a2fea479134def1b28309b231f37fedc4',
     'r1_15a2_mobility_guard_v24917.py': 'e079d63af6cafe7dc371689e769de0924d4c68d090ee08743a6e03803b2e5120',
     'r1_15a2_mobility_zone_v24917.py': '7d664e8022ba6e95c3a11a458edd046b412ee1b0b460ec9e05cfdd1f3b7372f4',
-    'r1_15a2_long_post_td_mask_v24917.py': 'ea50a146233dbb5f0d1d554effbef5574a5c84091d4afc334f50f4f8a6b276cd',
+    # LIVE04.12 OPMAP1: role-position hunks from vilemknap/R1_15A2_V24917_v7 branch
+    # claude-opmap1-procseq-roles-20261111 (identity on the legacy 43-op layout)
+    'r1_15a2_long_post_td_mask_v24917.py': 'a7ea9d7d78d4ca693afc335e6c2b2e5c81b34d5aebbb2459ca6deaede4920857',
     'r1_15a2_long_support_distance_v24917.py': '79765255b057b1f09345ce4b7ac9874cd4b1fe91a09d996ba20d4c63223c02e9',
     'r1_15a2_long_distance_guard_v24917.py': 'c98bcf5013eaab983ed8ac52f946d008e795f9ad05d9748918acef826c15bee6',
     'r1_15a2_long_profile_incidence_v24917.py': 'b86614ab75a8ccae40918a7028b2d7e0455b41a2aa2b9197ea550dc55d9329db',
     'r1_15a2_long_composite_diagnostic_v24917.py': '0378bfd4bbe245f4bc00e5c31f208b57632ce6ef5b26fd2b3fcbae57c1185ecb',
     'r1_15a2_generation_state_v24917.py': '27f3fdafb6f1ce595866455b5841cd78992a923dd59e5fc4e9ec29e56a1b7a93',
     'r1_15a2_parent_equivalence_v24917.py': '9714a9390169c6dce91ea4ace6254131fd49871e8331b25f14bc7d4277491332',
-    'r1_15a2_supply_mix_v24917.py': 'e9b51daf800cf7d7ee3ede4384ce2c085099d700c23347798fd891daed51b50d',
+    'r1_15a2_supply_mix_v24917.py': 'c4df1b3d12d3623d7fd96d88342be94ef2690e5a6fa281285da62b6d0baa4f20',  # + OPMAP1 reset 15
+    'r1_15a2_procseq_roles_v24917.py': '5c4d0db136841e7c4f48148b4457f971eff52b69007917d85204b63fbee1d5ca',  # OPMAP1 (verbatim)
     'r1_15a2_path_incidence_v24917.py': '3c4830a61fe3de9cb1a39a5ca8f203220a008585e1dd3f34d3dbd2dba787fb78',
 }
 
@@ -151,6 +154,9 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
               'cordon_deviations': dict(CORDON_DEVIATIONS)}
     filter_info = None
     restore_mask = None
+    from .live04_opmap import scope as opmap_scope
+    opmap = opmap_scope(guarded_visum, folder)
+    status['opmap1'] = opmap.__enter__()      # LIVE04.12: roles of the live procedure sequence
     try:
         dp.load_options = lambda root=None, environ=None: dict(opts)
         status['multiblock_patch'] = tg.patch_multiblock(mb)
@@ -181,6 +187,10 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
             status['long_post_td_mask'] = {'installed': False}
         status['generation_attributes'] = list(mb.GENERATION_ATTRS)
         write_json(Path(folder) / 'V7_RUNTIME_STATUS.json', status)
+        print('R1 CORDON LIVE04 OPMAP1 %s: TG=%s TD=%s reset=%s assignments 17-20 -> %s'
+              % (status['opmap1']['mode'], status['opmap1']['tg_positions'], status['opmap1']['td_position'],
+                 status['opmap1']['roles'].get('RESET_POST'),
+                 [status['opmap1']['roles'].get(k) for k in ('ASG_FREIGHT', 'ASG_CF_CL', 'ASG_CS_CW', 'ASG_FINAL')]))
         print('R1 CORDON LIVE04 v7@%s: STEP1=%s catch-up=%s P=%s A=%s LSGEN=%s BNDGEN=%s LONGMASK=%s COMBUSY2 %.0fs'
               % (SOURCE_COMMIT[:7], opts['ts_enabled'], opts['tg_catchup_enabled'],
                  [status['mobility']['lo'], status['mobility']['hi']],
@@ -191,6 +201,7 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
     finally:
         if restore_mask is not None:
             restore_mask()
+        opmap.__exit__(None, None, None)
         rt.execute_procseq = saved['execute']
         parent_module('r1_15a2_mobility_guard_v24917').options = saved['mg_options']
         parent_module('r1_15a2_mobility_guard_v24917').ATTRACTION_BAND = saved['mg_attraction_band']

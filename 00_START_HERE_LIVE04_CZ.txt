@@ -65,6 +65,11 @@ DOLNI MEZ PRODUKCE 0,25 (LIVE04.11): coefficient_envelope.PROD = [0.25, 3.15] a 
 AUDIT _noT A ZNAMKA (LIVE04.11.1): RUN_R1_2025_NOT_SHARE_AUDIT.py (jen cteni, Scripts -> Execute script file)
 vypise postup, podily _noT, sit jen pro C, rez pres D1 u SDP1 a katalog vsech matic (skimy, vzorce 9231-9234).
 Vysledek: %LOCALAPPDATA%\R1C25_BOOT\NOT_SHARE_AUDIT_<cas>\NOT_SHARE_AUDIT.json - poslat zpet.
+ROLE POSTUPU (LIVE04.12 OPMAP1, 2026-11-15): pozice operaci (TG 5, TD 6, reset 15, prirazeni 17-20, GEH 21)
+se urci z ziveho modelu modulem OPMAP1 z kalibratoru R1_15A2_V24917_v7 (vetev claude-opmap1-procseq-roles-20261111,
+parent/r1_15a2_procseq_roles_v24917.py beze zmeny). Model s puvodnim poradim = identita (beze zmeny chovani);
+jine poradi (vnorene skupiny 2026-11) se rozpozna podle typu, ACTIVE a presneho DSEGSET, nejednoznacnost = stop
+OPMAP1_* pred zapisem. Postup se nemeni. Vystup: OPMAP1_ROLES.json ve slozce behu. Viz docs/live04/LIVE04_12_OPMAP1_CZ.md.
 CELOCISELNY SUPPLYMIX (LIVE04.11): supply_mix.integer_design = true - navrhuji se jen cele hodnoty ADDVAL1.
 RYCHLEJSI ROLLBACK (LIVE04.10.7): geometry_epoch.rollback_replay = true - overeni rollbacku prevezme geometrii
 cest obnoveneho stavu (GEOMETRY_EPOCH_PREV) po dukazu intenzitami na vsech hranach (~21 min -> ~10 min).
