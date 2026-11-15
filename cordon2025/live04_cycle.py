@@ -295,6 +295,10 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 require(first_outer <= last_outer, 'LIVE04_CONTINUE_NO_CYCLE_LEFT_RAISE_MAX_CYCLES:next=%d,last=%d'
                         % (first_outer, last_outer))
                 unchanged_blocks = set()
+                # LIVE05.6: TD_CORDON that ended without a change is skipped in the next n cycles
+                # (its native probes + assignment repair cost ~20 min and found nothing twice in a row live)
+                td_skip_n = int(cfg['td_cordon'].get('skip_cycles_after_unchanged', 0))
+                td_skip_until = 0
                 for outer in range(first_outer, last_outer + 1):
                     adapter.cfg = adapter_config(cfg, outer, state['actuatable_zones'])
                     if adapter.run_memory is not None:
@@ -302,6 +306,10 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     cycle = {'outer_cycle': outer, 'blocks': []}
                     changed_cycle = False
                     names = planned_blocks(cfg, outer)      # v7: SupplyMix right after Generation
+                    if outer <= td_skip_until and 'TD_CORDON' in names:
+                        names = [n for n in names if n != 'TD_CORDON']
+                        cycle['skipped_blocks'] = [{'block': 'TD_CORDON', 'reason': 'UNCHANGED_IN_CYCLE_%d' %
+                                                    (td_skip_until - td_skip_n)}]
                     require(all(n in blocks for n in names), 'LIVE04_PLANNED_BLOCK_NOT_BUILT')
                     skip = 0
                     if plan and outer == plan['outer_cycle']:
@@ -338,6 +346,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                         if repair is not None:
                             entry['assignment_repair'] = repair['status']
                         cycle['blocks'].append(entry)
+                        if name == 'TD_CORDON' and not changed and td_skip_n > 0:
+                            td_skip_until = outer + td_skip_n
                         if changed:
                             if lm['enabled']:
                                 accepted_support = adapter.long_support_last_trial

@@ -127,6 +127,7 @@ class CordonEvaluator:
         opt['full_proof_method'] = ((self.live02 or {}).get('evaluation') or {}).get('full_geometry_proof', 'READ_ALL_DSEGS')
         opt['final_readback'] = ((self.live02 or {}).get('evaluation') or {}).get('final_readback', 'PATH_LISTS')
         opt['fast_geometry_parser'] = bool(((self.live02 or {}).get('evaluation') or {}).get('fast_geometry_parser', False))
+        opt['pipelined_geometry'] = bool(((self.live02 or {}).get('evaluation') or {}).get('pipelined_geometry', False))
         epoch = self.__dict__.get('geometry_epoch_cfg')
         if epoch is None:
             ecfg = ((self.live02 or {}).get('evaluation') or {}).get('geometry_epoch') or {}

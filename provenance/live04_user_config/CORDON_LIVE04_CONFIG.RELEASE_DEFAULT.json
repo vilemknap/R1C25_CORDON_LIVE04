@@ -149,7 +149,8 @@
   "acceptance": "BLENDED",
   "blended_min_relative_improvement": 0.001,
   "blended_max_cordon_degradation": 0.01,
-  "acceptance_note": "LIVE04.11 (user decision 2026-11-06): BLENDED = a TD trial is accepted when F improves by at least blended_min_relative_improvement (0.1 %), the cordon objective and the secondary method worsen by at most blended_max_cordon_degradation (1 %), the IDP guard and all other hard gates (row GEH, LONG, mobility) pass. CORDON = the cordon objective must improve (LIVE04.10)."
+  "acceptance_note": "LIVE04.11 (user decision 2026-11-06): BLENDED = a TD trial is accepted when F improves by at least blended_min_relative_improvement (0.1 %), the cordon objective and the secondary method worsen by at most blended_max_cordon_degradation (1 %), the IDP guard and all other hard gates (row GEH, LONG, mobility) pass. CORDON = the cordon objective must improve (LIVE04.10).",
+  "skip_cycles_after_unchanged": 1
  },
  "idp_guard": {
   "enabled": true,
@@ -216,7 +217,9 @@
    "rollback_replay_note": "LIVE04.10.7: after a rejected trial the rollback check capture may replay the path-link geometry of the restored parent state (kept as PREVIOUS epoch) instead of reading it again from Visum, but only when the saved-path key set is identical and the VOLVEH_DSEG volumes of every DSeg on every network link match the replayed geometry; otherwise the geometry is read from Visum as before (~22 min -> ~10 min per rollback)."
   },
   "keep_trial_capture_db": false,
-  "rollback_proof": "PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE"
+  "rollback_proof": "PATH_VOLUME_SIGNATURE_THEN_FULL_CAPTURE",
+  "pipelined_geometry": true,
+  "pipelined_geometry_note": "LIVE05.6: geometrie reprezentativniho segmentu se zpracovava v druhem vlakne, zatimco Visum vraci dalsi stranky COM (stejne poradi radku, stejne uloziste); odhad usetri ~3-4 min na zachyceni. false = puvodni seriove cteni."
  },
  "donor_runtime": {
   "source": "provenance/live01/DONOR_EFFECTIVE_CONFIG_FORENSIC_ONLY.json",

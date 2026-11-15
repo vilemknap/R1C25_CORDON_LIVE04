@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_5_LIVE01_OPMAP_POSITIONS_20261115",
+  "release": "R1C25_LIVE05_6_SPEED_20261115",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
     },
     {
       "path": "00_START_HERE_LIVE04_CZ.txt",
-      "size": 11770,
-      "sha256": "7dc245f63a83e5dc269f2b1a4bce40cf0533acdcb161274454f992b0d417afc8"
+      "size": 11976,
+      "sha256": "bb0465bdc1c886391f2a97c1a1ac1e192a9e68eeb73be4b34b4662bb81539a4c"
     },
     {
       "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -580,6 +580,11 @@
       "path": "RUN_R1_2025_CORDON_LIVE_BASELINE.py",
       "size": 511,
       "sha256": "56dbc4cf54f1e1dc2404edae0b835b4cc8af04c1facf3cc01c47cb489e52c021"
+    },
+    {
+      "path": "RUN_R1_2025_FLOWBUNDLE_PROBE.py",
+      "size": 10038,
+      "sha256": "69888b388f7f888bcba5ba3d0f4a6a6a8a2b6e54a01541e34b807aa7361749b7"
     },
     {
       "path": "RUN_R1_2025_IMPORT_AND_RECOMPUTE.py",
@@ -1368,8 +1373,8 @@
     },
     {
       "path": "cordon2025/live02_config.py",
-      "size": 14907,
-      "sha256": "bb6343a48496e8e88e1cb7fd78df7b5f0f4dce2d3193fcc47836d69b2d178e99"
+      "size": 15011,
+      "sha256": "dfe8c6f4a717e6cd2678014187b51f88e97d2062cbca0ee833f0029ee6c9595d"
     },
     {
       "path": "cordon2025/live02_cycle.py",
@@ -1378,8 +1383,8 @@
     },
     {
       "path": "cordon2025/live02_evaluation.py",
-      "size": 18640,
-      "sha256": "472224286e14d15572cb91f8b57f6cb74148893d4ac72450a736a3523d9cbe90"
+      "size": 18761,
+      "sha256": "e9cd6b09852411d0c171608afd62c5a9bf95ad8ef4b706310986b4df683a38bc"
     },
     {
       "path": "cordon2025/live02_guard.py",
@@ -1408,8 +1413,8 @@
     },
     {
       "path": "cordon2025/live03_config.py",
-      "size": 7571,
-      "sha256": "2b4fc48707760ab67be63ca5098320db072dfcb9c2f91b9abc9808f9dfc3765d"
+      "size": 7707,
+      "sha256": "9ccdfa3efcdaa3d600fd1bc558e638acb7cf642fe3cd95d45a97ba25f4637c33"
     },
     {
       "path": "cordon2025/live03_cycle.py",
@@ -1453,8 +1458,8 @@
     },
     {
       "path": "cordon2025/live04_capture.py",
-      "size": 28755,
-      "sha256": "4a0e1fe17a4243e7d19a49184c176b3cc6144c5aa36b4f3da4d24820b15e5558"
+      "size": 29392,
+      "sha256": "85d1c7a88f4e9b2d49d87e79a12ecf806011c9c21e1a47c0e34530164cbb9a64"
     },
     {
       "path": "cordon2025/live04_config.py",
@@ -1473,8 +1478,8 @@
     },
     {
       "path": "cordon2025/live04_cycle.py",
-      "size": 34659,
-      "sha256": "c880eb08726141226c9b7907fa682b63e83d3dfc831dbc39a25fb2edce17d9dd"
+      "size": 35467,
+      "sha256": "2deb5787f87e192a5c8ffaf5099f00931be768cb175a2f2d8d6c2cfd47de4f33"
     },
     {
       "path": "cordon2025/live04_epoch.py",
@@ -1545,6 +1550,11 @@
       "path": "cordon2025/live05_extra.py",
       "size": 2320,
       "sha256": "d6856ae0ac4a6fbe8ce042e57fee0e956b9af4039d39f5a21c017dbc5072b78f"
+    },
+    {
+      "path": "cordon2025/live05_pipeline.py",
+      "size": 4470,
+      "sha256": "c8a8171d9396d9a59283716198fde83a70e6ee478bcd46e0eb1af44aeb264007"
     },
     {
       "path": "cordon2025/optimizer.py",
@@ -3210,6 +3220,11 @@
       "path": "docs/live04/LIVE04_IMPLEMENTATION_REPORT_CZ.md",
       "size": 53288,
       "sha256": "e4cca2dbfe529ea748f8bd10489e80b842bc59771af868b1c3b7dcf446aea0f8"
+    },
+    {
+      "path": "docs/live04/LIVE05_6_SPEED_CZ.md",
+      "size": 2317,
+      "sha256": "109e37f2117ae7204573504aca4839989b74cc50892a0876eb9799c67bf7b2b4"
     },
     {
       "path": "docs/live04/LIVE05_EXTRA_OBSERVATIONS_CZ.md",
@@ -8748,8 +8763,8 @@
     },
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
-      "size": 20215,
-      "sha256": "fbc1dfb4598cc08c2420186a7781cc5935229e7980a9fd678aa3d0694bc31e0c"
+      "size": 20536,
+      "sha256": "296ba393a2cac4c85b858e1774f55642b0a2df2ed730863a7d3b4153d6add774"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -9095,6 +9110,11 @@
       "path": "tests/test_live05_extra.py",
       "size": 8002,
       "sha256": "58ab8adbd2f75dafd2d158b334252d8274e414b45944572f9fc9dbc00df87738"
+    },
+    {
+      "path": "tests/test_live05_speed.py",
+      "size": 8659,
+      "sha256": "2ed8ead525c7d3f79ad6eb730b965c1573f51e86051b1adf542d957c87ed0b05"
     },
     {
       "path": "tests/test_optimizer.py",

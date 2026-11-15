@@ -198,13 +198,25 @@ def capture(visum,cfg,folder,control,opt,pre):
             max_geometry_rows_per_mode=opt['max_geometry_rows_per_mode'],
             com_retry_policy=retry_policy(opt))
     fast_parser=bool(opt.get('fast_geometry_parser',False))
+    pipelined=bool(opt.get('pipelined_geometry',False))
     class CordonCollector(two.TwoModeRouteCollector):
-        def add_geometry(self,mode,raw_rows):
+        def __init__(self,*a,**k):
+            super().__init__(*a,**k)
+            if pipelined:
+                from .live05_pipeline import shareable_connection
+                shareable_connection(self)
+        def _ingest(self,mode,raw_rows):
             if fast_parser:
                 # LIVE04.10.4: behaviour-identical faster ingestion (see live04_fastgeom)
                 from .live04_fastgeom import add_geometry as fast_add
                 return fast_add(self,mode,raw_rows)
             return super().add_geometry(mode,raw_rows)
+        def add_geometry(self,mode,raw_rows):
+            if pipelined:
+                # LIVE05.6: parse in a worker thread while COM delivers the next pages (same store)
+                from .live05_pipeline import add_geometry as piped
+                return piped(self,mode,raw_rows,self._ingest)
+            return self._ingest(mode,raw_rows)
         def check_resources(self,force=False):
             now=time.monotonic()
             if not force and now-self._last_resource_check<5:return
@@ -427,7 +439,7 @@ def capture(visum,cfg,folder,control,opt,pre):
                               'mode_audits':mode_keys},
             'geometry_station_crosschecks':crosschecks,
             'full_proof_method':full_method,'geometry_all_link_proofs':all_link_proofs,
-            'final_readback_basis':final_basis,'fast_geometry_parser':fast_parser,'com_page_size':int(opt['page_size']),
+            'final_readback_basis':final_basis,'fast_geometry_parser':fast_parser,'pipelined_geometry':pipelined,'com_page_size':int(opt['page_size']),
             'capture_timing_seconds':{k:round(v,3) for k,v in timing.items()},
             'apply_permitted':False,'live_calibration_verified':False}
         write_json(folder/'SNAPSHOT_EVIDENCE.json',evidence)
