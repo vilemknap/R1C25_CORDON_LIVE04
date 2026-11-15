@@ -1,0 +1,27 @@
+F....................................................................... [ 18%]
+.......................................F................................ [ 36%]
+........................................................................ [ 55%]
+........................................................................ [ 73%]
+........................................................................ [ 92%]
+...............................                                          [100%]
+=================================== FAILURES ===================================
+_______ test_v2_bytes_preserved_except_explicit_reviewed_startup_patches _______
+tests/test_aggressive_integration.py:33: in test_v2_bytes_preserved_except_explicit_reviewed_startup_patches
+    assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,name
+E   AssertionError: data/audited/AUTHORITY_AUDIT.json
+E   assert '97162808b75b...91133ab601286' == '26a844704238...392d2b4bfef5d'
+E
+E     - 26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d
+E     + 97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286
+_________ test_default_retry_does_not_change_active_scope_and_science __________
+tests/test_combusy_entry_fix2.py:124: in test_default_retry_does_not_change_active_scope_and_science
+    assert hashlib.sha256((ROOT/rec['path']).read_bytes()).hexdigest()==digest,rec['path']
+E   AssertionError: data/audited/AUTHORITY_AUDIT.json
+E   assert '97162808b75b...91133ab601286' == '26a844704238...392d2b4bfef5d'
+E
+E     - 26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d
+E     + 97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286
+=========================== short test summary info ============================
+FAILED tests/test_aggressive_integration.py::test_v2_bytes_preserved_except_explicit_reviewed_startup_patches
+FAILED tests/test_combusy_entry_fix2.py::test_default_retry_does_not_change_active_scope_and_science
+2 failed, 389 passed, 767 deselected in 300.19s (0:05:00)

@@ -1,0 +1,18 @@
+{
+  "schema": "R1C25_GEOMETRY_PIPELINE_BENCHMARK_V1",
+  "kind": "SYNTHETIC_BLOCKING_PAGE_PROVIDER_NOT_NATIVE_COM",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "routes": 12000,
+  "link_children_per_route": 70,
+  "rows": 852000,
+  "page_size": 1024,
+  "page_wait_ms": 0.0,
+  "repeats": 3,
+  "median_sequential_seconds": 1.244897746999868,
+  "median_pipeline_seconds": 1.7504075319998265,
+  "speedup": 0.7112045190856683,
+  "wall_time_reduction_percent": -40.6065306341993,
+  "sqlite_bytes_and_hash_identical": true,
+  "native_visum_tested": false
+}

@@ -1,0 +1,10 @@
+{
+  "status": "WRITE_ACCESS_RESTORED",
+  "repository": "vilemknap/R1C25_CORDON_LIVE04",
+  "branch": "codex/cordon-path-pipeline-20261115",
+  "base_commit": "99a7a576b29faa95c6c1f81ded191eb6c44ae07d",
+  "remote_checkpoint_commit": "73847c9639585192cc2d1ab6bc056ec6d22949c2",
+  "checkpoint_tree_matches_local": true,
+  "initial_connector_and_git_errors": "403; user restored write access, connector upload succeeded",
+  "final_verification": "Final commit and remote tree readback are recorded in the final publication receipt outside the archive to avoid a self-referential hash."
+}

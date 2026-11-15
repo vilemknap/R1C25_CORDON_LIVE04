@@ -80,6 +80,7 @@ def add_geometry(collector, mode, raw_rows, *, batch_size, fast_parser=True):
     # Resolve imports and connection settings before starting the worker.
     pragmas = {name: collector.db.execute('PRAGMA ' + name).fetchone()[0]
                for name in ('foreign_keys', 'synchronous', 'cache_size')}
+    db_uri = Path(collector.route_db_path).resolve().as_uri() + '?mode=rw'
     worker_collector = copy(collector)
     worker_collector.db = None
     pages, events, result = Queue(1), Queue(), Queue(1)
@@ -117,7 +118,7 @@ def add_geometry(collector, mode, raw_rows, *, batch_size, fast_parser=True):
         db = None
         try:
             # mode=rw: cannot silently create a missing staging database.
-            db = sqlite3.connect(Path(collector.route_db_path).resolve().as_uri() + '?mode=rw', uri=True)
+            db = sqlite3.connect(db_uri, uri=True)
             worker_collector.db = db
             for name, value in pragmas.items():
                 db.execute('PRAGMA %s=%d' % (name, int(value)))

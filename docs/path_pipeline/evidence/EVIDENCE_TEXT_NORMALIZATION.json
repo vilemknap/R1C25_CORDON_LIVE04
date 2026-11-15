@@ -1,0 +1,25 @@
+{
+  "operation": "Removed trailing whitespace only from displayed pytest logs/XML; no lines removed.",
+  "files": [
+    {
+      "path": "docs/path_pipeline/evidence/BASELINE_FAILURES.log",
+      "original_sha256": "dadcd4e4bcc9fd61e92fe452314675ddff87f3d967aee272104765b5edf68f04",
+      "normalized_sha256": "13b818aa5772b1ba82a1e2c20e07d15a8b94f631c689c6fb9f053038be2200bf"
+    },
+    {
+      "path": "docs/path_pipeline/evidence/BASELINE_FAILURES.xml",
+      "original_sha256": "51dd341ef5cc965febb78bc52f098bac00d7edf0109555b1d33552cbad4bb18e",
+      "normalized_sha256": "5f07053a106fb30bf9cc7385a723d58cf62e3effec85f695e04c6ab7361ab6a8"
+    },
+    {
+      "path": "docs/path_pipeline/evidence/BASELINE_PREFIX.log",
+      "original_sha256": "9fcf5eb1989ca4d2c85f3514882fd86bc1c13355f609fb9f08edb40f99c9c2f5",
+      "normalized_sha256": "523e5e2e1da8ee678e4cf5d7299b24e184c724c825e4215d134b9d0a5647f443"
+    },
+    {
+      "path": "docs/path_pipeline/evidence/BASELINE_PREFIX.xml",
+      "original_sha256": "de6c44746de4faf931b333842314eb7485810e7bed2f2e1db822e6ede19d7643",
+      "normalized_sha256": "15e99315abb6e9913ead0f43953c62ac01da71239f26f3b638f26172462af8ec"
+    }
+  ]
+}

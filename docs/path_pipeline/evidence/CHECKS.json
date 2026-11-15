@@ -1,0 +1,79 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_commit": "99a7a576b29faa95c6c1f81ded191eb6c44ae07d",
+  "suites": {
+    "PIPELINE": {
+      "tests": 33,
+      "passed": 33,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "PIPELINE.xml"
+    },
+    "FOCUSED": {
+      "tests": 86,
+      "passed": 86,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "FOCUSED.xml"
+    },
+    "PIPELINED_GUARDS": {
+      "tests": 40,
+      "passed": 40,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "PIPELINED_GUARDS.xml"
+    },
+    "LIVE04_INTEGRATION": {
+      "tests": 1,
+      "passed": 1,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "LIVE04_INTEGRATION.xml"
+    },
+    "RESEALED_BOOT": {
+      "tests": 3,
+      "passed": 3,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "RESEALED_BOOT.xml"
+    },
+    "BASELINE_PREFIX": {
+      "tests": 391,
+      "passed": 389,
+      "failed": 2,
+      "errors": 0,
+      "skipped": 0,
+      "file": "BASELINE_PREFIX.xml"
+    },
+    "BASELINE_FAILURES": {
+      "tests": 5,
+      "passed": 3,
+      "failed": 2,
+      "errors": 0,
+      "skipped": 0,
+      "file": "BASELINE_FAILURES.xml"
+    },
+    "LIVE04_INTEGRATION_INTERMEDIATE": {
+      "tests": 1,
+      "passed": 0,
+      "failed": 1,
+      "errors": 0,
+      "skipped": 0,
+      "file": "LIVE04_INTEGRATION_INTERMEDIATE.xml"
+    }
+  },
+  "full_historical_suite_complete": false,
+  "full_attempt_status": "FULL_ATTEMPT_STATUS.json",
+  "baseline_failures_reproduced_on_original_commit": 2,
+  "intermediate_test_failures_explained": {
+    "startup": "Three startup failures saw an in-progress manifest and passed after resealing.",
+    "integration": "An intermediate full-cycle test saw a source edit and correctly failed CHECKPOINT_CODE_CHANGED; frozen-source rerun passed."
+  },
+  "live_visum_tested": false,
+  "scientific_or_acceptance_policy_changed": false
+}

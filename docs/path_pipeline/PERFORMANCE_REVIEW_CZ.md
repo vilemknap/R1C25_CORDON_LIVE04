@@ -93,3 +93,45 @@ nezávisle ověřená měření a nejsou slibem nové verze.
 
 Dosavadní optimalizace 10.2–10.7 už základní větev obsahovala. Nejsou znovu
 vydávány za nové zrychlení.
+
+## Výsledky závěrečného ověření
+
+Samostatný benchmark bez souběžných testů: 12 000 tras, 70 hran na trasu,
+852 000 řádků, stránky 1024, medián tří střídavých opakování každého režimu.
+
+| Syntetický čteč | Sekvenčně | S překrytím | Změna wall time |
+|---|---:|---:|---:|
+| Čekání 6 ms na stránku | 6,502 s | 5,868 s | **−9,75 %** |
+| Bez čekání na stránku | 1,245 s | 1,750 s | **+40,61 %** |
+
+Ve všech opakováních byly celé SQLite databáze bajtově shodné a měly stejný
+SHA-256. Druhý řádek je důvod, proč se přehrávání epochy z disku nepřevádí
+na pipeline. Skutečné zrychlení COM na modelu a uvolňování GIL nativním
+poskytovatelem nebylo v tomto prostředí změřeno.
+
+Offline testy (počty se překrývají, nejde o součet unikátních testů):
+
+- 33 nových testů: shoda bajtů, hashů, auditů a commit chunků pro oba parsery,
+  obě role vláken, omezení fronty, chyby čtení/SQLite/STOP, násobnost průjezdů,
+  nepřevádění epochového replay na worker a nepovolení neúplného důkazu;
+- 86 cílených testů stávajících optimalizací (2 celocyklové testy mimo tento výběr);
+- 40 stávajících kontrol geometrie/driftu/epochy/rollbacku se skutečně zapnutou
+  pipeline pomocí přepnutí fixture (2 celocyklové testy mimo výběr);
+- 1 celý syntetický cyklus LIVE04, včetně nativně simulovaných sond a kontrol
+  přijetí; **prošel nad zmrazeným kódem za 337 s**;
+- 3 startovní kontroly po uzavření manifestu.
+
+Úplná historická sada nebyla dokončena a není vykázána jako PASS. Širší pokus
+byl ukončen po 510 výsledcích, z toho 505 PASS a 5 FAIL. Dvě selhání porovnávají
+historické hashe dat, které už nesouhlasí v původním commitu `99a7a57`;
+kontrolní prefix nad tímto commitem potvrdil 389 PASS / 2 FAIL.
+Tři další selhání zachytila rozpracovaný manifest a po resealu prošla.
+První celocyklový test správně odmítl průběžnou úpravu zdroje jako
+`CHECKPOINT_CODE_CHANGED`; jeho opakování nad zmrazeným kódem prošlo. Ochrany
+kvůli tomu nebyly upraveny. Přesné logy a JUnit XML zůstávají v `evidence/`.
+
+Chráněné zdroje, data, algoritmus a toleranční politiky `parent/` se oproti
+výchozímu commitu nezměnily. Finální ZIP se ověřuje nezávislým
+`verify_release.py` po rozbalení; záznam publikování pak porovnává celý Git tree
+lokálního a vzdáleného commitu. ZIP z GitHubu je dostupný přes archiv finálního
+commitu nové větve; archiv se zde nevkládá do sebe.
