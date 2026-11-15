@@ -1513,8 +1513,8 @@
     },
     {
       "path": "cordon2025/live04_nodevdf.py",
-      "size": 3607,
-      "sha256": "58300322cc1bd6686b1d41966eee8ed3c5f6c655539ca41f4e3928c8fbac0694"
+      "size": 3845,
+      "sha256": "2449b6648cef6a795b62d915e2fb9d766de7f1e4e2a36e3267981d8480e7c083"
     },
     {
       "path": "cordon2025/live04_opmap.py",
@@ -1543,8 +1543,8 @@
     },
     {
       "path": "cordon2025/live05_extra.py",
-      "size": 2203,
-      "sha256": "c3abee87101eaa70b23fa6e56801d5c62c2e27e267ff18a55aa1198a034759d0"
+      "size": 2320,
+      "sha256": "d6856ae0ac4a6fbe8ce042e57fee0e956b9af4039d39f5a21c017dbc5072b78f"
     },
     {
       "path": "cordon2025/optimizer.py",
@@ -8868,8 +8868,8 @@
     },
     {
       "path": "tests/fake_live04.py",
-      "size": 13653,
-      "sha256": "2ef28e83c999700daa4ea2bbccdea4eb615fc5eacca0de68c096b8c256548cde"
+      "size": 14507,
+      "sha256": "aa506bc63360f7767457a4e102b2d00a40457ba87caa693b0c869521124de970"
     },
     {
       "path": "tests/fake_visum_startup.py",
@@ -9093,8 +9093,8 @@
     },
     {
       "path": "tests/test_live05_extra.py",
-      "size": 3987,
-      "sha256": "a25f8645b8b0bf70d9fa929efb8035e592d8c6d9ce395d9b5ba345a515dee3fc"
+      "size": 8002,
+      "sha256": "58ab8adbd2f75dafd2d158b334252d8274e414b45944572f9fc9dbc00df87738"
     },
     {
       "path": "tests/test_optimizer.py",

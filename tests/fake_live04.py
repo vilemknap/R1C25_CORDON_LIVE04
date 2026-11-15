@@ -33,6 +33,28 @@ from fake_live02 import LinkObj, LinkCollection
 from fake_live03 import Live03Visum
 from cordon2025.common import parent_core
 
+# LIVE05: the synthetic network carries only the cordon stations, not the real NDS/ASD/K
+# links and RPDI of the R1 config; runs on this host use the cordon-only observation set
+# unless a test sets LIVE05_ROWS = True (and supplies its own synthetic extra file).
+LIVE05_ROWS = False
+
+
+def _install_cordon_only_config():
+    from cordon2025 import live04_cycle, live04_config
+    from cordon2025.live02_config import merge
+    orig = live04_config.load_config
+
+    def load(path=None, overrides=None):
+        if LIVE05_ROWS:
+            return orig(path, overrides)
+        over = merge({'observations': {'extra_observations': {'enabled': False}}}, overrides or {})
+        over.update({k: v for k, v in (overrides or {}).items() if k.startswith('_')})
+        return orig(path, over)
+    live04_cycle.load_config = load
+
+
+_install_cordon_only_config()
+
 LONG_PERSON = tuple(range(9111, 9116))
 LONG_VEHICLE = tuple(range(9291, 9296))
 

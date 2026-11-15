@@ -26,7 +26,8 @@ GROUPS = (('nodes', 'Nodes', ('NO',), ('TYPENO', 'CAPPRT', 'T0PRT')),
 
 
 def _col(coll, attr):
-    return [v for _, v in coll.GetMultiAttValues(attr)]
+    """{object index: value} over all network objects (OnlyActive=False)."""
+    return dict(coll.GetMultiAttValues(attr, False))
 
 
 def fingerprint(visum):
@@ -36,16 +37,19 @@ def fingerprint(visum):
         try:
             coll = getattr(visum.Net, coll_name)
             kcols = [_col(coll, k) for k in keys]
+            idx = sorted(kcols[0])
+            keyof = {i: tuple(c.get(i) for c in kcols) for i in idx}
             h = hashlib.sha256()
             readable = []
             for a in attrs:
                 try:
-                    vals = _col(coll, a)
+                    col = _col(coll, a)
                 except Exception as exc:          # attribute not in this Visum / network
                     rec.setdefault('unreadable', {})[a] = str(exc)[:200]
                     continue
                 readable.append(a)
-                rows = sorted(zip(zip(*kcols), vals), key=lambda r: tuple(str(x) for x in r[0]))
+                vals = [col.get(i) for i in idx]
+                rows = sorted(zip((keyof[i] for i in idx), vals), key=lambda r: tuple(str(x) for x in r[0]))
                 h.update(json.dumps([a, [[list(map(str, k)), str(v)] for k, v in rows]]).encode())
                 if a == 'TYPENO':
                     counts = {}

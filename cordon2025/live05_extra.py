@@ -20,13 +20,15 @@ def check_links(visum, contract, folder=None, *, native=True):
     if links:
         try:
             coll = visum.Net.Links
-            cols = {a: [v for _, v in coll.GetMultiAttValues(a)] for a in ('NO', 'FROMNODENO', 'TONODENO', 'TSYSSET')}
+            # all network objects (OnlyActive=False); columns joined by the object index, not by order
+            cols = {a: dict(coll.GetMultiAttValues(a, False)) for a in ('NO', 'FROMNODENO', 'TONODENO', 'TSYSSET')}
         except Exception as exc:
             require(not native, 'LIVE05_EXTRA_LINKS_UNREADABLE:%s' % exc)
-            cols = {a: [] for a in ('NO', 'FROMNODENO', 'TONODENO', 'TSYSSET')}
+            cols = {a: {} for a in ('NO', 'FROMNODENO', 'TONODENO', 'TSYSSET')}
         net = {}
-        for no, f, t, ts in zip(cols['NO'], cols['FROMNODENO'], cols['TONODENO'], cols['TSYSSET']):
-            net[(int(no), int(f), int(t))] = {x.strip() for x in str(ts or '').split(',')}
+        for i, no in cols['NO'].items():
+            net[(int(no), int(cols['FROMNODENO'][i]), int(cols['TONODENO'][i]))] = \
+                {x.strip() for x in str(cols['TSYSSET'].get(i) or '').split(',')}
         for k in links:
             if k not in net:
                 out['missing'].append(list(k))
