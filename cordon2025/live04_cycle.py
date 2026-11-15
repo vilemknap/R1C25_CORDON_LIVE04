@@ -243,6 +243,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             'LIVE04_BASELINE_LONG_SUPPORT_NOT_MASKED:person_below_80km=%.6g;vehicle_clean=%s'
                             % (long_support0['person']['below_min_km'], long_support0['vehicle_support_clean']))
                     adapter.accept_long_support(long_support0)
+                from . import live04_nodevdf as nodevdf      # LIVE04.12.3: node delays, guard only
+                node_vdf0 = nodevdf.record(visum, folder, 'BASELINE')
                 write_json(folder / 'RESTORE_POINT.json', {
                     'schema': 'LIVE04_RESTORE_POINT_V1', 'snapshot': snap0, 'state_hash': snap0['state_hash'],
                     'baseline_diagnostic_hash': baseline['diagnostic_hash'],
@@ -400,6 +402,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 if progress['accepted_states'] and cfg['write_policy']['save_accepted_version_new_file']:
                     saved = save_accepted_version(visum, folder, state)
                 write_json(folder / 'WRITE_AUDIT_SUMMARY.json', audit.summary())
+                node_vdf_guard = nodevdf.compare(node_vdf0, nodevdf.record(visum, folder, 'FINAL'))
                 m = cfg['acceptance']['method']
                 step_state = parent_module('r1_15a2_step_search_v24917')._STATE
                 result = {'schema': RESULT_SCHEMA,
@@ -442,6 +445,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                                 'baseline': {k: (long_support0 or {}).get(k) for k in ('support_clean',)},
                                                 'final_support_clean': (long_final or {}).get('support_clean'),
                                                 'matrix_writes': audit.summary()['long_mask_matrix_writes']},
+                          'node_vdf_guard': node_vdf_guard,
                           'step1': {k: step_state.get(k) for k in ('rho', 'rho_history', 'blocks', 'trials', 'kept', 'exhausted')},
                           'timing': copy.deepcopy(parent_module('r1_15a2_perf_v24917')._STATE['timing']),
                           'memory': (adapter.run_memory.summary() if adapter.run_memory is not None

@@ -75,6 +75,11 @@ jine poradi (vnorene skupiny 2026-11) se rozpozna podle typu, ACTIVE a presneho 
 OPMAP1_* pred zapisem. Postup se nemeni. Vystup: OPMAP1_ROLES.json ve slozce behu. Viz docs/live04/LIVE04_12_OPMAP1_CZ.md.
 LIVE04.12.1: prijat i postup 2025 SUE_V3 (nakladni LNV op. 32 + NV op. 33 jako SUE predzatizeni, spolecne prirazeni
 op. 36 jen 12 osobnich DSegu, bez resetu pred TG) - rozhodnuti 2026-11-15 "nakladni jen SUE".
+ZDRZENI V UZLECH (LIVE04.12.3, rozhodnuti 2026-11-15): kalibrator uzly nemeni a prediktor zustava (zmrazene cesty);
+zdrzeni v uzlech pocita plne nativni prirazeni, ktere rozhoduje o prijeti. Beh jen ulozi NODE_VDF_BASELINE.json a
+NODE_VDF_FINAL.json (uzly TYPENO/CAPPRT/T0PRT, useky TMODELSPECIAL, odboceni TSYSSET/T0PRT) a v 00_RESULT.json
+hlasi node_vdf_guard (UNCHANGED/CHANGED). READINESS vypise NODE_VDF_SETUP_REPORT. Metodu impedance uzlu = Nodes VDF
+je treba prepnout ve Visumu (Obecna nastaveni procedur -> PrT -> Impedance uzlu).
 CELOCISELNY SUPPLYMIX (LIVE04.11): supply_mix.integer_design = true - navrhuji se jen cele hodnoty ADDVAL1.
 RYCHLEJSI ROLLBACK (LIVE04.10.7): geometry_epoch.rollback_replay = true - overeni rollbacku prevezme geometrii
 cest obnoveneho stavu (GEOMETRY_EPOCH_PREV) po dukazu intenzitami na vsech hranach (~21 min -> ~10 min).

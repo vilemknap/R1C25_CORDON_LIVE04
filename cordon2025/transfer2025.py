@@ -711,6 +711,14 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
                 'partial_active': {str(p): bool(by[p]['active']) for p in sorted(set(scopes) - finals)}}
     check('OPERATIONS_TD_17_20', operations)
 
+    def node_vdf():
+        """LIVE04.12.3: node delays (Nodes VDF) - report only, the calibrator never writes them."""
+        from .live04_nodevdf import fingerprint
+        fp = fingerprint(visum)
+        return {k: {x: g.get(x) for x in ('count', 'readable', 'unreadable', 'typeno_counts', 'error')}
+                for k, g in fp['groups'].items()}
+    check('NODE_VDF_SETUP_REPORT', node_vdf)
+
     def supply_cold_chain():
         """LIVE04.4 SupplyMix: the v7 cold chain needs an active reset operation before the joint assignment."""
         from .live04_supply import options as supply_options

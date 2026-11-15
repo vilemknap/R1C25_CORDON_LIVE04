@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE04_12_2_SDP15_REMAP_20261115",
+  "release": "R1C25_LIVE04_12_3_NODEVDF_GUARD",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
     },
     {
       "path": "00_START_HERE_LIVE04_CZ.txt",
-      "size": 10311,
-      "sha256": "36938dea145b82410f8e8eb38dc0bcca16b4b2877ab54e2d71d71b4a7a2ab0a2"
+      "size": 10850,
+      "sha256": "a09c8242f27a32ad4c49d8b4765b5c3010701773dbee14c804b0d23f2ab21101"
     },
     {
       "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -1473,8 +1473,8 @@
     },
     {
       "path": "cordon2025/live04_cycle.py",
-      "size": 33847,
-      "sha256": "056c02dbe01ba06355dd47597d6c23ee3726f8c0d0a617e61301afcd35750912"
+      "size": 34177,
+      "sha256": "887308aaa2f0644f3051fda8c1090c71476ba4519b2d6392edb470063eb68087"
     },
     {
       "path": "cordon2025/live04_epoch.py",
@@ -1510,6 +1510,11 @@
       "path": "cordon2025/live04_memory.py",
       "size": 8688,
       "sha256": "8a620d918c6f53d4c7dbb775231f4f45a8c26b50bc0daf010d9b1f3c405a3fd4"
+    },
+    {
+      "path": "cordon2025/live04_nodevdf.py",
+      "size": 3607,
+      "sha256": "58300322cc1bd6686b1d41966eee8ed3c5f6c655539ca41f4e3928c8fbac0694"
     },
     {
       "path": "cordon2025/live04_opmap.py",
@@ -1578,8 +1583,8 @@
     },
     {
       "path": "cordon2025/transfer2025.py",
-      "size": 43784,
-      "sha256": "e48814f3f7b2e4f506092567e62e27b219a5728fec7fd978655f9b8344155274"
+      "size": 44184,
+      "sha256": "914abc74b18fb07fac701bd91273d3243f49a6165b4b4df5317659902cd680d7"
     },
     {
       "path": "cordon2025/visum_startup.py",
