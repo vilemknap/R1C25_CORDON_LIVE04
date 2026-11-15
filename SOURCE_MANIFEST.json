@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE04_12_1_OPMAP1_SUE",
+  "release": "R1C25_LIVE04_12_2_SDP15_REMAP_20261115",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -379,17 +379,17 @@
     {
       "path": "CORDON_LIVE01_CONFIG.json",
       "size": 1169,
-      "sha256": "237432bcf7d7285e1559e44a35c61f1f28718f909851ae35aed90618c8bcca52"
+      "sha256": "a2bf7318de811a3f76372c16a6436ec37214d37bdecedd336149db917e849d21"
     },
     {
       "path": "CORDON_LIVE02_CONFIG.json",
       "size": 8337,
-      "sha256": "a5979686442905b7f632576538f192f52fc7fc0fe93db69dde3aeeeaf6065b36"
+      "sha256": "09377f0947699fef01e91f920f084ee5ca83f29daeef3bfcf1753269a32466ca"
     },
     {
       "path": "CORDON_LIVE03_CONFIG.json",
       "size": 9649,
-      "sha256": "892a9dc27072270e0654aecc20be7d7405a83f3bc62b966821826c8460293f64"
+      "sha256": "8fd189a1df8bd9cac0afccd8476d7f5e705c5be7b633058ff9d7cf839f69f604"
     },
     {
       "path": "FINAL_STATUS.json",
@@ -1634,7 +1634,7 @@
     {
       "path": "data/audited/AUTHORITY_AUDIT.json",
       "size": 21789,
-      "sha256": "26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d"
+      "sha256": "76b51be525695cf710278086129b92875cf338471f56bbe8e67e4cd9ba1b868d"
     },
     {
       "path": "data/audited/C17_STATION_BUDGETS.csv",
@@ -1648,8 +1648,8 @@
     },
     {
       "path": "data/audited/STATION_MAPPING.csv",
-      "size": 18472,
-      "sha256": "2071a33a016ab83117eaffe320672f05d73f6e202807333d1e329ba229d5dce6"
+      "size": 18589,
+      "sha256": "e765b16f5a209bb674031bb25d692afee25321caf806dab6cc1517e13513e1ec"
     },
     {
       "path": "data/audited/STATION_PROFILE_EVIDENCE.json",
@@ -1658,8 +1658,8 @@
     },
     {
       "path": "data/audited/STATION_PROFILE_SIGN_EDGES.json",
-      "size": 5917,
-      "sha256": "28cf494b141516008306616d8a8dbc9cbdfd5796aa76585754606d392c7e76e9"
+      "size": 6043,
+      "sha256": "7bab8f619e3fff6e245ff6043b56e7513adb08a441f1567cc08db36c5ef0fe25"
     },
     {
       "path": "data/source/D1.xlsx",
@@ -1684,17 +1684,17 @@
     {
       "path": "data/source/INPUT_MANIFEST.json",
       "size": 1037,
-      "sha256": "c23017d9a31f542e10fe594628472a263d01a5a44d0c50ee9d58ee0ac2c7784f"
+      "sha256": "5f56a577a1d8a6e4c4b9935bd77600177e45241a7fe842979a7479c56597c2f7"
     },
     {
       "path": "data/source/MAPPING_INPUT.csv",
-      "size": 16345,
-      "sha256": "1cfd4db8ec347632423f011b0f7ff93f1b1d837d58a53833319c7a4efcae7ec5"
+      "size": 16462,
+      "sha256": "64f16b41650f0a2370b27840e2dadd2c8ef7969ed9fb7e5a04c8059db147773b"
     },
     {
       "path": "data/source/MAPPING_INPUT.json",
-      "size": 12877,
-      "sha256": "2fb523048c98974d9a03a4a92c878735e30eb9b7e073e5faddd002ff8554f846"
+      "size": 13093,
+      "sha256": "d7ed1b06a3b0b2a4a325f0152589bff4d3c74d70f5175fe65d920da0c3e73dac"
     },
     {
       "path": "data/source/PHYSICAL_TARGETS_INPUT.csv",
@@ -3225,6 +3225,11 @@
       "path": "docs/network_20261103/REVIEWED_CHANGES.json",
       "size": 1949,
       "sha256": "68152ec8390ba7c9e1b00d8cf68c63cbdfed1d14066d6df223947551899318fe"
+    },
+    {
+      "path": "docs/network_20261115_REVIEWED_CHANGES.json",
+      "size": 1979,
+      "sha256": "5addf7e2fdb0a9216d8d730df66ece69b05047cefc5a6cdb57d3330c139c1ba8"
     },
     {
       "path": "docs/perf01/CP00_BASELINE.json",
@@ -8658,8 +8663,8 @@
     },
     {
       "path": "provenance/live01/BASE_SOURCE_MANIFEST.json",
-      "size": 283228,
-      "sha256": "ba833cc0239925c26a46c970f08893eff6c80018f7e5fb66d0b43f8aabde5515"
+      "size": 283227,
+      "sha256": "5f25e9d960bc298e1f50e14a7e6bc62341fae34bbcd440f1ec35c3b80e0549ea"
     },
     {
       "path": "provenance/live01/CORDON_LIVE_DONOR_CONTRACT.json",
@@ -8709,7 +8714,7 @@
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
       "size": 19545,
-      "sha256": "b482afcfecb2bb753f939722bee4bdaa7e934a6a0103ee73710444ece264c952"
+      "sha256": "9b7f810a610987573315346891490d17121a1f5bf8d7b338cb4b12cf3eb67438"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -8968,8 +8973,8 @@
     },
     {
       "path": "tests/test_live04_10.py",
-      "size": 17424,
-      "sha256": "881c0092e92722eade736dde20e186efebd6941ab5d9ca8364dfa3dbc6c8f591"
+      "size": 17429,
+      "sha256": "c0270f7b4ed01bb4e4b4efb6217cf5ed29b9ae738e19a07971225366b285a478"
     },
     {
       "path": "tests/test_live04_10_2.py",

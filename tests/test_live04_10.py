@@ -62,7 +62,7 @@ def test_side_contexts_and_sides():
     sides = station_sides(_station_map())
     assert len(sides) == 32 and Counter(sides.values()) == {0: 16, 1: 16}
     # SDP15 (split carriageway, two links): side A = the smaller (link_no, from, to)
-    assert sides[(9800634, 9900317, 9900312)] == 0 and sides[(9800637, 9900314, 9900318)] == 1
+    assert sides[(99811293, 99800552, 99800555)] == 0 and sides[(99811302, 99800557, 9000620)] == 1
     with pytest.raises(ContractError, match='TWO_EDGES'):
         station_sides({(1, 2, 3): 1})
 
