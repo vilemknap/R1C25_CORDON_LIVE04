@@ -185,18 +185,20 @@ def read_donor_state(visum,zones,folder,control,opt,live):
     tokens=com.code_set(selected[0]['dstratset'])
     require(tokens in (required,required|{'4_FOREIGN'}),'LIVE01_TD_SOURCE_SET_NOT_16_OR_17')
     operations=com.operation_rows(proxy)
-    require(operations[4]['type']==45 and operations[5]['type']==46,'LIVE01_PROCEDURE_IDENTITY')
+    from .live04_opmap import live_position
+    final_pos=live_position(proxy,20)
+    require(operations[tg_pos-1]['type']==45 and operations[td_pos-1]['type']==46,'LIVE01_PROCEDURE_IDENTITY')   # LIVE05.5: live TG/TD positions (OPMAP1)
     source=parent_module('r1_15a2_live_api_audit').current_version_file(proxy)
     scripts=script_references(operations,source)
     # Preserve source schema and report configured quality without executing.
     quality={}
     for row in operations:
-        if row['no']==20:
+        if row['no']==final_pos:
             params=row['object'].PrTAssignmentParameters
             for name in ('MAXGAP','MAXGAPREL','MAXNUMITERATIONS'):
                 try:quality[name]=params.AttValue(name)
                 except Exception:pass
-    tdparams=operations[5]['object'].TripDistributionParameters
+    tdparams=operations[td_pos-1]['object'].TripDistributionParameters
     foreign_stratum,_=vp._dstrat_object(tdparams,'4_FOREIGN',('TripDistribution',))
     require(foreign_stratum is not None,'LIVE01_FOREIGN_STRATUM_UNREADABLE')
     foreign_grav=foreign_stratum.GravitationParameters

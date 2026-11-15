@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_4_SUE_GAP_20261115",
+  "release": "R1C25_LIVE05_5_LIVE01_OPMAP_POSITIONS_20261115",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -1353,8 +1353,8 @@
     },
     {
       "path": "cordon2025/live01_visum.py",
-      "size": 17266,
-      "sha256": "f0db0d81d71df63d1f1c2a4c77e69422c0cf37f58980ad353e85b923be007f34"
+      "size": 17420,
+      "sha256": "be172265d53301156bf12a8120d856d93e2175b9b45875110764e859bc17e1d1"
     },
     {
       "path": "cordon2025/live02_adapter.py",
