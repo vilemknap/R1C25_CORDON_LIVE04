@@ -30,6 +30,9 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
 2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py
 3. Vystupy: %LOCALAPPDATA%\R1C25_LIVE04\LIVE04_TGTD_<id>\  (00_RESULT.json)
 
+SIT 2026-11-15 19:27 (LIVE04.12.5): SDP3 (R1) na jednosmerne pasy 99811571 (99800661->99800665, +) / 99811569
+  (99800666->99800663, -); SDP4 (I/62) na 99811548 (1001753->99800659 = +) po rozdeleni 2002238; smery beze zmeny.
+  docs/network_20261115c_REVIEWED_CHANGES.json.
 SIT 2026-11-15 18:37 (LIVE04.12.4): hrana I/61 9800378 rozdelena v novem uzlu 99800605; SDP2 na 99811413
   (99800605->9900221 = +, opacne = -, smery beze zmeny), docs/network_20261115b_REVIEWED_CHANGES.json.
 SIT 2026-11-15 (R1_VARIANTYBase, LIVE04.12.2): SDP15 (D1) premapovana na prestavene pasy 99811302 (99800557->9000620, +, JZ)

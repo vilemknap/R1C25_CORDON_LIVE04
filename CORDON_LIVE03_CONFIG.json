@@ -3,7 +3,7 @@
  "live_stage": "LIVE03_TG_TD_CYCLE",
  "execution_mode": "TECHNICAL_TRIAL",
  "live01_contract_file": "CORDON_LIVE01_CONFIG.json",
- "live01_contract_sha256": "eabd288f49a3fe3f6ee51dbc3acb9da337df46959c4c5743d04f786e0d68c483",
+ "live01_contract_sha256": "165e4ad86faeeae7d9a46db347ecac16c98a9d0c435d4a36217887c18fd9ef5b",
  "outer_cycle_start": 1,
  "max_cycles": 3,
  "blocks_per_cycle": [

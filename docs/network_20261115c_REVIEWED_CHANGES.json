@@ -1,0 +1,35 @@
+{
+  "schema": "R1_CORDON_REVIEWED_DATA_CHANGES_V1",
+  "date": "2026-11-15",
+  "reason": "network R1_VARIANTYBase 2026-11-15 19:27: R1 at SDP3 rebuilt as one-way carriageways 99811571 (99800661->99800665, WNW, +) / 99811569 (99800666->99800663, ESE, -); I/62 link 2002238 at SDP4 split at 99800659, SDP4 on 99811548 (1001753->99800659 = +, reverse = -); directions as before",
+  "files": {
+    "data/audited/STATION_MAPPING.csv": {
+      "before_sha256": "ecf646d619b2c2419bd96eae14af66b5eff44471dfe3230804872c27df890eef",
+      "after_sha256": "bfa318de7896b4b209cebb20863d334f376fa0db725412e80bf2dc81d0ac4700"
+    },
+    "data/source/MAPPING_INPUT.csv": {
+      "before_sha256": "45ad2a23bcfb85ad7cdf71ea7b5d81cf7a3c0e126fa7bbb460634513e927345a",
+      "after_sha256": "5fee4057c05f08b1e92c7d5c0eebca5b0fc40ad09d93d1180c6c1c978348b457"
+    },
+    "data/source/MAPPING_INPUT.json": {
+      "before_sha256": "ec4137d26085199a2457f8ffd19f884db93f54cfe68c5570d49e39d557e669de",
+      "after_sha256": "7d91f3e9fcdace4140ae4e3f9fdfc5dfdb842a2b33764864aced08f5af14e2e1"
+    },
+    "data/audited/STATION_PROFILE_SIGN_EDGES.json": {
+      "before_sha256": "a2396725a6439e791c70d9b18e682fba110ee0a86186264b763cc1dcd6d1a17e",
+      "after_sha256": "a590d6f8f9a1c690e23de1d35bb8d71176fee52616bb8148663a510ae73909cf"
+    },
+    "data/audited/AUTHORITY_AUDIT.json": {
+      "before_sha256": "3f50d76b56d9498a8019727e5a34500465b34f4f21f9c5af233882a0b567ad49",
+      "after_sha256": "97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286"
+    },
+    "data/source/INPUT_MANIFEST.json": {
+      "before_sha256": "1dc9146f2d1d6c6baa71b38d090b61a82933ebc114a7dd73d60bf51df78fd974",
+      "after_sha256": "6f3ddf0f493593dc5639c67150d344deaa03311af09979d3d489ac4dce18caae"
+    },
+    "CORDON_LIVE01_CONFIG.json": {
+      "before_sha256": "eabd288f49a3fe3f6ee51dbc3acb9da337df46959c4c5743d04f786e0d68c483",
+      "after_sha256": "165e4ad86faeeae7d9a46db347ecac16c98a9d0c435d4a36217887c18fd9ef5b"
+    }
+  }
+}

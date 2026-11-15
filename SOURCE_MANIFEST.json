@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE04_12_4_SDP2_SPLIT_20261115",
+  "release": "R1C25_LIVE04_12_5_SDP3_SDP4_20261115",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
     },
     {
       "path": "00_START_HERE_LIVE04_CZ.txt",
-      "size": 11058,
-      "sha256": "9cd5179d6c11f68ada2899e2f7714380ec878b42ebaa7bc0de8a3e752ceddc16"
+      "size": 11331,
+      "sha256": "25e87883e57ff52eff518c82eca0c1b3ead1d2b5250506c5f65f82baba594cf9"
     },
     {
       "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -379,17 +379,17 @@
     {
       "path": "CORDON_LIVE01_CONFIG.json",
       "size": 1169,
-      "sha256": "eabd288f49a3fe3f6ee51dbc3acb9da337df46959c4c5743d04f786e0d68c483"
+      "sha256": "165e4ad86faeeae7d9a46db347ecac16c98a9d0c435d4a36217887c18fd9ef5b"
     },
     {
       "path": "CORDON_LIVE02_CONFIG.json",
       "size": 8337,
-      "sha256": "fda2395243c17d10cce52809915fdb10862fb58ffc62c126dbff18949fa2d73f"
+      "sha256": "047c37f0a0c3b5cf60bdda88f37cf05abee58e055476996a3658f7bd23988d82"
     },
     {
       "path": "CORDON_LIVE03_CONFIG.json",
       "size": 9649,
-      "sha256": "951a3af3c7145ea7cdd497fc02e161f96f71b6fab76fa288d5384788a42e2933"
+      "sha256": "6df25b3670076aba6c0ae40c9c7cfc40e2abc236421078cc73cfc5f61d1b09e9"
     },
     {
       "path": "FINAL_STATUS.json",
@@ -1639,7 +1639,7 @@
     {
       "path": "data/audited/AUTHORITY_AUDIT.json",
       "size": 21789,
-      "sha256": "3f50d76b56d9498a8019727e5a34500465b34f4f21f9c5af233882a0b567ad49"
+      "sha256": "97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286"
     },
     {
       "path": "data/audited/C17_STATION_BUDGETS.csv",
@@ -1653,8 +1653,8 @@
     },
     {
       "path": "data/audited/STATION_MAPPING.csv",
-      "size": 18675,
-      "sha256": "ecf646d619b2c2419bd96eae14af66b5eff44471dfe3230804872c27df890eef"
+      "size": 19141,
+      "sha256": "bfa318de7896b4b209cebb20863d334f376fa0db725412e80bf2dc81d0ac4700"
     },
     {
       "path": "data/audited/STATION_PROFILE_EVIDENCE.json",
@@ -1663,8 +1663,8 @@
     },
     {
       "path": "data/audited/STATION_PROFILE_SIGN_EDGES.json",
-      "size": 6133,
-      "sha256": "a2396725a6439e791c70d9b18e682fba110ee0a86186264b763cc1dcd6d1a17e"
+      "size": 6768,
+      "sha256": "a590d6f8f9a1c690e23de1d35bb8d71176fee52616bb8148663a510ae73909cf"
     },
     {
       "path": "data/source/D1.xlsx",
@@ -1689,17 +1689,17 @@
     {
       "path": "data/source/INPUT_MANIFEST.json",
       "size": 1037,
-      "sha256": "1dc9146f2d1d6c6baa71b38d090b61a82933ebc114a7dd73d60bf51df78fd974"
+      "sha256": "6f3ddf0f493593dc5639c67150d344deaa03311af09979d3d489ac4dce18caae"
     },
     {
       "path": "data/source/MAPPING_INPUT.csv",
-      "size": 16548,
-      "sha256": "45ad2a23bcfb85ad7cdf71ea7b5d81cf7a3c0e126fa7bbb460634513e927345a"
+      "size": 17014,
+      "sha256": "5fee4057c05f08b1e92c7d5c0eebca5b0fc40ad09d93d1180c6c1c978348b457"
     },
     {
       "path": "data/source/MAPPING_INPUT.json",
-      "size": 13339,
-      "sha256": "ec4137d26085199a2457f8ffd19f884db93f54cfe68c5570d49e39d557e669de"
+      "size": 14123,
+      "sha256": "7d91f3e9fcdace4140ae4e3f9fdfc5dfdb842a2b33764864aced08f5af14e2e1"
     },
     {
       "path": "data/source/PHYSICAL_TARGETS_INPUT.csv",
@@ -3240,6 +3240,11 @@
       "path": "docs/network_20261115b_REVIEWED_CHANGES.json",
       "size": 1997,
       "sha256": "aade27dc1589db3112ee435fbc04e7c94f0e2cce38549b5c5e68e0383746627f"
+    },
+    {
+      "path": "docs/network_20261115c_REVIEWED_CHANGES.json",
+      "size": 1996,
+      "sha256": "caf9e196ce56bfc728f3745a252a19de8ebb9c92f2bcde28fd7ef81d3bdc1a74"
     },
     {
       "path": "docs/perf01/CP00_BASELINE.json",
@@ -8674,7 +8679,7 @@
     {
       "path": "provenance/live01/BASE_SOURCE_MANIFEST.json",
       "size": 283227,
-      "sha256": "ab147acf966c15fe64069c7857c22cedf386de2957b151f92762b173b39f21ef"
+      "sha256": "ef539c07e9ef9623e8d76d8d36216b0f76777ea09c76808b27fc3dce4ec26264"
     },
     {
       "path": "provenance/live01/CORDON_LIVE_DONOR_CONTRACT.json",
@@ -8724,7 +8729,7 @@
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
       "size": 19545,
-      "sha256": "eae4ddf352a2ba34071f6aec58b813dabe7cc59d41d5a72e4cda0b1df8957886"
+      "sha256": "3b239725465ca3199acb9d23bb1804a694bda0d3bc5c94f41261d78a8f5f6536"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",

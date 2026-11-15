@@ -55,42 +55,44 @@
   {
    "station": 3,
    "plus_edge": [
-    2004256,
-    1003303,
-    1003295
+    99811571,
+    99800661,
+    99800665
    ],
    "minus_edge": [
-    2004256,
-    1003295,
-    1003303
+    99811569,
+    99800666,
+    99800663
    ],
    "source": "REPORT_MAP_obr5",
    "e41_data_and_geometry_plus_edge": [
-    2004256,
-    1003303,
-    1003295
+    99811571,
+    99800661,
+    99800665
    ],
-   "agrees_with_e41_data": true
+   "agrees_with_e41_data": true,
+   "remap_20261115c": "network R1_VARIANTYBase 2026-11-15 19:27: R1 at SDP3 rebuilt as one-way carriageways 99811571 (99800661->99800665, WNW, +) / 99811569 (99800666->99800663, ESE, -); I/62 link 2002238 at SDP4 split at 99800659, SDP4 on 99811548 (1001753->99800659 = +, reverse = -); directions as before"
   },
   {
    "station": 4,
    "plus_edge": [
-    2002238,
+    99811548,
     1001753,
-    1003314
+    99800659
    ],
    "minus_edge": [
-    2002238,
-    1003314,
+    99811548,
+    99800659,
     1001753
    ],
    "source": "REPORT_MAP_obr5",
    "e41_data_and_geometry_plus_edge": [
-    2002238,
+    99811548,
     1001753,
-    1003314
+    99800659
    ],
-   "agrees_with_e41_data": true
+   "agrees_with_e41_data": true,
+   "remap_20261115c": "network R1_VARIANTYBase 2026-11-15 19:27: R1 at SDP3 rebuilt as one-way carriageways 99811571 (99800661->99800665, WNW, +) / 99811569 (99800666->99800663, ESE, -); I/62 link 2002238 at SDP4 split at 99800659, SDP4 on 99811548 (1001753->99800659 = +, reverse = -); directions as before"
   },
   {
    "station": 5,
