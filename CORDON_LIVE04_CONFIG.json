@@ -149,7 +149,9 @@
   "acceptance": "BLENDED",
   "blended_min_relative_improvement": 0.001,
   "blended_max_cordon_degradation": 0.01,
-  "acceptance_note": "LIVE04.11 (user decision 2026-11-06): BLENDED = a TD trial is accepted when F improves by at least blended_min_relative_improvement (0.1 %), the cordon objective and the secondary method worsen by at most blended_max_cordon_degradation (1 %), the IDP guard and all other hard gates (row GEH, LONG, mobility) pass. CORDON = the cordon objective must improve (LIVE04.10)."
+  "acceptance_note": "LIVE04.11 (user decision 2026-11-06): BLENDED = a TD trial is accepted when F improves by at least blended_min_relative_improvement (0.1 %), the cordon objective and the secondary method worsen by at most blended_max_cordon_degradation (1 %), the IDP guard and all other hard gates (row GEH, LONG, mobility) pass. CORDON = the cordon objective must improve (LIVE04.10).",
+  "skip_cycles_after_unchanged": 1,
+  "skip_cycles_after_unchanged_note": "LIVE05.6 (2026-11-15): TD_CORDON bez zmeny -> v dalsim 1 cyklu se vynecha (usetri ~8 min sond + ~14 min opravy prirazeni); 0 = TD v kazdem cyklu."
  },
  "idp_guard": {
   "enabled": true,

@@ -18,8 +18,8 @@
     },
     {
       "path": "00_START_HERE_LIVE04_CZ.txt",
-      "size": 11770,
-      "sha256": "7dc245f63a83e5dc269f2b1a4bce40cf0533acdcb161274454f992b0d417afc8"
+      "size": 11997,
+      "sha256": "d55819f133ed5b0e1fa2a9fdbe4db0fb99733b4cfccc110f3f52c58349254e6e"
     },
     {
       "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -585,6 +585,11 @@
       "path": "RUN_R1_2025_CORDON_LIVE_BASELINE.py",
       "size": 511,
       "sha256": "56dbc4cf54f1e1dc2404edae0b835b4cc8af04c1facf3cc01c47cb489e52c021"
+    },
+    {
+      "path": "RUN_R1_2025_FLOWBUNDLE_PROBE.py",
+      "size": 10038,
+      "sha256": "69888b388f7f888bcba5ba3d0f4a6a6a8a2b6e54a01541e34b807aa7361749b7"
     },
     {
       "path": "RUN_R1_2025_IMPORT_AND_RECOMPUTE.py",
@@ -1413,8 +1418,8 @@
     },
     {
       "path": "cordon2025/live03_config.py",
-      "size": 7571,
-      "sha256": "2b4fc48707760ab67be63ca5098320db072dfcb9c2f91b9abc9808f9dfc3765d"
+      "size": 7707,
+      "sha256": "9ccdfa3efcdaa3d600fd1bc558e638acb7cf642fe3cd95d45a97ba25f4637c33"
     },
     {
       "path": "cordon2025/live03_cycle.py",
@@ -1478,8 +1483,8 @@
     },
     {
       "path": "cordon2025/live04_cycle.py",
-      "size": 34659,
-      "sha256": "c880eb08726141226c9b7907fa682b63e83d3dfc831dbc39a25fb2edce17d9dd"
+      "size": 35467,
+      "sha256": "2deb5787f87e192a5c8ffaf5099f00931be768cb175a2f2d8d6c2cfd47de4f33"
     },
     {
       "path": "cordon2025/live04_epoch.py",
@@ -3220,6 +3225,11 @@
       "path": "docs/live04/LIVE04_IMPLEMENTATION_REPORT_CZ.md",
       "size": 53288,
       "sha256": "e4cca2dbfe529ea748f8bd10489e80b842bc59771af868b1c3b7dcf446aea0f8"
+    },
+    {
+      "path": "docs/live04/LIVE05_6_SPEED_CZ.md",
+      "size": 1985,
+      "sha256": "bd539af28e00a3f03f7735ae129f459cd8ee8159d3f4fdb59d2628be864c75d6"
     },
     {
       "path": "docs/live04/LIVE05_EXTRA_OBSERVATIONS_CZ.md",
@@ -8903,8 +8913,8 @@
     },
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
-      "size": 20553,
-      "sha256": "15b1d1801f5af83ada07788854590166e6fcc78e3504f936a65707e4c20533f9"
+      "size": 20776,
+      "sha256": "5771565af9eef8e803fcd5aa650a8544314d3f1d5352ed5e47ffa18c9cda0a6c"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -9255,6 +9265,11 @@
       "path": "tests/test_live05_extra.py",
       "size": 8002,
       "sha256": "58ab8adbd2f75dafd2d158b334252d8274e414b45944572f9fc9dbc00df87738"
+    },
+    {
+      "path": "tests/test_live05_speed.py",
+      "size": 3605,
+      "sha256": "4a01743c41ea74c48d82a09d190efef1673e9e11a7c723a41141d6802839dcc1"
     },
     {
       "path": "tests/test_optimizer.py",
