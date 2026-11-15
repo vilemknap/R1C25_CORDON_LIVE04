@@ -1,0 +1,172 @@
+{
+  "base_commit": "99a7a576b29faa95c6c1f81ded191eb6c44ae07d",
+  "files": [
+    {
+      "name": "COMMAND_STATUS.json",
+      "bytes": 187,
+      "sha256": "4d1b2ea54cca62ef3e6a0b4a2a05d9880856da321bb265a819c64649bfe1c030"
+    },
+    {
+      "name": "FAILURE_STATE_READBACK.json",
+      "bytes": 236,
+      "sha256": "0a6bb3c1101f5f9bf4853e5811b01f261e9c8d7d3220bcce8a3e958f0897009b"
+    },
+    {
+      "name": "RUN_CHECKPOINT.json",
+      "bytes": 10496,
+      "sha256": "e3d2608e23506a4cc3aef5895c2c21391f7d0accaf9c87b958d38ae13917619a"
+    },
+    {
+      "name": "TRACEBACK.txt",
+      "bytes": 1519,
+      "sha256": "0a29ab2dd1d36f25ed0ac0f155bd4401e290f1d471eb26332f8d327d84ce9d4d"
+    },
+    {
+      "name": "00_PROGRESS.json",
+      "bytes": 576,
+      "sha256": "0a55abd85d1e7afa9a4668b0a8a3dd3a0c06876e2297c91fe6e51075550e191f"
+    },
+    {
+      "name": "WRITE_AUDIT.jsonl",
+      "bytes": 429635,
+      "sha256": "7c91c85e352703c8843a4916937479c1029c76b8f3f3ebf703f28aba830856f4"
+    },
+    {
+      "name": "CYCLE_PROGRESS.json",
+      "bytes": 1868,
+      "sha256": "43d6c855c6cee5341491938c52da7f95d2747329ee649a13e126a1cea86e3a06"
+    },
+    {
+      "name": "DONOR_TRANSACTION_IDENTITY.json",
+      "bytes": 2132,
+      "sha256": "d0df863505cc6fcc5875d035f06e48f63cd367452173c8c566aab78696ecde06"
+    },
+    {
+      "name": "BASELINE_OBJECTIVE.json",
+      "bytes": 1255,
+      "sha256": "ac383fdb6f03da0a2ba57a9c3212725f1761a5db6628858616637a4d85c8ea37"
+    },
+    {
+      "name": "00_GENERATION_COEFFICIENT_REFERENCE.json",
+      "bytes": 469798,
+      "sha256": "5b8c50ff15d07862ca964f4317529438d9c99b508d29cc6e84821e31c9eff100"
+    },
+    {
+      "name": "LONG_SUPPORT_BASELINE.json",
+      "bytes": 3796,
+      "sha256": "bf8eec40cfcdc6adb89d986c5212826d37bb2be440a9b1d8b5439b329d23e7d2"
+    },
+    {
+      "name": "V7_RUNTIME_STATUS.json",
+      "bytes": 11163,
+      "sha256": "a15565add90bfb722e74e0fb424e141bdbaf78fd4d345c3b4f31cbf7355d80e9"
+    },
+    {
+      "name": "LIVE04_SOURCE_PROOF.json",
+      "bytes": 32692,
+      "sha256": "6bd07bdbc95b0f3196665ec26110b3f6be898d09b0871594d973ed5645a92f49"
+    },
+    {
+      "name": "OBSERVATION_CONTRACT.json",
+      "bytes": 6570,
+      "sha256": "2bb26ac2f2d22ea54d49eeca842bf42fcc331c8adb848e9790bd3666982980d8"
+    },
+    {
+      "name": "PATH_PREFLIGHT.json",
+      "bytes": 302,
+      "sha256": "1c281c9fbc09ffb59e5a13abcfa2bb1f9676281bcef3830690b3a1d05917f3de"
+    },
+    {
+      "name": "99_TRACEBACK.txt",
+      "bytes": 1519,
+      "sha256": "0a29ab2dd1d36f25ed0ac0f155bd4401e290f1d471eb26332f8d327d84ce9d4d"
+    },
+    {
+      "name": "00_RESULT.json",
+      "bytes": 2919,
+      "sha256": "4f7f1746566301837356523678dadc78136d8c400765d0fb09855d8d0230b2cf"
+    },
+    {
+      "name": "COM_READ_RETRY.json",
+      "bytes": 637,
+      "sha256": "1233fe0c72c31ab5ee2f7f2ba436ecfef81375294a4b71922cb184c92e93cbbb"
+    }
+  ],
+  "run_status": "LIVE04_STOPPED_MODEL_VERIFIED_AT_LAST_ACCEPTED_STATE",
+  "stop_reason": "USER_STOP_REQUESTED",
+  "model_state_verified_reported_by_run": true,
+  "readback": {
+    "expected_last_accepted": "0c52cef957bcafe4ec7526665d0af41d907c1f99fea828d2d9c0ae18c56d8bc8",
+    "live_state_hash": "0c52cef957bcafe4ec7526665d0af41d907c1f99fea828d2d9c0ae18c56d8bc8",
+    "matches_last_accepted_or_baseline": true
+  },
+  "accepted_states": 3,
+  "cycles": [
+    {
+      "blocks": [
+        {
+          "block": "GENERATION",
+          "changed": true,
+          "native_prediction": true,
+          "objective_after": 139551.57059100177,
+          "objective_before": 150089.37172865006,
+          "status": "ACCEPTED",
+          "stop_reason": null
+        },
+        {
+          "block": "TD_CORDON",
+          "changed": false,
+          "native_prediction": true,
+          "objective_after": null,
+          "objective_before": 139551.57059100177,
+          "status": "NO_TD_CANDIDATE",
+          "stop_reason": "NO_INNER_IMPROVEMENT_WITH_GUARD"
+        }
+      ],
+      "outer_cycle": 1
+    },
+    {
+      "blocks": [
+        {
+          "block": "GENERATION",
+          "changed": true,
+          "native_prediction": true,
+          "objective_after": 136004.3428226167,
+          "objective_before": 139551.57059100177,
+          "status": "ACCEPTED",
+          "stop_reason": null
+        },
+        {
+          "block": "SUPPLY_ADDVAL1",
+          "changed": true,
+          "native_prediction": false,
+          "objective_after": 131156.52924615896,
+          "objective_before": 136004.3428226167,
+          "status": "ACCEPTED",
+          "stop_reason": null
+        },
+        {
+          "block": "TD_CORDON",
+          "changed": false,
+          "native_prediction": true,
+          "objective_after": null,
+          "objective_before": 131156.52924615896,
+          "status": "NO_TD_CANDIDATE",
+          "stop_reason": "NO_INNER_IMPROVEMENT_WITH_GUARD"
+        }
+      ],
+      "outer_cycle": 2
+    }
+  ],
+  "old_run_progress": {
+    "effective_page_size": 256,
+    "geometry_routes": 426567,
+    "link_children": 31330304,
+    "pages": 1667,
+    "phase": "MATRIX_NO"
+  },
+  "com_retry_event_counts": {},
+  "current_timing_attachment_present": false,
+  "performance_estimates_in_pasted_text_independently_verified": false,
+  "live_visum_tested_here": false
+}

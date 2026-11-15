@@ -206,6 +206,8 @@
   "final_readback": "ALL_LINK_VOLUMES",
   "trial_and_final_readback_note": "LIVE04.10.3: pokusy se dokazuji stejne jako plne zachyceni (trial_geometry_proof = FULL s full_geometry_proof = ALL_LINK_VOLUMES; intenzity na vsech hranach se ctou stejne jako u kontroly stanic), takze potvrzovaci zachyceni pred prijetim odpada. final_readback = ALL_LINK_VOLUMES: konec zachyceni znovu precte intenzity na vsech hranach misto 12 seznamu cest (pri jinem dukazu se cte postaru). Puvodni: trial_geometry_proof = STATION_LINK_VOLUME_CROSSCHECK, final_readback = PATH_LISTS.",
   "fast_geometry_parser": true,
+  "geometry_pipeline": true,
+  "geometry_pipeline_note": "COM cte na puvodnim vlakne; jeden worker zpracovava predchozi davku puvodnim parserem pres vlastni SQLite spojeni. Nejvyse dve davky, stejne dukazy a kontroly. GEOMETRY_PIPELINE_TIMING.json meri skutecne casy. Zive zrychleni zatim nezmereno; false obnovi sekvencni zpracovani.",
   "com_page_size": 1024,
   "speed_note": "LIVE04.10.4: fast_geometry_parser = rychlejsi zpracovani ~52 mil. radku geometrie na zachyceni (stejny vysledek i kontroly jako puvodni parser); com_page_size = 1024 radku na jedno cteni COM (mereni na modelu 2026-11-05: nejlevnejsi na radek, 4096 neni rychlejsi). Puvodni: false / 256.",
   "geometry_epoch": {

@@ -1,0 +1,197 @@
+{
+  "schema": "R1C25_GEOMETRY_PIPELINE_BENCHMARK_V1",
+  "kind": "SYNTHETIC_BLOCKING_PAGE_PROVIDER_NOT_NATIVE_COM",
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "routes": 12000,
+  "link_children_per_route": 70,
+  "rows": 852000,
+  "page_size": 1024,
+  "page_wait_ms": 6.0,
+  "repeats": 3,
+  "median_sequential_seconds": 6.5018725549998635,
+  "median_pipeline_seconds": 5.867831274999844,
+  "speedup": 1.1080537681274818,
+  "wall_time_reduction_percent": 9.75167191661499,
+  "sqlite_bytes_and_hash_identical": true,
+  "native_visum_tested": false,
+  "measurements": [
+    {
+      "repeat": 0,
+      "pipeline": false,
+      "seconds": 6.5018725549998635,
+      "sqlite_sha256": "0f0eb6cb72b7ba89acda322d9c511bce7c4c472709a787277beb6ce33a364b59",
+      "audit": {
+        "representative_dseg": "NATIVE_CW",
+        "parent_keys_sha256": "c53d982db8193f928d45846e7dd75bad45209251b706910ef0439a3a32747c10",
+        "parent_count": 12000,
+        "dsegs": [
+          "NATIVE_CW"
+        ],
+        "geometry_complete": true,
+        "geometry_routes": 12000,
+        "geometry_link_children": 840000,
+        "geometry_raw_rows": 852000,
+        "zero_link_interzonal_paths": 0,
+        "zero_link_intrazonal_paths": 0,
+        "representative_geometry_sha256": "c3c91449e254df4b4ac3b12e9f101bb9e9877d67f0c7d89cef154c51c48faf2c",
+        "geometry_reads": 1
+      },
+      "pipeline_timing": null
+    },
+    {
+      "repeat": 0,
+      "pipeline": true,
+      "seconds": 5.871915070000341,
+      "sqlite_sha256": "0f0eb6cb72b7ba89acda322d9c511bce7c4c472709a787277beb6ce33a364b59",
+      "audit": {
+        "representative_dseg": "NATIVE_CW",
+        "parent_keys_sha256": "c53d982db8193f928d45846e7dd75bad45209251b706910ef0439a3a32747c10",
+        "parent_count": 12000,
+        "dsegs": [
+          "NATIVE_CW"
+        ],
+        "geometry_complete": true,
+        "geometry_routes": 12000,
+        "geometry_link_children": 840000,
+        "geometry_raw_rows": 852000,
+        "zero_link_interzonal_paths": 0,
+        "zero_link_intrazonal_paths": 0,
+        "representative_geometry_sha256": "c3c91449e254df4b4ac3b12e9f101bb9e9877d67f0c7d89cef154c51c48faf2c",
+        "geometry_reads": 1
+      },
+      "pipeline_timing": {
+        "enabled": true,
+        "batches": 833,
+        "rows": 852000,
+        "batch_size": 1024,
+        "max_live_batches": 2,
+        "wall_seconds": 5.871112,
+        "read_and_detach_seconds": 5.57141,
+        "worker_active_seconds": 1.403917,
+        "worker_data_wait_seconds": 4.412436,
+        "worker_control_wait_seconds": 0.054324,
+        "com_owner_thread": 139657893082944,
+        "worker_joined_before_return": true
+      }
+    },
+    {
+      "repeat": 1,
+      "pipeline": true,
+      "seconds": 5.849758050000219,
+      "sqlite_sha256": "0f0eb6cb72b7ba89acda322d9c511bce7c4c472709a787277beb6ce33a364b59",
+      "audit": {
+        "representative_dseg": "NATIVE_CW",
+        "parent_keys_sha256": "c53d982db8193f928d45846e7dd75bad45209251b706910ef0439a3a32747c10",
+        "parent_count": 12000,
+        "dsegs": [
+          "NATIVE_CW"
+        ],
+        "geometry_complete": true,
+        "geometry_routes": 12000,
+        "geometry_link_children": 840000,
+        "geometry_raw_rows": 852000,
+        "zero_link_interzonal_paths": 0,
+        "zero_link_intrazonal_paths": 0,
+        "representative_geometry_sha256": "c3c91449e254df4b4ac3b12e9f101bb9e9877d67f0c7d89cef154c51c48faf2c",
+        "geometry_reads": 1
+      },
+      "pipeline_timing": {
+        "enabled": true,
+        "batches": 833,
+        "rows": 852000,
+        "batch_size": 1024,
+        "max_live_batches": 2,
+        "wall_seconds": 5.849161,
+        "read_and_detach_seconds": 5.568595,
+        "worker_active_seconds": 1.355829,
+        "worker_data_wait_seconds": 4.432689,
+        "worker_control_wait_seconds": 0.060407,
+        "com_owner_thread": 139657893082944,
+        "worker_joined_before_return": true
+      }
+    },
+    {
+      "repeat": 1,
+      "pipeline": false,
+      "seconds": 6.565887089000171,
+      "sqlite_sha256": "0f0eb6cb72b7ba89acda322d9c511bce7c4c472709a787277beb6ce33a364b59",
+      "audit": {
+        "representative_dseg": "NATIVE_CW",
+        "parent_keys_sha256": "c53d982db8193f928d45846e7dd75bad45209251b706910ef0439a3a32747c10",
+        "parent_count": 12000,
+        "dsegs": [
+          "NATIVE_CW"
+        ],
+        "geometry_complete": true,
+        "geometry_routes": 12000,
+        "geometry_link_children": 840000,
+        "geometry_raw_rows": 852000,
+        "zero_link_interzonal_paths": 0,
+        "zero_link_intrazonal_paths": 0,
+        "representative_geometry_sha256": "c3c91449e254df4b4ac3b12e9f101bb9e9877d67f0c7d89cef154c51c48faf2c",
+        "geometry_reads": 1
+      },
+      "pipeline_timing": null
+    },
+    {
+      "repeat": 2,
+      "pipeline": false,
+      "seconds": 6.444402689000071,
+      "sqlite_sha256": "0f0eb6cb72b7ba89acda322d9c511bce7c4c472709a787277beb6ce33a364b59",
+      "audit": {
+        "representative_dseg": "NATIVE_CW",
+        "parent_keys_sha256": "c53d982db8193f928d45846e7dd75bad45209251b706910ef0439a3a32747c10",
+        "parent_count": 12000,
+        "dsegs": [
+          "NATIVE_CW"
+        ],
+        "geometry_complete": true,
+        "geometry_routes": 12000,
+        "geometry_link_children": 840000,
+        "geometry_raw_rows": 852000,
+        "zero_link_interzonal_paths": 0,
+        "zero_link_intrazonal_paths": 0,
+        "representative_geometry_sha256": "c3c91449e254df4b4ac3b12e9f101bb9e9877d67f0c7d89cef154c51c48faf2c",
+        "geometry_reads": 1
+      },
+      "pipeline_timing": null
+    },
+    {
+      "repeat": 2,
+      "pipeline": true,
+      "seconds": 5.867831274999844,
+      "sqlite_sha256": "0f0eb6cb72b7ba89acda322d9c511bce7c4c472709a787277beb6ce33a364b59",
+      "audit": {
+        "representative_dseg": "NATIVE_CW",
+        "parent_keys_sha256": "c53d982db8193f928d45846e7dd75bad45209251b706910ef0439a3a32747c10",
+        "parent_count": 12000,
+        "dsegs": [
+          "NATIVE_CW"
+        ],
+        "geometry_complete": true,
+        "geometry_routes": 12000,
+        "geometry_link_children": 840000,
+        "geometry_raw_rows": 852000,
+        "zero_link_interzonal_paths": 0,
+        "zero_link_intrazonal_paths": 0,
+        "representative_geometry_sha256": "c3c91449e254df4b4ac3b12e9f101bb9e9877d67f0c7d89cef154c51c48faf2c",
+        "geometry_reads": 1
+      },
+      "pipeline_timing": {
+        "enabled": true,
+        "batches": 833,
+        "rows": 852000,
+        "batch_size": 1024,
+        "max_live_batches": 2,
+        "wall_seconds": 5.867196,
+        "read_and_detach_seconds": 5.591092,
+        "worker_active_seconds": 1.372191,
+        "worker_data_wait_seconds": 4.441255,
+        "worker_control_wait_seconds": 0.053241,
+        "com_owner_thread": 139657893082944,
+        "worker_joined_before_return": true
+      }
+    }
+  ]
+}

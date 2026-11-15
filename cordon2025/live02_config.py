@@ -128,6 +128,7 @@ def validate_config(cfg, *, allow_donor_overrides=False):
             'LIVE02_INVALID_FULL_GEOMETRY_PROOF')
     require(ev.get('final_readback', 'PATH_LISTS') in ('PATH_LISTS', 'ALL_LINK_VOLUMES'), 'LIVE02_INVALID_FINAL_READBACK')
     require(isinstance(ev.get('fast_geometry_parser', False), bool), 'LIVE02_INVALID_FAST_GEOMETRY_PARSER')
+    require(type(ev.get('geometry_pipeline', False)) is bool, 'LIVE02_INVALID_GEOMETRY_PIPELINE')
     ps = ev.get('com_page_size', 256)
     require(type(ps) is int and 80 <= ps <= 4096, 'LIVE02_INVALID_COM_PAGE_SIZE')
     ge = ev.get('geometry_epoch')

@@ -1,0 +1,10 @@
+{
+  "status": "INCOMPLETE_NO_FULL_SUITE_PASS_CLAIM",
+  "collected": 1186,
+  "observed_completed": 510,
+  "observed_passed": 505,
+  "observed_failed": 5,
+  "reason": "Broad historical integration run stopped after confirming unrelated legacy hash failures; final verification focuses on native geometry capture and current LIVE04 integration.",
+  "known_baseline_hash_failures": 2,
+  "intermediate_manifest_startup_failures_retested_passed": 3
+}

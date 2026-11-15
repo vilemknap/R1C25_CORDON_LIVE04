@@ -1,0 +1,13 @@
+{
+  "python_sources_parsed": [
+    "cordon2025/live02_config.py",
+    "cordon2025/live02_evaluation.py",
+    "cordon2025/live04_capture.py",
+    "cordon2025/live04_pipeline.py",
+    "tests/test_live04_pipeline.py",
+    "tools/benchmark_geometry_pipeline.py"
+  ],
+  "parent_or_data_changes": false,
+  "base_commit": "99a7a576b29faa95c6c1f81ded191eb6c44ae07d",
+  "run_config_matches_release_default": true
+}

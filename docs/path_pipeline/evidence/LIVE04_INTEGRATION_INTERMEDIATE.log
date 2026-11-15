@@ -1,0 +1,33 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-9.0.2, pluggy-1.7.0 -- /workspace/.venvs/cordon312/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace/work/cordon_perf_pipeline_20261115/source
+plugins: anyio-4.14.2
+collecting ... collected 1 item
+
+tests/test_live04_7.py::test_cycle_every_acceptance_is_decided_on_full_capture FAILED [100%]
+
+=================================== FAILURES ===================================
+____________ test_cycle_every_acceptance_is_decided_on_full_capture ____________
+tests/test_live04_7.py:265: in test_cycle_every_acceptance_is_decided_on_full_capture
+    r = cycle_run(v, output_root=tmp_path / 'runs', options=OPT, config_overrides=dict(RELAX, max_cycles=1))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/live04_cycle.py:460: in run
+    session.checkpoint('LIVE04_COMPLETE', completed=True)
+cordon2025/live02_cycle.py:393: in checkpoint
+    validate_context(self.context)
+cordon2025/session.py:157: in validate_context
+    require(code_identity() == context.get('code_sha256'), 'CHECKPOINT_CODE_CHANGED')
+cordon2025/common.py:40: in require
+    raise ContractError(message)
+E   cordon2025.common.ContractError: CHECKPOINT_CODE_CHANGED
+----------------------------- Captured stdout call -----------------------------
+R1 CORDON LIVE04 OPMAP1 LEGACY_IDENTITY: TG=[5] TD=6 reset=15 assignments 17-20 -> [17, 18, 19, 20]
+R1 CORDON LIVE04 v7@7b4c681: STEP1=True catch-up=False P=[0.25, 3.5] A=[0.5, 7.0] LSGEN=False BNDGEN=False LONGMASK=True COMBUSY2 900s
+R1 CORDON LIVE04 TG: phase=REFINE ratio=0.046 rows=160 clipped=0 mobility=OK predicted_ratio=0.046
+R1 CORDON V24917 TIMING: cordon_capture_and_evaluation 6s/1, design 0s/1, procedure_sequence 6s/1, snapshot 18s/10
+R1 CORDON V24917 TIMING: cordon_capture_and_evaluation 12s/2, design 0s/1, procedure_sequence 12s/2, snapshot 29s/15
+- generated xml file: /workspace/work/cordon_perf_pipeline_20261115/LIVE04_INTEGRATION.xml -
+=========================== short test summary info ============================
+FAILED tests/test_live04_7.py::test_cycle_every_acceptance_is_decided_on_full_capture - cordon2025.common.ContractError: CHECKPOINT_CODE_CHANGED
+======================== 1 failed in 333.47s (0:05:33) =========================

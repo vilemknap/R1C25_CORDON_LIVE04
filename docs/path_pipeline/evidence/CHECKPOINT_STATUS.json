@@ -1,0 +1,10 @@
+{
+  "status": "IMPLEMENTED_TARGETED_OFFLINE_VERIFIED",
+  "pipeline_tests_passed": 33,
+  "capture_regression_passed": 86,
+  "capture_regression_deselected": 2,
+  "pipelined_guard_regression_passed": 40,
+  "full_mock_live04_cycle_passed": true,
+  "full_historical_suite_complete": false,
+  "live_visum_tested": false
+}

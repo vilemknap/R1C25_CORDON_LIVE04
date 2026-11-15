@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="5" time="23.848" timestamp="2026-11-15T21:03:18.981318+00:00" hostname="f35ef9b3398e"><testcase classname="tests.test_aggressive_integration" name="test_v2_bytes_preserved_except_explicit_reviewed_startup_patches" time="0.118"><failure message="AssertionError: data/audited/AUTHORITY_AUDIT.json&#10;assert '97162808b75b...91133ab601286' == '26a844704238...392d2b4bfef5d'&#10;  &#10;  - 26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d&#10;  + 97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286">tests/test_aggressive_integration.py:33: in test_v2_bytes_preserved_except_explicit_reviewed_startup_patches
+    assert hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==digest,name
+E   AssertionError: data/audited/AUTHORITY_AUDIT.json
+E   assert '97162808b75b...91133ab601286' == '26a844704238...392d2b4bfef5d'
+E
+E     - 26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d
+E     + 97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286</failure></testcase><testcase classname="tests.test_combusy_entry_fix2" name="test_default_retry_does_not_change_active_scope_and_science" time="0.003"><failure message="AssertionError: data/audited/AUTHORITY_AUDIT.json&#10;assert '97162808b75b...91133ab601286' == '26a844704238...392d2b4bfef5d'&#10;  &#10;  - 26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d&#10;  + 97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286">tests/test_combusy_entry_fix2.py:124: in test_default_retry_does_not_change_active_scope_and_science
+    assert hashlib.sha256((ROOT/rec['path']).read_bytes()).hexdigest()==digest,rec['path']
+E   AssertionError: data/audited/AUTHORITY_AUDIT.json
+E   assert '97162808b75b...91133ab601286' == '26a844704238...392d2b4bfef5d'
+E
+E     - 26a84470423867b18a97eac28d2ced0b83c489af29214ec011a392d2b4bfef5d
+E     + 97162808b75b2a575ac6535ea8a5773c4b9d39fce85c88719bb91133ab601286</failure></testcase><testcase classname="tests.test_diagfast_runtime" name="test_errors_fail_closed_both_backends[path_distribution_wrong-PER_OD_PATH_MATRIX_PARITY_FAIL-LEGACY]" time="2.032" /><testcase classname="tests.test_live01_baseline" name="test_full_public_bootstrap_mock_and_import_restoration" time="19.048" /><testcase classname="tests.test_live01_baseline" name="test_full_public_bootstrap_read_failure_restores_imports" time="2.398" /></testsuite></testsuites>
