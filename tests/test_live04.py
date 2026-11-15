@@ -52,9 +52,9 @@ def test_v7_donors_pinned_and_config_is_the_running_profile_policy():
     opts = v7.run_options(cfg)
     pin = read_json(ROOT / v7.RUN_OPTIONS_PIN)
     # v7 @ 7b4c681 runs P 0.5-3.0 / A 0.5-5.0; LIVE04.5 (user decision 2026-11-03) widens the cordon run
-    # to P 0.5-3.15 / A 0.5-5.5, so mg_max_ratio is a declared cordon deviation again.
+    # to P 0.5-3.15 / A 0.5-5.5 (LIVE05: 3.5 / 7.0), so mg_max_ratio is a declared cordon deviation again.
     assert pin['mg_min_ratio'] == 0.5 and pin['mg_max_ratio'] == 3.0
-    assert opts['mg_min_ratio'] == 0.25 and opts['mg_max_ratio'] == 3.15   # LIVE04.11: floor 0.25
+    assert opts['mg_min_ratio'] == 0.25 and opts['mg_max_ratio'] == 3.5   # LIVE04.11: floor 0.25
     assert set(v7.CORDON_DEVIATIONS) == {'long_generation_enabled', 'long_composite_td_enabled', 'fa_enabled', 'mg_max_ratio', 'mg_min_ratio'}
     # LIVE04.4: the v7 Generation/SupplyMix/SEVRELAX3 options are the cordon options
     assert opts['tg_catchup_enabled'] is False and opts['tg_max_trials'] == 6
@@ -66,11 +66,11 @@ def test_v7_donors_pinned_and_config_is_the_running_profile_policy():
                                                    'max_geh40_net_count_increase': 30}
     assert all(opts[k] == val for k, val in v7.CORDON_DEVIATIONS.items())
     policy = v7.targeted_policy(cfg)
-    assert policy['envelope']['domestic_hard_by_role'] == {'PROD': [0.25, 3.15], 'ATT': [0.5, 5.5]}
-    assert policy['envelope']['refine_domestic_soft_by_role'] == {'PROD': [0.25, 3.15], 'ATT': [0.5, 5.5]}
+    assert policy['envelope']['domestic_hard_by_role'] == {'PROD': [0.25, 3.5], 'ATT': [0.5, 7.0]}
+    assert policy['envelope']['refine_domestic_soft_by_role'] == {'PROD': [0.25, 3.5], 'ATT': [0.5, 7.0]}
     assert policy['envelope']['zahr_reference_multiplier'] == [0.5, 10.0]
     mob = v7.mobility_options(cfg)
-    assert [mob['lo'], mob['hi']] == [0.25, 3.15] and mob['ws_attraction_coefficient_band'] == [0.5, 5.5]
+    assert [mob['lo'], mob['hi']] == [0.25, 3.5] and mob['ws_attraction_coefficient_band'] == [0.5, 7.0]
     assert cfg['v7']['source_commit'].startswith('7b4c681')
 
 
@@ -132,12 +132,12 @@ def test_runtime_scope_restores_every_global(tmp_path):
         from cordon2025.live04_config import adapter_config
         acfg = adapter_config(cfg, 1, [])
         assert mb._signed_generation_policy(acfg)
-        for attr, band in (('ADD_PROD_W', (0.25, 3.15)), ('ADD_ATT_S', (0.5, 5.5))):
+        for attr, band in (('ADD_PROD_W', (0.25, 3.5)), ('ADD_ATT_S', (0.5, 7.0))):
             ref = mb._reference_coefficient({}, attr, 5, 1.0)
             lo, hi, _ = mb._multiplicative_coefficient_bounds('DOMESTIC', acfg, current=1.0, reference=ref)
             assert (lo, hi) == band, (attr, lo, hi)
-        assert [mg.options()['lo'], mg.options()['hi']] == [0.25, 3.15]
-        assert mg.options()['ws_attraction_coefficient_band'] == [0.5, 5.5] and mg.ATTRACTION_BAND == (0.5, 5.5)
+        assert [mg.options()['lo'], mg.options()['hi']] == [0.25, 3.5]
+        assert mg.options()['ws_attraction_coefficient_band'] == [0.5, 7.0] and mg.ATTRACTION_BAND == (0.5, 7.0)
     assert runtime_globals() == before
 
 
@@ -158,7 +158,7 @@ def test_live04_cycle_v7_generation_long_mask_and_td(tmp_path):
     assert r['status'] == 'MOCK_LIVE04_ACCEPTED' and r['accepted_by_block'] == {'GENERATION': 1, 'TD_CORDON': 1}
     assert r['objective_final'] < r['cycles'][0]['blocks'][0]['objective_after'] < r['objective_baseline']
     assert r['v7_source']['commit'].startswith('7b4c681')
-    assert r['mobility_band'] == [0.25, 3.15] and r['ws_attraction_band'] == [0.5, 5.5]
+    assert r['mobility_band'] == [0.25, 3.5] and r['ws_attraction_band'] == [0.5, 7.0]
     gen = read_json(f / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
     assert gen['prediction_authority'] == 'FINAL_IMPLEMENTED_EFFECT_ROWS'
     assert [n['status'] for n in gen['native_prediction']['nodes']] == ['NATIVE', 'NATIVE']
@@ -493,17 +493,17 @@ def test_memory_disabled_is_live04_behaviour(tmp_path):
 
 
 def test_wider_domestic_envelope_reaches_the_model(tmp_path):
-    """User decision 2026-11-03: ADD_PROD 0.5-3.15, ADD_ATT 0.5-5.5 (LIVE04.3: 0.5-3.0 / 0.5-5.0)."""
+    """User decision 2026-11-15 (LIVE05): ADD_PROD 0.25-3.5, ADD_ATT 0.5-7.0 (2026-11-03: 3.15 / 5.5)."""
     v = Live04Visum(tmp_path / 'model')
     for r in v.Net.Zones.rows[:16]:
-        r['ADD_PROD_W'] = 2.95; r['ADD_PROD_S'] = 2.95; r['ADD_ATT_W'] = 4.9; r['ADD_ATT_S'] = 4.9
+        r['ADD_PROD_W'] = 3.3; r['ADD_PROD_S'] = 3.3; r['ADD_ATT_W'] = 6.6; r['ADD_ATT_S'] = 6.6
     v._capture_fp_units()                       # FP_* follow the start coefficients
     v.base_params.update({a: v.zone_vector(a) for a in ('ADD_PROD_W', 'ADD_PROD_S', 'ADD_ATT_W', 'ADD_ATT_S')})
     r = go(tmp_path, v, GEN_ONLY)
     assert r['accepted_by_block'] == {'GENERATION': 1}
     prod = [float(z[a]) for z in v.Net.Zones.rows for a in ('ADD_PROD_W', 'ADD_PROD_S')]
     att = [float(z[a]) for z in v.Net.Zones.rows for a in ('ADD_ATT_W', 'ADD_ATT_S')]
-    assert max(prod) > 3.0 and max(prod) <= 3.15 + 1e-9 and min(prod) >= 0.25 - 1e-9
-    assert max(att) > 5.0 and max(att) <= 5.5 + 1e-9 and min(att) >= 0.5 - 1e-9
+    assert max(prod) > 3.15 and max(prod) <= 3.5 + 1e-9 and min(prod) >= 0.25 - 1e-9
+    assert max(att) > 5.5 and max(att) <= 7.0 + 1e-9 and min(att) >= 0.5 - 1e-9
     d = read_json(folder_of(tmp_path) / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')['attempts'][-1]['decision']
     assert d['mobility_guard_live']['passes']

@@ -12,11 +12,11 @@ from test_live04_4 import go, folder_of, merged, GEN_ONLY, SUPPLY_FROM_C1, SUPPL
 
 def test_production_floor_is_025_everywhere():
     cfg = load_config()
-    assert cfg['v7']['coefficient_envelope']['PROD'] == [0.25, 3.15]
+    assert cfg['v7']['coefficient_envelope']['PROD'] == [0.25, 3.5]
     assert cfg['v7']['run_options']['mg_min_ratio'] == 0.25 and v7.CORDON_DEVIATIONS['mg_min_ratio'] == 0.25
     pol = v7.targeted_policy(cfg)
-    assert pol['envelope']['domestic_hard_by_role']['PROD'] == [0.25, 3.15]
-    assert pol['envelope']['refine_domestic_soft_by_role']['PROD'] == [0.25, 3.15]
+    assert pol['envelope']['domestic_hard_by_role']['PROD'] == [0.25, 3.5]
+    assert pol['envelope']['refine_domestic_soft_by_role']['PROD'] == [0.25, 3.5]
     assert v7.mobility_options(cfg)['lo'] == 0.25
     assert read_json(ROOT / 'provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json')['v7'] == cfg['v7']
     with pytest.raises(ContractError, match='LIVE04_PROD_ENVELOPE_MUST_EQUAL_MOBILITY_BAND'):

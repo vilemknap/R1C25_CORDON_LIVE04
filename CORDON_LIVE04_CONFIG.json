@@ -544,7 +544,7 @@
    "td_max_survey_degradation": 1.25,
    "mg_enabled": true,
    "mg_min_ratio": 0.25,
-   "mg_max_ratio": 3.15,
+   "mg_max_ratio": 3.5,
    "td_joint_enabled": true,
    "td_joint_outer_isolates": true,
    "td_joint_max_isolates": 2
@@ -553,20 +553,20 @@
    "long_generation_enabled": "LONG zonal TG needs the profile LONG cache incidence; deferred as in v7 without it",
    "long_composite_td_enabled": "LONG TD is calibrated only by the profile/FineCDF runner",
    "fa_enabled": "STEP1 always uses the full assignment (v7 STEP1 too)",
-   "mg_max_ratio": "User decision 2026-11-03: W/S production envelope/mobility band upper bound 3.15 (v7 @ 7b4c681: 3.0)",
+   "mg_max_ratio": "User decision 2026-11-15 (LIVE05): W/S production envelope/mobility band upper bound 3.5 (2026-11-03: 3.15; v7 @ 7b4c681: 3.0)",
    "mg_min_ratio": "User decision 2026-11-06 (LIVE04.11): W/S production envelope/mobility band lower bound 0.25 (v7 @ 7b4c681: 0.5); in the last native run 138 of 536 changed ADD_PROD_S and 89 of 552 ADD_PROD_W sat on 0.5"
   },
   "targeted_generation_policy": "DONOR_DEFAULT_POLICY_V7_ROLE_ENVELOPES",
   "coefficient_envelope": {
    "PROD": [
     0.25,
-    3.15
+    3.5
    ],
    "ATT": [
     0.5,
-    5.5
+    7.0
    ],
-   "approval": "USER_DECISION_20261103_P0.5-3.15_A0.5-5.5;USER_DECISION_20261106_PROD_FLOOR_0.25"
+   "approval": "USER_DECISION_20261103_P0.5-3.15_A0.5-5.5;USER_DECISION_20261106_PROD_FLOOR_0.25;USER_DECISION_20261115_P_MAX_3.5_A_MAX_7.0"
   },
   "catchup_until_model_obs_ratio": 0.8,
   "boundary_zone_policy": "CONFIGURED_ZONES_POSITIVE_WS_PA_AND_NO_ADD_ZAHR_ACTUATOR",
@@ -583,7 +583,7 @@
    "production_band_from_run_options": true,
    "ws_attraction_coefficient_band": [
     0.5,
-    5.5
+    7.0
    ],
    "mobilityzone1": true
   }

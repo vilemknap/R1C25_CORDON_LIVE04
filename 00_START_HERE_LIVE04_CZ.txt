@@ -30,6 +30,8 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
 2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py
 3. Vystupy: %LOCALAPPDATA%\R1C25_LIVE04\LIVE04_TGTD_<id>\  (00_RESULT.json)
 
+MEZE KOEFICIENTU (LIVE05, 2026-11-15): produkce ADD_PROD 0,25-3,5, atrakce ADD_ATT 0,5-7,0
+  (drive 3,15 / 5,5); pasmo MOBILITY2 stejne.
 LIVE05 (2026-11-15): kalibrace navic na NDS profily (94), ASD1-7 (12 smeru, ASD4=SDP10 vyrazena)
   a odbocovani K1/K2 (24); vahy kordon 70 / NDS 15 / ASD 10 / K 5 %, duplicity vyrazene.
   Postup spusteni beze zmeny; novy vystup EXTRA_OBSERVATION_LINKS.json. docs/live04/LIVE05_EXTRA_OBSERVATIONS_CZ.md
