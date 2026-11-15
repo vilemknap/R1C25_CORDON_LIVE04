@@ -22,7 +22,7 @@ compared with the same Transit pair targets (pairs only).
 from __future__ import annotations
 import numpy as np
 from .common import ROOT, require, canonical_hash, sha256
-from .live03_incidence import aggregate_observations, FIRST_LAST, C17_STATION, PROFILE_STATION, PROFILE_STATION_B, PROFILE_IDS, DIRECTIONAL
+from .live03_incidence import aggregate_observations, FIRST_LAST, C17_STATION, PROFILE_STATION, PROFILE_STATION_B, PROFILE_IDS, DIRECTIONAL, EXTRA_GROUP_IDS, EXTRA_ROW_BASE
 import json
 from .state import observation_roster
 
@@ -126,6 +126,49 @@ def resolve_sign_sides(raw_contexts, model_contexts):
     return (num / den) if den > 0 else 0.0
 
 
+EXTRA_GROUPS = tuple(EXTRA_GROUP_IDS)
+EXTRA_KINDS = ('LINK', 'PAIR')
+
+
+def validate_extra(obs):
+    """LIVE05: extra link observations (NDS profiles, ASD profiles, K1/K2 movements), OA RPDI.
+
+    Each group gets a fixed share of the objective weight (user decision 2026-11-15: cordon 70 %,
+    NDS 15 %, ASD 10 %, K movements 5 %); the rows of a group share it equally."""
+    ex = obs.get('extra_observations')
+    if ex is None:
+        return None
+    require(isinstance(ex, dict) and isinstance(ex.get('enabled'), bool), 'LIVE05_EXTRA_OBSERVATIONS')
+    require(set(ex) - {'note'} == {'enabled', 'file', 'file_sha256', 'group_shares'}, 'LIVE05_EXTRA_OBSERVATIONS_KEYS')
+    sh = ex['group_shares']
+    require(isinstance(sh, dict) and set(sh) == set(EXTRA_GROUPS), 'LIVE05_EXTRA_GROUP_SHARES')
+    require(all(not isinstance(v, bool) and isinstance(v, (int, float)) and 0 <= float(v) < 1 for v in sh.values())
+            and sum(float(v) for v in sh.values()) < 0.95, 'LIVE05_EXTRA_GROUP_SHARE_RANGE')
+    require(isinstance(ex['file'], str) and isinstance(ex['file_sha256'], str), 'LIVE05_EXTRA_FILE')
+    return ex
+
+
+def load_extra(ex):
+    """Rows of the extra observation file (hash-pinned)."""
+    import csv
+    p = ROOT / ex['file']
+    require(p.is_file(), 'LIVE05_EXTRA_FILE_MISSING')
+    require(sha256(p) == ex['file_sha256'], 'LIVE05_EXTRA_FILE_HASH_CHANGED')
+    rows = []
+    with p.open(encoding='utf-8-sig') as f:
+        for r in csv.DictReader(f, delimiter=';'):
+            require(r['group'] in EXTRA_GROUPS and r['kind'] in EXTRA_KINDS, 'LIVE05_EXTRA_ROW_TYPE:' + r['obs_id'])
+            ink = tuple(int(x) for x in r['in_link'].split(':'))
+            outk = tuple(int(x) for x in r['out_link'].split(':')) if r['kind'] == 'PAIR' else None
+            require(len(ink) == 3 and (outk is None or len(outk) == 3), 'LIVE05_EXTRA_LINK_KEY:' + r['obs_id'])
+            t = float(r['target_rpdi'])
+            require(np.isfinite(t) and t >= 0, 'LIVE05_EXTRA_TARGET:' + r['obs_id'])
+            rows.append({'obs_id': r['obs_id'], 'group': r['group'], 'kind': r['kind'], 'in_link': ink,
+                         'out_link': outk, 'target': t})
+    require(len({r['obs_id'] for r in rows}) == len(rows), 'LIVE05_EXTRA_DUPLICATE_ID')
+    return rows
+
+
 def validate(obs):
     require(obs.get('schema') == 'LIVE03_OBSERVATIONS_V1', 'LIVE03_OBSERVATIONS_SCHEMA')
     require(obs.get('semantics') == FIRST_LAST, 'LIVE03_SEMANTICS_MUST_BE_FIRST_LAST')
@@ -146,6 +189,7 @@ def validate(obs):
     require(np.isfinite(f) and 0.5 <= f <= 2.0, 'LIVE03_YEAR_FACTOR')
     require(bool(yb.get('approval')), 'LIVE03_YEAR_BRIDGE_APPROVAL_MISSING')
     validate_profiles(obs)
+    validate_extra(obs)
     methods = obs.get('methods') or {}
     require(methods.get(FIRST_LAST) == 'PRIMARY', 'LIVE03_FIRST_LAST_MUST_BE_PRIMARY')
     require(all(r in ROLES for r in methods.values()) and list(methods.values()).count('PRIMARY') == 1
@@ -237,6 +281,17 @@ class Contract:
                 self.profile_cells[(PROFILE_STATION, s)] = self.factor * csum
                 self.profile_parts.append({'station': s, 'all_row_sum': rsum, 'all_column_sum': csum,
                                            'target_crossings': self.factor * (rsum + csum)})
+        # LIVE05 extra link observations: row key (EXTRA_ROW_BASE + i, group id), reverse key target 0.
+        self.extra_rows = []
+        self.extra_cells = {}
+        ex = self.obs.get('extra_observations')
+        if ex and ex['enabled']:
+            self.extra_rows = load_extra(ex)
+            for i, r in enumerate(self.extra_rows):
+                r['row_id'] = EXTRA_ROW_BASE + i
+                g = EXTRA_GROUP_IDS[r['group']]
+                self.extra_cells[(r['row_id'], g)] = self.factor * r['target']
+                self.extra_cells[(g, r['row_id'])] = 0.0
         self.methods = dict(self.obs['methods'])
         self.primary = next(m for m, r in self.methods.items() if r == 'PRIMARY')
         self.secondary = next((m for m, r in self.methods.items() if r == 'SECONDARY'), None)
@@ -260,12 +315,36 @@ class Contract:
             'station_profile_target_sum': float(sum(p['target_crossings'] for p in self.profile_parts)),
             'station_profile_mode': (DIRECTIONAL if self.profile_directional else ('BIDIRECTIONAL' if self.profile_cells else None)),
             'rows': {m: self.row_count(m) for m in self.methods},
+            'extra_observations': ({'file': ex['file'], 'file_sha256': ex['file_sha256'],
+                                    'group_shares': dict(ex['group_shares']),
+                                    'counts': {g: sum(1 for r in self.extra_rows if r['group'] == g) for g in EXTRA_GROUPS},
+                                    'row_weights': self.extra_weights()} if self.extra_rows else None),
             'production_ready': False,
             'observation_status': 'APPROVED_BY_SURVEY_REPORT_AND_USER_FOR_LIVE03_TECHNICAL_CALIBRATION'}
         self.audit['contract_sha256'] = canonical_hash({k: v for k, v in self.audit.items() if k not in ('c17_station_parts', 'station_profile_parts')})
 
     def station_rows(self, method):
         return method == FIRST_LAST and bool(self.station_cells)
+
+    def extra_row_count(self, method):
+        return len(self.extra_rows) if method == FIRST_LAST else 0
+
+    def extra_weights(self):
+        """Per-row weight of each extra group: the group's summed squared weight is its share of the
+        objective weight (the cordon keeps 1 - sum(shares) with its own row weights)."""
+        if not self.extra_rows:
+            return {}
+        sh = {g: float(v) for g, v in self.obs['extra_observations']['group_shares'].items()}
+        c17w = float(self.obs.get('c17_row_weight', 1.0))
+        pw = float((self.obs.get('station_profiles') or {}).get('row_weight', 1.0))
+        wc = 120.0 + (16 * c17w ** 2 if self.station_cells else 0.0) + \
+            (self.profile_row_count(FIRST_LAST) * pw ** 2 if self.profile_cells else 0.0)
+        cordon_share = 1.0 - sum(sh.values())
+        out = {}
+        for g in EXTRA_GROUPS:
+            n = sum(1 for r in self.extra_rows if r['group'] == g)
+            out[g] = float(np.sqrt(sh[g] / cordon_share * wc / n)) if n and sh[g] > 0 else 0.0
+        return out
 
     def profile_rows(self, method):
         return method == FIRST_LAST and bool(self.profile_cells)
@@ -276,7 +355,7 @@ class Contract:
         return 32 if self.profile_directional else 16
 
     def row_count(self, method):
-        return 120 + (16 if self.station_rows(method) else 0) + self.profile_row_count(method)
+        return 120 + (16 if self.station_rows(method) else 0) + self.profile_row_count(method) + self.extra_row_count(method)
 
     def resolve_directions(self, inc):
         """LIVE04.10: which station edge carries the '+' and which the '-' targets.
@@ -326,6 +405,8 @@ class Contract:
         if self.profile_rows(method):
             require(all(v is not None for v in self.profile_cells.values()), 'LIVE04_PROFILE_DIRECTIONS_NOT_RESOLVED')
             out.update(self.profile_cells)
+        if method == FIRST_LAST and self.extra_cells:
+            out.update(self.extra_cells)
         return out
 
     def mathcfg_extension(self):
@@ -334,7 +415,21 @@ class Contract:
                'full_share_methods': list(self.enumeration)}
         if self.profile_cells:
             ext['first_last_profile_rows'] = DIRECTIONAL if self.profile_directional else True
+        if self.extra_rows:
+            ext['extra_observation_rows'] = [{'row_id': r['row_id'], 'group_id': EXTRA_GROUP_IDS[r['group']],
+                                              'kind': r['kind'], 'in_link': list(r['in_link']),
+                                              'out_link': list(r['out_link']) if r['out_link'] else None}
+                                             for r in self.extra_rows]
         return ext
+
+    def extra_links(self):
+        """Every directed link key used by an extra observation (capture cross-check scope)."""
+        out = set()
+        for r in self.extra_rows:
+            out.add(tuple(r['in_link']))
+            if r['out_link']:
+                out.add(tuple(r['out_link']))
+        return out
 
 
 def aggregate(inc, contract, method):
@@ -347,14 +442,22 @@ def aggregate(inc, contract, method):
         roles[tuple(sorted((a, b)))] = 'CALIBRATION'
     expected = contract.row_count(method)
     keys = [(int(r['origin_station']), int(r['destination_station'])) for r in inc.rows]
-    require(len(keys) == (240 + (16 if contract.station_rows(method) else 0) + contract.profile_row_count(method)),
+    require(len(keys) == (240 + (16 if contract.station_rows(method) else 0) + contract.profile_row_count(method)
+                          + contract.extra_row_count(method)),
             'LIVE03_DIRECTED_ROW_COUNT:' + method)
     result = aggregate_observations(inc, targets, bidirectional=True, roles=roles)
     roster = observation_roster(result.rows)
     require((roster['rows'], roster['calibration'], roster['validation']) == (expected, expected, 0),
             'LIVE03_ROSTER_OMISSION:' + method)
     w = float(contract.obs.get('c17_row_weight', 1.0))
+    xw = contract.extra_weights() if contract.extra_row_count(method) else {}
+    gname = {v: k for k, v in EXTRA_GROUP_IDS.items()}
+    xid = {r['row_id']: r['obs_id'] for r in contract.extra_rows}
     for r in result.rows:
+        if r['origin_station'] in gname and r['destination_station'] in xid:
+            g = gname[r['origin_station']]
+            r['observation_type'] = 'LIVE05_' + g; r['weight'] = xw[g]; r['obs_id'] = xid[r['destination_station']]
+            continue
         if r['destination_station'] == C17_STATION:
             r['observation_type'] = 'KORDON_C17_STATION'; r['weight'] = w
         elif r['destination_station'] in PROFILE_IDS:

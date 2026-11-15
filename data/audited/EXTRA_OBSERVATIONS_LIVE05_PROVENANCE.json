@@ -1,0 +1,198 @@
+{
+ "schema": "LIVE05_EXTRA_OBSERVATIONS_PROVENANCE_V1",
+ "counts": {
+  "ASD": 12,
+  "KMOV": 24,
+  "NDS": 94
+ },
+ "dropped": [
+  {
+   "obs_id": "ASD4_Bratislava",
+   "reason": "DUPLICATE_OF_CORDON_STATION_SDP10"
+  },
+  {
+   "obs_id": "ASD4_na_D4_-_Studené",
+   "reason": "DUPLICATE_OF_CORDON_STATION_SDP10"
+  },
+  {
+   "obs_id": "NDS_S2A",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S2B",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S3B",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S4B",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S9A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S10A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S12A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S12B",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S18A",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S19A",
+   "reason": "MAPPING_NOT_FOUND_TOO_FAR"
+  },
+  {
+   "obs_id": "NDS_S19B",
+   "reason": "MAPPING_NOT_FOUND_TOO_FAR"
+  },
+  {
+   "obs_id": "NDS_S20A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S21A",
+   "reason": "DUPLICATE_OF_ASD_OR_K_EDGE"
+  },
+  {
+   "obs_id": "NDS_S21B",
+   "reason": "DUPLICATE_OF_ASD_OR_K_EDGE"
+  },
+  {
+   "obs_id": "NDS_S26A",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S26B",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S32A",
+   "reason": "DUPLICATE_OF_CORDON_STATION_EDGE"
+  },
+  {
+   "obs_id": "NDS_S32B",
+   "reason": "DUPLICATE_OF_CORDON_STATION_EDGE"
+  },
+  {
+   "obs_id": "NDS_S38A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S41A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S41B",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S42A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S42B",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S48A",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S49B",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S52A",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S52B",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S53A",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S53B",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S55A",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S55B",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S59B",
+   "reason": "MAPPING_REVIEW_AMBIGUOUS"
+  },
+  {
+   "obs_id": "NDS_S62A",
+   "reason": "MAPPING_NOT_FOUND_TOO_FAR"
+  },
+  {
+   "obs_id": "NDS_S62B",
+   "reason": "MAPPING_NOT_FOUND_TOO_FAR"
+  },
+  {
+   "obs_id": "NDS_S64A",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S64B",
+   "reason": "MAPPING_NOT_FOUND"
+  },
+  {
+   "obs_id": "NDS_S70A",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S70B",
+   "reason": "MAPPING_REVIEW_DISTANCE"
+  },
+  {
+   "obs_id": "NDS_S72A",
+   "reason": "DUPLICATE_OF_ASD_OR_K_EDGE"
+  },
+  {
+   "obs_id": "NDS_S72B",
+   "reason": "DUPLICATE_OF_ASD_OR_K_EDGE"
+  }
+ ],
+ "k1_arm_scale": {
+  "K1|8500114:1002880-1001535": {
+   "factor": 0.7573,
+   "source": "STATION_SDP"
+  },
+  "K1|9800107:9200066-9900107": {
+   "factor": 1.4577,
+   "source": "STATION_SDP"
+  },
+  "K1|8500113:9900105-9200065": {
+   "factor": 0.7073,
+   "source": "ASD"
+  },
+  "K1|9801208:99800156-9000011": {
+   "factor": 0.9741,
+   "source": "MEAN_OF_OBSERVED_ARMS"
+  }
+ },
+ "network_export": "R1_VARIANTYBase 2026-11-15T19:37:27",
+ "file_sha256": "ef502d849c6e27b1b506b2d64ad073a86b1aed59d468e4198c024613fbd9fd9e"
+}

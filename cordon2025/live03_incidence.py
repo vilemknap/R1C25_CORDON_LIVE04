@@ -30,6 +30,32 @@ PROFILE_STATION=18   # LIVE04.9: station profile row (all crossings at s); LIVE0
 PROFILE_STATION_B=19 # LIVE04.10: side B of station s (directional profiles)
 PROFILE_IDS=(PROFILE_STATION,PROFILE_STATION_B)
 DIRECTIONAL='DIRECTIONAL'
+# LIVE05 extra link observations: group pseudo-station ids and the first row id
+EXTRA_GROUP_IDS={'NDS':20,'ASD':21,'KMOV':22}
+EXTRA_ROW_BASE=1000
+
+
+def extra_contributions(eids, extra):
+    """LIVE05: contributions of one saved path to the extra observation rows.
+    LINK row: number of passes over the directed link; PAIR row (intersection movement): 1 when
+    the path passes the entry link and LATER the exit link (first entry, any later exit)."""
+    if not extra or not eids:
+        return ()
+    pos={}
+    for i,e in enumerate(eids):
+        pos.setdefault(e,[]).append(i)
+    out=[]
+    for x in extra:
+        a=pos.get(x['in_eid'])
+        if not a:
+            continue
+        if x['kind']=='LINK':
+            out.append(((x['row_id'],x['group_id']),float(len(a))))
+        else:
+            b=pos.get(x['out_eid'])
+            if b and b[-1]>a[0]:
+                out.append(((x['row_id'],x['group_id']),1.0))
+    return tuple(out)
 
 
 def station_sides(station_map):
@@ -217,6 +243,14 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
         eid_station={eid:station_map[key] for eid,key in edges.items() if key in station_map}
         stations=sorted(set(station_map.values()));pairs=[(a,b) for a in stations for b in stations if a!=b]
         require(C17_STATION not in stations and not set(PROFILE_IDS)&set(stations),'C17_ID_COLLIDES_WITH_STATION')
+        extra=[]
+        eid_of={v:k for k,v in edges.items()}
+        for x in (cfg.get('extra_observation_rows') or ()):
+            require(int(x['row_id'])>=EXTRA_ROW_BASE and int(x['group_id']) in EXTRA_GROUP_IDS.values() and x['kind'] in ('LINK','PAIR'),'LIVE05_EXTRA_ROW_SPEC')
+            extra.append({'row_id':int(x['row_id']),'group_id':int(x['group_id']),'kind':x['kind'],
+                          'in_eid':eid_of.get(tuple(int(v) for v in x['in_link'])),
+                          'out_eid':eid_of.get(tuple(int(v) for v in x['out_link'])) if x.get('out_link') else None})
+        require(not set(EXTRA_GROUP_IDS.values())&set(stations),'LIVE05_EXTRA_ID_COLLIDES_WITH_STATION')
         side_of=station_sides(station_map) if profile_rows==DIRECTIONAL else {}
         eid_side={eid:side_of[key] for eid,key in edges.items() if key in side_of}
         ctx_vol=defaultdict(float)
@@ -226,6 +260,8 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
         if FIRST_LAST in methods and profile_rows:
             keys_by[FIRST_LAST]=keys_by[FIRST_LAST]+([(s,PROFILE_STATION) for s in stations] if profile_rows!=DIRECTIONAL else
                                                      [(s,p) for s in stations for p in PROFILE_IDS])
+        if FIRST_LAST in methods and extra:
+            keys_by[FIRST_LAST]=keys_by[FIRST_LAST]+[(x['row_id'],x['group_id']) for x in extra]
         index_by={m:{key:i for i,key in enumerate(keys_by[m])} for m in methods}
         totals={m:np.zeros(len(keys_by[m])) for m in methods};mtotals={m:np.zeros(len(keys_by[m])) for m in methods}
         per_dseg={m:{c:np.zeros(len(keys_by[m])) for c in codes} for m in methods}
@@ -258,6 +294,11 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
             contrib={m:tuple((index_by[m][pair],1.0) for pair in pr[m]) for m in methods if m in pr}
             if FIRST_LAST in methods:
                 contrib[FIRST_LAST]=tuple((index_by[FIRST_LAST][k],w) for k,w in first_last_contributions(hits,station_rows,profile_rows,sides))
+                if extra:
+                    xc=extra_contributions(eids,extra)
+                    if xc:
+                        metrics['extra_max_multiplicity']=max(metrics['extra_max_multiplicity'],max(w for _,w in xc))
+                    contrib[FIRST_LAST]+=tuple((index_by[FIRST_LAST][k],w) for k,w in xc)
                 metrics['first_last_max_station_multiplicity']=max(metrics['first_last_max_station_multiplicity'],max(Counter(hits).values()) if hits else 0)
                 metrics['first_last_single_hit_geometry']+=int(len(hits)==1)
                 metrics['first_last_cyclic_geometry']+=int(len(hits)>=2 and hits[0]==hits[-1])
@@ -338,10 +379,10 @@ def build_from_snapshot(path, station_map, cfg, evidence, *, hits_output=None):
             rr=np.array([t[0] for t in triples],dtype=np.int64);cc=np.array([t[1] for t in triples],dtype=np.int64);vv=np.array([t[2] for t in triples],dtype=float)
             op=core.SparseOperator(rr,cc,vv,len(keys_by[meth]),len(var_keys))
             share=core.SparseOperator(rr,cc,vv/qvec[cc] if len(cc) else vv.copy(),len(keys_by[meth]),len(var_keys))
-            bound=max(2.0,float(metrics['first_last_max_station_multiplicity'])) if meth==FIRST_LAST else 1.0
+            bound=max(2.0,float(metrics['first_last_max_station_multiplicity']),float(metrics['extra_max_multiplicity'])) if meth==FIRST_LAST else 1.0
             require(np.all(share.values>=0) and np.all(share.values<=bound+1e-10),'PAIR_SHARE_OUT_OF_BOUNDS')
             require(np.allclose(op.forward(np.ones(len(var_keys))),mtotals[meth],atol=numeric['internal_sum_atol'],rtol=numeric['internal_sum_rtol']),'MUTABLE_PREDICTION_PARITY_FAIL')
-            rows=[{'observation_type':{C17_STATION:'KORDON_C17_STATION',PROFILE_STATION:'KORDON_STATION_PROFILE',PROFILE_STATION_B:'KORDON_STATION_PROFILE'}.get(b,'KORDON_PAIR'),'category':'OA','origin_station':a,'destination_station':b,
+            rows=[{'observation_type':{C17_STATION:'KORDON_C17_STATION',PROFILE_STATION:'KORDON_STATION_PROFILE',PROFILE_STATION_B:'KORDON_STATION_PROFILE',20:'LIVE05_NDS',21:'LIVE05_ASD',22:'LIVE05_KMOV'}.get(b,'KORDON_PAIR'),'category':'OA','origin_station':a,'destination_station':b,
               'role':'DIAGNOSTIC','method':meth,'basis':'RPDI','model':float(totals[meth][i]),
               'per_dseg':{c:float(per_dseg[meth][c][i]) for c in codes}} for i,(a,b) in enumerate(keys_by[meth])]
             frozen=None

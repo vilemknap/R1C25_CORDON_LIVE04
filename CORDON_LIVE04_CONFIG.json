@@ -82,6 +82,17 @@
    "sign_edges": "data/audited/STATION_PROFILE_SIGN_EDGES.json",
    "sign_edges_sha256": "a590d6f8f9a1c690e23de1d35bb8d71176fee52616bb8148663a510ae73909cf",
    "note": "LIVE04.10: 32 smerovych profilu (jeden na orientovanou hranu stanoviste); cil = surove detekce OA z E41 (vcetne podilu nerozpoznanych, SDP5 vcetne kamery 5 nove) x koeficient zony OA_RPDI z D3; ktera hrana je + a ktera - urcuji mapy reportu (sign_edges). Shoda tras modelu se jen zapisuje. Rozhodnuti uzivatele 2026-11-05."
+  },
+  "extra_observations": {
+   "enabled": true,
+   "file": "data/audited/EXTRA_OBSERVATIONS_LIVE05.csv",
+   "file_sha256": "ef502d849c6e27b1b506b2d64ad073a86b1aed59d468e4198c024613fbd9fd9e",
+   "group_shares": {
+    "NDS": 0.15,
+    "ASD": 0.1,
+    "KMOV": 0.05
+   },
+   "note": "LIVE05 (rozhodnuti 2026-11-15): profily NDS BA 2025 (OA RPDI, mapovani OK), ASD1-7 bez ASD4 (=SDP10), proudy K1/K2 (OA 6-18 x prepocet na RPDI; K1 jen smerovani - prijezdy ramen skalovane na SDP10/SDP14/ASD2). Vahy skupin: kordon 70 %, NDS 15 %, ASD 10 %, K 5 %. Duplicity se stanicemi vyrazeny. Vypnuti: enabled=false."
   }
  },
  "native_prediction": {

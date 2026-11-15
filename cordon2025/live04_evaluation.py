@@ -16,6 +16,12 @@ class Live04Evaluator(Live03Evaluator):
     def __init__(self, *args, row_guard_policy=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.row_guard_policy = row_guard_policy
+        # LIVE05: extra observation links join the trial-capture station cross-check
+        from . import live04_capture
+        live04_capture.EXTRA_CROSSCHECK_LINKS.clear()
+        extra = getattr(self.contract, 'extra_links', None)
+        if extra is not None:
+            live04_capture.EXTRA_CROSSCHECK_LINKS.update({k: True for k in extra()})
 
     def authorized_blocks(self):
         return BLOCKS

@@ -119,6 +119,9 @@ def row_semantics(evaluator, diag):
         keys += [(s, p) for s in stations for p in PROFILE_IDS]
     elif profile_rows:
         keys += [(s, PROFILE_STATION) for s in stations]
+    # LIVE05 extra rows (NDS/ASD/K): part of the acceptance objective, not SupplyMix drivers
+    for x in (getattr(evaluator.contract, 'mathcfg_extension', lambda: {})().get('extra_observation_rows') or ()):
+        keys.append((int(x['row_id']), int(x['group_id'])))
     directed_to_row = list(inc.audit['directed_to_row'])
     require(len(directed_to_row) == len(keys), 'LIVE04_SUPPLY_DIRECTED_ROW_MAP_MISMATCH')
     key_row = {k: int(directed_to_row[i]) for i, k in enumerate(keys)}
@@ -179,8 +182,12 @@ def make_collector(*args, **kwargs):
                     group |= by_station.get(b, set())
                 self.key_groups.append(tuple(sorted(group)))
             self.drivers = []
+            from .live03_incidence import EXTRA_GROUP_IDS
+            extra_groups = set(EXTRA_GROUP_IDS.values())
             for i, p in enumerate(self.profiles):
                 obs, model = float(p['observed']), float(p['model'])
+                if p['origin_station'] in extra_groups or p['destination_station'] in extra_groups:
+                    continue                      # LIVE05 rows are not route-choice drivers
                 if obs <= 0 or abs(model - obs) < policy.min_residual or core.geh(model, obs) < policy.min_geh:
                     continue
                 self.drivers.append(i)

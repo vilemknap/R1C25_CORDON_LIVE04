@@ -38,12 +38,18 @@ GEOMETRY_PROOF_MODES=('FULL',STATION_CROSSCHECK)
 STOP_EXCEPTIONS=('UserStopRequested','TimeBudgetReached','DesignStopRequested','KeyboardInterrupt')
 CROSSCHECK_ATOL=1.0
 CROSSCHECK_RTOL=1e-3
+# LIVE05: directed links of the extra observations (NDS/ASD/K), set by the evaluator; they join the
+# station-link cross-check so a trial capture cannot keep stale extra rows.
+EXTRA_CROSSCHECK_LINKS={}
 
 
 def _station_link_volumes(visum,dsegs,control,opt,cache):
     """Visum VOLVEH_DSEG(code,AP) on the station links, one bulk read per DSeg."""
     com=parent_module('r1_15a2_com_compat')
     stations,_=mapping(ROOT/'data/audited/STATION_MAPPING.csv')
+    stations=dict(stations)
+    for key in EXTRA_CROSSCHECK_LINKS:
+        stations.setdefault(tuple(int(x) for x in key),'EXTRA')
     missing=[d for d in dsegs if d['norm_code'] not in cache.get('dsegs',{})]
     if missing:
         collection=_call(lambda:visum.Net.Links,control,opt,'NET_LINKS_PROPERTY')
@@ -57,7 +63,11 @@ def _station_link_volumes(visum,dsegs,control,opt,cache):
             for d in missing:
                 cache.setdefault('dsegs',{}).setdefault(d['norm_code'],{})[key]=com.finite_float(
                     r['VOLVEH_DSEG(%s,AP)'%d['code']],'VOLVEH_DSEG')
-        require(found==set(stations),'CROSSCHECK_STATION_LINKS_NOT_IN_NETWORK')
+        require(found>={k for k,v in stations.items() if v!='EXTRA'},'CROSSCHECK_STATION_LINKS_NOT_IN_NETWORK')
+        for key,v in stations.items():          # LIVE05 extra link absent from the network: volume 0
+            if v=='EXTRA' and key not in found:
+                for d in missing:
+                    cache['dsegs'][d['norm_code']].setdefault(key,0.0)
     return stations,{d['norm_code']:cache['dsegs'][d['norm_code']] for d in dsegs}
 
 
@@ -83,11 +93,13 @@ def _station_crosscheck(visum,db,dsegs,mode,control,opt,cache):
     from array import array
     stations,visum_vol=_station_link_volumes(visum,dsegs,control,opt,cache)
     eids={(int(n),int(f),int(t)):int(e) for e,n,f,t in db.execute('SELECT eid,link_no,from_no,to_no FROM edges')}
-    require(set(stations)<=set(eids),'CROSSCHECK_STATION_EDGES_MISSING')
+    require({k for k,v in stations.items() if v!='EXTRA'}<=set(eids),'CROSSCHECK_STATION_EDGES_MISSING')
     mode_gids={int(g) for (g,) in db.execute('SELECT gid FROM geometry WHERE mode=?',(mode,))}
     hits={}
     for key in stations:
         pairs=[]
+        if key not in eids:          # LIVE05 extra link without any saved path: implied volume 0
+            hits[key]=pairs;continue
         for (blob,) in db.execute('SELECT pairs FROM edge_postings WHERE eid=? ORDER BY chunk',(eids[key],)):
             a=array('I');a.frombytes(zlib.decompress(blob))
             if sys.byteorder!='little':a.byteswap()
