@@ -200,8 +200,16 @@ class FrozenPathPredictor:
         return rows, matrices, audit
 
     def restore_demand(self, block, state, folder):
-        """After parameters are restored by COM: same demand slice, prove the parent state."""
-        self.run_demand(block, folder)
+        """After parameters are restored by COM: same demand slice, prove the parent state.
+
+        LIVE05.8: with procedure feedback the slice runs from the accepted feedback
+        state and without the feedback step (adapter.feedback.reproduce)."""
+        fb = getattr(self.adapter, 'feedback', None)
+        if fb is not None:
+            with fb.reproduce():
+                self.run_demand(block, folder)
+        else:
+            self.run_demand(block, folder)
         snap = self.adapter.snapshot()
         same = snap == state
         write_json(Path(folder) / 'DEMAND_RESTORE_PROOF.json', {

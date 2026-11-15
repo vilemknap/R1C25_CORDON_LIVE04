@@ -755,6 +755,18 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
             return {'support_clean': True, 'person_total': r['person']['total_volume']}
         check('LONG_SUPPORT_MASKED', long_support)
 
+        from .live05_feedback import ProcedureFeedback, options as feedback_options
+        if feedback_options(lcfg)['enabled']:
+            def feedback():
+                # LIVE05.8: one TD utility step between TG and TD, its matrices, FROZEN vignette split (read-only)
+                forbidden = {int(r['matrix_no']) for r in parent_module('r1_15a2_runtime_v1').list_dsegs(guarded)
+                             if r.get('matrix_no') not in (None, '')}
+                forbidden |= {int(x) for x in acfg['supply'].get('component_matrix_nos', [])}
+                fb = ProcedureFeedback(guarded, lcfg, folder / 'PROCEDURE_FEEDBACK', forbidden_matrix_nos=forbidden)
+                return {'feedback_operation_positions': fb.positions, 'state_matrices': len(fb.roles),
+                        'formula_references': fb.formula_references}
+            check('PROCEDURE_FEEDBACK', feedback)
+
         def mobility():
             supply = parent_module('r1_15a2_supply_visum')
             mg = parent_module('r1_15a2_mobility_guard_v24917')

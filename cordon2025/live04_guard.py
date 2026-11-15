@@ -13,6 +13,12 @@ LIVE04.4 (audit.supply_addval_writes, from write_policy.supply_addval1_writes):
     <Net.Links link>.SetAttValue('ADDVAL1', <finite number>)
 the v7 SupplyMix write (donor apply_supply / restore_supply_parameters, each with
 readback); no other link attribute is writable.
+
+LIVE05.8 (audit.feedback_state_matrices, from write_policy.procedure_feedback_state_matrix_writes):
+    <Net.Matrices.ItemByKey(N)>.SetValues(<2-D finite float64 numpy array>, False)
+for N in the procedure feedback state resolved at run start (TD utility matrices, TTC/TT0
+skims, vignette formula references; never a demand-segment OD or component matrix):
+the accepted feedback state written back before a procedure execution (live05_feedback).
 """
 from __future__ import annotations
 import math
@@ -32,6 +38,7 @@ class Live04WriteAudit(WriteAudit):
         super().__init__(path, allowed_zone_attrs)
         self.long_mask_writes = False
         self.supply_addval_writes = False
+        self.feedback_state_matrices = frozenset()
 
     def summary(self):
         out = super().summary()
@@ -39,6 +46,7 @@ class Live04WriteAudit(WriteAudit):
         out['long_mask_matrices_written'] = sorted({e['matrix_no'] for e in self.events
                                                     if e['kind'] == 'LONG_MASK_MATRIX_WRITE'})
         out['supply_addval1_writes'] = sum(1 for e in self.events if e['kind'] == 'SUPPLY_ADDVAL1_WRITE')
+        out['feedback_state_matrix_writes'] = sum(1 for e in self.events if e['kind'] == 'FEEDBACK_STATE_MATRIX_WRITE')
         # Demand-segment OD matrices are still never written directly.
         out['direct_od_matrix_writes'] = 0
         return out
@@ -67,6 +75,14 @@ def _policy(label, name, args, audit):
             if np.isfinite(a).all() and not np.any(a < 0):
                 audit.record('LONG_MASK_MATRIX_WRITE', label, matrix_no=no, shape=list(a.shape),
                              total=float(a.sum()))
+                return
+        if (no is not None and no in getattr(audit, 'feedback_state_matrices', ()) and len(args) == 2
+                and args[1] is False and type(args[0]).__module__ == 'numpy' and getattr(args[0], 'ndim', 0) == 2
+                and str(getattr(args[0], 'dtype', '')) == 'float64'):
+            import numpy as np
+            if np.isfinite(args[0]).all():
+                audit.record('FEEDBACK_STATE_MATRIX_WRITE', label, matrix_no=no, shape=list(args[0].shape),
+                             total=float(args[0].sum()))
                 return
         audit.record('FORBIDDEN', label, method=name, args=repr(args)[:200])
         raise WriteForbidden('LIVE04_MATRIX_WRITE_FORBIDDEN:%s.%s' % (label, name))

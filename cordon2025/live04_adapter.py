@@ -24,6 +24,7 @@ LIVE04.4:
   demand untouched, so the rollback recompute is deterministic.
 """
 from __future__ import annotations
+import contextlib
 import copy
 import math
 from pathlib import Path
@@ -82,8 +83,19 @@ class CordonLive04Adapter(CordonLive03Adapter):
         self.v24917_counts.update(mobility_blocked=0, preview_mobility_rejections=0, long_gate_rejections=0)
 
     # ---------------------------------------------------- procedure execution
+    # LIVE05.8: procedure feedback (TD utility step, vignette split) - see live05_feedback.
+    feedback = None
+
+    def _feedback_execution(self, assignment):
+        fb = self.feedback
+        return fb.execution(assignment=assignment) if fb is not None else contextlib.nullcontext()
+
+    def _feedback_reproduce(self):
+        fb = self.feedback
+        return fb.reproduce() if fb is not None else contextlib.nullcontext()
+
     def assign_for_block(self, folder, block):
-        with _mask.execution_scope(self):
+        with self._feedback_execution(True), _mask.execution_scope(self):
             if str(block).upper() == 'SUPPLY_ADDVAL1':
                 out = self._assign_supply_cold(folder)
             else:
@@ -92,7 +104,8 @@ class CordonLive04Adapter(CordonLive03Adapter):
         return out
 
     def assign(self, *args, **kwargs):
-        out = super().assign(*args, **kwargs)
+        with self._feedback_execution(True):
+            out = super().assign(*args, **kwargs)
         self.assignment_invalidated = False
         return out
 
@@ -107,7 +120,8 @@ class CordonLive04Adapter(CordonLive03Adapter):
         folder = Path(folder); mkdir(folder)
         before = self.snapshot()
         require(before == state, 'LIVE04_ASSIGNMENT_REPAIR_PARENT_NOT_ACCEPTED_STATE')
-        self.assign_for_block(folder / 'RECOMPUTE', 'GENERATION')
+        with self._feedback_reproduce():          # LIVE05.8: recompute the accepted state
+            self.assign_for_block(folder / 'RECOMPUTE', 'GENERATION')
         proof = self.rollback_diagnostic_equivalence(diag, state, folder / 'PROOF')
         out = {'schema': 'LIVE04_ASSIGNMENT_REPAIR_V1', 'reason': 'DEMAND_ONLY_EXECUTION_RESET_ASSIGNMENT',
                'snapshot_equal': self.snapshot() == state, 'proof_passes': bool(proof.get('passes')),
@@ -145,13 +159,19 @@ class CordonLive04Adapter(CordonLive03Adapter):
     def execute_demand_only(self, plan, folder):
         perf1 = parent_module('r1_15a2_acceleration_v24915p1')
         self.assignment_invalidated = True
-        if not self._long_post_td_mask_enabled:
-            with perf1.activate_operation_plan(self.visum, plan) as active:
-                _rt.execute_procseq(self.visum, folder)
-            return {'phases': ['UNMASKED'], 'plan': active}
-        # Outside execution_scope the scoped donor hook delegates to the original
-        # execute_procseq, so each phase below is one plain Procedures.Execute.
-        return longmask.execute_demand_only(self, plan, folder, _rt.execute_procseq)
+        if self.feedback is not None:
+            plan = self.feedback.filter_plan(plan)   # LIVE05.8: restore runs without the feedback step
+        with self._feedback_execution(False):
+            if not self._long_post_td_mask_enabled:
+                with perf1.activate_operation_plan(self.visum, plan) as active:
+                    _rt.execute_procseq(self.visum, folder)
+                return {'phases': ['UNMASKED'], 'plan': active}
+            # Outside execution_scope the scoped donor hook delegates to the original
+            # execute_procseq, so each phase below is one plain Procedures.Execute.
+            out = longmask.execute_demand_only(self, plan, folder, _rt.execute_procseq)
+        if plan.get('feedback_operations_skipped'):
+            out = dict(out, feedback_operations_skipped=plan['feedback_operations_skipped'])
+        return out
 
     # --------------------------------------------------------- LONG support
     def long_support(self, folder=None, label='CURRENT'):

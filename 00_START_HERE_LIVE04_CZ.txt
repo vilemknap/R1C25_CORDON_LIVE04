@@ -30,6 +30,11 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
 2. Scripts -> Execute script file -> RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py
 3. Vystupy: %LOCALAPPDATA%\R1C25_LIVE04\LIVE04_TGTD_<id>\  (00_RESULT.json)
 
+ZPETNA VAZBA PROCEDURY (LIVE05.8, 2026-11-15): krok 'R1 TD utility step' (skript mezi TG a TD) zustava aktivni.
+  Probe a trial ho spousteji z prijateho stavu (vliv kongesci je v kazdem trialu); obnova po probe, rollback
+  a oprava prirazeni ho vynechaji a vrati utility 9700-9715 + TTC/TT0 skimy na prijaty stav -> presna shoda.
+  Delenim dalnicnich kuponu musi byt DT_MODE='FROZEN' (vzorce jen z 9235/9236); LIVE beh zastavi pred zapisem.
+  docs/live04/LIVE05_8_PROCEDURE_FEEDBACK_CZ.md
 MEZE KOEFICIENTU (LIVE05, 2026-11-15): produkce ADD_PROD 0,25-3,5, atrakce ADD_ATT 0,5-7,0
   (drive 3,15 / 5,5); pasmo MOBILITY2 stejne.
 LIVE05 (2026-11-15): kalibrace navic na NDS profily (94), ASD1-7 (12 smeru, ASD4=SDP10 vyrazena)

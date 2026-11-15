@@ -20,7 +20,8 @@
   "overwrite_source_version": false,
   "save_accepted_version_new_file": true,
   "long_post_td_mask_matrix_writes": true,
-  "supply_addval1_writes": true
+  "supply_addval1_writes": true,
+  "procedure_feedback_state_matrix_writes": true
  },
  "isolated_copy_guard": {
   "required_version_name_tokens_any": [
@@ -622,5 +623,49 @@
   "enabled": true,
   "keep_last": 2,
   "note": "LIVE04.8: after every block that accepted a change the open model is saved as a NEW .ver in <run>/CHECKPOINTS (sidecar .CHECKPOINT.json); open it and run RUN_R1_2025_CORDON_LIVE04_CONTINUE.py to continue."
+ },
+ "procedure_feedback": {
+  "note": "LIVE05.8: the R1 TD utility step (Run script between TG and TD) stays active. Probes and trials start from the accepted feedback state (utility matrices + TTC/TT0 skims of time_skim_dsegs) and run the step, so a trial is one model iteration with congestion; restore after probes, rollback and repair start from the accepted feedback state and skip the step, so the accepted state is recomputed exactly. The 20D vignette split must be FROZEN (formulas of formula_matrix_nos may reference only formula_allowed_reference_nos = the R1_20D_FREEZE_DT data matrices); DT_MODE=LIVE is not reproducible and stops the run before the first write.",
+  "enabled": true,
+  "utility_matrix_nos": [
+   9700,
+   9701,
+   9702,
+   9703,
+   9704,
+   9705,
+   9706,
+   9707,
+   9708,
+   9709,
+   9710,
+   9711,
+   9712,
+   9713,
+   9714,
+   9715
+  ],
+  "time_skim_codes": [
+   "TTC",
+   "TT0"
+  ],
+  "time_skim_dsegs": [
+   "NATIVE_CW",
+   "NATIVE_CW_NOT",
+   "NATIVE_CS",
+   "NATIVE_CS_NOT",
+   "NATIVE_CL"
+  ],
+  "formula_matrix_nos": [
+   9231,
+   9232,
+   9233,
+   9234
+  ],
+  "formula_allowed_reference_nos": [
+   9235,
+   9236
+  ],
+  "expected_feedback_operations": 1
  }
 }

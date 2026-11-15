@@ -23,7 +23,7 @@ STAGE = 'LIVE04_V7_TG_TD_CYCLE'
 CONFIG_FILE = 'CORDON_LIVE04_CONFIG.json'
 # LIVE04.8.2: checkpoints + continuation make long runs safe; LIVE03 keeps its own cap of 10.
 LIVE04_MAX_CYCLES = 200
-LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard', 'checkpoint')
+LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard', 'checkpoint', 'procedure_feedback')
 
 
 def live02_view(cfg):
@@ -32,6 +32,7 @@ def live02_view(cfg):
     v['max_tg_cycles'] = 1
     v['write_policy'].pop('long_post_td_mask_matrix_writes', None)
     v['write_policy'].pop('supply_addval1_writes', None)
+    v['write_policy'].pop('procedure_feedback_state_matrix_writes', None)
     v['write_policy']['td_parameter_writes'] = False
     v['acceptance']['method'] = 'ALL_ORDERED_UNIQUE_PAIRS'
     v['acceptance']['secondary_method'] = 'EXACT_TWO_HITS'
@@ -152,7 +153,8 @@ def validate_config(cfg, *, allow_donor_overrides=False):
     require(cfg['generation_mode'] == 'V24917_TARGETED_STEP1', 'LIVE04_REQUIRES_STEP1')
     require(set(cfg['write_policy']) == {'tg_zone_parameter_writes', 'td_parameter_writes', 'direct_od_matrix_writes',
                                          'load_version', 'overwrite_source_version', 'save_accepted_version_new_file',
-                                         'long_post_td_mask_matrix_writes', 'supply_addval1_writes'},
+                                         'long_post_td_mask_matrix_writes', 'supply_addval1_writes',
+                                         'procedure_feedback_state_matrix_writes'},
             'LIVE04_WRITE_POLICY_FIELDS')
     l2._int(cfg.get('max_cycles'), 'max_cycles', 1, LIVE04_MAX_CYCLES)
     l3.validate_sections(dict(cfg, max_cycles=min(cfg['max_cycles'], l3.MAX_CYCLES)))
@@ -161,6 +163,8 @@ def validate_config(cfg, *, allow_donor_overrides=False):
     validate_supply_mix(cfg)
     validate_row_guard(cfg)
     validate_checkpoint(cfg)
+    from .live05_feedback import validate as validate_feedback
+    validate_feedback(cfg)
     return cfg
 
 

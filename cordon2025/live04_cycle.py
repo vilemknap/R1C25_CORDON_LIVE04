@@ -232,6 +232,15 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                               expected_zones=pre[2], actuatable_zones=state['actuatable_zones'],
                                               folder=folder, live02=cfg)
                 session.checkpoint('LIVE04_CURRENT_MODEL_BOUND')
+                from .live05_feedback import ProcedureFeedback, options as feedback_options
+                if feedback_options(cfg)['enabled']:      # LIVE05.8: TD utility step stays active (before the capture)
+                    from .live04_guard import LONG_MASK_WRITABLE
+                    rt_ = parent_module('r1_15a2_runtime_v1')
+                    forbidden = ({int(r['matrix_no']) for r in rt_.list_dsegs(guarded) if r.get('matrix_no') not in (None, '')}
+                                 | {int(x) for x in acfg['supply'].get('component_matrix_nos', [])} | set(LONG_MASK_WRITABLE))
+                    adapter.feedback = ProcedureFeedback(guarded, cfg, folder / '00_PROCEDURE_FEEDBACK',
+                                                         forbidden_matrix_nos=forbidden, audit=audit)
+                    adapter.feedback.capture('BASELINE')
                 baseline = evaluator.evaluate(visum, folder / '01_BASELINE_CAPTURE', 'BASELINE', full_geometry=True, keep_db=True)
                 snap0 = adapter.snapshot()
                 require(not audit.events or all(e['kind'] == 'READ_LIST_CREATE' for e in audit.events),
@@ -284,6 +293,9 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     blocks['TD_CORDON'] = make_td_block(tx, cfg)
                 if sopts['enabled']:
                     blocks['SUPPLY_ADDVAL1'] = make_supply_block(tx, cfg)
+                if adapter.feedback is not None:
+                    # rollback of a rejected trial recomputes the accepted state without the feedback step
+                    tx.ctrl_ns['_rollback_candidate'] = adapter.feedback.wrap_rollback(tx.ctrl_ns['_rollback_candidate'])
                 from .live04_supply import due as supply_due
                 session.checkpoint('LIVE04_BASELINE_AND_RESTORE_POINT_SEALED')
                 current_state, current_diag = snap0, baseline
@@ -339,6 +351,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             entry['assignment_repair'] = repair['status']
                         cycle['blocks'].append(entry)
                         if changed:
+                            if adapter.feedback is not None:
+                                adapter.feedback.capture('C%02d_%s' % (outer, name))
                             if lm['enabled']:
                                 accepted_support = adapter.long_support_last_trial
                                 require(accepted_support is not None and accepted_support['support_clean'],
@@ -383,6 +397,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             write_json(folder / 'CYCLE_PROGRESS.json', progress)
                             break
                 ctl.checkpoint('LIVE04_FINAL_VERIFICATION', force=True)
+                if adapter.feedback is not None:
+                    adapter.feedback.restore()      # the model keeps the accepted feedback state
                 final = adapter.snapshot()
                 require(final == current_state, 'LIVE04_FINAL_STATE_NOT_LAST_ACCEPTED_OR_BASELINE')
                 long_final = None
@@ -448,6 +464,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                                 'final_support_clean': (long_final or {}).get('support_clean'),
                                                 'matrix_writes': audit.summary()['long_mask_matrix_writes']},
                           'node_vdf_guard': node_vdf_guard,
+                          'procedure_feedback': (adapter.feedback.describe() if adapter.feedback is not None
+                                                 else {'enabled': False}),
                           'extra_observations': {'status': extra_links['status'], 'links': extra_links['links'],
                                                  'counts': extra_links.get('counts'),
                                                  'row_weights': extra_links.get('row_weights')},
