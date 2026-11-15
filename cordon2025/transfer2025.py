@@ -418,12 +418,16 @@ def import_and_recompute(visum, *, output_root=None, config_path=None, config_ov
         # ---- one native recompute with the v7 LONG post-TD mask
         if tcfg['recompute']:
             from .live04_long_mask import install_scoped, support_report
+            from .live04_opmap import install as opmap_install, resolve as opmap_resolve
             status, restore = install_scoped(rt)
+            opmap_patched, opmap_restore = opmap_install()       # LIVE04.12: live procedure roles
             try:
                 gap = m.assign_for_block(folder / 'RECOMPUTE', 'GENERATION')
             finally:
+                opmap_restore()
                 restore()
-            result['recompute'] = {'gap': gap, 'mask_hook': status}
+            result['recompute'] = {'gap': gap, 'mask_hook': status,
+                                   'opmap1': {'mode': opmap_resolve(guarded)['mode'], 'patched': opmap_patched}}
             pz = rt.verify_add_candidate_persistence(guarded, plan['zone_rows'], m.zones,
                                                      zone_indices=m.zone_write_index_by_no,
                                                      retry_policy=m.com_retry_policy) if plan['zone_rows'] else []
@@ -548,12 +552,16 @@ def recompute_base(visum, *, output_root=None, config_path=None, config_override
                                 'td_components': len(before['td']), 'links': len(before['addval1'])}
         audit.long_mask_writes = True
         result['model_mutated'] = True
+        from .live04_opmap import install as opmap_install, resolve as opmap_resolve
         status, restore = install_scoped(rt)
+        opmap_patched, opmap_restore = opmap_install()           # LIVE04.12: live procedure roles
         try:
             gap = m.assign_for_block(folder / 'RECOMPUTE', 'GENERATION')
         finally:
+            opmap_restore()
             restore()
-        result['recompute'] = {'gap': gap, 'mask_hook': status}
+        result['recompute'] = {'gap': gap, 'mask_hook': status,
+                               'opmap1': {'mode': opmap_resolve(guarded)['mode'], 'patched': opmap_patched}}
         after = _parameter_snapshot(m)
         diffs = _snapshot_diff(before, after)
         require(not diffs, 'RECOMPUTE_BASE_PARAMETERS_CHANGED_BY_PROCEDURE:' + repr(diffs)[:800])
