@@ -413,3 +413,23 @@ def test_production_adapter_predictor_restore_path_uses_utility_transaction(setu
     raw.coefficient = 1.
     assert predictor.restore_demand('GENERATION', parent, tmp_path / 'restore') == parent
     assert raw.resets == 0 and raw.saved_paths and not adapter.assignment_invalidated
+
+
+class _DsegWithoutOD(Attr):
+    def __init__(self, code, message):
+        super().__init__(CODE=code)
+        self.message = message
+    @property
+    def ODMatrix(self):
+        raise RuntimeError(self.message)
+
+
+def test_dseg_without_allocated_od_matrix_is_skipped(setup):
+    """Live model 2026-11-16: Visum COM raises for a DSeg with no OD matrix instead of returning None."""
+    raw, a, u, parent, audit, inv = setup
+    raw.Net.DemandSegments.items.append(_DsegWithoutOD('NV_NO_MATRIX', 'No OD demand matrix allocated to this demand segment.'))
+    state = UtilityState(a)
+    assert state.enabled and len(state.time_specs) == 10
+    raw.Net.DemandSegments.items[-1] = _DsegWithoutOD('BROKEN', 'RPC server unavailable')
+    with pytest.raises(RuntimeError, match='RPC server unavailable'):
+        UtilityState(a)

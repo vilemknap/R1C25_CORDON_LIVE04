@@ -95,7 +95,14 @@ class UtilityState:
             flow_bindings = {}
             dsegs = self.call(lambda: adapter.visum.Net.DemandSegments.GetAll, 'DSEGS')
             for ds in (self.call(dsegs, 'DSEG_ITEMS') if callable(dsegs) else dsegs):
-                od = self.call(lambda: ds.ODMatrix, 'OD_OBJECT')
+                try:
+                    od = self.call(lambda: ds.ODMatrix, 'OD_OBJECT')
+                except Exception as exc:
+                    # A DSeg without an allocated OD matrix raises in Visum COM instead of
+                    # returning None (as rt.list_dsegs treats it). It binds no OD number.
+                    if 'NO OD DEMAND MATRIX' not in str(exc).upper():
+                        raise
+                    od = None
                 if od is not None:
                     no = self.com.exact_int(self.call(lambda: od.AttValue('NO'), 'OD_BINDING'), 'ODMatrix.NO')
                     od_numbers.add(no)
