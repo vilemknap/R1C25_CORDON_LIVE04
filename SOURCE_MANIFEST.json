@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_1_ENVELOPE_P3_5_A7_20261115",
+  "release": "R1C25_LIVE05_4_SUE_GAP_20261115",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -1518,8 +1518,8 @@
     },
     {
       "path": "cordon2025/live04_opmap.py",
-      "size": 16171,
-      "sha256": "157c453fbfd415202028c712a2a12a1a0053a368154e5ab2155276e2e4ee68a3"
+      "size": 20950,
+      "sha256": "72ae91d04c224395e40d5ceaed9eb3b044be1f5bcb07daaec917722170691a8a"
     },
     {
       "path": "cordon2025/live04_severity.py",
@@ -9053,8 +9053,8 @@
     },
     {
       "path": "tests/test_live04_12_opmap.py",
-      "size": 13383,
-      "sha256": "12c229bcfad63795a1bb154841434073398b1267f919bf04063b1b6164a3aa95"
+      "size": 15059,
+      "sha256": "13d4c908a633bb1676c49829a3486842ca40347368a9a3185f7b72e50516712f"
     },
     {
       "path": "tests/test_live04_4.py",

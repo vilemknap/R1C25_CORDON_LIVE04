@@ -289,9 +289,96 @@ def _gap(orig):
             live = roles.live_spec(visum, spec)
         if live is not spec and isinstance(live, dict):
             live = dict(live, opmap1_live_operation_no=True)
-        return orig(visum, live)
+        try:
+            return orig(visum, live)
+        except Exception as exc:
+            # LIVE05.4: in the SUE layout the quality list also carries the LNV/NV SUE rows (and the
+            # partial assignments); two of them can end with the same last iteration.  Only the
+            # diagnostic per-scope summary trips over that - the GAP authority (final 12-DSeg scope)
+            # is unaffected, so it is read again with the ambiguity recorded instead of raised.
+            if not str(exc).startswith('QUALITY_LIST_AMBIGUOUS_SCOPE_ITERATION:'):
+                raise
+            if resolve(visum)['mode'] != SUE_MODE:
+                raise
+            return _gap_sue(visum, live, str(exc))
     setattr(call, _MARK, orig)
     return call
+
+
+def _gap_sue(visum, spec, first_error):
+    """Donor assignment_gap_evidence (PRT_ASS_QUALITY_LIST) with the per-scope summary tolerant
+    to ties of other assignments; the exact operation scope keeps every donor check."""
+    import re
+    sv = parent_module('r1_15a2_supply_visum')
+    com, Err = sv.com, sv.SupplyContractError
+    require(str(spec.get('source', '')).strip().upper() == 'PRT_ASS_QUALITY_LIST', 'OPMAP1_SUE_GAP_SOURCE')
+    position = sv.integer(spec.get('operation_no', 0))
+    rows = com.operation_rows(visum)
+    if position <= 0 or position > len(rows):
+        raise Err('QUALITY_OPERATION_POSITION_UNAVAILABLE')
+    op = rows[position - 1]
+    if op['position'] != position or op['type'] != com.ASSIGNMENT_PRT or not op['active']:
+        raise Err('QUALITY_OPERATION_NOT_ACTIVE_PRT')
+    split = lambda t: [x.strip("\"' ").upper() for x in re.split(r"[,;{}\s]+", t) if x.strip("\"' ")]
+    scope_text = com.object_property(op['object'], 'PrTAssignmentParameters').AttValue('DSEGSET')
+    parts = split(scope_text) if isinstance(scope_text, str) else []
+    if not parts or len(parts) != len(set(parts)):
+        raise Err('QUALITY_DSEG_SCOPE_AMBIGUOUS')
+    required = frozenset(parts)
+    quality = com.object_property(com.object_property(com.object_property(visum, 'Workbench'), 'Lists'),
+                                  'CreatePrTAssQualityList')
+    for column in ('DSEGCODE', 'ITERATION', 'GAP'):
+        quality.AddColumn(column)
+    count = com.exact_int(com.member_value(getattr(quality, 'NumActiveElements')), 'QUALITY_ROWS')
+    if count <= 0 or count > 50000:
+        raise Err('QUALITY_LIST_INVALID_ROW_COUNT')
+    exact, scopes = [], {}
+    for first in range(1, count + 1, 400):
+        last = min(count, first + 399)
+        page = list(quality.SaveToArray(first, last))
+        if len(page) != last - first + 1:
+            raise Err('QUALITY_LIST_INCOMPLETE_PAGE')
+        for ix, rec in enumerate(page, first):
+            if len(rec) != 3:
+                raise Err('QUALITY_LIST_INVALID_WIDTH:%d' % ix)
+            raw_code, raw_iter, raw_gap = rec
+            if not isinstance(raw_code, str) or not raw_code.strip():
+                raise Err('QUALITY_LIST_EMPTY_DSEG_CODE')
+            tokens = split(raw_code)
+            if not tokens or len(tokens) != len(set(tokens)):
+                raise Err('QUALITY_LIST_AMBIGUOUS_DSEG_CODE')
+            iteration = com.exact_int(raw_iter, 'QUALITY_ITERATION')
+            gap = com.finite_float(raw_gap, 'QUALITY_GAP')
+            if iteration < 1 or gap < 0:
+                raise Err('QUALITY_LIST_INVALID_VALUE')
+            obj = {'row': ix, 'iteration': iteration, 'gap': gap}
+            scopes.setdefault(','.join(sorted(tokens)), []).append(obj)
+            if frozenset(tokens) == required:
+                exact.append(obj)
+    if not exact:
+        raise Err('QUALITY_LIST_NO_EXACT_OPERATION_SCOPE')
+    max_iter = max(r['iteration'] for r in exact)
+    winners = [r for r in exact if r['iteration'] == max_iter]
+    if len(winners) != 1:
+        raise Err('QUALITY_LIST_LAST_ITERATION_NOT_UNIQUE')
+    selected = winners[0]
+    latest, ambiguous = {}, []
+    for key, cand in scopes.items():
+        m = max(r['iteration'] for r in cand)
+        ties = [r for r in cand if r['iteration'] == m]
+        if len(ties) == 1:
+            latest[key] = {'iteration': m, 'gap': ties[0]['gap']}
+        else:
+            latest[key] = {'iteration': m, 'gap': None, 'tied_rows': len(ties),
+                           'gaps': [r['gap'] for r in ties]}
+            ambiguous.append(key)
+    return {'source': 'PRT_ASS_QUALITY_LIST', 'operation_no': position,
+            'operation_dsegs': sorted(required), 'quality_rows': count,
+            'exact_scope_rows': len(exact), 'iteration': max_iter,
+            'quality_row': selected['row'], 'gap': selected['gap'],
+            'latest_gap_by_scope': latest, 'ambiguous_other_scopes': sorted(ambiguous),
+            'opmap1_sue_tolerant_reason': first_error,
+            'freshness': 'UNVERIFIED_HISTORICAL_UNLESS_READ_AFTER_SUCCESSFUL_EXPLICIT_ASSIGNMENT'}
 
 
 def _scope_audit(orig):

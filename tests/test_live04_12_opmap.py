@@ -259,3 +259,43 @@ def test_sue_supply_cold_plan_and_demand_plan(monkeypatch):
     assert plan['first_approved_assignment'] == 36
     assert plan['skipped_other_assignments_in_prefix'] == [32, 33, 34, 35]
     assert {13, 17, 30} <= set(plan['selected_operation_positions'])
+
+
+class _Quality:
+    def __init__(self, rows):
+        self.rows = rows
+
+    def AddColumn(self, c):
+        pass
+
+    @property
+    def NumActiveElements(self):
+        return len(self.rows)
+
+    def SaveToArray(self, first, last):
+        return [tuple(r) for r in self.rows[first - 1:last]]
+
+
+def test_sue_gap_tolerates_tied_freight_rows_but_keeps_the_final_scope_checks():
+    """LIVE05.4 (live run 2026-11-15: QUALITY_LIST_AMBIGUOUS_SCOPE_ITERATION:LNV)."""
+    pass12 = PASS12
+    rows = [("LNV", 1, 0.02), ("LNV", 1, 0.03), ("NV", 1, 0.01), (pass12, 1, 0.5), (pass12, 2, 0.01)]
+    v = Visum(sue_layout())
+    v.Workbench = type("W", (), {})()
+    v.Workbench.Lists = type("L", (), {})()
+    v.Workbench.Lists.CreatePrTAssQualityList = _Quality(rows)
+    sv = parent_module('r1_15a2_supply_visum')
+    spec = {"operation_no": 20, "source": "PRT_ASS_QUALITY_LIST"}
+    patched, restore = om.install()
+    try:
+        out = sv.assignment_gap_evidence(v, spec)
+        assert out['operation_no'] == 36 and out['gap'] == 0.01 and out['iteration'] == 2
+        assert out['ambiguous_other_scopes'] == ['LNV'] and out['latest_gap_by_scope']['NV']['gap'] == 0.01
+        v.Workbench.Lists.CreatePrTAssQualityList = _Quality(rows + [(pass12, 2, 0.02)])
+        with pytest.raises(Exception, match='QUALITY_LIST_LAST_ITERATION_NOT_UNIQUE'):
+            sv.assignment_gap_evidence(v, spec)
+    finally:
+        restore()
+    v.Workbench.Lists.CreatePrTAssQualityList = _Quality(rows)
+    with pytest.raises(Exception, match='QUALITY_LIST_AMBIGUOUS_SCOPE_ITERATION:LNV'):
+        sv.assignment_gap_evidence(v, dict(spec, operation_no=36))       # donor outside the LIVE04 scope
