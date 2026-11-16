@@ -95,7 +95,8 @@ def test_mock_cycle_carries_extra_rows(tmp_path, monkeypatch):
     ex = {'enabled': True, 'file': str(f), 'file_sha256': hashlib.sha256(f.read_bytes()).hexdigest(),
           'group_shares': {'NDS': 0.15, 'ASD': 0.10, 'KMOV': 0.05}}
     over = {'max_cycles': 1, 'blocks_per_cycle': ['GENERATION'], 'td_cordon': {'enabled': False},
-            'write_policy': {'td_parameter_writes': False}, 'observations': {'extra_observations': ex}}
+            'write_policy': {'td_parameter_writes': False, 'procedure_feedback_state_matrix_writes': False},
+            'procedure_feedback': {'enabled': False}, 'observations': {'extra_observations': ex}}
     r = run(v, output_root=tmp_path / 'runs', options={'min_free_disk_gib': 0, 'com_retry_initial_delay_seconds': 0.,
                                                       'com_retry_max_delay_seconds': 0.}, config_overrides=over)
     folder = next((tmp_path / 'runs').glob('LIVE04_TGTD_*'))

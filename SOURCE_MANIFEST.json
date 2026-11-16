@@ -9013,8 +9013,8 @@
     },
     {
       "path": "tests/test_live04.py",
-      "size": 30759,
-      "sha256": "def5f24de316a717d66af8efbef28736c9c774a7e363c49781853b3df3a38f2f"
+      "size": 31169,
+      "sha256": "04d8607c5abed267e8abc941014a20bd3ff8d185298f046f64ab19cd14bd5273"
     },
     {
       "path": "tests/test_live04_10.py",
@@ -9103,8 +9103,8 @@
     },
     {
       "path": "tests/test_live05_extra.py",
-      "size": 8002,
-      "sha256": "58ab8adbd2f75dafd2d158b334252d8274e414b45944572f9fc9dbc00df87738"
+      "size": 8105,
+      "sha256": "485c072f19bbcf9d69572b3c55eacb4d382a44005e8ffab8f8f81a88619126af"
     },
     {
       "path": "tests/test_live05_feedback.py",

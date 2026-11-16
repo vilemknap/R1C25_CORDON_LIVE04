@@ -320,7 +320,11 @@ def test_live04_launcher_and_import_restoration(tmp_path):
                                                     # The bootstrap re-imports cordon2025, so the root conftest
                                                     # switch does not reach it; keep the 136-row contract here.
                                                     observations={'station_profiles': {'enabled': False},
-                                                                  'extra_observations': {'enabled': False}}))
+                                                                  'extra_observations': {'enabled': False}},
+                                                    # Synthetic procedure has no TD utility step (op 15).
+                                                    procedure_feedback={'enabled': False},
+                                                    write_policy=dict(GEN_ONLY['write_policy'],
+                                                                      procedure_feedback_state_matrix_writes=False)))
     assert result['status'] == 'MOCK_LIVE04_ACCEPTED', result
     assert list(sys.path) == path_before
     assert {k: m for k, m in sys.modules.items() if original._owned(k)} == mods
