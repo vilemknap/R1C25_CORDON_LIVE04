@@ -23,6 +23,63 @@ def test_full_preflight_reads_all_12_dsegs_without_writes(setup):
     assert len(p[0]['matrix_audit'])==12 and len(p[0]['path_list_probes'])==24
     assert v.writes==[] and not v.unbounded
 
+
+def test_missing_paths_reports_all_segments_without_model_writes(setup):
+    v,c,out,ctl,opt=setup
+    v.parent_empty=True
+    with pytest.raises(Exception,match='NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND:EXOG_EE_CF'):
+        ready(setup)
+    report=json.loads((out/'PATH_AVAILABILITY_PREFLIGHT.json').read_text())
+    assert report['status']=='MISSING_SAVED_PATHS'
+    assert set(report['missing_path_dsegs'])==set(v.dsegs)
+    assert len(report['missing_lists'])==24 and len(report['checked_dsegs'])==12
+    assert all(r['matrix_interzonal']>0 for r in report['missing_lists'])
+    assert report['assignment_executed'] is False and report['model_parameters_changed'] is False
+    assert not (out/'PREFLIGHT.json').exists()
+    assert not v.writes and not v.unbounded
+
+
+def test_missing_geometry_fails_even_with_parent_path_rows(setup):
+    v,c,out,ctl,opt=setup
+    original=v.Workbench.Lists.CreatePrTPathLinkList
+    def empty_geometry():
+        obj=original();set_objects=obj.SetObjects
+        def select(*args):
+            set_objects(*args)
+            if obj.code=='EXOG_EE_CF':obj.rows=[]
+        obj.SetObjects=select
+        return obj
+    v.Workbench.Lists.CreatePrTPathLinkList=empty_geometry
+    with pytest.raises(Exception,match='NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND:EXOG_EE_CF'):
+        ready(setup)
+    report=json.loads((out/'PATH_AVAILABILITY_PREFLIGHT.json').read_text())
+    assert report['missing_path_dsegs']==['EXOG_EE_CF']
+    assert len(report['missing_lists'])==1
+    assert report['missing_lists'][0]['list']=='CreatePrTPathLinkList'
+    assert not v.writes and not v.unbounded
+
+
+def test_empty_paths_allowed_only_for_zero_interzonal_demand(setup):
+    v,c,out,ctl,opt=setup
+    v.parent_empty=True
+    for ds in v.dsegs.values():
+        ds.ODMatrix.values[:]=0.
+        ds.ODMatrix.values[0,0]=25.
+    result=ready(setup)
+    report=json.loads((out/'PATH_AVAILABILITY_PREFLIGHT.json').read_text())
+    assert result[0]['status']=='VISUM_READONLY_PREFLIGHT_PASS'
+    assert report['status']=='PATH_SAMPLE_CHECK_PASS' and not report['missing_path_dsegs']
+    assert not v.writes and not v.unbounded
+
+
+def test_path_preflight_failure_has_specific_bootstrap_recovery_hint():
+    from cordon_live04_bootstrap import failure_hint
+    message=failure_hint('NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND:EXOG_EE_CF')
+    assert 'read-only preflight' in message
+    assert 'PATH_AVAILABILITY_PREFLIGHT.json' in message
+    assert 'RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py' in message
+    assert failure_hint('ANOTHER_ERROR')=='See 00_RESULT.json in the LIVE04 run folder for the model state.'
+
 @pytest.mark.parametrize('options,message',[
  ({'apply':True},'UNKNOWN_VISUM_STARTUP_OPTION'),({'page_size':0},'INVALID_STARTUP_SETTING'),
  ({'page_size':True},'INVALID_STARTUP_SETTING'),({'full_geometry_check':1},'INVALID_GEOMETRY'),

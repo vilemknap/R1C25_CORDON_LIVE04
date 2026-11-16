@@ -1,0 +1,11 @@
+{
+  "parent_and_data_unchanged": true,
+  "operation15_script_unchanged": true,
+  "python_ast_checked": [
+    "cordon2025/live04_utility_state.py",
+    "cordon2025/visum_startup.py",
+    "cordon_live04_bootstrap.py",
+    "tests/test_live04_utility_state.py",
+    "tests/test_visum_startup.py"
+  ]
+}

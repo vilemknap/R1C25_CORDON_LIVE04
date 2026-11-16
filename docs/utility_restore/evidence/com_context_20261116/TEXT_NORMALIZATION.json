@@ -1,0 +1,18 @@
+{
+  "FOCUSED.xml": {
+    "raw_sha256": "840613a19ed98bb691821bad38cc91c88930544efcd5e05b37d0124247786301",
+    "stored_sha256": "f75011026423fef544c201fa0e4ea6b0f15804bb9bca075b7076e1425c5b5b9c"
+  },
+  "FOCUSED.log": {
+    "raw_sha256": "2992103ebb38e22f3222d434e58ec8a6c0e62be6bc71cb5ab6e4171554565a0e",
+    "stored_sha256": "2992103ebb38e22f3222d434e58ec8a6c0e62be6bc71cb5ab6e4171554565a0e"
+  },
+  "RECOMPUTE.xml": {
+    "raw_sha256": "33dfb57942beebc98f6311cb4c3c6e922e8795efa8240c0759579a5b49af6c8b",
+    "stored_sha256": "d8c36939ab18bc43310eb7c42712e4115887b21427f1e00ce085fbf9ffe434d5"
+  },
+  "RECOMPUTE.log": {
+    "raw_sha256": "95d671255c14cfa649c018d4964961027a0aa188898968c76814ae470fc814ca",
+    "stored_sha256": "95d671255c14cfa649c018d4964961027a0aa188898968c76814ae470fc814ca"
+  }
+}

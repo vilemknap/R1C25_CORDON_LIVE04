@@ -1,0 +1,5 @@
+{
+  "old_code_commit": "fc388950f412593261ca9b8adb962a661101d3bc",
+  "failure_reproduced": "SIMULATED_RPC_E_WRONG_THREAD",
+  "simulation_only": true
+}

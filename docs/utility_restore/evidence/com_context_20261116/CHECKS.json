@@ -1,0 +1,21 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_commit": "fc388950f412593261ca9b8adb962a661101d3bc",
+  "suites": {
+    "FOCUSED": {
+      "passed": 146,
+      "failed": 0,
+      "skipped": 0
+    },
+    "RECOMPUTE": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "scope": "Synthetic callback proxies, separate native script thread/context, readonly payload, scope cleanup, checkpoint, embedded-source validation, preflight, pipeline and legacy model preparation",
+  "live_visum_tested": false,
+  "full_historical_suite_run": false,
+  "original_operation15_script_unchanged": true,
+  "intermediate_unsealed_preparation_test": "One intermediate RECOMPUTE test stopped on source integrity while edited protected sources were not yet resealed. After updating their two manifest records the same test passed."
+}

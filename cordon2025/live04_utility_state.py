@@ -6,16 +6,19 @@ still generates all demand; this module never restores/writes OD demand.
 """
 from pathlib import Path
 from contextlib import nullcontext, contextmanager
+from copy import deepcopy
+from types import MappingProxyType
 import ast
 import hashlib
 import json
+import ntpath
 import os
 import re
 import threading
 import numpy as np
 
 from .common import require, parent_module, canonical_hash, ContractError
-from .io import write_json, mkdir
+from .io import write_json, mkdir, exception_text
 
 COMPONENTS = ('WORK_E_C', 'WORK_E_noC', 'WORK_noE_C', 'WORK_noE_noC', 'WORK_stud',
               'SERV_E_C', 'SERV_E_noC', 'SERV_noE_C', 'SERV_noE_noC', 'SERV_stud',
@@ -29,43 +32,44 @@ INPUT_PROTOCOL = 'ACCEPTED_PARENT_INPUTS_V1'
 # 2026-11-16: TD_UTILITY_NATIVE_SCRIPT_MUST_USE_PARENT_INPUTS_ONCE). The calibrator blocks
 # in Procedures.Execute while the script runs, so one global scope is unambiguous.
 _ACTIVE_SCOPE = {'scope': None}
+_SCOPE_LOCK = threading.Lock()
 
 
 def transaction_inputs(visum, zone_order, live_bindings):
     """Read-only protocol called by the replacement native Run script."""
-    scope = _ACTIVE_SCOPE['scope']
+    with _SCOPE_LOCK:
+        scope = _ACTIVE_SCOPE['scope']
     if scope is None:
         return None
-    scope['threads'].add(threading.get_ident())
-    owner = scope['owner']
-    raw = getattr(owner.adapter, 'raw_visum', None)
-    if raw is None:
-        raw = getattr(owner.adapter.visum, '_obj', owner.adapter.visum)
-    same = visum is raw
-    if not same:
-        a, b = getattr(visum, '_oleobj_', None), getattr(raw, '_oleobj_', None)
-        same = a is not None and b is not None and a == b
-    if not same:
-        # The procedure may inject its own wrapper of the same Visum instance.
-        try:
-            same = str(visum.IO.CurrentVersionFile) == str(raw.IO.CurrentVersionFile)
-        except Exception:
-            same = False
-    require(same, 'TD_UTILITY_INPUT_MODEL_CHANGED')
-    require(list(zone_order) == owner.parent_record['zones'], 'TD_UTILITY_INPUT_ZONE_ORDER_CHANGED')
-    times = {};bindings = {}
-    for no, (dseg, code) in owner.time_specs.items():
-        bindings.setdefault(dseg, {})[code] = no
-    require(live_bindings == bindings, 'TD_UTILITY_INPUT_BINDINGS_CHANGED')
-    for dseg, pair in bindings.items():
-        times[dseg] = tuple(owner.parent[pair[code]] for code in ('TTC', 'TT0'))
-    evidence = {'source': INPUT_PROTOCOL, 'parent_state_hash': owner.parent_state_hash,
-                'bindings': bindings,
-                'time_hashes': {d: [values_hash(a) for a in pair] for d, pair in times.items()},
-                'weight_hashes': {d: values_hash(a) for d, a in owner.parent_flows.items()},
-                'zone_order_sha256': hashlib.sha256(json.dumps(list(zone_order), separators=(',', ':')).encode()).hexdigest()}
-    scope['reads'] += 1
-    return times, owner.parent_flows, evidence
+    # Native Run script receives its own COM apartment proxy. Comparing it to
+    # the caller's IDispatch, or reading the caller's proxy here, can raise
+    # RPC_E_WRONG_THREAD. Only detached data crosses this boundary; this COM
+    # read uses the proxy injected into the callback itself.
+    require(model_version_key(visum.IO.CurrentVersionFile) == scope['model_version'],
+            'TD_UTILITY_INPUT_MODEL_CHANGED')
+    require(tuple(zone_order) == scope['zones'], 'TD_UTILITY_INPUT_ZONE_ORDER_CHANGED')
+    require(live_bindings == scope['bindings'], 'TD_UTILITY_INPUT_BINDINGS_CHANGED')
+    with _SCOPE_LOCK:
+        require(_ACTIVE_SCOPE['scope'] is scope, 'TD_UTILITY_INPUT_SCOPE_CLOSED')
+        scope['threads'].add(threading.get_ident())
+        scope['reads'] += 1
+    return scope['times'], scope['weights'], deepcopy(scope['evidence'])
+
+
+def model_version_key(value):
+    """Plain-data identity for one synchronous native call, not a cache key.
+
+    SaveVersion between calls is allowed; the current name is captured anew.
+    The native call, model name, zone axis, bindings and parent hash jointly
+    bind the inputs. No cross-apartment COM identity comparison is performed.
+    """
+    require(isinstance(value, str) and value.strip(), 'TD_UTILITY_INPUT_MODEL_VERSION_MISSING')
+    value = value.strip()
+    windows = bool(ntpath.splitdrive(value)[0]) or value.startswith('\\\\')
+    pathmod = ntpath if windows else os.path
+    require(pathmod.isabs(value) and pathmod.splitext(value)[1].lower() == '.ver',
+            'TD_UTILITY_INPUT_MODEL_VERSION_INVALID')
+    return pathmod.normcase(pathmod.normpath(value))
 
 
 def values_hash(values):
@@ -110,7 +114,7 @@ class UtilityState:
                 except Exception as exc:
                     # A DSeg without an allocated OD matrix raises in Visum COM instead of
                     # returning None (as rt.list_dsegs treats it). It binds no OD number.
-                    if 'NO OD DEMAND MATRIX' not in str(exc).upper():
+                    if 'NO OD DEMAND MATRIX' not in exception_text(exc).upper():
                         raise
                     od = None
                 if od is not None:
@@ -221,6 +225,11 @@ class UtilityState:
             self.script_read_trace = list(tried)
             if use_internal and isinstance(code, str) and code.strip():
                 return ('INTERNAL', accessor), code.encode('utf-8')
+            if use_internal:
+                # A declared native source is authoritative. Falling back to a
+                # legacy SCRIPTFILE here could validate different code from
+                # the empty/unreadable embedded code Visum will actually run.
+                raise ContractError('TD_UTILITY_UPDATE_SCRIPT_REFERENCE_UNREADABLE:' + ';'.join(tried))
             if not use_internal and isinstance(filename, str) and filename.strip():
                 path = Path(os.path.expandvars(filename.strip().strip('"')))
                 if not path.is_absolute():
@@ -228,6 +237,8 @@ class UtilityState:
                     path = Path(source).parent / path
                 require(path.is_file(), 'TD_UTILITY_UPDATE_SCRIPT_FILE_MISSING:' + str(path))
                 return ('FILE', accessor, str(path)), path.read_bytes()
+            if internal is not None:
+                raise ContractError('TD_UTILITY_UPDATE_SCRIPT_REFERENCE_UNREADABLE:' + ';'.join(tried))
         from .live01_visum import script_references
         source = self.call(lambda: self.adapter.visum.IO.CurrentVersionFile, 'MODEL_FILE')
         refs = script_references([row], source)
@@ -256,7 +267,7 @@ class UtilityState:
                 write_json(out / 'OPERATION_SCRIPT_DIAG.json', info)
                 info['saved_to'] = str(out)
             except Exception as exc:
-                info['save_error'] = repr(exc)[:120]
+                info['save_error'] = exception_text(exc)[:120]
         return json.dumps(info, ensure_ascii=False)
 
     def validate_script(self, row):
@@ -376,9 +387,30 @@ class UtilityState:
         if not self.enabled:
             yield
             return
-        require(_ACTIVE_SCOPE['scope'] is None, 'TD_UTILITY_NESTED_INPUT_SCOPE')
-        scope = {'owner': self, 'thread': threading.get_ident(), 'threads': set(), 'reads': 0}
-        _ACTIVE_SCOPE['scope'] = scope
+        with _SCOPE_LOCK:
+            require(_ACTIVE_SCOPE['scope'] is None, 'TD_UTILITY_NESTED_INPUT_SCOPE')
+        # Capture all inputs in the originating apartment before Execute.
+        # The callback payload deliberately contains no adapter or COM proxy.
+        model_version = model_version_key(self.call(
+            lambda: self.adapter.visum.IO.CurrentVersionFile, 'INPUT_SCOPE_MODEL_FILE'))
+        bindings = {}
+        for no, (dseg, code) in self.time_specs.items():
+            bindings.setdefault(dseg, {})[code] = no
+        times = {d: tuple(self.parent[pair[code]] for code in ('TTC', 'TT0'))
+                 for d, pair in bindings.items()}
+        zones = tuple(self.parent_record['zones'])
+        evidence = {'source': INPUT_PROTOCOL, 'parent_state_hash': self.parent_state_hash,
+                    'model_version': model_version, 'bindings': bindings,
+                    'time_hashes': {d: [values_hash(a) for a in pair] for d, pair in times.items()},
+                    'weight_hashes': {d: values_hash(a) for d, a in self.parent_flows.items()},
+                    'zone_order_sha256': hashlib.sha256(json.dumps(list(zones), separators=(',', ':')).encode()).hexdigest()}
+        scope = {'thread': threading.get_ident(), 'threads': set(), 'reads': 0,
+                 'model_version': model_version, 'zones': zones, 'bindings': bindings,
+                 'times': MappingProxyType(times), 'weights': MappingProxyType(dict(self.parent_flows)),
+                 'evidence': evidence}
+        with _SCOPE_LOCK:
+            require(_ACTIVE_SCOPE['scope'] is None, 'TD_UTILITY_NESTED_INPUT_SCOPE')
+            _ACTIVE_SCOPE['scope'] = scope
         try:
             yield
         except BaseException:
@@ -389,7 +421,9 @@ class UtilityState:
                         'script_thread_differs=%s' % (scope['reads'],
                                                       bool(scope['threads'] - {scope['thread']})))
         finally:
-            _ACTIVE_SCOPE['scope'] = None
+            with _SCOPE_LOCK:
+                if _ACTIVE_SCOPE['scope'] is scope:
+                    _ACTIVE_SCOPE['scope'] = None
 
     def readback_scope(self):
         control = getattr(getattr(self.adapter, 'evaluator', None), 'control', None)
