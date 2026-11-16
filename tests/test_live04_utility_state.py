@@ -502,3 +502,42 @@ def test_wrong_embedded_script_diagnostic_names_what_was_read(setup, tmp_path):
     assert diag['reference'] == ['INTERNAL', 'ExecuteScriptParameters'] and diag['contains_protocol_text'] is False
     assert (tmp_path / 'run/TD_UTILITY_OPERATION_SCRIPT_DIAG/OPERATION_SCRIPT_AS_READ.py.txt').read_text().endswith('X = 1\n')
     assert not audit.events
+
+
+def test_native_script_in_own_python_thread_state_still_gets_parent_inputs(setup, tmp_path):
+    """Live run 2026-11-16: Visum runs the embedded op-15 script with its own Python thread state.
+
+    A ContextVar set by the calibrator is invisible there; the process-global scope is not.
+    """
+    import threading
+    raw, a, u, parent, audit, inv = setup
+    raw.coefficient = 1.1
+    plan = u.prepare({'selected_operation_positions': [15, 17]}, tmp_path / 'trial', raw.native_snapshot())
+    errors = []
+
+    def host():
+        try:
+            raw.execute(plan)
+        except BaseException as exc:      # pragma: no cover - reported below
+            errors.append(exc)
+    with u.input_scope(plan):
+        t = threading.Thread(target=host); t.start(); t.join()
+    assert not errors
+    raw.coefficient = 1.
+    restore = u.prepare({'selected_operation_positions': [15, 17]}, tmp_path / 'restore', raw.native_snapshot())
+    with u.input_scope(restore):
+        raw.execute(restore)
+    assert u.augment_snapshot(raw.native_snapshot()) == parent
+
+
+def test_injected_wrapper_of_same_model_is_accepted(setup, tmp_path):
+    from types import SimpleNamespace
+    from cordon2025.live04_utility_state import transaction_inputs
+    raw, a, u, parent, audit, inv = setup
+    wrapper = SimpleNamespace(IO=SimpleNamespace(CurrentVersionFile=raw.IO.CurrentVersionFile))
+    bindings = {}
+    for no, (dseg, code) in u.time_specs.items():
+        bindings.setdefault(dseg, {})[code] = no
+    with u.input_scope({'selected_operation_positions': []}):
+        out = transaction_inputs(wrapper, raw.zones, bindings)
+    assert out is not None and out[2]['parent_state_hash'] == u.parent_state_hash

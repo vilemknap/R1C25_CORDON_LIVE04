@@ -6,7 +6,6 @@ still generates all demand; this module never restores/writes OD demand.
 """
 from pathlib import Path
 from contextlib import nullcontext, contextmanager
-from contextvars import ContextVar
 import ast
 import hashlib
 import json
@@ -25,15 +24,19 @@ NUMBERS = tuple(range(9700, 9716))
 SPECS = tuple(zip(NUMBERS, COMPONENTS))
 FLOW_NUMBERS = {'NATIVE_CW': 9301, 'NATIVE_CW_NOT': 9302, 'NATIVE_CS': 9303, 'NATIVE_CS_NOT': 9304}
 INPUT_PROTOCOL = 'ACCEPTED_PARENT_INPUTS_V1'
-_INPUT_SCOPE = ContextVar('r1_cordon_accepted_utility_inputs', default=None)
+# Process-global (not a ContextVar): Visum runs the embedded Run script of operation 15 with
+# its own Python thread state, where a ContextVar set by the calibrator is empty (live run
+# 2026-11-16: TD_UTILITY_NATIVE_SCRIPT_MUST_USE_PARENT_INPUTS_ONCE). The calibrator blocks
+# in Procedures.Execute while the script runs, so one global scope is unambiguous.
+_ACTIVE_SCOPE = {'scope': None}
 
 
 def transaction_inputs(visum, zone_order, live_bindings):
     """Read-only protocol called by the replacement native Run script."""
-    scope = _INPUT_SCOPE.get()
+    scope = _ACTIVE_SCOPE['scope']
     if scope is None:
         return None
-    require(threading.get_ident() == scope['thread'], 'TD_UTILITY_INPUT_THREAD_CHANGED')
+    scope['threads'].add(threading.get_ident())
     owner = scope['owner']
     raw = getattr(owner.adapter, 'raw_visum', None)
     if raw is None:
@@ -42,6 +45,12 @@ def transaction_inputs(visum, zone_order, live_bindings):
     if not same:
         a, b = getattr(visum, '_oleobj_', None), getattr(raw, '_oleobj_', None)
         same = a is not None and b is not None and a == b
+    if not same:
+        # The procedure may inject its own wrapper of the same Visum instance.
+        try:
+            same = str(visum.IO.CurrentVersionFile) == str(raw.IO.CurrentVersionFile)
+        except Exception:
+            same = False
     require(same, 'TD_UTILITY_INPUT_MODEL_CHANGED')
     require(list(zone_order) == owner.parent_record['zones'], 'TD_UTILITY_INPUT_ZONE_ORDER_CHANGED')
     times = {};bindings = {}
@@ -367,18 +376,20 @@ class UtilityState:
         if not self.enabled:
             yield
             return
-        require(_INPUT_SCOPE.get() is None, 'TD_UTILITY_NESTED_INPUT_SCOPE')
-        scope = {'owner': self, 'thread': threading.get_ident(), 'reads': 0}
-        token = _INPUT_SCOPE.set(scope)
+        require(_ACTIVE_SCOPE['scope'] is None, 'TD_UTILITY_NESTED_INPUT_SCOPE')
+        scope = {'owner': self, 'thread': threading.get_ident(), 'threads': set(), 'reads': 0}
+        _ACTIVE_SCOPE['scope'] = scope
         try:
             yield
         except BaseException:
             raise
         else:
             if self.position in plan['selected_operation_positions']:
-                require(scope['reads'] == 2, 'TD_UTILITY_NATIVE_SCRIPT_MUST_USE_PARENT_INPUTS_ONCE')
+                require(scope['reads'] == 2, 'TD_UTILITY_NATIVE_SCRIPT_MUST_USE_PARENT_INPUTS_ONCE:reads=%d;'
+                        'script_thread_differs=%s' % (scope['reads'],
+                                                      bool(scope['threads'] - {scope['thread']})))
         finally:
-            _INPUT_SCOPE.reset(token)
+            _ACTIVE_SCOPE['scope'] = None
 
     def readback_scope(self):
         control = getattr(getattr(self.adapter, 'evaluator', None), 'control', None)
