@@ -1,0 +1,33 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_remote_commit": "0aeafc153688909911e1792692289a4792106bee",
+  "base_local_equivalent_commit": "c62120883f1e828eb3f6ee9da385839d581a6132",
+  "suites": {
+    "BEFORE_REPRO": {
+      "cases": 5,
+      "passed": 1,
+      "failed": 4,
+      "skipped": 0
+    },
+    "ROWS_AND_EXTRA": {
+      "cases": 14,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    "REJECT_REFIT": {
+      "cases": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "distinct_passing_scenarios": 15,
+  "new_test_cases": 9,
+  "legacy_key_property_pairs": 3519,
+  "before_repro": "Same corrected five-test fixture executed in a detached c621208 worktree: 4 expected failures demonstrate key collisions, swapped effect prediction and measured-refit mismatch; the real-parent mismatch guard already passed.",
+  "scope": "298 semantic release row keys, 130 SupplyMix identities, small real zonal solver with mobility guard stubs, plus legacy mock controller second-trial refit after native rejection.",
+  "acceptance_limits_changed": false,
+  "live_visum_tested": false,
+  "full_historical_suite_run": false
+}

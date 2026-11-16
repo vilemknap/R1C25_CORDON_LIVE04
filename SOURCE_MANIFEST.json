@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_RECOVERY_REVIEW_20261116",
+  "release": "R1C25_LIVE05_8_REFIT_ROW_IDENTITY_20261116",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -488,8 +488,8 @@
     },
     {
       "path": "README.md",
-      "size": 6947,
-      "sha256": "98b8ce909e138a876563a94296502bff5e57cae93230427032adf5ca1a52d7b6"
+      "size": 7172,
+      "sha256": "df45dab7fa3f41129d331f721059dc6b314293b37329bfaf72b934dafad43c0d"
     },
     {
       "path": "README_CZ.md",
@@ -1413,8 +1413,8 @@
     },
     {
       "path": "cordon2025/live02_v24917.py",
-      "size": 17207,
-      "sha256": "e36cb48303886350f48811cbd2be239986fb31ed16da53ca5ac146d03c79d682"
+      "size": 18074,
+      "sha256": "b1834b4ba3f6078ffa4eabe3c47faeb6859a845c6016861b1a8dbbc33f82c2f2"
     },
     {
       "path": "cordon2025/live03_adapter.py",
@@ -1508,8 +1508,8 @@
     },
     {
       "path": "cordon2025/live04_generation.py",
-      "size": 21921,
-      "sha256": "1220b4f78c07804458e927698d8c8ac10e5e5ccee43d7b738a67f3994cdc5915"
+      "size": 22485,
+      "sha256": "04f7fbaec33a8b76aa5b6989699ed9a12c6b6544c1a82ad8cd3e4446dd5b2ff6"
     },
     {
       "path": "cordon2025/live04_guard.py",
@@ -1553,8 +1553,8 @@
     },
     {
       "path": "cordon2025/live04_supply.py",
-      "size": 35602,
-      "sha256": "a2ca92413a7b0632ae738565db4ce797e7e32d342e1c3293c5b1a17a174e75d7"
+      "size": 35729,
+      "sha256": "dd7bbbf870117a6c6eedf156973f286d1ae1e5e17c9419f9ba1f86dac7c7f693"
     },
     {
       "path": "cordon2025/live04_utility_state.py",
@@ -4742,6 +4742,11 @@
       "sha256": "3ad2f7e0bb800535ed3238be0459dfaebda2ad62c17c33c125d38f7440eeb62c"
     },
     {
+      "path": "docs/utility_restore/REFIT_ROW_IDENTITY_20261116_CZ.md",
+      "size": 4488,
+      "sha256": "f21a419d65a4d610d9bb70a5656ec06e02e0e52fbd2b9bb0a117f89ea7a2d4fe"
+    },
+    {
       "path": "docs/utility_restore/RESTORE_FIX_CZ.md",
       "size": 9774,
       "sha256": "27e2982c6eb1e4e14841d29fd2915a809731083cbddf9cd35ae7e473c6bb7a16"
@@ -4915,6 +4920,56 @@
       "path": "docs/utility_restore/evidence/recovery_review_20261116/TEXT_NORMALIZATION.json",
       "size": 2383,
       "sha256": "e6648832b1c264faf513de7797567f9d8a5711861c803c663925a60a73d91fec"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/BEFORE_REPRO.log",
+      "size": 2606,
+      "sha256": "c7e411923ffa875726a74677420018ca2180063036bf7534255dfa1812482bf2"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/BEFORE_REPRO.xml",
+      "size": 3306,
+      "sha256": "c66629f33a3f2304b41ac2830e5dc29890e8aff8bf1189a2e3059bbecbc0e9e1"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/CHECKS.json",
+      "size": 1171,
+      "sha256": "e32c30f5f254ee1b86be319a91d6b25472d23f0e5e2076a4463a82f08382065a"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/INPUT_AUDIT.json",
+      "size": 7773,
+      "sha256": "4182683acfe6b38444a174b5cfaf9dbd03aae6989455be87b64815fada17d36a"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/REJECT_REFIT.log",
+      "size": 110,
+      "sha256": "083ae7358dff4339b84647168290d9307eef055556301ac75e5faafd56f5a43c"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/REJECT_REFIT.xml",
+      "size": 364,
+      "sha256": "586bf5e1bf803c68a3b4ea8a0dd0851b40c37151c009be14de6ae40b7a73c246"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/ROWS_AND_EXTRA.log",
+      "size": 110,
+      "sha256": "9c033c6b9ec73a777a83f9845974df3cb45f1b431393246a64f68e2532ee013f"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/ROWS_AND_EXTRA.xml",
+      "size": 2045,
+      "sha256": "4b352c463cc1e636991f1b623345d50d52b1250b065c575d9136b8a24939ebbf"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/STATIC.json",
+      "size": 315,
+      "sha256": "2a6642b4c85b13a3c22c5407fcc7346a32368ca2134d62a9582e1a281f92aa48"
+    },
+    {
+      "path": "docs/utility_restore/evidence/refit_identity_20261116/TEXT_NORMALIZATION.json",
+      "size": 1225,
+      "sha256": "476f4e8ea4aa9c821f895f32b03bdecd16a02972e8d4e5131f386e7f2c825143"
     },
     {
       "path": "parent/11D_FIRST_RUN_FORENSIC_REMEDIATION.json",
@@ -9480,6 +9535,11 @@
       "path": "tests/test_live04_recovery_review.py",
       "size": 12366,
       "sha256": "6cba4e5019f3e743461139a2a598c9a5a2fa75a94eae5aabd3796053e513ca58"
+    },
+    {
+      "path": "tests/test_live04_refit_row_identity.py",
+      "size": 7074,
+      "sha256": "1526c53c78b6dc2799da196927f9264ffe804955495abef8bb543ddf51381067"
     },
     {
       "path": "tests/test_live04_utility_state.py",

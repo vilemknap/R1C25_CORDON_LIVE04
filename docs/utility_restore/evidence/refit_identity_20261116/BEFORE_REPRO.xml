@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="5" time="0.434" timestamp="2026-11-16T04:51:19.364333+00:00" hostname="f35ef9b3398e"><testcase classname="tests.test_live04_refit_row_identity" name="test_actual_default_298_observations_have_unique_fit_keys" time="0.107"><failure message="assert 286 == 298&#10; +  where 286 = len({102, 103, 104, 105, 106, 107, ...})&#10; +  and   298 = len({(1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), ...})">tests/test_live04_refit_row_identity.py:24: in test_actual_default_298_observations_have_unique_fit_keys
+    assert len({v17.pair_key(*p) for p in pairs})==len(pairs)
+E   assert 286 == 298
+E    +  where 286 = len({102, 103, 104, 105, 106, 107, ...})
+E    +  and   298 = len({(1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), ...})</failure></testcase><testcase classname="tests.test_live04_refit_row_identity" name="test_legacy_station_ids_stay_compatible_and_extra_ids_are_distinct" time="0.001"><failure message="assert 2560 == 3519&#10; +  where 2560 = len({0, 1, 2, 3, 4, 5, ...})&#10; +  and   3519 = len([(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), ...])">tests/test_live04_refit_row_identity.py:30: in test_legacy_station_ids_stay_compatible_and_extra_ids_are_distinct
+    assert len({v17.pair_key(*p) for p in pairs})==len(pairs)
+E   assert 2560 == 3519
+E    +  where 2560 = len({0, 1, 2, 3, 4, 5, ...})
+E    +  and   3519 = len([(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), ...])</failure></testcase><testcase classname="tests.test_live04_refit_row_identity" name="test_effect_prediction_keeps_asd_and_nds_on_their_own_rows" time="0.082"><failure message="AssertionError: &#10;Not equal to tolerance rtol=1e-07, atol=0&#10;&#10;Mismatched elements: 1 / 2 (50%)&#10;Max absolute difference among violations: 12.5&#10;Max relative difference among violations: 1.66666667&#10; ACTUAL: array([-5., -5.])&#10; DESIRED: array([ 7.5, -5. ])">tests/test_live04_refit_row_identity.py:72: in test_effect_prediction_keeps_asd_and_nds_on_their_own_rows
+    np.testing.assert_allclose(generation._delta(p,by),expected)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 2 (50%)
+E   Max absolute difference among violations: 12.5
+E   Max relative difference among violations: 1.66666667
+E    ACTUAL: array([-5., -5.])
+E    DESIRED: array([ 7.5, -5. ])</failure></testcase><testcase classname="tests.test_live04_refit_row_identity" name="test_refit_consumes_separate_measured_changes_for_colliding_legacy_ids" time="0.032"><failure message="ValueError: V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH">tests/test_live04_refit_row_identity.py:77: in test_refit_consumes_separate_measured_changes_for_colliding_legacy_ids
+    result,audit=generation.refine(adapter,context,1.,preview,before,after,tmp_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/live04_generation.py:307: in refine
+    raise ValueError('V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH')
+E   ValueError: V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH</failure></testcase><testcase classname="tests.test_live04_refit_row_identity" name="test_real_parent_mismatch_still_blocks_refit" time="0.030" /></testsuite></testsuites>

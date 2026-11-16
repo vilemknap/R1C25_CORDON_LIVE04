@@ -1,0 +1,26 @@
+{
+  "BEFORE_REPRO.xml": {
+    "raw_sha256": "44a637ed3d03d6e2a6a802bc4a57938efb7ca6d2702e0526b684c086cc773e0b",
+    "stored_sha256": "c66629f33a3f2304b41ac2830e5dc29890e8aff8bf1189a2e3059bbecbc0e9e1"
+  },
+  "BEFORE_REPRO.log": {
+    "raw_sha256": "94935e34c2cf461a66b76af3b50c0b55b10789fb6da24bc4d5a1a942aa38ba3b",
+    "stored_sha256": "c7e411923ffa875726a74677420018ca2180063036bf7534255dfa1812482bf2"
+  },
+  "ROWS_AND_EXTRA.xml": {
+    "raw_sha256": "949003b415cda4955e5a956e107ae91d82707361fb81f270e4c9879fec15f953",
+    "stored_sha256": "4b352c463cc1e636991f1b623345d50d52b1250b065c575d9136b8a24939ebbf"
+  },
+  "ROWS_AND_EXTRA.log": {
+    "raw_sha256": "9c033c6b9ec73a777a83f9845974df3cb45f1b431393246a64f68e2532ee013f",
+    "stored_sha256": "9c033c6b9ec73a777a83f9845974df3cb45f1b431393246a64f68e2532ee013f"
+  },
+  "REJECT_REFIT.xml": {
+    "raw_sha256": "730e65026425f892329a7191a6790b3694a6ad3e9a8546c7187e481edcdc099f",
+    "stored_sha256": "586bf5e1bf803c68a3b4ea8a0dd0851b40c37151c009be14de6ae40b7a73c246"
+  },
+  "REJECT_REFIT.log": {
+    "raw_sha256": "083ae7358dff4339b84647168290d9307eef055556301ac75e5faafd56f5a43c",
+    "stored_sha256": "083ae7358dff4339b84647168290d9307eef055556301ac75e5faafd56f5a43c"
+  }
+}

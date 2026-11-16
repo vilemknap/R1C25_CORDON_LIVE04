@@ -1,0 +1,11 @@
+{
+  "parent_and_data_unchanged": true,
+  "acceptance_config_and_gates_unchanged": true,
+  "operation15_script_unchanged": true,
+  "python_ast_checked": [
+    "cordon2025/live02_v24917.py",
+    "cordon2025/live04_generation.py",
+    "cordon2025/live04_supply.py",
+    "tests/test_live04_refit_row_identity.py"
+  ]
+}

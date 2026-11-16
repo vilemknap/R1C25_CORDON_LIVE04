@@ -46,7 +46,28 @@ def verify_donor_files():
 
 
 def pair_key(a, b):
-    return int(a) * 100 + int(b)
+    """Injective ordered row ID, preserving legacy station IDs below 100.
+
+    LIVE05 rows contain IDs >=1000: the old 100*a+b encoding aliases, e.g.,
+    (21,1000) and (20,1100). Extended pairs use Cantor's bijection in a disjoint
+    range; these IDs are bookkeeping only, never observed/model values.
+    """
+    a, b = int(a), int(b)
+    require(a >= 0 and b >= 0, 'CORDON_NEGATIVE_OBSERVATION_ID')
+    if a < 100 and b < 100:
+        return a * 100 + b
+    total = a + b
+    return 10000 + total * (total + 1) // 2 + b
+
+
+def observation_index(rows):
+    """One semantic observation per numeric key; never silently overwrite."""
+    out = {}
+    for i, row in enumerate(rows):
+        key = pair_key(row['origin_station'], row['destination_station'])
+        require(key not in out, 'CORDON_DUPLICATE_OBSERVATION_ID:' + str(key))
+        out[key] = i
+    return out
 
 
 def run_options(cfg):
@@ -149,7 +170,8 @@ def activate_boundary(cfg, opts, visum, zones, actuatable_zones, bdgen):
 
 # ------------------------------------------------------------------ design
 def incidence_contract(inc):
-    """Cordon incidence in the zonal-fit schema (profiles = unordered station pairs)."""
+    """Cordon rows in zonal-fit schema, including profiles and LIVE05 observations."""
+    observation_index(inc.rows)
     c = inc.parent_contract()
     profiles = []
     for r in inc.rows:

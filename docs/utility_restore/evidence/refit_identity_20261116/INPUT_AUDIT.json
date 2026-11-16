@@ -1,0 +1,359 @@
+{
+  "base_remote_commit": "0aeafc153688909911e1792692289a4792106bee",
+  "inputs": [
+    {
+      "name": "V24917_TIMING.json",
+      "file_id": "file_00000000bc6881f4a7c93fb87c977cc4",
+      "bytes": 660,
+      "sha256": "70246109fed11a4037152c1cfd106acd95ef4e3a657bb6d012d7723c84829a79"
+    },
+    {
+      "name": "STEP1_PLAN_02.json",
+      "file_id": "file_00000000df8081f48301aaa41354b640",
+      "bytes": 4522,
+      "sha256": "2271dc0720a8c117552de041d7ef8cdd109ec61d42dfeecc7ec10821b59770e7"
+    },
+    {
+      "name": "GENERATION_BLOCK_RESULT.json",
+      "file_id": "file_00000000a70c81f4b7f5d382e97d7d71",
+      "bytes": 864637,
+      "sha256": "bded6d24892f8cd226b1c000d70b0536e85e82a38705f804679e43733a22d19f"
+    },
+    {
+      "name": "MEASURED_ZONAL_REFIT.json",
+      "file_id": "file_00000000166c81f4b28277914c8ae364",
+      "bytes": 107,
+      "sha256": "971eb6e11089f83df939619413c84544a5e54d35ec60662acd3fbb8fa71fb598"
+    },
+    {
+      "name": "ROLLBACK_SUMMARY.json",
+      "file_id": "file_000000007d5c81f48e55aacd47a6dbe4",
+      "bytes": 4315,
+      "sha256": "96c7fa0e37a317c1c175919509643db68f18720834e06f88fb457733a4ea0051"
+    },
+    {
+      "name": "STEP1_PLAN_01.json",
+      "file_id": "file_000000006d608246be78fc324eff61e8",
+      "bytes": 3504,
+      "sha256": "3b2c7273a2a5943a5db6464552afd5a348cf8f29fd50af4e79d3f480f446b50c"
+    },
+    {
+      "name": "LIVE04_GENERATION_DESIGN.json",
+      "file_id": "file_0000000017ec81f4bff2af188db9f7e1",
+      "bytes": 76,
+      "sha256": "1c5f6b883a15807d82709bf590e710b3aa8e8cde8124eba98265d795bce016ba"
+    },
+    {
+      "name": "GENERATION_PARENT_CHECK.json",
+      "file_id": "file_00000000111081f4b354b622e543ca51",
+      "bytes": 435,
+      "sha256": "0a892c3b9cb1562fca0b68af4145a9e6a68d04ac4f43cb4594a1ef1b499469cc"
+    }
+  ],
+  "observed_block_status": "CONFIGURED_GENERATION_SEARCH_EXHAUSTED",
+  "observed_refit": {
+    "status": "REFIT_UNAVAILABLE",
+    "error": "ValueError('V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH')"
+  },
+  "first_trial": {
+    "objective_before": 212007.0794441873,
+    "objective_after": 206812.23766833247,
+    "relative_improvement": 0.02450315239224077,
+    "secondary_before": 26631.00910338681,
+    "secondary_after": 27145.017105175026,
+    "secondary_relative_degradation": 0.01930110871100443,
+    "reasons": [
+      "SECONDARY_METHOD_DEGRADED"
+    ]
+  },
+  "rollback": {
+    "passes": true,
+    "snapshot_equal": true,
+    "diagnostic_equal": true,
+    "load_version_called": false,
+    "save_version_called": false
+  },
+  "current_release_extra_observations": 130,
+  "old_unique_extra_keys": 118,
+  "collision_pairs": [
+    {
+      "old_key": 3100,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1000
+          ],
+          "obs_id": "ASD1_Malinovo",
+          "group": "ASD",
+          "new_key": 532731
+        },
+        {
+          "row_key": [
+            20,
+            1100
+          ],
+          "obs_id": "NDS_S51A",
+          "group": "NDS",
+          "new_key": 638860
+        }
+      ]
+    },
+    {
+      "old_key": 3101,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1001
+          ],
+          "obs_id": "ASD1_Tomášov",
+          "group": "ASD",
+          "new_key": 533754
+        },
+        {
+          "row_key": [
+            20,
+            1101
+          ],
+          "obs_id": "NDS_S51B",
+          "group": "NDS",
+          "new_key": 639982
+        }
+      ]
+    },
+    {
+      "old_key": 3102,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1002
+          ],
+          "obs_id": "ASD2_Bratislava",
+          "group": "ASD",
+          "new_key": 534778
+        },
+        {
+          "row_key": [
+            20,
+            1102
+          ],
+          "obs_id": "NDS_S54A",
+          "group": "NDS",
+          "new_key": 641105
+        }
+      ]
+    },
+    {
+      "old_key": 3103,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1003
+          ],
+          "obs_id": "ASD2_Studené",
+          "group": "ASD",
+          "new_key": 535803
+        },
+        {
+          "row_key": [
+            20,
+            1103
+          ],
+          "obs_id": "NDS_S54B",
+          "group": "NDS",
+          "new_key": 642229
+        }
+      ]
+    },
+    {
+      "old_key": 3104,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1004
+          ],
+          "obs_id": "ASD3_Bratislava",
+          "group": "ASD",
+          "new_key": 536829
+        },
+        {
+          "row_key": [
+            20,
+            1104
+          ],
+          "obs_id": "NDS_S56A",
+          "group": "NDS",
+          "new_key": 643354
+        }
+      ]
+    },
+    {
+      "old_key": 3105,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1005
+          ],
+          "obs_id": "ASD3_Most_pri_Bratislave",
+          "group": "ASD",
+          "new_key": 537856
+        },
+        {
+          "row_key": [
+            20,
+            1105
+          ],
+          "obs_id": "NDS_S56B",
+          "group": "NDS",
+          "new_key": 644480
+        }
+      ]
+    },
+    {
+      "old_key": 3106,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1006
+          ],
+          "obs_id": "ASD5_Bratislava",
+          "group": "ASD",
+          "new_key": 538884
+        },
+        {
+          "row_key": [
+            20,
+            1106
+          ],
+          "obs_id": "NDS_S57A",
+          "group": "NDS",
+          "new_key": 645607
+        }
+      ]
+    },
+    {
+      "old_key": 3107,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1007
+          ],
+          "obs_id": "ASD5_Studené",
+          "group": "ASD",
+          "new_key": 539913
+        },
+        {
+          "row_key": [
+            20,
+            1107
+          ],
+          "obs_id": "NDS_S57B",
+          "group": "NDS",
+          "new_key": 646735
+        }
+      ]
+    },
+    {
+      "old_key": 3108,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1008
+          ],
+          "obs_id": "ASD6_Senec",
+          "group": "ASD",
+          "new_key": 540943
+        },
+        {
+          "row_key": [
+            20,
+            1108
+          ],
+          "obs_id": "NDS_S58A",
+          "group": "NDS",
+          "new_key": 647864
+        }
+      ]
+    },
+    {
+      "old_key": 3109,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1009
+          ],
+          "obs_id": "ASD6_Hrubý_Šúr",
+          "group": "ASD",
+          "new_key": 541974
+        },
+        {
+          "row_key": [
+            20,
+            1109
+          ],
+          "obs_id": "NDS_S58B",
+          "group": "NDS",
+          "new_key": 648994
+        }
+      ]
+    },
+    {
+      "old_key": 3110,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1010
+          ],
+          "obs_id": "ASD7_Sládkovičovo",
+          "group": "ASD",
+          "new_key": 543006
+        },
+        {
+          "row_key": [
+            20,
+            1110
+          ],
+          "obs_id": "NDS_S60A",
+          "group": "NDS",
+          "new_key": 650125
+        }
+      ]
+    },
+    {
+      "old_key": 3111,
+      "rows": [
+        {
+          "row_key": [
+            21,
+            1011
+          ],
+          "obs_id": "ASD7_Veľké_Úľany",
+          "group": "ASD",
+          "new_key": 544039
+        },
+        {
+          "row_key": [
+            20,
+            1111
+          ],
+          "obs_id": "NDS_S60B",
+          "group": "NDS",
+          "new_key": 651257
+        }
+      ]
+    }
+  ],
+  "fixed_unique_extra_keys": 130,
+  "acceptance_policy_changed": false,
+  "live_visum_tested": false
+}
