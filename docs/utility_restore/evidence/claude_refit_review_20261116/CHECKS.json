@@ -1,0 +1,55 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_remote_commit": "57d91d865a3482ffc2beef8a5b1b92e01b63d01b",
+  "suites": {
+    "UNIT": {
+      "cases": 34,
+      "failed": 0,
+      "skipped": 0
+    },
+    "CONTROLLER": {
+      "cases": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "distinct_passing_scenarios": 35,
+  "same_capture_tolerance": {
+    "atol": 1e-09,
+    "rtol": 1e-12
+  },
+  "claude_broad_tolerance_not_adopted": true,
+  "generation_secondary_limit": 0.02,
+  "td_cordon_weight": 0.5,
+  "td_idp_weight": 0.5,
+  "protected_sources_unchanged": 1606,
+  "scope": "Exact and small numeric differences; reject a difference hidden by the proposed rollback tolerance; missing/duplicate keys and invalid numbers; detailed reports for captured-incidence and fit-row mismatch; existing refit/objective tests; full synthetic rejected trial, measured refit and accepted trial.",
+  "live_visum_tested": false,
+  "full_historical_suite_run": false,
+  "test_artifacts": [
+    {
+      "path": "UNIT.log",
+      "raw_sha256": "bfbe0c10e2eededb0fc2dc399bf787f1b81f447ac99f8dccf140fd05ef5fe98d",
+      "published_sha256": "bfbe0c10e2eededb0fc2dc399bf787f1b81f447ac99f8dccf140fd05ef5fe98d",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "UNIT.xml",
+      "raw_sha256": "50c872fb90b84e63042b25579377ab98360d9bf26f05ecaf96b56a862766c938",
+      "published_sha256": "805593f5072cff7f4f348cb78951cc87893695d16c83ba40675c4ab8cfb11614",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "CONTROLLER.log",
+      "raw_sha256": "ac3e3cf5545210ce14f1bc99ec2070d0347793c2b9996ce95eaa1f6123fbed3c",
+      "published_sha256": "ac3e3cf5545210ce14f1bc99ec2070d0347793c2b9996ce95eaa1f6123fbed3c",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "CONTROLLER.xml",
+      "raw_sha256": "a470b7880fd54bd7bea3a88431963ed64590ffd8978f76ad91cc45377edf9172",
+      "published_sha256": "7140b32644182ad1ca8dd6f7406fb18f5a252c68a35aacf83145791694c57e7a",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    }
+  ]
+}

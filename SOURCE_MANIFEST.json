@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_GEN_OBJECTIVE_REFIT_ALIGNED_20261116",
+  "release": "R1C25_LIVE05_8_MERGED_REFIT_DIAGNOSTICS_20261116",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -1513,13 +1513,13 @@
     },
     {
       "path": "cordon2025/live04_fit_objective.py",
-      "size": 5955,
-      "sha256": "d74b05d98bcff77a7ea5748145e4f1616f4948f1608e3362e0d105a3d9219a0e"
+      "size": 9393,
+      "sha256": "9115f620e3e0877ea8b4b35ba9990941f7db4274b1d10c14f79ef4754b63f5e5"
     },
     {
       "path": "cordon2025/live04_generation.py",
-      "size": 23368,
-      "sha256": "714e4ac3bb3e95e4684195a50513e78f7054eb0adedf1dadabc9561ad8dcff73"
+      "size": 23463,
+      "sha256": "9f72d8f6445871b49fddba690bdeb908598e1011bd44cfb31acf465ab397d101"
     },
     {
       "path": "cordon2025/live04_guard.py",
@@ -4737,6 +4737,11 @@
       "sha256": "4e3af3129f34ece685f1c639428f2db9f385a2876b99025d07b2396fd1cd7cb4"
     },
     {
+      "path": "docs/utility_restore/CLAUDE_REFIT_PATCH_REVIEW_20261116_CZ.md",
+      "size": 4372,
+      "sha256": "3048383ff9442d85f715782ce9b5a1df20fd20212d6e9e3c282562bc3872c0b0"
+    },
+    {
       "path": "docs/utility_restore/COM_CONTEXT_FIX_20261116_CZ.md",
       "size": 5205,
       "sha256": "f86f1bcbf617462e8acbd2111970973a1e0b1e69466c87c59001d0cdbdc02820"
@@ -4825,6 +4830,41 @@
       "path": "docs/utility_restore/evidence/TEXT_NORMALIZATION.json",
       "size": 37,
       "sha256": "08948c0884ab65638bf27ae68cabb1a701a6e623e3bf361e878cfe505fde353d"
+    },
+    {
+      "path": "docs/utility_restore/evidence/claude_refit_review_20261116/CHECKS.json",
+      "size": 2212,
+      "sha256": "0239853d961f5ee9028cd718bddde0500284b18de2487e79e8133898723baa37"
+    },
+    {
+      "path": "docs/utility_restore/evidence/claude_refit_review_20261116/CONTROLLER.log",
+      "size": 110,
+      "sha256": "ac3e3cf5545210ce14f1bc99ec2070d0347793c2b9996ce95eaa1f6123fbed3c"
+    },
+    {
+      "path": "docs/utility_restore/evidence/claude_refit_review_20261116/CONTROLLER.xml",
+      "size": 364,
+      "sha256": "7140b32644182ad1ca8dd6f7406fb18f5a252c68a35aacf83145791694c57e7a"
+    },
+    {
+      "path": "docs/utility_restore/evidence/claude_refit_review_20261116/PATCH_REVIEW.json",
+      "size": 1591,
+      "sha256": "9daba0fad33c0d21f2b6eb1dfdb4bfde2b98bb9348d0e1dc168703493a5e3e4f"
+    },
+    {
+      "path": "docs/utility_restore/evidence/claude_refit_review_20261116/SYNTHETIC_REFIT_PROOF.json",
+      "size": 1158,
+      "sha256": "289b955089b6679c50fbe00c759f004280647b01e41fb8af11664ff60e9e8bae"
+    },
+    {
+      "path": "docs/utility_restore/evidence/claude_refit_review_20261116/UNIT.log",
+      "size": 99,
+      "sha256": "bfbe0c10e2eededb0fc2dc399bf787f1b81f447ac99f8dccf140fd05ef5fe98d"
+    },
+    {
+      "path": "docs/utility_restore/evidence/claude_refit_review_20261116/UNIT.xml",
+      "size": 5409,
+      "sha256": "805593f5072cff7f4f348cb78951cc87893695d16c83ba40675c4ab8cfb11614"
     },
     {
       "path": "docs/utility_restore/evidence/com_context_20261116/CHECKS.json",
@@ -9700,6 +9740,11 @@
       "path": "tests/test_live04_recovery_review.py",
       "size": 12366,
       "sha256": "6cba4e5019f3e743461139a2a598c9a5a2fa75a94eae5aabd3796053e513ca58"
+    },
+    {
+      "path": "tests/test_live04_refit_parent_diagnostics.py",
+      "size": 3232,
+      "sha256": "bda34976f45acd5fb26842a14f5de1c4021bbe6ada0ad94011fc5071dc1f4c5c"
     },
     {
       "path": "tests/test_live04_refit_row_identity.py",
