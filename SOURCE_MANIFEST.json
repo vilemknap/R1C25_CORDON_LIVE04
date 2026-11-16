@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_TD_NATIVE_READBACK_20261116",
+  "release": "R1C25_LIVE05_8_TG_SECONDARY2_TD5050_20261116",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
     },
     {
       "path": "00_START_HERE_LIVE04_CZ.txt",
-      "size": 11997,
-      "sha256": "d55819f133ed5b0e1fa2a9fdbe4db0fb99733b4cfccc110f3f52c58349254e6e"
+      "size": 12291,
+      "sha256": "5bbed2f545c25eb83f44c259db6c97ef407041e558be724355330f0b071062e0"
     },
     {
       "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -1478,8 +1478,8 @@
     },
     {
       "path": "cordon2025/live04_config.py",
-      "size": 12281,
-      "sha256": "7094efe975ae8847e36a84057591b5e3b24d820e3b5ded683d1a14bce630b217"
+      "size": 12517,
+      "sha256": "48d437ec9a51088a35e0aac2de2e2c7423ba02d5c45fc0076086281658d84233"
     },
     {
       "path": "cordon2025/live04_confirm.py",
@@ -1503,8 +1503,8 @@
     },
     {
       "path": "cordon2025/live04_evaluation.py",
-      "size": 1834,
-      "sha256": "5b07e8123a58d69fdcea783a3869b0e7b776b5dd25bbab17c2201d6133cfd068"
+      "size": 2523,
+      "sha256": "c1a431714a25e39a0a93516517fbd9743f21ab23fce6652dac3ad0d09be2c167"
     },
     {
       "path": "cordon2025/live04_fastgeom.py",
@@ -4742,6 +4742,11 @@
       "sha256": "42d055d19f2926e1895a1e412ef568663b6b60c32010e0fd0910420113ccf69a"
     },
     {
+      "path": "docs/utility_restore/POLICY_5050_TG_SECONDARY_20261116_CZ.md",
+      "size": 3003,
+      "sha256": "0e5370cc5363e4e5a7810aac9326be9005107e8cd4f6bfac204cdc1f415a24a8"
+    },
+    {
       "path": "docs/utility_restore/RECOVERY_REVIEW_20261116_CZ.md",
       "size": 5343,
       "sha256": "3ad2f7e0bb800535ed3238be0459dfaebda2ad62c17c33c125d38f7440eeb62c"
@@ -4855,6 +4860,31 @@
       "path": "docs/utility_restore/evidence/com_context_20261116/TEXT_NORMALIZATION.json",
       "size": 799,
       "sha256": "74595c31c489eacd8e13988e3d46db8ad78d6d73f4bc33b19b41093136f4bc88"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5050_20261116/CHECKS.json",
+      "size": 1471,
+      "sha256": "db7589edc2dda3f5a030b66c18b373a365b5e4dcc7f690c8f21dc77405da83cf"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5050_20261116/CONFIG_DIFF.json",
+      "size": 1054,
+      "sha256": "96c9882adfb1ebc7a5c78ce2cd74f9b88de29cb3ea62d68e3301d7c684a50a7d"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5050_20261116/POLICY.log",
+      "size": 111,
+      "sha256": "4e9612b4b4b1ca8d676bafe07144da251fb6f43150cdd63214ae48abc6b9ef87"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5050_20261116/POLICY.xml",
+      "size": 3669,
+      "sha256": "178ceda94acec9fc9b80b564b61f1db03b19550f10d6e028361f019ac570ede5"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5050_20261116/SYNTHETIC_TD_PROOF.json",
+      "size": 1075,
+      "sha256": "814ebadbe46011e6491966358fd524891e9608b09d90695d7864950396e1be93"
     },
     {
       "path": "docs/utility_restore/evidence/recovery_review_20261116/BEFORE_REPRO.log",
@@ -9218,8 +9248,8 @@
     },
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
-      "size": 20812,
-      "sha256": "5bfea728dbcafa307a3f0810f505f841db6918b8343437283e3c09863747d6fd"
+      "size": 20844,
+      "sha256": "364210e44e01f70837f214c334835dbaaf60942b98be4464bf4a85a09e3d931c"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -9523,8 +9553,8 @@
     },
     {
       "path": "tests/test_live04_11.py",
-      "size": 9255,
-      "sha256": "6430d4fddf814377f8093c2fec7e5cb1756e2f48a26d5eff29532c3aba1bb8bc"
+      "size": 9250,
+      "sha256": "0996721dffc0db27ddd0281af27ffdc3853d4dd01652949654675cb276bb6744"
     },
     {
       "path": "tests/test_live04_11_not_audit.py",
@@ -9575,6 +9605,11 @@
       "path": "tests/test_live04_9.py",
       "size": 8511,
       "sha256": "602621aac240176bd15131ac997b1db82f562e20dc85d207e1b58683c7d7e800"
+    },
+    {
+      "path": "tests/test_live04_acceptance_5050.py",
+      "size": 5205,
+      "sha256": "5b56dbcffdadc9e494b94b122104e1421097c6738b5e496edac821984c13c600"
     },
     {
       "path": "tests/test_live04_bootstrap_integrity.py",

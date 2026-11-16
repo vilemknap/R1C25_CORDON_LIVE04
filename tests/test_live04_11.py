@@ -1,5 +1,5 @@
 """LIVE04.11: component-level TD_CORDON (v7 TDJOINT1 granularity) with the v7 TDBLEND1
-inner objective (60 % cordon / 40 % FineCDF IDP, normalised at the block start).
+inner objective (50 % cordon / 50 % FineCDF IDP, normalised at the block start).
 Synthetic mock only - not native PTV Visum evidence."""
 import math
 from types import SimpleNamespace
@@ -61,7 +61,7 @@ def test_blend_is_normalised_and_its_residual_reproduces_the_objective():
 
 def test_release_config_is_component_level_with_v7_weights():
     td = load_config()['td_cordon']
-    assert td['grouping'] == 'COMPONENT' and td['idp_objective_weight'] == 0.45
+    assert td['grouping'] == 'COMPONENT' and td['idp_objective_weight'] == 0.5
     assert td['acceptance'] == 'BLENDED' and td['blended_max_cordon_degradation'] == 0.01
     assert sum(len(v) for v in td['groups'].values()) == 11
     assert read_json(ROOT / 'provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json')['td_cordon'] == td
@@ -100,7 +100,7 @@ def test_component_td_moves_components_of_one_family_differently(tmp_path, synth
     td = read_json(f / 'C01_TD_CORDON/TD_BLOCK_RESULT.json')
     names = [p['parameter'] for p in td['jacobian_probes']]
     assert len(names) == 22 and 'WORK_noE_C.dlog_c' in names and 'SCHOOL.db' in names
-    assert td['objective_blend']['idp_weight'] == 0.45 and len(td['objective_blend']['components']) == 11
+    assert td['objective_blend']['idp_weight'] == 0.5 and len(td['objective_blend']['components']) == 11
     first = dict(zip(td['idp_step_model']['parameters'], td['inner'][0]['step']))
     # same family, same cordon response in the mock; only WORK_E_C is held back by its IDP
     assert first['WORK_E_noC.dlog_c'] < first['WORK_E_C.dlog_c'] - 1e-3
@@ -115,7 +115,7 @@ def test_component_td_moves_components_of_one_family_differently(tmp_path, synth
 # ------------------------------------------------------- blended acceptance (v7 TDBLEND1)
 def _blend():
     g = SimpleNamespace(guarded=['A'], mean_floor=0.03, mean_tol=0.02, rmse_tol=0.01)
-    return IdpBlend(g, ['A'], _idp({'A': (0.10, -0.40)}), 0.45, q_ref=1000.0)
+    return IdpBlend(g, ['A'], _idp({'A': (0.10, -0.40)}), 0.5, q_ref=1000.0)
 
 
 TDC_B = {'blended_min_relative_improvement': 0.001, 'blended_max_cordon_degradation': 0.01}
@@ -130,7 +130,7 @@ def test_blended_gate_accepts_small_cordon_loss_for_a_large_idp_gain():
     a = out['td_blended_acceptance']
     assert out['accepted'] and out['reasons'] == [] and a['cordon_relative_degradation'] == pytest.approx(0.005)
     j0 = 0.10 ** 2 + 0.25 * 0.40 ** 2; j1 = 0.08 ** 2 + 0.25 * 0.20 ** 2
-    assert a['blended_value'] == pytest.approx(0.55 * 1.005 + 0.45 * j1 / j0)
+    assert a['blended_value'] == pytest.approx(0.5 * 1.005 + 0.5 * j1 / j0)
     assert sorted(a['soft_reasons_replaced']) == ['CORDON_OBJECTIVE_NOT_IMPROVED', 'SECONDARY_METHOD_DEGRADED']
 
 

@@ -1,0 +1,32 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_remote_commit": "f79566170d2dc15f909621f194cc588ec05a794b",
+  "cases": 25,
+  "passed": 25,
+  "failed": 0,
+  "skipped": 0,
+  "generation_secondary_max_relative_degradation": 0.02,
+  "generation_secondary_limit_selected_by_user": true,
+  "td_cordon_weight": 0.5,
+  "td_idp_weight": 0.5,
+  "supply_secondary_limit_unchanged": 0.0,
+  "td_blended_degradation_limit_unchanged": 0.01,
+  "protected_source_files_unchanged": 1606,
+  "scope": "Scoped secondary acceptance at 2 percent including the supplied example; boundary and invalid-input cases; primary, capture and GEH rejection preserved; normalized 50/50 TD math and a complete component-level accepted synthetic TD trial with IDP and exact parameter freeze.",
+  "live_visum_tested": false,
+  "full_historical_suite_run": false,
+  "test_artifacts": [
+    {
+      "path": "POLICY.log",
+      "raw_sha256": "4e9612b4b4b1ca8d676bafe07144da251fb6f43150cdd63214ae48abc6b9ef87",
+      "published_sha256": "4e9612b4b4b1ca8d676bafe07144da251fb6f43150cdd63214ae48abc6b9ef87",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "POLICY.xml",
+      "raw_sha256": "e52033e0a9427edb1a809e703f37028d04a554ad2947fdee106b5662092d7a11",
+      "published_sha256": "178ceda94acec9fc9b80b564b61f1db03b19550f10d6e028361f019ac570ede5",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    }
+  ]
+}

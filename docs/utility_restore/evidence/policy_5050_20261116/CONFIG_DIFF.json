@@ -1,0 +1,24 @@
+{
+  "changes": [
+    {
+      "path": "acceptance.generation_secondary_max_relative_degradation",
+      "before": "ABSENT",
+      "after": 0.02
+    },
+    {
+      "path": "td_cordon.idp_objective_weight",
+      "before": 0.45,
+      "after": 0.5
+    },
+    {
+      "path": "td_cordon.idp_objective_weight_note",
+      "before": "LIVE04.11 (user decision 2026-11-06): TD inner search and acceptance use the v7 TDBLEND1 form with 55 % cordon / 45 % FineCDF: F = 0.55 * cordon/cordon_before + 0.45 * sum FineCDF J_k / J_before (v7 profile calibrator: 60/40). 0 = cordon only.",
+      "after": "User decision 2026-11-16: TD inner search and acceptance use 50 % cordon / 50 % FineCDF: F = 0.5 * cordon/cordon_before + 0.5 * sum FineCDF J_k / J_before. Both terms are normalized at the parent state; 0 = cordon only."
+    }
+  ],
+  "main_cordon_objective_definition_unchanged": true,
+  "generation_limit_relative_to_parent": 0.02,
+  "supply_secondary_limit": 0.0,
+  "td_blended_cordon_and_secondary_limit": 0.01,
+  "td_blended_min_relative_improvement": 0.001
+}
