@@ -1,0 +1,13 @@
+{
+  "python_ast_checked": [
+    "cordon2025/live03_td.py",
+    "cordon2025/live04_adapter.py",
+    "cordon2025/live04_cycle.py",
+    "cordon2025/live04_supply.py",
+    "cordon2025/live04_utility_state.py",
+    "cordon2025/live04_v7.py",
+    "tests/test_live04_recovery_review.py"
+  ],
+  "parent_and_data_unchanged": true,
+  "operation15_script_unchanged": true
+}

@@ -1,0 +1,50 @@
+{
+  "FOCUSED.xml": {
+    "raw_sha256": "ed516515ac719c0fee93c3bea0717fbf713ac5b53d0564faa5e08c8176ae0556",
+    "stored_sha256": "9969e5eef4b8cad039b3bf27cdc0a7cbc3dcc65773ee1c22cf56afccb4c4121d"
+  },
+  "FOCUSED.log": {
+    "raw_sha256": "aabe96721342c26d39bad51cedd5dcc084a89235441f4ff14ae117e2c5db91ad",
+    "stored_sha256": "aabe96721342c26d39bad51cedd5dcc084a89235441f4ff14ae117e2c5db91ad"
+  },
+  "STOP.xml": {
+    "raw_sha256": "56b83675bbd1bbf391518a7922df0381f6702d0259bf89cb334a5b488b134bbc",
+    "stored_sha256": "68a3d6144eb5cea4c4d994f4a5494b339c8b7cad6b2340270822e6562bc77da2"
+  },
+  "STOP.log": {
+    "raw_sha256": "ec112725da13adeb0515c13443a07a1446eeb7f1f5dcfd3673d332d5fa6a3825",
+    "stored_sha256": "ec112725da13adeb0515c13443a07a1446eeb7f1f5dcfd3673d332d5fa6a3825"
+  },
+  "TD.xml": {
+    "raw_sha256": "f1598b50f33fea46d2e0b2c397e8f9f1c884db0f57b34ee041579cefcfdf9388",
+    "stored_sha256": "668a858bf8090c6ba242d46c1b36493f75b826d9a54f697c34da18c49cd3dae3"
+  },
+  "TD.log": {
+    "raw_sha256": "139cfe9556bf21937675e7bd27c1acc02dc2055cb3f7fd7e6ed6c69bedd68d44",
+    "stored_sha256": "139cfe9556bf21937675e7bd27c1acc02dc2055cb3f7fd7e6ed6c69bedd68d44"
+  },
+  "TD_CLASSIFIER.xml": {
+    "raw_sha256": "e45fb36c323f1c08f650b4fae79a30ed47b2696894b381e1f3fbf2fdf85bd583",
+    "stored_sha256": "d89ec36248e1a98e399e3bf059b3114f44ffdfebfe23f08e09c811d955d35d3e"
+  },
+  "TD_CLASSIFIER.log": {
+    "raw_sha256": "dd1530082b630755aa825b3c817c705171e2b2f6e5b64b4103df0cc094706494",
+    "stored_sha256": "dd1530082b630755aa825b3c817c705171e2b2f6e5b64b4103df0cc094706494"
+  },
+  "SUPPLY.xml": {
+    "raw_sha256": "e98cdecff46bd941b888498adb647457482407788cc6a390ba5209b7023f54d6",
+    "stored_sha256": "b9de67620caa9d07b6ac54a267ac45bbfa22d85ed941ae702712b18b079c85f1"
+  },
+  "SUPPLY.log": {
+    "raw_sha256": "1de7af18a082aed8ed2db28a900eee55720e6fca28b21af9e1bac8ef498046d9",
+    "stored_sha256": "1de7af18a082aed8ed2db28a900eee55720e6fca28b21af9e1bac8ef498046d9"
+  },
+  "BEFORE_REPRO.xml": {
+    "raw_sha256": "125a8c194df61cf8f7762734edc415bce758bf29d4b2e389306807cfe29d25fd",
+    "stored_sha256": "e4e723c92996c80100f3671353306c71bfb9aaaa27062437debb03474fe7b62b"
+  },
+  "BEFORE_REPRO.log": {
+    "raw_sha256": "385d95d888f7b842be4e4205d5dd5c4c3f91b0d179bf7c09da564d2e69615e4f",
+    "stored_sha256": "385d95d888f7b842be4e4205d5dd5c4c3f91b0d179bf7c09da564d2e69615e4f"
+  }
+}

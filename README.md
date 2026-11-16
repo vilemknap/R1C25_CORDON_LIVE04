@@ -1,3 +1,7 @@
+# Navazující oprava zotavení (16. 11. 2026)
+
+[Přerušený assignment, ověření stavu a obnova poškozených pomocných hodnot](docs/utility_restore/RECOVERY_REVIEW_20261116_CZ.md). Skript operace 15 zůstává beze změny.
+
 # COM kontext Run scriptu (16. 11. 2026)
 
 [Oprava COM proxy, kontextu vloženého skriptu a návod](docs/utility_restore/COM_CONTEXT_FIX_20261116_CZ.md). Základ `fc38895` zachovává dodatečné opravy; skript operace 15 se touto změnou nemění.
@@ -35,7 +39,7 @@ s pamětí mezi cykly (LIVE04.1) a přenosem kalibrace 2022 → 2025 (TRANSFER20
 - LIVE04.9 (2026-11-04): 16 obousměrných profilů kordonových stanovišť – cíl = řádkový + sloupcový součet D3 OA ALL RPDI, model = všechna vozidla projíždějící stanovištěm; 152 kordonových řádků (`observations.station_profiles`, váha 1,0); sčítače se nepoužívají
 - LIVE04.10 (2026-11-05): 32 směrových profilů stanovišť (jeden na orientovanou hranu) – cíl = surové detekce OA kamer E41 po směrech × koeficient zóny OA_RPDI z D3 (`data/audited/STATION_PROFILE_EVIDENCE.json`, jen agregace); průjezdy uprostřed tras přes více stanovišť (SDP3/7/9) okraje matice FIRST_LAST neobsahují; hrana +/− podle georeferencovaných map reportu (`data/audited/STATION_PROFILE_SIGN_EDGES.json`); 168 kordonových řádků
 - LIVE04.10.1 (2026-11-05): READINESS bez zdvojeného zachycení cest (`readiness_baseline_capture = false`), kontrakt pozorování a tabulka směrů se kontrolují staticky (`OBSERVATION_CONTRACT`)
-- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1C25_LIVE05_8_UTILITY_COM_CONTEXT_FIX_20261116`)
+- Integrita: `python verify_release.py` (SOURCE_MANIFEST.json, release `R1C25_LIVE05_8_RECOVERY_REVIEW_20261116`)
 - Offline regrese: `LIVE04_TEST_RESULTS.txt` (LIVE04.10: 1042 passed, 20 skipped, 0 failed; syntetický mock, nejde o nativní důkaz z PTV Visum)
 
 Stav: `TECHNICAL_TRIAL`, `production_ready=false`, nativně ve Visumu zatím neověřeno.

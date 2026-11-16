@@ -323,7 +323,7 @@ class UtilityState:
         require(zones and len(set(zones)) == len(zones), 'TD_UTILITY_STATE_INVALID_ZONE_ORDER')
         return zones
 
-    def read(self):
+    def read(self, *, validate_values=True):
         if not self.enabled:
             return {}, None
         zones = self.axis(); n = len(zones); off = ~np.eye(n, dtype=bool)
@@ -331,12 +331,12 @@ class UtilityState:
         for no, component in self.specs:
             obj = self.matrix(no, component)
             a = np.array(self.call(obj.GetValues, 'VALUES_%d' % no), dtype=np.float64, copy=True)
-            require(a.shape == (n, n) and np.isfinite(a).all()
-                    and (no in self.time_specs or ((a >= 0).all() and (a[off] > 0).all())),
+            require(a.shape == (n, n) and (not validate_values or (np.isfinite(a).all()
+                    and (no in self.time_specs or ((a >= 0).all() and (a[off] > 0).all())))),
                     'TD_UTILITY_STATE_INVALID_VALUES:%d' % no)
             a.flags.writeable = False
             values[no] = a
-        for dseg in {spec[0] for spec in self.time_specs.values()}:
+        for dseg in ({spec[0] for spec in self.time_specs.values()} if validate_values else ()):
             pair = {code: values[no] for no, (ds, code) in self.time_specs.items() if ds == dseg}
             require(np.any((pair['TTC'] > 0) & (pair['TT0'] > 0) & off),
                     'TD_UTILITY_REQUIRES_COMPLETED_TIME_SKIMS:' + dseg)
@@ -432,7 +432,11 @@ class UtilityState:
 
     def restore(self):
         require(self.parent is not None, 'TD_UTILITY_PARENT_NOT_CAPTURED')
-        current, record = self.read()
+        # The failed native operation may have left zero time skims or invalid
+        # numeric utility values. Their identity and axes must still match,
+        # but they are not candidate inputs: replace them only by the exact,
+        # previously validated parent bytes and validate the final state fully.
+        current, record = self.read(validate_values=False)
         require(record['zones'] == self.parent_record['zones'], 'TD_UTILITY_PARENT_ZONE_ORDER_CHANGED')
         audit = getattr(self.adapter.visum, '_audit', None)
         require(audit is not None, 'TD_UTILITY_RESTORE_REQUIRES_WRITE_GUARD')
