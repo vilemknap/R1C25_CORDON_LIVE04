@@ -1,0 +1,38 @@
+FFFF.                                                                    [100%]
+=================================== FAILURES ===================================
+__________ test_actual_default_298_observations_have_unique_fit_keys ___________
+tests/test_live04_refit_row_identity.py:24: in test_actual_default_298_observations_have_unique_fit_keys
+    assert len({v17.pair_key(*p) for p in pairs})==len(pairs)
+E   assert 286 == 298
+E    +  where 286 = len({102, 103, 104, 105, 106, 107, ...})
+E    +  and   298 = len({(1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), ...})
+______ test_legacy_station_ids_stay_compatible_and_extra_ids_are_distinct ______
+tests/test_live04_refit_row_identity.py:30: in test_legacy_station_ids_stay_compatible_and_extra_ids_are_distinct
+    assert len({v17.pair_key(*p) for p in pairs})==len(pairs)
+E   assert 2560 == 3519
+E    +  where 2560 = len({0, 1, 2, 3, 4, 5, ...})
+E    +  and   3519 = len([(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), ...])
+__________ test_effect_prediction_keeps_asd_and_nds_on_their_own_rows __________
+tests/test_live04_refit_row_identity.py:72: in test_effect_prediction_keeps_asd_and_nds_on_their_own_rows
+    np.testing.assert_allclose(generation._delta(p,by),expected)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 2 (50%)
+E   Max absolute difference among violations: 12.5
+E   Max relative difference among violations: 1.66666667
+E    ACTUAL: array([-5., -5.])
+E    DESIRED: array([ 7.5, -5. ])
+____ test_refit_consumes_separate_measured_changes_for_colliding_legacy_ids ____
+tests/test_live04_refit_row_identity.py:77: in test_refit_consumes_separate_measured_changes_for_colliding_legacy_ids
+    result,audit=generation.refine(adapter,context,1.,preview,before,after,tmp_path)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cordon2025/live04_generation.py:307: in refine
+    raise ValueError('V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH')
+E   ValueError: V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH
+=========================== short test summary info ============================
+FAILED tests/test_live04_refit_row_identity.py::test_actual_default_298_observations_have_unique_fit_keys
+FAILED tests/test_live04_refit_row_identity.py::test_legacy_station_ids_stay_compatible_and_extra_ids_are_distinct
+FAILED tests/test_live04_refit_row_identity.py::test_effect_prediction_keeps_asd_and_nds_on_their_own_rows
+FAILED tests/test_live04_refit_row_identity.py::test_refit_consumes_separate_measured_changes_for_colliding_legacy_ids
+4 failed, 1 passed in 0.43s

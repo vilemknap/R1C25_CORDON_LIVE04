@@ -89,6 +89,7 @@ def effect_problems(adapter, diag, bounds, cfg):
         if m.bdgen.active():
             problem = m.bdgen.merge_pa(problem, m.bdgen.STATE['zones'])
         index = {int(r['countlocation_no']): i for i, r in enumerate(problem.profile_rows)}
+        require(len(index) == len(problem.profile_rows), 'GENFIX2_DUPLICATE_EFFECT_OBSERVATION_ID')
         order = [index.get(v17.pair_key(r['origin_station'], r['destination_station'])) for r in inc.rows]
         out[method] = {'G': np.asarray(problem.G, dtype=float), 'var_keys': [tuple(k) for k in problem.var_keys],
                        'order': order}
@@ -297,14 +298,17 @@ def refine(adapter, context, scale, preview, before, after, folder):
     require(before['observed_hash'] == after['observed_hash'], 'V24917_REFIT_OBSERVATION_AUTHORITY_CHANGED')
     method = adapter.evaluator.method
     inc = before['_incidence'][method]
-    index = {v17.pair_key(r['origin_station'], r['destination_station']): i for i, r in enumerate(inc.rows)}
+    index = v17.observation_index(inc.rows)
     mb = np.asarray(before['methods'][method]['model'], dtype=float)
     ma = np.asarray(after['methods'][method]['model'], dtype=float)
+    require(mb.shape == ma.shape == (len(inc.rows),) and np.isfinite(mb).all() and np.isfinite(ma).all(),
+            'V24917_REFIT_INVALID_MEASUREMENT')
     delta = []
     for row in problem.profile_rows:
         i = index[int(row['countlocation_no'])]
         if not np.isclose(mb[i], float(row['model']), rtol=1e-12, atol=1e-9):
-            raise ValueError('V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH')
+            raise ValueError('V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH:id=%s,model=%r,expected=%r'
+                             % (row['countlocation_no'], mb[i], row['model']))
         delta.append(float(ma[i] - mb[i]))
     x = implemented_vector(problem.var_keys, preview, scale, bd)
     refined, audit = m.zf.measured_refit_problem(problem, x, np.array(delta), min(0.5, 0.5 * float(scale)))
@@ -347,6 +351,9 @@ def refine(adapter, context, scale, preview, before, after, folder):
     out['_genfix2_effect_model'] = {'problems': problems, 'bd': new_bd, 'problem': refined}
     out['v24917_step_model'] = step_model(out, rows, new_bd)
     audit.update(status='ZONAL_DIRECTION_REFITTED', fit=m.zf.summary(refined, solution, rows),
+                 row_mapping={'method': method, 'observation_rows': len(inc.rows),
+                              'fit_rows': len(problem.profile_rows), 'unique_observation_ids': len(index),
+                              'key_schema': 'LEGACY_LT100_CANTOR_EXTENDED_V1'},
                  cordon_effect_operators=operators, mobilityzone1=zproj, mobility_guard=mobility,
                  rows=len(rows), boundary_steps=len((new_bd or {}).get('steps') or {}))
     out['v24917'] = dict(context['v24917'], measured_zonal_refit=audit)

@@ -132,6 +132,8 @@ def row_semantics(evaluator, diag):
         profiles.append({'countlocation_no': str(pair_key(pair[0], pair[1])), 'role': 'CALIBRATION',
                          'observed': float(observed), 'model': float(model), 'profile_weight': 1.0,
                          'row_index': i, 'origin_station': int(pair[0]), 'destination_station': int(pair[1])})
+    require(len({p['countlocation_no'] for p in profiles}) == len(profiles),
+            'LIVE04_SUPPLY_DUPLICATE_PROFILE_ID')
     return {'method': method, 'key_row': key_row, 'station_rows': station_rows,
             'profile_rows': ('DIRECTIONAL' if directional else profile_rows),
             'side_of': station_sides(evaluator.station_map) if directional else None,
