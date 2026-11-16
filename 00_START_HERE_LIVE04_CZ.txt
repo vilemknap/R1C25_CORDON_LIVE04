@@ -9,7 +9,10 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
   kordonovych radku, 24 skupin / 240 hran / 4 pokusy, overeny rollback.
 - GEH limity + severity (SEVRELAX3) na kordonovych radcich v kazde brane: chraneny <5 -> <40,
   skok +50, nad 60 +30, rozpocty severity20/30 a GEH>=40 podle bloku.
-- TD_CORDON: jako LIVE03 (b/c po rodinach, objective = jen kordon, IDP jen straz).
+- TD_CORDON: vlastni b/c pro 11 komponent WORK/SERVICE/SCHOOL; smesny cil 50 % kordon / 50 % IDP.
+  Obe slozky jsou normalizovane; pozadovane zlepseni F alespon 0,1 %, IDP a GEH pojistky aktivni.
+- GENERATION: EXACT_TWO_HITS se smi zhorsit nejvyse o 2 % proti rodici kroku
+  (acceptance.generation_secondary_max_relative_degradation). SupplyMix a TD maji sve dosavadni limity.
 - LONG post-TD maska >= 80 km (9697) pri kazdem nativnim prepoctu vcetne sond; baseline musi byt
   uz maskovana (kopie ulozena z behu v7), jinak stop pred prvnim zapisem.
 

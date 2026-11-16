@@ -28,6 +28,17 @@ class Live04Evaluator(Live03Evaluator):
 
     def block_gate(self, block, before, after, rows):
         decision = super().block_gate(block, before, after, rows)
+        acc = self.live02['acceptance']
+        if block == 'GENERATION' and 'generation_secondary_max_relative_degradation' in acc:
+            limit = float(acc['generation_secondary_max_relative_degradation'])
+            decision['secondary_max_relative_degradation'] = limit
+            degradation = decision.get('secondary_relative_degradation')
+            if degradation is not None:
+                reasons = [r for r in decision['reasons'] if r != 'SECONDARY_METHOD_DEGRADED']
+                if degradation > limit:
+                    reasons.append('SECONDARY_METHOD_DEGRADED')
+                decision['reasons'] = reasons
+                decision['accepted'] = not reasons
         policy = self.row_guard_policy
         if policy is None or not policy.get('enabled'):
             return decision

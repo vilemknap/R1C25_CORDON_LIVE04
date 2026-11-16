@@ -1,0 +1,39 @@
+{
+  "kind": "SYNTHETIC_NOT_NATIVE_PTV_VISUM",
+  "status": "ACCEPTED",
+  "native_probes": 22,
+  "objective_blend": {
+    "components": [
+      "WORK_E_C",
+      "WORK_E_noC",
+      "WORK_noE_C",
+      "WORK_noE_noC",
+      "WORK_stud",
+      "SERV_E_C",
+      "SERV_E_noC",
+      "SERV_noE_C",
+      "SERV_noE_noC",
+      "SERV_stud",
+      "SCHOOL"
+    ],
+    "cordon_ref": 92527.19118827439,
+    "cordon_weight": 0.5,
+    "form": "(1-w) Q/Q_ref + w sum_k(RMSE_k^2 + 0.25 mean_k^2)/J_ref",
+    "idp_ref": 0.027806250000000005,
+    "idp_weight": 0.5,
+    "role": "INNER_STEP_DIRECTION_ONLY_ACCEPTANCE_UNCHANGED",
+    "schema": "LIVE04_11_TD_BLEND_V1"
+  },
+  "acceptance": {
+    "blended_relative_improvement": 0.039635020086051354,
+    "blended_value": 0.9603649799139486,
+    "cordon_relative_degradation": -0.06825675605016494,
+    "idp_ratio": 0.9889867158780621,
+    "idp_weight": 0.5,
+    "max_cordon_degradation": 0.01,
+    "min_relative_improvement": 0.001,
+    "rule": "V7_TDBLEND1_OUTER",
+    "soft_reasons_replaced": []
+  },
+  "exact_parameter_freeze": "VERIFIED"
+}

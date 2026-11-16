@@ -149,6 +149,10 @@ def validate_config(cfg, *, allow_donor_overrides=False):
     require(cfg.get('schema') == SCHEMA and cfg.get('live_stage') == STAGE, 'LIVE04_CONFIG_SCHEMA')
     require(set(cfg) == set(read_json(ROOT / CONFIG_FILE)), 'LIVE04_UNKNOWN_OR_MISSING_CONFIG_FIELD')
     l2.validate_config(live02_view(cfg), allow_donor_overrides=allow_donor_overrides)
+    acc = cfg['acceptance']
+    if 'generation_secondary_max_relative_degradation' in acc:
+        l2._num(acc['generation_secondary_max_relative_degradation'],
+                'generation_secondary_max_relative_degradation', 0.0, 1.0)
     require(cfg['generation_mode'] == 'V24917_TARGETED_STEP1', 'LIVE04_REQUIRES_STEP1')
     require(set(cfg['write_policy']) == {'tg_zone_parameter_writes', 'td_parameter_writes', 'direct_od_matrix_writes',
                                          'load_version', 'overwrite_source_version', 'save_accepted_version_new_file',
