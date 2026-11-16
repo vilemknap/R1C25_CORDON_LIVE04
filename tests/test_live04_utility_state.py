@@ -488,3 +488,17 @@ def test_embedded_script_change_during_run_is_detected(setup):
     params.values['INTERNALSCRIPTCODE'] += '\n# edited\n'
     with pytest.raises(ContractError, match='SCRIPT_CHANGED_DURING_CALIBRATION'):
         state.validate_operation()
+
+
+def test_wrong_embedded_script_diagnostic_names_what_was_read(setup, tmp_path):
+    raw, a, u, parent, audit, inv = setup
+    a.folder = tmp_path / 'run'
+    _embed(raw, '# -*- coding: utf-8 -*-\n"""Some other script."""\nX = 1\n')
+    with pytest.raises(ContractError) as err:
+        UtilityState(a)
+    text = str(err.value)
+    assert 'REPLACE_OPERATION_SCRIPT' in text and '"operation_no": 15' in text and 'Some other script' in text
+    diag = json.loads((tmp_path / 'run/TD_UTILITY_OPERATION_SCRIPT_DIAG/OPERATION_SCRIPT_DIAG.json').read_text())
+    assert diag['reference'] == ['INTERNAL', 'ExecuteScriptParameters'] and diag['contains_protocol_text'] is False
+    assert (tmp_path / 'run/TD_UTILITY_OPERATION_SCRIPT_DIAG/OPERATION_SCRIPT_AS_READ.py.txt').read_text().endswith('X = 1\n')
+    assert not audit.events

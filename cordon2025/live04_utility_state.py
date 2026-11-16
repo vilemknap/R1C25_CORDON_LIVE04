@@ -209,6 +209,7 @@ class UtilityState:
             file_attr, filename = self._read_opt(params, ('FILENAME', 'FileName', 'SCRIPTFILE', 'ScriptFile'), 'SCRIPT_FILE')
             tried.append('%s:internal=%r,code=%s,file=%r' % (accessor, internal, code_attr if code is not None else None, filename))
             use_internal = internal is not None and str(internal).strip().lower() not in ('0', 'false', '0.0', '')
+            self.script_read_trace = list(tried)
             if use_internal and isinstance(code, str) and code.strip():
                 return ('INTERNAL', accessor), code.encode('utf-8')
             if not use_internal and isinstance(filename, str) and filename.strip():
@@ -221,9 +222,33 @@ class UtilityState:
         from .live01_visum import script_references
         source = self.call(lambda: self.adapter.visum.IO.CurrentVersionFile, 'MODEL_FILE')
         refs = script_references([row], source)
+        self.script_read_trace = tried + ['legacy:%d' % len(refs)]
         if len(refs) == 1:
             return ('FILE', refs[0]['attribute'], refs[0]['path']), Path(refs[0]['path']).read_bytes()
         raise ContractError('TD_UTILITY_UPDATE_SCRIPT_REFERENCE_UNREADABLE:' + ';'.join(tried))
+
+    def script_diagnostic(self, row, reference, data, markers, parse_error):
+        """Short text for the error + full copy of the code actually read (run folder)."""
+        text = data.decode('utf-8', 'replace')
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
+        info = {'operation_no': row.get('no'), 'operation_type': row.get('type'),
+                'operation_comment': str(row.get('comment', ''))[:120], 'reference': list(reference),
+                'read_trace': list(getattr(self, 'script_read_trace', [])), 'bytes': len(data),
+                'sha256': hashlib.sha256(data).hexdigest(), 'lines': len(text.splitlines()),
+                'first_lines': lines[:3], 'markers_found': markers, 'parse_error': parse_error,
+                'contains_protocol_text': INPUT_PROTOCOL in text,
+                'expected_marker': "R1_TD_INPUT_PROTOCOL = '%s'" % INPUT_PROTOCOL}
+        folder = getattr(self.adapter, 'folder', None)
+        if folder is not None:
+            try:
+                out = Path(folder) / 'TD_UTILITY_OPERATION_SCRIPT_DIAG'
+                mkdir(out)
+                (out / 'OPERATION_SCRIPT_AS_READ.py.txt').write_bytes(data)
+                write_json(out / 'OPERATION_SCRIPT_DIAG.json', info)
+                info['saved_to'] = str(out)
+            except Exception as exc:
+                info['save_error'] = repr(exc)[:120]
+        return json.dumps(info, ensure_ascii=False)
 
     def validate_script(self, row):
         reference, data = self.script_source(row)
@@ -231,10 +256,16 @@ class UtilityState:
                 'TD_UTILITY_UPDATE_SCRIPT_REFERENCE_CHANGED')
         self.update_script_reference = reference
         self.update_script_path = reference[-1] if reference[0] == 'FILE' else 'INTERNAL_SCRIPT_CODE'
-        tree = ast.parse(data)
-        markers = [n.value.value for n in tree.body if isinstance(n, ast.Assign) and isinstance(n.value, ast.Constant)
-                   and any(isinstance(t, ast.Name) and t.id == 'R1_TD_INPUT_PROTOCOL' for t in n.targets)]
-        require(markers == [INPUT_PROTOCOL], 'TD_UTILITY_REPLACE_OPERATION_SCRIPT_WITH_RUN_R1_TD_UTILITY_TRANSACTIONAL')
+        try:
+            tree = ast.parse(data)
+            markers = [n.value.value for n in tree.body if isinstance(n, ast.Assign) and isinstance(n.value, ast.Constant)
+                       and any(isinstance(t, ast.Name) and t.id == 'R1_TD_INPUT_PROTOCOL' for t in n.targets)]
+            parse_error = None
+        except SyntaxError as exc:
+            markers, parse_error = [], repr(exc)[:200]
+        if markers != [INPUT_PROTOCOL]:
+            raise ContractError('TD_UTILITY_REPLACE_OPERATION_SCRIPT_WITH_RUN_R1_TD_UTILITY_TRANSACTIONAL:'
+                                + self.script_diagnostic(row, reference, data, markers, parse_error))
         digest = hashlib.sha256(data).hexdigest()
         require(self.update_script_sha256 is None or digest == self.update_script_sha256,
                 'TD_UTILITY_SCRIPT_CHANGED_DURING_CALIBRATION')

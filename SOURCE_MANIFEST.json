@@ -1558,8 +1558,8 @@
     },
     {
       "path": "cordon2025/live04_utility_state.py",
-      "size": 23661,
-      "sha256": "80dfe3da08a6d638535c81aadc971a8cfe8b4b133b50626a5b39d7d6740c5ad5"
+      "size": 25487,
+      "sha256": "28d6cb62a47f71ef619d641690cff8079c843084abe289fae314efc03dd82c3f"
     },
     {
       "path": "cordon2025/live04_v7.py",
@@ -9338,8 +9338,8 @@
     },
     {
       "path": "tests/test_live04_utility_state.py",
-      "size": 23401,
-      "sha256": "b4867f6b87b9eda2f1f7951f6756dbf6997597ffe3eec5b1c698779e0254c1de"
+      "size": 24227,
+      "sha256": "83df1189c1d40365c676405672b9e3513ca9c79f5028be8f0508bbc156f6a007"
     },
     {
       "path": "tests/test_live05_extra.py",
