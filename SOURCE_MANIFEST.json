@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_MERGED_REFIT_DIAGNOSTICS_20261116",
+  "release": "R1C25_LIVE05_8_TD_5545_20261117",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
     },
     {
       "path": "00_START_HERE_LIVE04_CZ.txt",
-      "size": 12566,
-      "sha256": "a0083672bfdd0ba14e6263e7aa496956767f7257940f8b2e8af91c62458529ed"
+      "size": 12932,
+      "sha256": "70c25e8d8c03a5ffe934d37f7813c63cdb9f5d1e03fd40f544ab74783b166a60"
     },
     {
       "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -4762,6 +4762,11 @@
       "sha256": "0e5370cc5363e4e5a7810aac9326be9005107e8cd4f6bfac204cdc1f415a24a8"
     },
     {
+      "path": "docs/utility_restore/POLICY_5545_TD_20261117_CZ.md",
+      "size": 1655,
+      "sha256": "9016a9f49b93792145d9d91fe05f00bd1e17c38f4fc9b15137e6a55c26f9a033"
+    },
+    {
       "path": "docs/utility_restore/RECOVERY_REVIEW_20261116_CZ.md",
       "size": 5343,
       "sha256": "3ad2f7e0bb800535ed3238be0459dfaebda2ad62c17c33c125d38f7440eeb62c"
@@ -4995,6 +5000,36 @@
       "path": "docs/utility_restore/evidence/policy_5050_20261116/SYNTHETIC_TD_PROOF.json",
       "size": 1075,
       "sha256": "814ebadbe46011e6491966358fd524891e9608b09d90695d7864950396e1be93"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5545_20261117/CHECKS.json",
+      "size": 530,
+      "sha256": "6039d4149376ba6dba287480941b2f964265029fe0ebf246c8f0b09d8d112edd"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5545_20261117/CONFIG_DIFF.json",
+      "size": 722,
+      "sha256": "51e299789d76e6ec4c32e1c5ed0e1ae5b81b55bb665c28ceb66d0e9be58363c8"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5545_20261117/INTEGRITY_TESTS.log",
+      "size": 98,
+      "sha256": "eba750768810cdb50c7c923ac3d0cd6946d422ac71b754504f0645d1744edd6f"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5545_20261117/INTEGRITY_TESTS.xml",
+      "size": 1112,
+      "sha256": "3ad76a74a9c9f6b81d5f1dcba0a4843cf651c9d6a40504ff01b29ab2809ce818"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5545_20261117/TESTS.log",
+      "size": 111,
+      "sha256": "e4dfe153960445fd8d9e7e4a42f9645a6fa2d68896cdb8b66ee1098c105fad6b"
+    },
+    {
+      "path": "docs/utility_restore/evidence/policy_5545_20261117/TESTS.xml",
+      "size": 6996,
+      "sha256": "1262de7a6527c002ea0b773229ddabd2229dc6bde91688701be788d7b6c537c0"
     },
     {
       "path": "docs/utility_restore/evidence/recovery_review_20261116/BEFORE_REPRO.log",
@@ -9358,8 +9393,8 @@
     },
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
-      "size": 20844,
-      "sha256": "364210e44e01f70837f214c334835dbaaf60942b98be4464bf4a85a09e3d931c"
+      "size": 20854,
+      "sha256": "c2d57c37626ccfdbcba2e74ea50c7c3ebd5c660d6a902edf783687f2e14aca00"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -9663,8 +9698,8 @@
     },
     {
       "path": "tests/test_live04_11.py",
-      "size": 9250,
-      "sha256": "0996721dffc0db27ddd0281af27ffdc3853d4dd01652949654675cb276bb6744"
+      "size": 9252,
+      "sha256": "4f5fa34ee4deea1ef3d96c375dc62a467055c79fd97f19518469070af1e3d1a4"
     },
     {
       "path": "tests/test_live04_11_not_audit.py",
@@ -9718,8 +9753,8 @@
     },
     {
       "path": "tests/test_live04_acceptance_5050.py",
-      "size": 5205,
-      "sha256": "5b56dbcffdadc9e494b94b122104e1421097c6738b5e496edac821984c13c600"
+      "size": 6316,
+      "sha256": "9e40a8cb295ff38749b76d0a6e47502b9ab8a88f642cda02b7633ebbb67802b5"
     },
     {
       "path": "tests/test_live04_bootstrap_integrity.py",

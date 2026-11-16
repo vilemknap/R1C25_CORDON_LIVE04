@@ -1,5 +1,5 @@
 """LIVE04.11: component-level TD_CORDON (v7 TDJOINT1 granularity) with the v7 TDBLEND1
-inner objective (50 % cordon / 50 % FineCDF IDP, normalised at the block start).
+inner objective (55 % cordon / 45 % FineCDF IDP, normalised at the block start).
 Synthetic mock only - not native PTV Visum evidence."""
 import math
 from types import SimpleNamespace
@@ -61,7 +61,7 @@ def test_blend_is_normalised_and_its_residual_reproduces_the_objective():
 
 def test_release_config_is_component_level_with_v7_weights():
     td = load_config()['td_cordon']
-    assert td['grouping'] == 'COMPONENT' and td['idp_objective_weight'] == 0.5
+    assert td['grouping'] == 'COMPONENT' and td['idp_objective_weight'] == 0.45
     assert td['acceptance'] == 'BLENDED' and td['blended_max_cordon_degradation'] == 0.01
     assert sum(len(v) for v in td['groups'].values()) == 11
     assert read_json(ROOT / 'provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json')['td_cordon'] == td
@@ -100,7 +100,7 @@ def test_component_td_moves_components_of_one_family_differently(tmp_path, synth
     td = read_json(f / 'C01_TD_CORDON/TD_BLOCK_RESULT.json')
     names = [p['parameter'] for p in td['jacobian_probes']]
     assert len(names) == 22 and 'WORK_noE_C.dlog_c' in names and 'SCHOOL.db' in names
-    assert td['objective_blend']['idp_weight'] == 0.5 and len(td['objective_blend']['components']) == 11
+    assert td['objective_blend']['idp_weight'] == 0.45 and len(td['objective_blend']['components']) == 11
     first = dict(zip(td['idp_step_model']['parameters'], td['inner'][0]['step']))
     # same family, same cordon response in the mock; only WORK_E_C is held back by its IDP
     assert first['WORK_E_noC.dlog_c'] < first['WORK_E_C.dlog_c'] - 1e-3

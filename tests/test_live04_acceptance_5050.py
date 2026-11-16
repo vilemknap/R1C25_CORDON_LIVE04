@@ -1,4 +1,4 @@
-"""User policy: TG secondary ceiling only, equal normalized TD terms."""
+"""User policy: TG secondary ceiling and current 55/45 normalized TD terms."""
 from copy import deepcopy
 import pytest
 from cordon2025.common import ContractError, ROOT, read_json
@@ -70,14 +70,14 @@ def test_generation_secondary_override_is_validated(bad):
         load_config(overrides={'acceptance': {'generation_secondary_max_relative_degradation': bad}})
 
 
-def test_equal_td_terms_use_parent_normalization_in_search_and_acceptance():
+def test_55_45_td_terms_use_parent_normalization_in_search_and_acceptance():
     cfg = load_config(); td = cfg['td_cordon']
     parent = {'A': {'fine_cdf_rmse': 0.1, 'mean_relative_error': -0.4}}
     trial = {'A': {'fine_cdf_rmse': 0.08, 'mean_relative_error': -0.2}}
     guard = SimpleNamespace(guarded=['A'])
     blend = IdpBlend(guard, ['A'], parent, td['idp_objective_weight'], q_ref=100.)
     j0 = 0.1**2 + 0.25 * 0.4**2; j1 = 0.08**2 + 0.25 * 0.2**2
-    expected = 0.5 * 0.98 + 0.5 * j1 / j0
+    expected = 0.55 * 0.98 + 0.45 * j1 / j0
     assert blend.value(100., parent) == pytest.approx(1.)
     assert blend.value(98., trial) == pytest.approx(expected)
     decision = blended_gate({'reasons': [], 'secondary_relative_degradation': 0.},
@@ -85,9 +85,30 @@ def test_equal_td_terms_use_parent_normalization_in_search_and_acceptance():
     assert decision['accepted']
     assert decision['td_blended_acceptance']['blended_value'] == pytest.approx(expected)
     audit = blend.audit()
-    assert audit['cordon_weight'] == audit['idp_weight'] == 0.5
+    assert audit['cordon_weight'] == pytest.approx(0.55)
+    assert audit['idp_weight'] == 0.45
     defaults = read_json(ROOT / 'provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json')
     assert defaults == cfg
     runtime = adapter_config(cfg, 1, [1])
     assert runtime['live02']['acceptance']['generation_secondary_max_relative_degradation'] == 0.02
-    assert runtime['live03']['td_cordon']['idp_objective_weight'] == 0.5
+    assert runtime['live03']['td_cordon']['idp_objective_weight'] == 0.45
+
+
+@pytest.mark.parametrize('q_ratio,j_ratio,accepted_now,accepted_equal', [
+    (0.99, 1.009, True, False),
+    (1.009, 0.9885, False, True),
+])
+def test_restored_weights_change_tradeoff_in_both_search_and_acceptance(
+        q_ratio, j_ratio, accepted_now, accepted_equal):
+    cfg = load_config()['td_cordon']
+    parent = {'A': {'fine_cdf_rmse': 1., 'mean_relative_error': 0.}}
+    trial = {'A': {'fine_cdf_rmse': j_ratio ** 0.5, 'mean_relative_error': 0.}}
+    guard = SimpleNamespace(guarded=['A'])
+    for weight, accepted in [(cfg['idp_objective_weight'], accepted_now), (0.5, accepted_equal)]:
+        blend = IdpBlend(guard, ['A'], parent, weight, q_ref=100.)
+        value = blend.value(100. * q_ratio, trial)
+        decision = blended_gate({'reasons': [], 'secondary_relative_degradation': 0.},
+                                blend, 100., 100. * q_ratio, parent, trial, cfg)
+        assert decision['accepted'] is accepted
+        assert decision['td_blended_acceptance']['blended_value'] == pytest.approx(value)
+        assert (value <= 0.999) is accepted

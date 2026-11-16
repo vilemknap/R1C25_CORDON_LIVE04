@@ -1,0 +1,24 @@
+{
+  "status": "OFFLINE_PASS",
+  "test_suites": {
+    "TESTS": {
+      "tests": 49,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    },
+    "INTEGRITY_TESTS": {
+      "tests": 7,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0
+    }
+  },
+  "tests_passed": 56,
+  "td_cordon_weight": 0.55,
+  "td_idp_weight": 0.45,
+  "native_visum_tested": false,
+  "configuration_diff": "ONLY_TD_WEIGHT_AND_NOTE_CHANGED",
+  "protected_sources_status": "PROTECTED_SOURCE_IDENTITY_PASS",
+  "protected_sources_checked": 1606
+}

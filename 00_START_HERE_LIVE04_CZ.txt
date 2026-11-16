@@ -116,6 +116,12 @@ com_page_size = 1024. Mereni: RUN_R1_2025_CAPTURE_BENCHMARK.py (jen cte, ~1 min)
 KROK TD S OHLEDEM NA DELKY CEST (LIVE04.10.5): td_cordon.idp_constrained_step = true - krok TD se pocita
 rovnou s omezenim kontroly IDP (model z tychz sond, 70 % rezervy); nativni kontrola IDP dal rozhoduje.
 
+VAHY TD (rozhodnuti 2026-11-17): opet 55 % kordon / 45 % IDP, v hledani i prijeti kroku.
+CORDON_LIVE04_CONFIG.json -> td_cordon.idp_objective_weight = 0.45.
+F = 0.55 * Q_po/Q_rodic + 0.45 * J_IDP_po/J_IDP_rodic; prijeti F <= 0.999.
+Ostatni limity zustavaji, vcetne 2 % EXACT_TWO_HITS pro GENERATION.
+Podrobnosti: docs/utility_restore/POLICY_5545_TD_20261117_CZ.md.
+
 POKUSY BEZ POTVRZOVACIHO ZACHYCENI (LIVE04.10.3): pokusy se dokazuji intenzitami na vsech hranach jako plne
 zachyceni, potvrzeni pred prijetim odpada; zaverecne cteni zachyceni pres intenzity misto 12 seznamu cest.
 
