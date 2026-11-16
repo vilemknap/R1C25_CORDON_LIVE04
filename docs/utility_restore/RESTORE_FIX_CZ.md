@@ -1,5 +1,8 @@
 # Oprava návratu po nativní sondě TG/TD
 
+Aktualizace 16. 11.: navazující [oprava COM kontextu a předávání vstupů](COM_CONTEXT_FIX_20261116_CZ.md)
+vychází z `fc38895` a zachovává dodatečné opravy vloženého skriptu.
+
 Základ: `live05-8-integrated`, commit `8f0f4d509bbe9315edac2dd926d1018bd3098094`.
 Nová větev: `codex/cordon-utility-restore-fix-20261115`.
 
@@ -103,7 +106,9 @@ matematika zůstávají ve skriptu, nejsou duplikované v řídicím kódu.
 Preflight ověřuje referenci souboru v operaci 15, verzi protokolu a hash jeho
 zdroje. Starý soubor je odmítnut před změnou koeficientů. Hash skriptu je také
 v identitě stavu; úprava jeho kódu během běhu je chyba. Krátkodobý kontext
-se vždy odstraní; nesmí přejít do dalšího modelu ani vlákna. Nativní updater
+se vždy odstraní a je vázaný na jedno synchronní nativní volání. Vložený skript
+smí použít vlastní Python kontext či vlákno; předávají se pouze čistá data bez
+COM proxy vnějšího volání. Nativní updater
 musí potvrdit přesně jeden průchod s přijatými vstupy, jinak se krok nepřijme.
 Obnova rodiče updater vynechá a žádné takové potvrzení nevyžaduje.
 

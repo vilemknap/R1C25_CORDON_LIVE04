@@ -541,3 +541,149 @@ def test_injected_wrapper_of_same_model_is_accepted(setup, tmp_path):
     with u.input_scope({'selected_operation_positions': []}):
         out = transaction_inputs(wrapper, raw.zones, bindings)
     assert out is not None and out[2]['parent_state_hash'] == u.parent_state_hash
+
+
+@pytest.mark.parametrize('native_thread',[False,True])
+def test_native_callback_with_another_com_proxy_never_compares_interfaces(setup, tmp_path,native_thread):
+    raw, a, u, parent, audit, inv = setup
+    comparisons=[]
+    class ApartmentInterface:
+        def __eq__(self, other):
+            comparisons.append(other)
+            raise RuntimeError('SIMULATED_RPC_E_WRONG_THREAD')
+    class NativeCallbackProxy:
+        _oleobj_=ApartmentInterface()
+        def __getattr__(self, name):
+            return getattr(raw, name)
+    raw._oleobj_=ApartmentInterface()
+    callback=NativeCallbackProxy()
+    raw.coefficient=1.1
+    plan=u.prepare({'selected_operation_positions':[15,17]}, tmp_path/'trial', raw.native_snapshot())
+    def execute_callback():
+        return raw.script['run'](callback,tmp_path/'native_callback')
+    with u.input_scope(plan):
+        if native_thread:
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=1) as worker:
+                result=worker.submit(execute_callback).result(timeout=10)
+        else:
+            result=execute_callback()
+    raw.td()
+    assert result['status']=='UPDATED_READY_FOR_FOLLOWING_TD'
+    assert result['source']=='CALIBRATION_ACCEPTED_PARENT_INPUT_EPOCH'
+    assert not comparisons
+    raw.coefficient=1.
+    restored=u.prepare({'selected_operation_positions':[15,17]},tmp_path/'restore',raw.native_snapshot())
+    with u.input_scope(restored):
+        raw.execute(restored)
+    assert u.augment_snapshot(raw.native_snapshot())==parent
+    assert not raw.resets and raw.saved_paths
+
+
+def test_callback_payload_has_no_owner_or_com_proxy_and_is_read_only(setup):
+    from cordon2025.live04_utility_state import _ACTIVE_SCOPE,transaction_inputs
+    raw,a,u,parent,audit,inv=setup
+    with u.input_scope({'selected_operation_positions':[]}):
+        payload=_ACTIVE_SCOPE['scope']
+        assert 'owner' not in payload and 'adapter' not in payload and 'visum' not in payload
+        times,weights,evidence=transaction_inputs(raw,raw.zones,payload['bindings'])
+        with pytest.raises(TypeError):weights['NATIVE_CW']=np.ones((2,2))
+        with pytest.raises(ValueError):weights['NATIVE_CW'][0,1]=999.
+        with pytest.raises(TypeError):times['NATIVE_CW']=None
+        evidence['bindings'].clear()
+        assert _ACTIVE_SCOPE['scope']['bindings']
+
+
+def test_version_may_change_between_native_calls_but_not_inside_one(setup, tmp_path):
+    from cordon2025.live04_utility_state import _ACTIVE_SCOPE,transaction_inputs
+    raw,a,u,parent,audit,inv=setup
+    with pytest.raises(ContractError,match='MODEL_CHANGED'):
+        with u.input_scope({'selected_operation_positions':[]}):
+            raw.IO.CurrentVersionFile=str(tmp_path/'checkpoint.ver')
+            transaction_inputs(raw,raw.zones,_ACTIVE_SCOPE['scope']['bindings'])
+    with u.input_scope({'selected_operation_positions':[]}):
+        assert transaction_inputs(raw,raw.zones,_ACTIVE_SCOPE['scope']['bindings']) is not None
+
+
+@pytest.mark.parametrize('damage,reason',[('zones','ZONE_ORDER_CHANGED'),('bindings','BINDINGS_CHANGED')])
+def test_callback_still_rejects_different_axes_or_skim_references(setup,damage,reason):
+    from cordon2025.live04_utility_state import _ACTIVE_SCOPE,transaction_inputs
+    raw,a,u,parent,audit,inv=setup
+    with pytest.raises(ContractError,match=reason):
+        with u.input_scope({'selected_operation_positions':[]}):
+            zones=list(reversed(raw.zones)) if damage=='zones' else raw.zones
+            bindings={} if damage=='bindings' else _ACTIVE_SCOPE['scope']['bindings']
+            transaction_inputs(raw,zones,bindings)
+
+
+def test_windows_model_version_comparison_is_plain_normalized_data():
+    from cordon2025.live04_utility_state import model_version_key
+    assert model_version_key('C:\\Models\\2025\\LIVE04.ver')==model_version_key('c:/models/2025/./live04.VER')
+    with pytest.raises(ContractError,match='MODEL_VERSION_INVALID'):model_version_key('relative.ver')
+
+
+def test_global_scope_is_not_overwritten_by_nested_or_concurrent_native_calls(setup):
+    from concurrent.futures import ThreadPoolExecutor
+    from cordon2025.live04_utility_state import _ACTIVE_SCOPE,transaction_inputs
+    raw,a,u,parent,audit,inv=setup
+    def nested():
+        with u.input_scope({'selected_operation_positions':[]}):
+            raise AssertionError('NESTED_SCOPE_MUST_NOT_ENTER')
+    with u.input_scope({'selected_operation_positions':[]}):
+        original=_ACTIVE_SCOPE['scope']
+        with pytest.raises(ContractError,match='NESTED_INPUT_SCOPE'):nested()
+        with ThreadPoolExecutor(max_workers=1) as worker:
+            with pytest.raises(ContractError,match='NESTED_INPUT_SCOPE'):worker.submit(nested).result(timeout=10)
+        assert _ACTIVE_SCOPE['scope'] is original
+        assert transaction_inputs(raw,raw.zones,original['bindings']) is not None
+    assert _ACTIVE_SCOPE['scope'] is None
+
+
+def test_late_callback_cannot_receive_inputs_after_native_scope_closed(setup):
+    from concurrent.futures import ThreadPoolExecutor
+    import threading
+    from cordon2025.live04_utility_state import _ACTIVE_SCOPE,transaction_inputs
+    raw,a,u,parent,audit,inv=setup
+    entered=threading.Event();release=threading.Event()
+    class CallbackIO:
+        @property
+        def CurrentVersionFile(self):
+            entered.set()
+            assert release.wait(10)
+            return raw.IO.CurrentVersionFile
+    callback=SimpleNamespace(IO=CallbackIO())
+    with ThreadPoolExecutor(max_workers=1) as worker:
+        try:
+            with u.input_scope({'selected_operation_positions':[]}):
+                bindings=_ACTIVE_SCOPE['scope']['bindings']
+                future=worker.submit(transaction_inputs,callback,raw.zones,bindings)
+                assert entered.wait(10)
+            release.set()
+            with pytest.raises(ContractError,match='INPUT_SCOPE_CLOSED'):future.result(timeout=10)
+        finally:
+            release.set()
+    assert _ACTIVE_SCOPE['scope'] is None
+
+
+@pytest.mark.parametrize('internal',[0,1])
+def test_declared_empty_native_script_never_falls_back_to_another_legacy_file(setup,internal):
+    raw,a,u,parent,audit,inv=setup
+    params=_embed(raw,code='',filename='',internal=internal)
+    raw.ops[14].values['SCRIPTFILE']=str(REPLACEMENT)
+    with pytest.raises(ContractError,match='SCRIPT_REFERENCE_UNREADABLE'):
+        UtilityState(a)
+    assert not audit.events
+
+
+def test_unprintable_dseg_error_preserves_original_exception(setup):
+    raw,a,u,parent,audit,inv=setup
+    class Unprintable(RuntimeError):
+        def __str__(self):raise ValueError('BAD_EXCEPTION_STRING')
+    original=Unprintable('OD_READ_FAILED')
+    class BrokenSegment(Attr):
+        @property
+        def ODMatrix(self):raise original
+    raw.Net.DemandSegments.items.append(BrokenSegment(CODE='OTHER'))
+    with pytest.raises(Unprintable) as failure:
+        UtilityState(a)
+    assert failure.value is original and not audit.events

@@ -34,6 +34,17 @@ def _explain_integrity(root,failures):
     return out
 
 
+def failure_hint(reason):
+    if reason.startswith('NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND:'):
+        return ('Saved assignment paths are missing for positive OD demand. '
+                'Calibration stopped in read-only preflight. See '
+                '00_BASELINE/PATH_AVAILABILITY_PREFLIGHT.json for all missing segments. '
+                'Run RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py on the isolated 2025 copy; '
+                'require READY_FOR_LIVE04 and then launch calibration from the newly saved LIVE04_BASE version. '
+                'Do not run an assignment reset between preparation and calibration.')
+    return 'See 00_RESULT.json in the LIVE04 run folder for the model state.'
+
+
 def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,config_overrides=None,continuation=False):
     root=Path(root or Path(__file__).resolve().parent).resolve()
     boot=None;silent_report=None
@@ -69,7 +80,7 @@ def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,
         result={'status':'LIVE04_STARTUP_OR_RUN_STOPPED','reason':message,
                 'source_version_overwritten':False,'direct_od_matrix_writes':False,
                 'load_version_called':False,'production_ready':False,
-                'hint':'See 00_RESULT.json in the LIVE04 run folder for the model state.'}
+                'hint':failure_hint(message)}
         if boot:
             try:(boot/'99_TRACEBACK.txt').write_text(traceback.format_exc(),encoding='utf-8')
             except Exception:pass

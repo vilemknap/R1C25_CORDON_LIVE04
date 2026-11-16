@@ -1,0 +1,203 @@
+{
+  "base_commit": "fc388950f412593261ca9b8adb962a661101d3bc",
+  "user_confirmed_base": true,
+  "zip_exceeds_32_mib_transfer_limit": true,
+  "inputs": [
+    {
+      "batch": 1,
+      "name": "99_TRACEBACK.txt",
+      "file_id": "file_00000000654c81f488b4b51f4f1747cd",
+      "size_bytes": 4135,
+      "sha256": "e4e0ba2eb1a4314cf522c970cdef98e95be4ff1509b7a4b9bab87c55d57ce0c5"
+    },
+    {
+      "batch": 1,
+      "name": "COM_READ_RETRY.json",
+      "file_id": "file_00000000d2fc81f49284e8522ff0a3c7",
+      "size_bytes": 637,
+      "sha256": "1233fe0c72c31ab5ee2f7f2ba436ecfef81375294a4b71922cb184c92e93cbbb"
+    },
+    {
+      "batch": 1,
+      "name": "BASELINE_OBJECTIVE.json",
+      "file_id": "file_00000000247c81f494cbf37f1f208071",
+      "size_bytes": 1275,
+      "sha256": "2722a0b35dea09da1289b6905c97c783dc84fcf7915070e2cced0c4c2f343192"
+    },
+    {
+      "batch": 1,
+      "name": "COMBUSY_HOTFIX_ACTIVATION.json",
+      "file_id": "file_00000000185c81f48824baea27038a80",
+      "size_bytes": 398,
+      "sha256": "df88d861a04834031932545aea01fbb372d3437d22d6ee952caaafedcd7c90b0"
+    },
+    {
+      "batch": 1,
+      "name": "COMMAND_STATUS.json",
+      "file_id": "file_00000000c6108243a223aec371e34180",
+      "size_bytes": 750,
+      "sha256": "a5ef6da9c6a2700a5f627671f5e6f8481e348736e429819833f2f9c55ceacc28"
+    },
+    {
+      "batch": 1,
+      "name": "DONOR_TRANSACTION_IDENTITY.json",
+      "file_id": "file_00000000ded08210b45648b899923023",
+      "size_bytes": 2132,
+      "sha256": "604e638e5269928cf1270a0956ef756ef6dc8e03b3c120a960c71bf1b1932c66"
+    },
+    {
+      "batch": 1,
+      "name": "EFFECTIVE_CONFIG.json",
+      "file_id": "file_00000000c0b081f4b2be08a4fb1c9ccb",
+      "size_bytes": 23400,
+      "sha256": "b7135741917ae1af303b19a0a068ba77f185a0054ef11f1565121d0f9db12fdd"
+    },
+    {
+      "batch": 1,
+      "name": "EXTRA_OBSERVATION_LINKS.json",
+      "file_id": "file_00000000fb60821086e5373bf74942b6",
+      "size_bytes": 324,
+      "sha256": "d8a7d5fc7f1237e995ea96f47fc6e7364f46f030859cd3094d5705f8d12761bd"
+    },
+    {
+      "batch": 1,
+      "name": "FAILURE_STATE_READBACK.json",
+      "file_id": "file_00000000a72c81f4bc165612414d3740",
+      "size_bytes": 236,
+      "sha256": "99a5b0d5569352c7e9c07a3b18cc4d007f51ba19ed6c27e52dcd34b96a18b9cc"
+    },
+    {
+      "batch": 1,
+      "name": "ISOLATED_COPY_GUARD.json",
+      "file_id": "file_00000000678081f483697672699b4088",
+      "size_bytes": 175,
+      "sha256": "74e3ea435d88912b4b0d961111f51f7e47da4665bd1e0691725617bea561b804"
+    },
+    {
+      "batch": 1,
+      "name": "LIVE04_SOURCE_PROOF.json",
+      "file_id": "file_0000000023ec8210be8614473934d9f7",
+      "size_bytes": 32692,
+      "sha256": "6bd07bdbc95b0f3196665ec26110b3f6be898d09b0871594d973ed5645a92f49"
+    },
+    {
+      "batch": 1,
+      "name": "LONG_SUPPORT_BASELINE.json",
+      "file_id": "file_00000000ed2081f4bc2d7843030b24eb",
+      "size_bytes": 3796,
+      "sha256": "d4de30e9f2416c12fa3dce310efb887d28c95733510c536e9a247628a490ef01"
+    },
+    {
+      "batch": 1,
+      "name": "NODE_VDF_BASELINE.json",
+      "file_id": "file_000000001b7881f4a5ed0516ea0dd11a",
+      "size_bytes": 1217,
+      "sha256": "b6c2e95631deba66c3f741307c80212d68992453aafd4798ca2ecc2e21abf702"
+    },
+    {
+      "batch": 1,
+      "name": "OPMAP1_ROLES.json",
+      "file_id": "file_00000000313881f49550eed85531eb7d",
+      "size_bytes": 1321,
+      "sha256": "cd35876b47be205bb373c5c32ab58234ff9b8770f9ded911dac9db3b6e4e1f36"
+    },
+    {
+      "batch": 1,
+      "name": "PATH_PREFLIGHT.json",
+      "file_id": "file_00000000505081f49fa012e5f9fb6965",
+      "size_bytes": 302,
+      "sha256": "5ae9aaee5ae0db8f11c31efc1be7a2da993c28997590c89e1d825b4080b692ae"
+    },
+    {
+      "batch": 1,
+      "name": "OBSERVATION_CONTRACT.json",
+      "file_id": "file_00000000043481f4a20e1be40faf5ddf",
+      "size_bytes": 11422,
+      "sha256": "70cc0371a97385c3bcfba08138fbd272a58b7f44cc8885f2fc4e4730717e0ad7"
+    },
+    {
+      "batch": 1,
+      "name": "RUN_ANCHORS.json",
+      "file_id": "file_00000000196882109a51bb5747cfb21b",
+      "size_bytes": 868690,
+      "sha256": "a485f638afb1f9ae7c9fe2f43a3a4ef35a2d9d3fd98cad8a47f3c25ea8becc92"
+    },
+    {
+      "batch": 1,
+      "name": "RUN_CHECKPOINT.json",
+      "file_id": "file_00000000a8a0821090dc76bd018c3f23",
+      "size_bytes": 10703,
+      "sha256": "b43b6d5a87e640d766fc438ca5d487cc9e3a174218224e9af353db7218dd42f2"
+    },
+    {
+      "batch": 1,
+      "name": "TRACEBACK.txt",
+      "file_id": "file_00000000a0608246b580d21fce444395",
+      "size_bytes": 4135,
+      "sha256": "e4e0ba2eb1a4314cf522c970cdef98e95be4ff1509b7a4b9bab87c55d57ce0c5"
+    },
+    {
+      "batch": 1,
+      "name": "V7_RUNTIME_STATUS.json",
+      "file_id": "file_00000000db8c81f49891b89be84f6dc8",
+      "size_bytes": 12737,
+      "sha256": "eab783b453d7fa3d50515814c395a770538b8f29558829a836ef78a17b32b0fe"
+    },
+    {
+      "batch": 2,
+      "name": "TRACEBACK.txt",
+      "file_id": "file_000000001ed48210b97fc91e14a74f50",
+      "size_bytes": 3068,
+      "sha256": "22c30eef952a3901ec4f66243d8975afa0d9233012613592fe00d07b346e7656"
+    },
+    {
+      "batch": 2,
+      "name": "V7_RUNTIME_STATUS.json",
+      "file_id": "file_0000000051f081f4b14338881c64b0db",
+      "size_bytes": 12737,
+      "sha256": "eab783b453d7fa3d50515814c395a770538b8f29558829a836ef78a17b32b0fe"
+    },
+    {
+      "batch": 2,
+      "name": "WRITE_AUDIT.jsonl",
+      "file_id": "file_00000000a2cc81f4a47c9578b89c50e9",
+      "size_bytes": 28966,
+      "sha256": "8d4d75a61dba0d15f2c34014e671f0679b99038f1247ed94d58f54441ef3a95f"
+    },
+    {
+      "batch": 2,
+      "name": "00_PROGRESS.json",
+      "file_id": "file_0000000025e081f487f12741c79ddae0",
+      "size_bytes": 450,
+      "sha256": "7bf178d1e3aa187d6a4292f2e0f70786e92521c91417ef35146289190edf2daa"
+    },
+    {
+      "batch": 2,
+      "name": "00_GENERATION_COEFFICIENT_REFERENCE.json",
+      "file_id": "file_00000000de1881f4aa0c3b35a429e809",
+      "size_bytes": 471997,
+      "sha256": "5e3e33d0074a349ce733693633a5aec5cea9b3f234815f53764f799a3c1c8b59"
+    },
+    {
+      "batch": 2,
+      "name": "00_RESULT.json",
+      "file_id": "file_00000000e15081f49a5ce20f3ab8a7e7",
+      "size_bytes": 1435,
+      "sha256": "1e33e172962df5f8101ed66cf83a133be8ea0951ed420c626bcce3c71f481e7d"
+    },
+    {
+      "batch": 2,
+      "name": "99_TRACEBACK.txt",
+      "file_id": "file_00000000ec6881f487be2bf442a4f2b7",
+      "size_bytes": 3068,
+      "sha256": "22c30eef952a3901ec4f66243d8975afa0d9233012613592fe00d07b346e7656"
+    },
+    {
+      "batch": 2,
+      "name": "Vložený text.txt",
+      "file_id": "file_00000000cf2081f4a54fc5870a3f6550",
+      "size_bytes": 17612,
+      "sha256": "6d08d9cc8b7169d6bd9e8bab505e14a8419088567523bc5754c2aca5feb0f134"
+    }
+  ]
+}

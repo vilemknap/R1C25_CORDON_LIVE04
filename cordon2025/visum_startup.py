@@ -200,7 +200,20 @@ def preflight(visum,cfg,folder,control,opt):
         'directed_keys':len(station_map),'missing_directed_keys':missing,'network_sha256':network_hash})
     require(not missing,'STATION_LINK_MAPPING_DOES_NOT_MATCH_CURRENT_NETWORK')
     dsegs=_segments(visum,cfg,control,opt)
-    matrix_audit={};sample_audit=[]
+    matrix_audit={};sample_audit=[];missing_paths=[]
+    path_report_path=folder/'PATH_AVAILABILITY_PREFLIGHT.json'
+    def path_report(status):
+        return {'schema':'R1C25_PATH_AVAILABILITY_PREFLIGHT_V1','status':status,
+            'source_version':str(source),'checked_dsegs':list(matrix_audit),
+            'missing_path_dsegs':sorted({r['dseg'] for r in missing_paths}),
+            'missing_lists':missing_paths,'probes':sample_audit,
+            'sample_scope':'FIRST_8_ROWS_PER_DSEG_AND_LIST_NOT_FULL_OD_PARITY',
+            'assignment_executed':False,'model_parameters_changed':False,
+            'recovery_script':'RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py',
+            'next_steps':['Recompute the isolated 2025 copy with the native assignment and saved paths for all 12 OA segments.',
+                          'Compute TTC/TT0 after assignment; do not run an assignment reset afterwards.',
+                          'Require readiness READY_FOR_LIVE04 on the newly saved LIVE04_BASE version before starting calibration.']}
+    write_json(path_report_path,path_report('CHECKING'))
     two=parent_module('r1_15a2_two_mode_v238')
     for ds in dsegs:
         arr,info=_matrix(ds,len(zone_nos),control,opt);matrix_audit[ds['norm_code']]=info
@@ -211,15 +224,24 @@ def preflight(visum,cfg,folder,control,opt):
                 retry_policy=com_busy.NO_RETRY,label='PREFLIGHT_'+kind),control,opt,'PREFLIGHT_'+kind)
             raw=[] if raw is None else raw
             require(len(raw)<=8 and all(len(row)==len(cols) for row in raw),'PREFLIGHT_LIST_SCHEMA_MISMATCH')
-            require(raw or info['matrix_interzonal']<=1e-9,'NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND:'+ds['code'])
             sample_audit.append({'dseg':ds['code'],'list':kind,'sample_rows':len(raw),'bounded_signature_verified':True})
+            if not raw and info['matrix_interzonal']>1e-9:
+                missing_paths.append({'dseg':ds['code'],'list':kind,'matrix_no':info['matrix_no'],
+                                      'matrix_interzonal':info['matrix_interzonal']})
+        # Keep failure evidence, including every missing DSeg, without running
+        # an assignment or weakening the mandatory saved-path prerequisite.
+        write_json(path_report_path,path_report('CHECKING'))
         del arr
+    write_json(path_report_path,path_report('MISSING_SAVED_PATHS' if missing_paths else 'PATH_SAMPLE_CHECK_PASS'))
+    if missing_paths:
+        require(False,'NO_SAVED_PRT_PATHS_FOR_POSITIVE_DEMAND:'+missing_paths[0]['dseg'])
     report={'status':'VISUM_READONLY_PREFLIGHT_PASS','source_version':str(source),
         'source_year_hint_2025':bool(re.search(r'(?<![0-9])2025(?![0-9])',str(source))),
         'model_year':2025,'model_year_authority':'USER_REQUESTED_NOT_INFERRED_FROM_VISUM_APPLICATION_VERSION',
         'network_sha256':network_hash,'network_fingerprint_scope':'ZONE_ORDER_DIRECTED_LINK_KEYS_TSYS_NOT_COMPLETE_SUPPLY_STATE',
         'zone_count':len(zone_nos),'link_count':len(links),'matrix_audit':matrix_audit,
-        'path_list_probes':sample_audit,'dsegs':[{'code':d['code'],'norm_code':d['norm_code'],'mode':d['mode']} for d in dsegs],
+        'path_list_probes':sample_audit,'path_availability_report':path_report_path.name,
+        'dsegs':[{'code':d['code'],'norm_code':d['norm_code'],'mode':d['mode']} for d in dsegs],
         'calibration_ready':False,'apply_permitted':False,'assignment_executed':False,
         'remaining_gates':['OBSERVATION_SEMANTICS_UNAPPROVED','YEAR_BRIDGE_UNAPPROVED','C17_POLICY_UNAPPROVED',
             'LIVE_TG_TD_CANDIDATE_ADAPTER_NOT_IMPLEMENTED','NATIVE_WINDOWS_VISUM_ACCEPTANCE_NOT_YET_RECORDED']}
