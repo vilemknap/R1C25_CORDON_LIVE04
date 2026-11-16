@@ -127,7 +127,7 @@ def save_accepted_version(visum, folder, state):
 
 
 def _repair(adapter, ctl, bdir, state, diag):
-    """Restore the assignment after a stop that interrupted a demand-only probe (stops deferred)."""
+    """Restore an interrupted native assignment, deferring STOP until its proof completes."""
     safety = parent_module('r1_15a2_safety_v245')
     try:
         ctl.recovery_depth += 1
@@ -330,6 +330,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             if getattr(adapter, 'assignment_invalidated', False) and \
                                     (progress['failure_readback'] or {}).get('matches_last_accepted_or_baseline'):
                                 progress['assignment_repair'] = _repair(adapter, ctl, bdir, current_state, current_diag)
+                                with ctl.recovery('LIVE04_READBACK_AFTER_ASSIGNMENT_REPAIR'):
+                                    progress['failure_readback'] = failure_readback(adapter, progress)
                             raise
                         finally:
                             write_timing(bdir, True)
@@ -478,6 +480,15 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
             text = exception_text(exc)
             readback = progress.get('failure_readback')
             verified = (readback or {}).get('matches_last_accepted_or_baseline')
+            repair_stop = progress.get('assignment_repair')
+            assignment_ok = not getattr(adapter, 'assignment_invalidated', False) and \
+                (repair_stop is None or repair_stop.get('status') == 'REPAIRED_VERIFIED')
+            if not assignment_ok:
+                verified = False
+            if readback is not None:
+                readback = dict(readback,
+                    snapshot_matches_last_accepted_or_baseline=readback.get('matches_last_accepted_or_baseline'),
+                    assignment_verified=assignment_ok, matches_last_accepted_or_baseline=verified)
             try:
                 write_json(folder / 'FAILURE_STATE_READBACK.json', readback or {'status': 'NOT_READ'})
             except Exception:
@@ -489,9 +500,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
             else:
                 kind = 'LIVE04_STOPPED_MODEL_STATE_NOT_VERIFIED_REOPEN_SOURCE_OR_SAVED_VERSION'
             saved_at_stop = None
-            repair_stop = progress.get('assignment_repair')
             # parameters may be fine, but without a valid assignment a saved .ver would have no paths
-            assignment_ok = repair_stop is None or repair_stop.get('status') == 'REPAIRED_VERIFIED'
             # LIVE04.5.2: keep the accepted progress of a stopped run (STOP_REQUESTED, a block
             # error, ...) - but only when the open model was read back AT the last accepted state.
             if verified is True and assignment_ok and progress['accepted_states'] and progress.get('bound_state') \

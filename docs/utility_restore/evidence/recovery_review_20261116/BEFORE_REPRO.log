@@ -1,0 +1,46 @@
+FFFF.                                                                    [100%]
+=================================== FAILURES ===================================
+_ test_interrupted_full_assignment_is_dirty_even_when_matrix_snapshot_matches __
+tests/test_live04_recovery_review.py:35: in test_interrupted_full_assignment_is_dirty_even_when_matrix_snapshot_matches
+    assert adapter.assignment_invalidated is True
+E   assert False is True
+E    +  where False = <cordon2025.live04_adapter.CordonLive04Adapter object at 0x7f1f8c055f10>.assignment_invalidated
+_ test_exact_parent_restore_can_replace_invalid_current_numeric_values[zero_skims] _
+tests/test_live04_recovery_review.py:45: in test_exact_parent_restore_can_replace_invalid_current_numeric_values
+    u.restore()
+cordon2025/live04_utility_state.py:435: in restore
+    current, record = self.read()
+                      ^^^^^^^^^^^
+cordon2025/live04_utility_state.py:341: in read
+    require(np.any((pair['TTC'] > 0) & (pair['TT0'] > 0) & off),
+cordon2025/common.py:40: in require
+    raise ContractError(message)
+E   cordon2025.common.ContractError: TD_UTILITY_REQUIRES_COMPLETED_TIME_SKIMS:NATIVE_CW_NOT
+_ test_exact_parent_restore_can_replace_invalid_current_numeric_values[nan_utility] _
+tests/test_live04_recovery_review.py:45: in test_exact_parent_restore_can_replace_invalid_current_numeric_values
+    u.restore()
+cordon2025/live04_utility_state.py:435: in restore
+    current, record = self.read()
+                      ^^^^^^^^^^^
+cordon2025/live04_utility_state.py:334: in read
+    require(a.shape == (n, n) and np.isfinite(a).all()
+cordon2025/common.py:40: in require
+    raise ContractError(message)
+E   cordon2025.common.ContractError: TD_UTILITY_STATE_INVALID_VALUES:9700
+_ test_exact_parent_restore_can_replace_invalid_current_numeric_values[negative_utility] _
+tests/test_live04_recovery_review.py:45: in test_exact_parent_restore_can_replace_invalid_current_numeric_values
+    u.restore()
+cordon2025/live04_utility_state.py:435: in restore
+    current, record = self.read()
+                      ^^^^^^^^^^^
+cordon2025/live04_utility_state.py:334: in read
+    require(a.shape == (n, n) and np.isfinite(a).all()
+cordon2025/common.py:40: in require
+    raise ContractError(message)
+E   cordon2025.common.ContractError: TD_UTILITY_STATE_INVALID_VALUES:9700
+=========================== short test summary info ============================
+FAILED tests/test_live04_recovery_review.py::test_interrupted_full_assignment_is_dirty_even_when_matrix_snapshot_matches
+FAILED tests/test_live04_recovery_review.py::test_exact_parent_restore_can_replace_invalid_current_numeric_values[zero_skims]
+FAILED tests/test_live04_recovery_review.py::test_exact_parent_restore_can_replace_invalid_current_numeric_values[nan_utility]
+FAILED tests/test_live04_recovery_review.py::test_exact_parent_restore_can_replace_invalid_current_numeric_values[negative_utility]
+4 failed, 1 passed in 0.69s

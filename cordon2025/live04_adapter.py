@@ -97,6 +97,12 @@ class CordonLive04Adapter(CordonLive03Adapter):
         if self.td_utility_state.enabled:
             plan = self.td_utility_state.prepare(plan, folder, super().snapshot())
         with self.td_utility_state.input_scope(plan):
+            types = {int(r['no']): int(r['type']) for r in
+                     parent_module('r1_15a2_com_compat').operation_rows(self.visum)}
+            if any(types.get(int(p)) in (9, 100, 101) for p in plan['selected_operation_positions']):
+                # A reset/assignment can mutate and then raise, without changing
+                # any OD matrix or calibrated coefficient in the snapshot.
+                self.assignment_invalidated = True
             out = super()._execute_perf1_plan(folder, block, plan)
         self.td_utility_state.finish(plan, folder)
         return out
@@ -112,6 +118,7 @@ class CordonLive04Adapter(CordonLive03Adapter):
         return out
 
     def assign(self, *args, **kwargs):
+        self.assignment_invalidated = True
         out = super().assign(*args, **kwargs)
         self.assignment_invalidated = False
         return out
@@ -125,7 +132,7 @@ class CordonLive04Adapter(CordonLive03Adapter):
         require(before == state, 'LIVE04_ASSIGNMENT_REPAIR_PARENT_NOT_ACCEPTED_STATE')
         self.assign_for_block(folder / 'RECOMPUTE', 'GENERATION')
         proof = self.rollback_diagnostic_equivalence(diag, state, folder / 'PROOF')
-        out = {'schema': 'LIVE04_ASSIGNMENT_REPAIR_V1', 'reason': 'DEMAND_ONLY_EXECUTION_RESET_ASSIGNMENT',
+        out = {'schema': 'LIVE04_ASSIGNMENT_REPAIR_V1', 'reason': 'NATIVE_ASSIGNMENT_INTERRUPTED_OR_NOT_VERIFIED',
                'snapshot_equal': self.snapshot() == state, 'proof_passes': bool(proof.get('passes')),
                'proof_basis': proof.get('basis'), 'proof_reason': proof.get('reason')}
         out['status'] = 'REPAIRED_VERIFIED' if out['snapshot_equal'] and out['proof_passes'] else 'REPAIR_NOT_VERIFIED'

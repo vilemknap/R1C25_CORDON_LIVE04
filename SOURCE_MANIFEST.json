@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_UTILITY_COM_CONTEXT_FIX_20261116",
+  "release": "R1C25_LIVE05_8_RECOVERY_REVIEW_20261116",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -488,8 +488,8 @@
     },
     {
       "path": "README.md",
-      "size": 6725,
-      "sha256": "b553469465daedc3b1d4a6960abdbdf042b674313420a8a4b8d66ca55474410a"
+      "size": 6947,
+      "sha256": "98b8ce909e138a876563a94296502bff5e57cae93230427032adf5ca1a52d7b6"
     },
     {
       "path": "README_CZ.md",
@@ -1458,13 +1458,13 @@
     },
     {
       "path": "cordon2025/live03_td.py",
-      "size": 36943,
-      "sha256": "bf3b5a4ebf3bef804dc9a359fc883fa517495212e63c6af231921a905686e65e"
+      "size": 37198,
+      "sha256": "853a3615babd1cff65dea17187c596f9d20650a8fe6e867141271dc1e238c7a0"
     },
     {
       "path": "cordon2025/live04_adapter.py",
-      "size": 19701,
-      "sha256": "8a6045ff0dacf70a26eadb1effe303875f4aa0fd98ed77bb9ef54bfb6ce99591"
+      "size": 20204,
+      "sha256": "841e5e69e4a571421c84a49c7881b72b82db49c4254e67e72f74bf3eda5bf8a5"
     },
     {
       "path": "cordon2025/live04_capture.py",
@@ -1488,8 +1488,8 @@
     },
     {
       "path": "cordon2025/live04_cycle.py",
-      "size": 35693,
-      "sha256": "2525731a6419daa4e21d025d5393558b4d52a0584ab81879ee01366cf3938a62"
+      "size": 36320,
+      "sha256": "5118dd9a355d323a3fcb2767b71c180773109082a60156f9af962f9f439fa9b5"
     },
     {
       "path": "cordon2025/live04_epoch.py",
@@ -1553,18 +1553,18 @@
     },
     {
       "path": "cordon2025/live04_supply.py",
-      "size": 35457,
-      "sha256": "f133679bc3dc691a6b91596d089aae0fc9249d519c84ef50469d9dd0a66079c1"
+      "size": 35602,
+      "sha256": "a2ca92413a7b0632ae738565db4ce797e7e32d342e1c3293c5b1a17a174e75d7"
     },
     {
       "path": "cordon2025/live04_utility_state.py",
-      "size": 28394,
-      "sha256": "90547371198a7423df5044aeeaedf724b8c013a257a27a7fd39a21cb9eefa1ff"
+      "size": 28808,
+      "sha256": "fb727c3e3c85b983f3c3e356a644b77c0c781eeac996cfe9dec3e3798f5f752c"
     },
     {
       "path": "cordon2025/live04_v7.py",
-      "size": 14179,
-      "sha256": "7bed3f53127526b78022e278e2a49cc64398f079b08132712a68dcf263d609d4"
+      "size": 14945,
+      "sha256": "ead6c138455d00fee84f8cad5d9c3824ba40e7e6c862b799497fe9fd809bcfdd"
     },
     {
       "path": "cordon2025/live05_extra.py",
@@ -4737,6 +4737,11 @@
       "sha256": "42d055d19f2926e1895a1e412ef568663b6b60c32010e0fd0910420113ccf69a"
     },
     {
+      "path": "docs/utility_restore/RECOVERY_REVIEW_20261116_CZ.md",
+      "size": 5343,
+      "sha256": "3ad2f7e0bb800535ed3238be0459dfaebda2ad62c17c33c125d38f7440eeb62c"
+    },
+    {
       "path": "docs/utility_restore/RESTORE_FIX_CZ.md",
       "size": 9774,
       "sha256": "27e2982c6eb1e4e14841d29fd2915a809731083cbddf9cd35ae7e473c6bb7a16"
@@ -4835,6 +4840,81 @@
       "path": "docs/utility_restore/evidence/com_context_20261116/TEXT_NORMALIZATION.json",
       "size": 799,
       "sha256": "74595c31c489eacd8e13988e3d46db8ad78d6d73f4bc33b19b41093136f4bc88"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/BEFORE_REPRO.log",
+      "size": 2942,
+      "sha256": "385d95d888f7b842be4e4205d5dd5c4c3f91b0d179bf7c09da564d2e69615e4f"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/BEFORE_REPRO.xml",
+      "size": 3404,
+      "sha256": "e4e723c92996c80100f3671353306c71bfb9aaaa27062437debb03474fe7b62b"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/CHECKS.json",
+      "size": 1461,
+      "sha256": "258ce447f3669e41b197a6ee93a00d4e9241f4c31636d8d11025c6f1163b060f"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/FOCUSED.log",
+      "size": 272,
+      "sha256": "aabe96721342c26d39bad51cedd5dcc084a89235441f4ff14ae117e2c5db91ad"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/FOCUSED.xml",
+      "size": 21002,
+      "sha256": "9969e5eef4b8cad039b3bf27cdc0a7cbc3dcc65773ee1c22cf56afccb4c4121d"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/STATIC.json",
+      "size": 363,
+      "sha256": "9611c06255217499e33870e2de855f08aad9da154b7f93bd164bc87983c67b12"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/STOP.log",
+      "size": 110,
+      "sha256": "ec112725da13adeb0515c13443a07a1446eeb7f1f5dcfd3673d332d5fa6a3825"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/STOP.xml",
+      "size": 375,
+      "sha256": "68a3d6144eb5cea4c4d994f4a5494b339c8b7cad6b2340270822e6562bc77da2"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/SUPPLY.log",
+      "size": 98,
+      "sha256": "1de7af18a082aed8ed2db28a900eee55720e6fca28b21af9e1bac8ef498046d9"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/SUPPLY.xml",
+      "size": 556,
+      "sha256": "b9de67620caa9d07b6ac54a267ac45bbfa22d85ed941ae702712b18b079c85f1"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/TD.log",
+      "size": 110,
+      "sha256": "139cfe9556bf21937675e7bd27c1acc02dc2055cb3f7fd7e6ed6c69bedd68d44"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/TD.xml",
+      "size": 575,
+      "sha256": "668a858bf8090c6ba242d46c1b36493f75b826d9a54f697c34da18c49cd3dae3"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/TD_CLASSIFIER.log",
+      "size": 109,
+      "sha256": "dd1530082b630755aa825b3c817c705171e2b2f6e5b64b4103df0cc094706494"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/TD_CLASSIFIER.xml",
+      "size": 723,
+      "sha256": "d89ec36248e1a98e399e3bf059b3114f44ffdfebfe23f08e09c811d955d35d3e"
+    },
+    {
+      "path": "docs/utility_restore/evidence/recovery_review_20261116/TEXT_NORMALIZATION.json",
+      "size": 2383,
+      "sha256": "e6648832b1c264faf513de7797567f9d8a5711861c803c663925a60a73d91fec"
     },
     {
       "path": "parent/11D_FIRST_RUN_FORENSIC_REMEDIATION.json",
@@ -9395,6 +9475,11 @@
       "path": "tests/test_live04_pipeline.py",
       "size": 13318,
       "sha256": "bfae7262c90cec0ad0214b375e873a24896232e8826ebfae9c7b152a4e4a0104"
+    },
+    {
+      "path": "tests/test_live04_recovery_review.py",
+      "size": 12366,
+      "sha256": "6cba4e5019f3e743461139a2a598c9a5a2fa75a94eae5aabd3796053e513ca58"
     },
     {
       "path": "tests/test_live04_utility_state.py",

@@ -46,7 +46,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import numpy as np
 from .common import ROOT, require, parent_module, read_json, sha256
-from .io import write_json, mkdir
+from .io import write_json, mkdir, exception_text
 
 RELEASE = 'LIVE04_SUPPLYMIX_CORDON_ROWS'
 BLOCK = 'SUPPLY_ADDVAL1'
@@ -436,7 +436,7 @@ def supply_block(tx, adapter, cfg, folder, control, state, diag, anchors, refere
         try:
             write_json(folder / 'SUPPLYMIX_BLOCK_RESULT.json', rec)
         except Exception as io_exc:
-            rec.setdefault('evidence_write_errors', []).append(repr(io_exc)[:300])
+            rec.setdefault('evidence_write_errors', []).append(exception_text(io_exc)[:300])
 
     def remember(candidate):
         changes = {tuple(r['key']): dict(r) for r in (own['candidate'] or {}).get('changes', [])}
@@ -472,7 +472,7 @@ def supply_block(tx, adapter, cfg, folder, control, state, diag, anchors, refere
             raise
         if adapter.snapshot() != state:
             raise SupplyContractError('LIVE04_SUPPLYMIX_DESIGN_CHANGED_MODEL') from exc
-        rec.update(status='DESIGN_FAILED_NO_WRITE', error=str(exc)[:2000], traceback=traceback.format_exc()[-4000:])
+        rec.update(status='DESIGN_FAILED_NO_WRITE', error=exception_text(exc)[:2000], traceback=traceback.format_exc()[-4000:])
         save()
         return False, state, diag, baseline_value, rec
     table = sm.profile_table(sem['profiles'])
@@ -586,14 +586,18 @@ def supply_block(tx, adapter, cfg, folder, control, state, diag, anchors, refere
         save()
         return False, state, diag, baseline_value, rec
     except BaseException as exc:
+        had_candidate = own['candidate'] is not None
+        if had_candidate:
+            # Recovery owns the model; exception formatting and optional
+            # reporting must not be allowed to bypass it.
+            rollback('TRIAL_ERROR')
+        text = exception_text(exc)[:2000]
         if attempt is not None:
-            attempt.update(status='FAILED', error=str(exc)[:2000])
+            attempt.update(status='FAILED', error=text)
             rec['attempts'].append(attempt)
-        rec.update(status='FAILED', error=str(exc)[:2000], search_complete=False)
-        save()
+        rec.update(error=text, search_complete=False)
         stop = not isinstance(exc, Exception) or isinstance(exc, (base.UserStopRequested, base.TimeBudgetReached))
-        if own['candidate'] is not None:
-            rollback('TRIAL_ERROR')            # a failed rollback raises: the run stops with a state readback
+        if had_candidate:
             rec['status'] = 'TRIAL_FAILED_ROLLBACK_VERIFIED'
             save()
             if stop or isinstance(exc, OSError):

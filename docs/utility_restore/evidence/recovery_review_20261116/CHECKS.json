@@ -1,0 +1,50 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_remote_commit": "bbdc687d5445b9c4b475f19d8ee63803e9284997",
+  "base_local_equivalent_commit": "4307eab1dacab2e8de817d7ddaea874385129d28",
+  "suites": {
+    "FOCUSED": {
+      "cases": 156,
+      "passed": 156,
+      "failed": 0,
+      "skipped": 0
+    },
+    "STOP": {
+      "cases": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "TD": {
+      "cases": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "TD_CLASSIFIER": {
+      "cases": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    "SUPPLY": {
+      "cases": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "BEFORE_REPRO": {
+      "cases": 5,
+      "passed": 1,
+      "failed": 4,
+      "skipped": 0
+    }
+  },
+  "unique_passing_scenarios": 163,
+  "before_repro_explanation": "The four deliberate pre-fix failures reproduce the missing assignment-dirty flag and recovery blocked by zero skims/NaN/negative utility. They are not final-suite failures.",
+  "scope": "Separate targeted suites: 156 core/context/controller cases; existing STOP cycle; TD failure/rollback; retry classifier; SupplyMix partial-setter rollback. One TD case is repeated to check classifier cleanup and preservation of the error reason.",
+  "live_visum_tested": false,
+  "full_historical_suite_run": false,
+  "parent_and_data_unchanged": true,
+  "operation15_script_unchanged": true
+}

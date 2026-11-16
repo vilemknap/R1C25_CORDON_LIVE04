@@ -22,7 +22,7 @@ import copy
 from contextlib import contextmanager
 from pathlib import Path
 from .common import ROOT, require, parent_module
-from .io import write_json, sha256
+from .io import write_json, sha256, exception_text
 
 SOURCE_REPOSITORY = 'vilemknap/R1_15A2_V24917_v7'
 SOURCE_COMMIT = '7b4c681732080a28264c616daee87f7d23a8d643'
@@ -120,6 +120,19 @@ def _ORIGINAL_MG_OPTIONS(mg):
     return getattr(mg.options, '__live04_original__', mg.options)
 
 
+def manual_recovery_required(exc):
+    """Keep the donor's reopen verdict even with an unprintable inner cause."""
+    seen = set()
+    while exc is not None and id(exc) not in seen:
+        seen.add(id(exc))
+        text = exception_text(exc).upper()
+        if any(code in text for code in ('MANUAL_REOPEN', 'MANUAL_RECOVERY_REQUIRED',
+                                         'REOPEN_LATEST_ACCEPTED_REQUIRED')):
+            return True
+        exc = getattr(exc, '__cause__', None) or getattr(exc, '__context__', None)
+    return False
+
+
 # ------------------------------------------------------------------ scope
 @contextmanager
 def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
@@ -146,6 +159,7 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
              'attrs': list(mb.GENERATION_ATTRS), 'attr_map': dict(mb.GENERATION_ATTR_MAP),
              'bd_state': copy.deepcopy(bdgen.STATE), 'bdpa_state': copy.deepcopy(bdpa._STATE),
              'step_state': copy.deepcopy(step._STATE), 'retry_budget': com._retry_budget,
+             'manual_recovery_required': cb._manual_recovery_required,
              'perf_timing': copy.deepcopy(perf._STATE['timing']), 'execute': rt.execute_procseq,
              'mg_options': parent_module('r1_15a2_mobility_guard_v24917').options,
              'mg_attraction_band': parent_module('r1_15a2_mobility_guard_v24917').ATTRACTION_BAND}
@@ -179,6 +193,7 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
         mg.ATTRACTION_BAND = tuple(float(x) for x in fixed_mobility['ws_attraction_coefficient_band'])
         status['coefficient_envelope'] = coefficient_envelope(cfg)
         cb.install_budget_floor(com, float(opts['cb_max_wait_seconds']))
+        cb._manual_recovery_required = manual_recovery_required
         filter_info = cb.install_message_filter(float(opts['cb_max_wait_seconds']))
         status['combusy2'] = {'budget_floor_seconds': float(opts['cb_max_wait_seconds']),
                               'message_filter': filter_info, 'block_retries': int(opts['cb_block_retries'])}
@@ -219,6 +234,7 @@ def runtime_scope(cfg, guarded_visum, zones, actuatable_zones, folder):
         bdpa._STATE.clear(); bdpa._STATE.update(saved['bdpa_state'])
         step._STATE.clear(); step._STATE.update(saved['step_state'])
         com._retry_budget = saved['retry_budget']
+        cb._manual_recovery_required = saved['manual_recovery_required']
         perf._STATE['timing'] = saved['perf_timing']
         if filter_info and filter_info.get('registered'):
             try:
