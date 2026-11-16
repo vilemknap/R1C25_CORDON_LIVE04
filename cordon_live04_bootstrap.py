@@ -7,6 +7,33 @@ import json
 import traceback
 
 
+def _explain_integrity(root,failures):
+    """Add expected/actual size and SHA-256 prefix to HASH_OR_SIZE_MISMATCH records.
+
+    Typical causes: a file copied from a different package/message than SOURCE_MANIFEST.json,
+    a browser download renamed to 'name (1).py', or CRLF conversion (hint CRLF_LINE_ENDINGS_ONLY).
+    """
+    import hashlib
+    out=[]
+    try:
+        recs={r['path']:r for r in json.loads((root/'SOURCE_MANIFEST.json').read_text(encoding='utf-8'))['files']}
+    except Exception:
+        return failures
+    for f in failures:
+        f=dict(f);rec=recs.get(f.get('path'))
+        if f.get('reason')=='HASH_OR_SIZE_MISMATCH' and rec:
+            try:
+                data=(root/rec['path']).read_bytes();actual=hashlib.sha256(data).hexdigest()
+                f.update(expected_size=rec['size'],actual_size=len(data),
+                         expected_sha256_12=rec['sha256'][:12],actual_sha256_12=actual[:12])
+                if b'\r\n' in data and hashlib.sha256(data.replace(b'\r\n',b'\n')).hexdigest()==rec['sha256']:
+                    f['hint']='CRLF_LINE_ENDINGS_ONLY'
+            except Exception as exc:
+                f['explain_error']=repr(exc)[:80]
+        out.append(f)
+    return out
+
+
 def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,config_overrides=None,continuation=False):
     root=Path(root or Path(__file__).resolve().parent).resolve()
     boot=None;silent_report=None
@@ -31,7 +58,8 @@ def launch(namespace,*,root=None,output_root=None,options=None,config_path=None,
             vs=importlib.util.spec_from_file_location('_live04_verifier',root/'verify_release.py')
             verifier=importlib.util.module_from_spec(vs);vs.loader.exec_module(verifier)
             proof=verifier.verify(root)
-            if proof['status']!='RELEASE_INTEGRITY_PASS':raise RuntimeError('LIVE04_RELEASE_INTEGRITY_FAIL:'+str(proof['failures'][:5]))
+            if proof['status']!='RELEASE_INTEGRITY_PASS':
+                raise RuntimeError('LIVE04_RELEASE_INTEGRITY_FAIL:'+str(_explain_integrity(root,proof['failures'][:5])))
             run=importlib.import_module('cordon2025.live04_cycle').run
             result=run(namespace['Visum'],output_root=output_root,options=options,config_path=config_path,
                        config_overrides=config_overrides,continuation=continuation)

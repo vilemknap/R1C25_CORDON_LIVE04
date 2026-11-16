@@ -1643,8 +1643,8 @@
     },
     {
       "path": "cordon_live04_bootstrap.py",
-      "size": 3356,
-      "sha256": "91a86035adfec477fd8aa0c6ba44f02ce28bc3f04c96e9cd549098efecd2469f"
+      "size": 4623,
+      "sha256": "f7f91f1cf1be0ade43276317134f4b1dcaa20d430842334a7c57b058424db289"
     },
     {
       "path": "cordon_transfer_bootstrap.py",
@@ -9330,6 +9330,11 @@
       "path": "tests/test_live04_9.py",
       "size": 8511,
       "sha256": "602621aac240176bd15131ac997b1db82f562e20dc85d207e1b58683c7d7e800"
+    },
+    {
+      "path": "tests/test_live04_bootstrap_integrity.py",
+      "size": 1294,
+      "sha256": "f495eb2cf295778a02c2bab9fc474d24a656efd0e610592824cbcddc92fce845"
     },
     {
       "path": "tests/test_live04_pipeline.py",
