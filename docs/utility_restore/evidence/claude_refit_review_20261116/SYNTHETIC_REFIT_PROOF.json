@@ -1,0 +1,41 @@
+{
+  "kind": "SYNTHETIC_NOT_NATIVE_VISUM",
+  "status": "ACCEPTED",
+  "attempts": [
+    {
+      "status": "REJECTED",
+      "mode": "LINEAR_FIT"
+    },
+    {
+      "status": "ELIGIBLE",
+      "mode": "MEASURED_ZONAL_REFIT"
+    }
+  ],
+  "parent_row_check": {
+    "schema": "LIVE04_REFIT_PARENT_ROW_CHECK_V2",
+    "atol": 1e-09,
+    "rtol": 1e-12,
+    "policy": "SAME_CAPTURED_PARENT_IDENTITY",
+    "rows_checked": 136,
+    "rows_outside": 0,
+    "missing_keys": [],
+    "duplicate_keys": [],
+    "rows_exact": 136,
+    "max_abs_difference": 0.0,
+    "worst_key": 102,
+    "passes": true,
+    "method": "FIRST_LAST",
+    "comparison": "FIT_ROWS_VS_CAPTURED_PARENT"
+  },
+  "objective_weighting": {
+    "schema": "LIVE04_FIT_ACCEPTANCE_OBJECTIVE_V1",
+    "authority": "CAPTURED_CORDON_OBJECTIVE_TERMS",
+    "rows": 136,
+    "zero_observed_rows": 1,
+    "protected_residual_multiplier": 1.0,
+    "row_ids_sha256": "3ffd280a7c2c08cedb82465543c95675d17b704f415a4da5548ca2454e73fc39",
+    "weights_sha256": "5728ce76a2e0aa7055348df23449e88c250e13805bf5072a9a4b91cd424ebd6f",
+    "parent_data_objective": 92527.19118827439,
+    "native_acceptance_required": true
+  }
+}

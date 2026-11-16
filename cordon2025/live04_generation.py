@@ -310,13 +310,12 @@ def refine(adapter, context, scale, preview, before, after, folder):
     method = adapter.evaluator.method
     inc = before['_incidence'][method]
     index = v17.observation_index(inc.rows)
-    mb, ma = fit_objective.measured_vectors(before, after, method)
+    mb, ma = fit_objective.measured_vectors(before, after, method, parent_check_folder=folder)
+    parent_check = fit_objective.check_parent_rows(problem.profile_rows, index, mb, method=method,
+                                                   comparison='FIT_ROWS_VS_CAPTURED_PARENT', folder=folder)
     delta = []
     for row in problem.profile_rows:
         i = index[int(row['countlocation_no'])]
-        if not np.isclose(mb[i], float(row['model']), rtol=1e-12, atol=1e-9):
-            raise ValueError('V24917_REFIT_PARENT_DIAGNOSTICS_MISMATCH:id=%s,model=%r,expected=%r'
-                             % (row['countlocation_no'], mb[i], row['model']))
         delta.append(float(ma[i] - mb[i]))
     x = implemented_vector(problem.var_keys, preview, scale, bd)
     refined, audit = m.zf.measured_refit_problem(problem, x, np.array(delta), min(0.5, 0.5 * float(scale)))
@@ -345,7 +344,7 @@ def refine(adapter, context, scale, preview, before, after, folder):
     problems, operators = {}, {}
     for meth, p in effect['problems'].items():
         xm = implemented_vector(p['var_keys'], preview, scale, bd)
-        b, a = fit_objective.measured_vectors(before, after, meth)
+        b, a = fit_objective.measured_vectors(before, after, meth, parent_check_folder=folder)
         d = np.zeros(p['G'].shape[0])
         for i, k in enumerate(p['order']):
             if k is not None:
@@ -362,6 +361,7 @@ def refine(adapter, context, scale, preview, before, after, folder):
     out['_genfix2_effect_model'] = {'problems': problems, 'bd': new_bd, 'problem': refined}
     out['v24917_step_model'] = step_model(out, rows, new_bd)
     audit.update(status='ZONAL_DIRECTION_REFITTED', fit=m.zf.summary(refined, solution, rows),
+                 parent_row_check={k:v for k,v in parent_check.items() if k != 'rows'},
                  row_mapping={'method': method, 'observation_rows': len(inc.rows),
                               'fit_rows': len(problem.profile_rows), 'unique_observation_ids': len(index),
                               'key_schema': 'LEGACY_LT100_CANTOR_EXTENDED_V1'},

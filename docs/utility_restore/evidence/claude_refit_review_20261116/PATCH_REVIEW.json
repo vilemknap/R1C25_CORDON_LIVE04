@@ -1,0 +1,35 @@
+{
+  "incoming_zip": {
+    "file": "R1C25_REFITFIX_PATCH_5696339.zip",
+    "sha256": "5bb3df5f56a6e1a0b8793ee216c51db7eb93372f68fa24c4d61a3cb3e819ba95",
+    "manifest_release": "R1C25_LIVE05_8_UTILITY_STATE_RESTORE_20261115",
+    "manifest_files": 1899,
+    "python_self_hashes_valid": true
+  },
+  "pasted_transcript_sha256": "d278c1b5f5bb6e2110b900bb78ebc5c037cdca3dfb191a966d9c836219705e16",
+  "baseline_commit": "57d91d865a3482ffc2beef8a5b1b92e01b63d01b",
+  "baseline_manifest_files": 1971,
+  "baseline_python_files_absent_from_incoming_manifest": [
+    "cordon2025/live03_td_parameters.py",
+    "cordon2025/live04_fit_objective.py",
+    "tests/test_live03_td_readback.py",
+    "tests/test_live04_acceptance_5050.py",
+    "tests/test_live04_objective_alignment.py",
+    "tests/test_live04_recovery_review.py",
+    "tests/test_live04_refit_row_identity.py"
+  ],
+  "adopted": "Detailed mismatch row audit, worst row and missing/duplicate identity diagnostics.",
+  "not_adopted": "Broad rollback-style parent tolerance and replacement of current code/manifests with the older files.",
+  "same_capture_tolerance": {
+    "atol": 1e-09,
+    "rtol": 1e-12
+  },
+  "claude_proposed_tolerance": {
+    "atol": 1.0,
+    "rtol": 0.001
+  },
+  "generation_secondary_limit": 0.02,
+  "td_cordon_weight": 0.5,
+  "td_idp_weight": 0.5,
+  "mobility_interpretation": "The 298 observation sum contains overlapping rows. Latest live mobility guard passed; family ratios were 1.8499803119320695 and 2.0461082679240494, below upper 3.5. The data do not establish mobility as the main cause of the count deficit."
+}
