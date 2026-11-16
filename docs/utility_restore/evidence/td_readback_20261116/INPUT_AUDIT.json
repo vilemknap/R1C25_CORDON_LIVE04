@@ -1,0 +1,58 @@
+{
+  "inputs": [
+    {
+      "name": "IDP_BEFORE.json",
+      "bytes": 3366,
+      "sha256": "d51a6b51432f115e0ee07da133d70273299c1743e4bd809737d581c2f33b4a28"
+    },
+    {
+      "name": "TD_BLOCK_RESULT.json",
+      "bytes": 75332,
+      "sha256": "beab3d86da128eedbbb6f63c693b21af279673d3a72b1ae4920bbf2d31fc3b45"
+    },
+    {
+      "name": "TD_JACOBIAN_PRIMARY.csv",
+      "bytes": 120501,
+      "sha256": "64c5fd42c98e802a89d0b987d7a4c3901cda2d89c5f14f1404c8ab5a0aed6875"
+    },
+    {
+      "name": "COMBUSY_HOTFIX_ACTIVATION.json",
+      "bytes": 398,
+      "sha256": "df88d861a04834031932545aea01fbb372d3437d22d6ee952caaafedcd7c90b0"
+    },
+    {
+      "name": "00_GENERATION_COEFFICIENT_REFERENCE.json",
+      "bytes": 471997,
+      "sha256": "5e3e33d0074a349ce733693633a5aec5cea9b3f234815f53764f799a3c1c8b59"
+    },
+    {
+      "name": "CYCLE_PROGRESS.json",
+      "bytes": 1397081,
+      "sha256": "83771f8a4eade1e4029c02e7ad37bb4b5a8e788103d5b60e410df63f3aab7f53"
+    },
+    {
+      "name": "00_PROGRESS.json",
+      "bytes": 1143,
+      "sha256": "99116259034813bab5d421f5d24fb872fc33fb5659d4c7b2c892c2201845a02c"
+    },
+    {
+      "name": "BASELINE_OBJECTIVE.json",
+      "bytes": 1275,
+      "sha256": "2722a0b35dea09da1289b6905c97c783dc84fcf7915070e2cced0c4c2f343192"
+    }
+  ],
+  "accepted_states": 0,
+  "model_mutated": true,
+  "source_file": "R1_VARIANTYBase_LIVE04_2025_2_LIVE04_BASE_48fb232a.ver",
+  "source_file_sha256": "ef0f03c0a47f69c90a84ef83731fba54164e0afc7d94c13a81ee1798a3db9836",
+  "td_status": "TRIAL_FAILED",
+  "td_error": "UNREQUESTED_TD_PARAMETER_CHANGE",
+  "native_evaluations": 26,
+  "native_probes": 22,
+  "progress_phase": "LIVE02_PATH_SIGNATURE",
+  "recovery_depth": 1,
+  "completed_rollback_proof_attached": false,
+  "predicted_cordon_relative_improvement": 0.042852583911758585,
+  "predicted_blend_relative_improvement": 0.1576776923428551,
+  "live_cause_not_proven": "No requested/write-readback/post-recompute TD parameter triple in the supplied logs."
+}

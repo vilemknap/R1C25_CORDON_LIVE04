@@ -1,0 +1,892 @@
+{
+  "cases": [
+    {
+      "kind": "SYNTHETIC_NOT_PTV_VISUM",
+      "test": "quantized_native_write",
+      "write_readback": {
+        "differences": [
+          {
+            "component": "SERV_E_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_E_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_noE_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_noE_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_stud",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_E_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_E_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_noE_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_noE_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_stud",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          }
+        ],
+        "effective": [
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.2,
+            "candidate_c": -0.1,
+            "component": "SCHOOL",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SCHOOL",
+            "requested_b": 0.2,
+            "requested_c": -0.1
+          }
+        ],
+        "live": [
+          {
+            "component": "WORK_E_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_E_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_noE_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_noE_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_stud",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_E_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_E_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_noE_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_noE_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_stud",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "SCHOOL",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          }
+        ],
+        "representation_changes": 10,
+        "requested": [
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.2,
+            "candidate_c": -0.1,
+            "component": "SCHOOL",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SCHOOL"
+          }
+        ],
+        "schema": "LIVE03_TD_WRITE_READBACK_V1",
+        "status": "VERIFIED",
+        "write_tolerance": 1e-08
+      },
+      "freeze": {
+        "basis": "EXACT_IMMEDIATE_NATIVE_WRITE_READBACK",
+        "differences": [],
+        "schema": "LIVE03_TD_PARAMETER_FREEZE_V1",
+        "status": "VERIFIED"
+      },
+      "result": {
+        "status": "MOCK_LIVE04_ACCEPTED",
+        "accepted_states": 1,
+        "model_state": "LAST_ACCEPTED_STATE_IN_OPEN_VISUM",
+        "model_state_verified": null,
+        "load_version_called": false,
+        "direct_od_matrix_writes": false
+      }
+    },
+    {
+      "kind": "SYNTHETIC_NOT_PTV_VISUM",
+      "test": "later_native_parameter_change",
+      "write_readback": {
+        "differences": [
+          {
+            "component": "SERV_E_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_E_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_noE_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_noE_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "SERV_stud",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_E_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_E_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_noE_C",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_noE_noC",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          },
+          {
+            "component": "WORK_stud",
+            "delta": 1.3877787807814457e-17,
+            "expected": -0.08000000000000002,
+            "field": "current_c",
+            "live": -0.08
+          }
+        ],
+        "effective": [
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "WORK_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08,
+            "component": "SERV_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE",
+            "requested_b": 0.45,
+            "requested_c": -0.08000000000000002
+          },
+          {
+            "candidate_b": 0.2,
+            "candidate_c": -0.1,
+            "component": "SCHOOL",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SCHOOL",
+            "requested_b": 0.2,
+            "requested_c": -0.1
+          }
+        ],
+        "live": [
+          {
+            "component": "WORK_E_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_E_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_noE_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_noE_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "WORK_stud",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_E_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_E_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_noE_C",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_noE_noC",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "SERV_stud",
+            "current_b": 0.45,
+            "current_c": -0.08,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "LONG_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          },
+          {
+            "component": "SCHOOL",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "status": "OK"
+          }
+        ],
+        "representation_changes": 10,
+        "requested": [
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "WORK_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "WORK"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_E_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_E_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_noE_C",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_noE_noC",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.45,
+            "candidate_c": -0.08000000000000002,
+            "component": "SERV_stud",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SERVICE"
+          },
+          {
+            "candidate_b": 0.2,
+            "candidate_c": -0.1,
+            "component": "SCHOOL",
+            "current_b": 0.2,
+            "current_c": -0.1,
+            "group": "SCHOOL"
+          }
+        ],
+        "schema": "LIVE03_TD_WRITE_READBACK_V1",
+        "status": "VERIFIED",
+        "write_tolerance": 1e-08
+      },
+      "freeze": {
+        "basis": "EXACT_IMMEDIATE_NATIVE_WRITE_READBACK",
+        "differences": [
+          {
+            "component": "WORK_E_C",
+            "delta": 1.000000082740371e-10,
+            "expected": -0.08,
+            "field": "current_c",
+            "live": -0.0799999999
+          }
+        ],
+        "error": "UNREQUESTED_TD_PARAMETER_CHANGE",
+        "schema": "LIVE03_TD_PARAMETER_FREEZE_V1",
+        "status": "FAILED"
+      },
+      "result": {
+        "status": "LIVE04_STOPPED_MODEL_VERIFIED_AT_LAST_ACCEPTED_STATE",
+        "accepted_states": 0,
+        "model_state": null,
+        "model_state_verified": true,
+        "load_version_called": false,
+        "direct_od_matrix_writes": false
+      },
+      "rollback_proof": {
+        "block": "TD_CORDON",
+        "gap": 0.001,
+        "snapshot_equal": true,
+        "diagnostic_equal": true,
+        "diagnostic_hash": "ca8cdc73a5545f8c946c39a7c867a0d06dc904cee2f38283d268863ffe215739",
+        "diagnostic_verification_mode": "REUSED_BASELINE_AFTER_EXACT_SNAPSHOT_AND_498_PROFILE_PROOF",
+        "diagnostic_reuse_proof": {
+          "schema": "LIVE02_ROLLBACK_DIAGNOSTIC_REUSE_PROOF_V1",
+          "passes": true,
+          "snapshot_equal_before_signature": true,
+          "snapshot_equal_after_signature": true,
+          "matrix_hash_equal": true,
+          "generation_hash_equal": true,
+          "td_hash_equal": true,
+          "path_signature_equal": true,
+          "basis": "EXACT_DONOR_SNAPSHOT_PLUS_12_DSEG_PATH_KEYS_AND_VOLUMES",
+          "full_capture_fallback_required": false,
+          "signature": {
+            "EXOG_EE_CF": {
+              "paths": 288,
+              "volume_sum": 691.558,
+              "keys_and_volumes_sha256": "755747dbfe09c84b3c9b22446686bcef3709f54a3f46c8e3b6daca9a6d6a82d5"
+            },
+            "EXOG_EE_CL": {
+              "paths": 288,
+              "volume_sum": 725.798,
+              "keys_and_volumes_sha256": "45f5a7e60c94925a110f47848a9cc6434cf9c79f84bd8fb2b0be1b0fdb0c87a9"
+            },
+            "EXOG_EE_CS": {
+              "paths": 288,
+              "volume_sum": 760.038,
+              "keys_and_volumes_sha256": "75dedc68f746b6f66d415d963ac995ec5507cbf7708316c3d4b186d5bc99fdc5"
+            },
+            "EXOG_EE_CS_NOT": {
+              "paths": 288,
+              "volume_sum": 965.478,
+              "keys_and_volumes_sha256": "c77d17cf6c4ea542d9a15720b4592b45f4e388a5f1f7f2b48558a1f4f7b0f3d4"
+            },
+            "EXOG_EE_CW": {
+              "paths": 288,
+              "volume_sum": 794.2779999999999,
+              "keys_and_volumes_sha256": "29ee1511411fd245dbda98191aef0ce0615a0779f755b31da568ba284f984451"
+            },
+            "EXOG_EE_CW_NOT": {
+              "paths": 288,
+              "volume_sum": 999.718,
+              "keys_and_volumes_sha256": "b657bbd3fe6728c9445b633d47ec06512009e365bbc27b0cabf34f7184763b8b"
+            },
+            "NATIVE_CF": {
+              "paths": 288,
+              "volume_sum": 828.5179999999999,
+              "keys_and_volumes_sha256": "a260b9ad46539aa3ceedbbb2fd378af7cbe95c2abeb4eae681ce95dd20ed3ace"
+            },
+            "NATIVE_CL": {
+              "paths": 288,
+              "volume_sum": 288.0,
+              "keys_and_volumes_sha256": "180c053a9e416f1e67d2545ff879130b74d0dacb9b3207b4f0b4498c36f287aa"
+            },
+            "NATIVE_CS": {
+              "paths": 288,
+              "volume_sum": 896.998,
+              "keys_and_volumes_sha256": "2561ef601860b79a8b7b2584178d62f7324630743fe3daad2380cb68a96d90d5"
+            },
+            "NATIVE_CS_NOT": {
+              "paths": 288,
+              "volume_sum": 1033.958,
+              "keys_and_volumes_sha256": "5fecf5be23189a235204573929b7c18ef937a79e1b0103c3db8632ccd13e4f1a"
+            },
+            "NATIVE_CW": {
+              "paths": 288,
+              "volume_sum": 931.238,
+              "keys_and_volumes_sha256": "ac477de52956e6dfd36dac0b93c549b2c524cb5f31d80d9b3fc599cbd5f23eb1"
+            },
+            "NATIVE_CW_NOT": {
+              "paths": 288,
+              "volume_sum": 1068.198,
+              "keys_and_volumes_sha256": "112ab5f7af34e402e5d7379871bed0c566f639d58f70d1b1f35302b08f5f3844"
+            }
+          },
+          "reason": null
+        },
+        "passes": true,
+        "load_version_called": false,
+        "save_version_called": false,
+        "direct_od_matrix_writes": false
+      }
+    }
+  ]
+}

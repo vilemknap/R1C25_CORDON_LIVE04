@@ -1,0 +1,40 @@
+{
+  "kind": "DETERMINISTIC_SYNTHETIC_REPRODUCTION_NOT_LIVE_DIAGNOSIS",
+  "base_commit": "929f9e009f708cd8d7274ca18724b1d9f7b95020",
+  "requested": [
+    {
+      "component": "WORK_E_C",
+      "current_b": 1.7546875,
+      "current_c": -0.542615476401332,
+      "status": "OK",
+      "candidate_b": 1.8171875,
+      "candidate_c": -0.5131735862345678
+    }
+  ],
+  "immediate_native_readback": [
+    {
+      "component": "WORK_E_C",
+      "current_b": 1.8171875000000002,
+      "current_c": -0.5131735862345679,
+      "status": "OK"
+    },
+    {
+      "component": "LONG_E_C",
+      "current_b": 5.95501408,
+      "current_c": -0.0623552,
+      "status": "OK"
+    }
+  ],
+  "existing_persistence_result": [
+    {
+      "component": "WORK_E_C",
+      "target_b": 1.8171875,
+      "target_c": -0.5131735862345678,
+      "live_b": 1.8171875000000002,
+      "live_c": -0.5131735862345679,
+      "status": "OK"
+    }
+  ],
+  "unchanged_donor_exact_freeze_error": "UNREQUESTED_TD_PARAMETER_CHANGE",
+  "max_abs_representation_difference": 2.220446049250313e-16
+}

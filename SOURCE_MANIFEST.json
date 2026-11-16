@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_REFIT_ROW_IDENTITY_20261116",
+  "release": "R1C25_LIVE05_8_TD_NATIVE_READBACK_20261116",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -1458,8 +1458,13 @@
     },
     {
       "path": "cordon2025/live03_td.py",
-      "size": 37198,
-      "sha256": "853a3615babd1cff65dea17187c596f9d20650a8fe6e867141271dc1e238c7a0"
+      "size": 37383,
+      "sha256": "4b3a32a1241622222f7e735d6fcfb4df6bc66236100ab0ea07ecda3b3cd8e015"
+    },
+    {
+      "path": "cordon2025/live03_td_parameters.py",
+      "size": 5927,
+      "sha256": "75ed769701246b4b9f28b7664e616b36abaaa30aa021e8c3271410c0a862d480"
     },
     {
       "path": "cordon2025/live04_adapter.py",
@@ -4752,6 +4757,11 @@
       "sha256": "27e2982c6eb1e4e14841d29fd2915a809731083cbddf9cd35ae7e473c6bb7a16"
     },
     {
+      "path": "docs/utility_restore/TD_NATIVE_READBACK_20261116_CZ.md",
+      "size": 4697,
+      "sha256": "f806f0cda2c13d4ae9a85599e824191fb6bc68f8bc5ba0ba4270d7488566cfe7"
+    },
+    {
       "path": "docs/utility_restore/evidence/CHECKS.json",
       "size": 1113,
       "sha256": "8dbb384119e99248d792b59ad3aeb64450c5554e0ba5468c3ca4243d4cbdce27"
@@ -4970,6 +4980,46 @@
       "path": "docs/utility_restore/evidence/refit_identity_20261116/TEXT_NORMALIZATION.json",
       "size": 1225,
       "sha256": "476f4e8ea4aa9c821f895f32b03bdecd16a02972e8d4e5131f386e7f2c825143"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/BEFORE_REPRO.json",
+      "size": 1052,
+      "sha256": "3b9e2ebc7a2bd267296ba8d4329c4cc118defd740ca1277791d5f7533b4d04ba"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/CHECKS.json",
+      "size": 2514,
+      "sha256": "62167b67cb2f57af20beaa98535022c529b53ffcfb8b0670b0479a25a60604e9"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/INPUT_AUDIT.json",
+      "size": 1997,
+      "sha256": "abc50b0b436866e88ddad1865b16b4927fe62b9eaedc0af62d5b0ee7706f8a10"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/REGRESSION.log",
+      "size": 191,
+      "sha256": "56de7905192f2ee2d122635ebd6147b6bf6386b845a718077576b838d3e2e659"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/REGRESSION.xml",
+      "size": 11608,
+      "sha256": "0d772a527f1cafc128dcb271aeb5c4840b99422ba59134810ebeb7711e9b477a"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/SYNTHETIC_TRIAL_PROOFS.json",
+      "size": 26707,
+      "sha256": "778494740cf7b4a91411e338e1c7b9bfa7eb0d47081c7d49a77e513cfc031db0"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/TD_READBACK.log",
+      "size": 111,
+      "sha256": "f005a23ce70c1145583a5cd3b30ac80b0aa433a960545de265330e2ce202afa4"
+    },
+    {
+      "path": "docs/utility_restore/evidence/td_readback_20261116/TD_READBACK.xml",
+      "size": 3370,
+      "sha256": "5208ea4c523f6101ec68da91de07a898384974767515e82a3d8a5c05e1dd7afa"
     },
     {
       "path": "parent/11D_FIRST_RUN_FORENSIC_REMEDIATION.json",
@@ -9430,6 +9480,11 @@
       "path": "tests/test_live03.py",
       "size": 20517,
       "sha256": "589b1afd2d6bfd3a6976457eb886392b6b8aa4fa498fed1b322e2f291a1af02e"
+    },
+    {
+      "path": "tests/test_live03_td_readback.py",
+      "size": 10151,
+      "sha256": "713c69844f2794710d18933b0db74f3adbf32e2fee85de650f4fca3820598b7b"
     },
     {
       "path": "tests/test_live04.py",
