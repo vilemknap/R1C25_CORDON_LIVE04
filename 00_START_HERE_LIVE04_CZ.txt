@@ -13,6 +13,9 @@ R1 2025 LIVE04: kordonova kalibrace TG + SupplyMix + TD (LIVE03) portovana na pr
   Obe slozky jsou normalizovane; pozadovane zlepseni F alespon 0,1 %, IDP a GEH pojistky aktivni.
 - GENERATION: EXACT_TWO_HITS se smi zhorsit nejvyse o 2 % proti rodici kroku
   (acceptance.generation_secondary_max_relative_degradation). SupplyMix a TD maji sve dosavadni limity.
+- GENERATION (2026-11-16): fit i mereny refit pouzivaji presne radkove vahy finalniho cile,
+  vcetne nulovych pozorovani. Planovac bere minimum zlepseni z acceptance, vyssi first-sufficient
+  limit neblokuje opravneny pokus. GEH/severity a nativni overeni zustavaji aktivni.
 - LONG post-TD maska >= 80 km (9697) pri kazdem nativnim prepoctu vcetne sond; baseline musi byt
   uz maskovana (kopie ulozena z behu v7), jinak stop pred prvnim zapisem.
 

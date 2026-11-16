@@ -1,0 +1,90 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_remote_commit": "9fe9cb8e3ffb5bbc8870b154f4330387777023ac",
+  "base_local_equivalent_commit": "c71696deb6564e2be50baf4ab63029528598716f",
+  "suites": {
+    "ALIGNMENT_UNIT": {
+      "cases": 36,
+      "failed": 0,
+      "skipped": 0
+    },
+    "GUARDS": {
+      "cases": 23,
+      "failed": 0,
+      "skipped": 0
+    },
+    "NATIVE_REJECT_REFIT": {
+      "cases": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    "REFIT_CONTROLLER_FINAL": {
+      "cases": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "distinct_passing_scenarios": 65,
+  "repeated_controller_case_counted_once": true,
+  "scope": "Exact acceptance data loss for 100 directions, all 298 semantic identities, zero targets, unchanged parent context after refit, measured roster/weight guards, bounded nonconverged proposal, aligned prediction minimum, robustness rejection reasons, preserved policy gates and full synthetic rejected-trial to measured-refit to accepted-trial control flow.",
+  "all_298_volume_test": "Synthetic volumes with the real release semantic identities and group coefficients; no native direction assignment or live derivative claim.",
+  "native_controller_rows": 136,
+  "acceptance_limits_changed": false,
+  "generation_secondary_limit": 0.02,
+  "td_cordon_weight": 0.5,
+  "td_idp_weight": 0.5,
+  "protected_sources_unchanged": 1606,
+  "legacy_protected_residual_multiplier_removed_from_proposal": true,
+  "live_visum_tested": false,
+  "full_historical_suite_run": false,
+  "test_artifacts": [
+    {
+      "path": "ALIGNMENT_UNIT.xml",
+      "raw_sha256": "927cfc28806bf7e77d6006d4c3d282aa28a9a8bd1b9cbf572fbc54494ac2256e",
+      "published_sha256": "5573b34f7444684866fc16a6f5cd749860796d89766c0f0c41bbb12117ba53e0",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "ALIGNMENT_UNIT.log",
+      "raw_sha256": "45856908faef3bf02edb86a8f31cf0c86f4f75c42d175d669821d99d302fb027",
+      "published_sha256": "45856908faef3bf02edb86a8f31cf0c86f4f75c42d175d669821d99d302fb027",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "GUARDS.xml",
+      "raw_sha256": "0a2751547a55ddb2c1d671b17595a29ea63aa162885eb0e1143e86a9f7ce82e7",
+      "published_sha256": "21701930bcd01413343ebded5039ca1acf1410c28fe4ac5e68087c2556698b47",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "GUARDS.log",
+      "raw_sha256": "c7e4000705bc4b287436dc6e242de953515e093dd4de4420e37dc2bb02fb0676",
+      "published_sha256": "c7e4000705bc4b287436dc6e242de953515e093dd4de4420e37dc2bb02fb0676",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "NATIVE_REJECT_REFIT.xml",
+      "raw_sha256": "c0b66779b7e74e3da202163f923f6330efb53b7a3b60db21a7088195ebd5d78a",
+      "published_sha256": "12598de0f4e6bfb928dc18a3a15eb6c8a7735f85b7d169a002d0ac87dc77b268",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "NATIVE_REJECT_REFIT.log",
+      "raw_sha256": "96afacce1c732d4a3584329863def7657bcfb6bfce908e05d4ae63c999e9784a",
+      "published_sha256": "96afacce1c732d4a3584329863def7657bcfb6bfce908e05d4ae63c999e9784a",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "REFIT_CONTROLLER_FINAL.xml",
+      "raw_sha256": "ef462bdae14e6a15f79cdef8155fd2b89225c334514083e146d1cd3c83a046a1",
+      "published_sha256": "c55994e06c877542b0943376fc782a936d37408e0774e1e4467a788570916a97",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "REFIT_CONTROLLER_FINAL.log",
+      "raw_sha256": "5f7b1fbfa7cae0efc9ad914b2018bc5cf1199d20837959662f1e2c7534478172",
+      "published_sha256": "5f7b1fbfa7cae0efc9ad914b2018bc5cf1199d20837959662f1e2c7534478172",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    }
+  ]
+}

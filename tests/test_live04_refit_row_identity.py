@@ -41,6 +41,9 @@ def measured(monkeypatch):
     incs={'FIRST_LAST':primary,'EXACT_TWO_HITS':secondary}
     before={'valid':True,'observed_hash':'OBS','_incidence':incs,
             'methods':{m:{'model':inc.model.tolist()} for m,inc in incs.items()}}
+    before['_terms']={m:{'w':np.array([r['weight'] for r in inc.rows])/np.sqrt(np.maximum(1.,[r['observed'] for r in inc.rows])),
+                         'y':np.array([r['observed'] for r in inc.rows]),'eps':np.zeros(len(inc.rows))}
+                      for m,inc in incs.items()}
     changes={'FIRST_LAST':np.array([7.,-4.]),'EXACT_TWO_HITS':np.array([3.,-2.])}
     after={'valid':True,'observed_hash':'OBS',
            'methods':{m:{'model':(inc.model+changes[m]).tolist()} for m,inc in incs.items()}}

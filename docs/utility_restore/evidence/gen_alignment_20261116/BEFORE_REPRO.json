@@ -1,0 +1,15 @@
+{
+  "kind": "DETERMINISTIC_SYNTHETIC_REPRODUCTION",
+  "base_remote_commit": "9fe9cb8e3ffb5bbc8870b154f4330387777023ac",
+  "protected_donor_unchanged": true,
+  "acceptance_rows": 3,
+  "legacy_fit_rows": 2,
+  "legacy_protected_weight": 0.30000000000000004,
+  "acceptance_protected_weight": 0.1,
+  "legacy_protected_squared_multiplier": 9.000000000000004,
+  "legacy_parent_data_objective": 2.931407752524992,
+  "acceptance_parent_data_objective": 1600.2127659574471,
+  "legacy_planning_minimum": 0.001,
+  "actual_acceptance_minimum": 1e-05,
+  "threshold_ratio": 100.0
+}

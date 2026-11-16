@@ -40,6 +40,33 @@ from .live04_confirm import confirm_before_accept
 RELEASE = 'LIVE04_V7_GENFIX2_CORDON_STEP1'
 
 
+def planning_minimum(evaluator):
+    """Eligibility comes from the same policy as the final Generation gate."""
+    return float(evaluator.live02['acceptance']['min_relative_improvement'])
+
+
+def choose_scale_with_audit(model, gate, minimum, opts, upper):
+    """Keep donor selection; explain rejection at the inflated robustness probe."""
+    plan = parent_module('r1_15a2_step_search_v24917').choose_scale(model, gate, minimum, opts, upper)
+    plan['planner_policy'] = {'minimum_relative_improvement': float(minimum),
+                              'robust_margin': float(opts['margin']),
+                              'minimum_scale': float(opts['min_scale']), 'upper_scale': float(upper)}
+    for row in plan['grid']:
+        if row['feasible'] and not row['robust']:
+            high = min(row['scale'] * (1. + float(opts['margin'])), float(opts['max_scale']))
+            if model.measured is not None:
+                high = min(high, model.measured[0] * .999)
+            high = round(high, 6)  # same cache/grid rounding as the donor
+            decision = gate(model.base_rows, model.rows(high))
+            _, _, reasons = model.final_prediction(high)
+            relative = (model.objective(0.) - model.objective(high)) / max(abs(model.objective(0.)), 1e-12)
+            row['robust_probe_scale'] = high
+            row['robust_probe_reasons'] = list(decision.get('reasons') or []) + list(reasons)
+            if relative < minimum:
+                row['robust_probe_reasons'].append('PRIMARY_IMPROVEMENT_BELOW_PLANNING_MINIMUM')
+    return plan
+
+
 class Live04StepModel(CordonStepModel):
     def __init__(self, evaluator, diag, linear, rho, predictor=None, memory_correction=None):
         super().__init__(evaluator, diag, linear, rho)
@@ -215,10 +242,11 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
     max_trials = max(1, len(gen_cfg.get('backtracking_scales') or [1.0, 0.5, 0.25]))
     limit = int(gen_cfg.get('trial_calibration', {}).get('max_trials_per_block', {}).get('GENERATION', max_trials))
     max_trials = max(1, min(max_trials, limit))
-    min_rel = float(((gen_cfg.get('performance', {}) or {}).get('first_sufficient', {}) or {})
-                    .get('generation_min_relative_improvement', 0.0) or 0.0)
+    min_rel = planning_minimum(evaluator)
     rec.update(planned_trials=max_trials, search_complete=False, stationarity_confirmed=False,
-               solver_converged=v7.get('solver_converged') is True)
+               solver_converged=v7.get('solver_converged') is True,
+               prediction_min_relative_improvement=min_rel,
+               prediction_minimum_source='ACCEPTANCE_MIN_RELATIVE_IMPROVEMENT')
     rho = step._STATE['rho'] if step._STATE['rho'] is not None else 1.0
 
     def final_preview(scale):
@@ -309,13 +337,13 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
     adapter.tg_outputs_from_rejected_trial = False
     try:
         for ordinal in range(1, max_trials + 1):
-            plan = step.choose_scale(model, gate, min_rel, opts, upper)
+            plan = choose_scale_with_audit(model, gate, min_rel, opts, upper)
             if plan['scale'] is None and model.measured is None and model.memory_correction is not None:
                 # Memory may change WHICH step is tried, never suppress the trial LIVE04 would run.
                 kept = model.memory_correction
                 model.memory_correction = None
                 try:
-                    plan = step.choose_scale(model, gate, min_rel, opts, upper)
+                    plan = choose_scale_with_audit(model, gate, min_rel, opts, upper)
                 finally:
                     model.memory_correction = kept
                 plan['memory_fallback'] = 'NO_STEP_WITH_MEMORY_PLAN_WITHOUT_MEMORY'
@@ -517,6 +545,7 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                 base.atomic_json(folder / 'MEASURED_ZONAL_REFIT.json', raudit)
                 if refined is not None:
                     context = refined
+                    rec['solver_converged'] = (context.get('v24917') or {}).get('solver_converged') is True
                     # A secant of the old direction cannot be applied to a different zonal
                     # vector: fresh model and preview cache on the corrected operator.
                     model = Live04StepModel(evaluator, diag, context.get('v24917_step_model'), 1.0,
