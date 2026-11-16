@@ -38,17 +38,14 @@ def transaction_inputs(visum, zone_order, live_bindings):
         return None
     scope['threads'].add(threading.get_ident())
     owner = scope['owner']
-    raw = getattr(owner.adapter, 'raw_visum', None)
-    if raw is None:
-        raw = getattr(owner.adapter.visum, '_obj', owner.adapter.visum)
-    same = visum is raw
+    # The script runs on Visum's own thread. The calibrator's COM proxy belongs to the
+    # calibrator thread and must not be called here (live run 2026-11-16: RPC_E_WRONG_THREAD
+    # "rozhrani zarazeno do jineho vlakna" on the _oleobj_ comparison). Only Python identity
+    # of the proxy and the version path captured on the calibrator thread are compared.
+    same = visum is scope['raw']
     if not same:
-        a, b = getattr(visum, '_oleobj_', None), getattr(raw, '_oleobj_', None)
-        same = a is not None and b is not None and a == b
-    if not same:
-        # The procedure may inject its own wrapper of the same Visum instance.
         try:
-            same = str(visum.IO.CurrentVersionFile) == str(raw.IO.CurrentVersionFile)
+            same = str(visum.IO.CurrentVersionFile) == scope['version_file']
         except Exception:
             same = False
     require(same, 'TD_UTILITY_INPUT_MODEL_CHANGED')
@@ -377,7 +374,13 @@ class UtilityState:
             yield
             return
         require(_ACTIVE_SCOPE['scope'] is None, 'TD_UTILITY_NESTED_INPUT_SCOPE')
-        scope = {'owner': self, 'thread': threading.get_ident(), 'threads': set(), 'reads': 0}
+        raw = getattr(self.adapter, 'raw_visum', None)
+        if raw is None:
+            raw = getattr(self.adapter.visum, '_obj', self.adapter.visum)
+        # Read on the calibrator thread, before the procedure starts the script thread.
+        version_file = str(self.call(lambda: raw.IO.CurrentVersionFile, 'CURRENT_VERSION_FILE'))
+        scope = {'owner': self, 'thread': threading.get_ident(), 'threads': set(), 'reads': 0,
+                 'raw': raw, 'version_file': version_file}
         _ACTIVE_SCOPE['scope'] = scope
         try:
             yield

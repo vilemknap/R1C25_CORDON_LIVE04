@@ -541,3 +541,31 @@ def test_injected_wrapper_of_same_model_is_accepted(setup, tmp_path):
     with u.input_scope({'selected_operation_positions': []}):
         out = transaction_inputs(wrapper, raw.zones, bindings)
     assert out is not None and out[2]['parent_state_hash'] == u.parent_state_hash
+
+
+def test_script_thread_never_calls_the_calibrator_com_proxy(setup, tmp_path):
+    """Live run 2026-11-16: comparing the calibrator's proxy from Visum's script thread raised
+    RPC_E_WRONG_THREAD. The model identity must use only the script's own handle."""
+    from types import SimpleNamespace
+    from cordon2025.common import ContractError
+    from cordon2025.live04_utility_state import transaction_inputs
+    raw, a, u, parent, audit, inv = setup
+    bindings = {}
+    for no, (dseg, code) in u.time_specs.items():
+        bindings.setdefault(dseg, {})[code] = no
+    path = raw.IO.CurrentVersionFile
+
+    class WrongThread:
+        def __getattr__(self, name):
+            raise RuntimeError('Aplikace zavolala rozhrani, ktere bylo zarazeno do jineho vlakna.')
+    same = SimpleNamespace(IO=SimpleNamespace(CurrentVersionFile=path), _oleobj_=object())
+    other = SimpleNamespace(IO=SimpleNamespace(CurrentVersionFile=path + '.other.ver'))
+    with u.input_scope({'selected_operation_positions': []}):
+        saved = raw.IO
+        raw.IO = WrongThread()
+        try:
+            assert transaction_inputs(same, raw.zones, bindings) is not None
+            with pytest.raises(ContractError, match='TD_UTILITY_INPUT_MODEL_CHANGED'):
+                transaction_inputs(other, raw.zones, bindings)
+        finally:
+            raw.IO = saved
