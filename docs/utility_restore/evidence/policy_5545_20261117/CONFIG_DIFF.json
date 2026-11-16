@@ -1,0 +1,15 @@
+{
+  "status": "ONLY_TD_WEIGHT_AND_NOTE_CHANGED",
+  "changes": [
+    {
+      "path": "td_cordon.idp_objective_weight",
+      "before": 0.5,
+      "after": 0.45
+    },
+    {
+      "path": "td_cordon.idp_objective_weight_note",
+      "before": "User decision 2026-11-16: TD inner search and acceptance use 50 % cordon / 50 % FineCDF: F = 0.5 * cordon/cordon_before + 0.5 * sum FineCDF J_k / J_before. Both terms are normalized at the parent state; 0 = cordon only.",
+      "after": "User decision 2026-11-17: restore TD inner search and acceptance to 55 % cordon / 45 % FineCDF: F = 0.55 * cordon/cordon_before + 0.45 * sum FineCDF J_k / J_before. Both terms are normalized at the parent state; 0 = cordon only."
+    }
+  ]
+}
