@@ -560,12 +560,14 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
     try:
         control.checkpoint('TRIAL_APPLY', block=BLOCK, candidate=base._candidate_signature(BLOCK, candidate, rows))
         actual = base._apply_candidate(adapter, BLOCK, candidate, rows, {}, state, trial)
+        from .live03_td_parameters import capture_write_readback, assert_trial_freeze
+        actual, rec['parameter_write_readback'] = capture_write_readback(adapter, state, actual, trial)
         control.checkpoint('TRIAL_ASSIGNMENT', block=BLOCK)
         gap = base._assign_candidate(adapter, trial / 'ASSIGNMENT', BLOCK)
         dirty['demand'] = False
         adapter.parameter_persistence(BLOCK, actual)
         after = adapter.snapshot()
-        base.assert_freeze(state, after, BLOCK, rows=actual, candidate=candidate, cfg=cfg)
+        assert_trial_freeze(base, state, after, BLOCK, actual, candidate, cfg, trial)
         after_diag = adapter.diagnostics(trial / 'DIAGNOSTICS', 'STEP1_TRIAL')
         require(adapter.snapshot() == after, 'TRIAL_DIAGNOSTICS_CHANGED_MODEL')
         def decide(d):

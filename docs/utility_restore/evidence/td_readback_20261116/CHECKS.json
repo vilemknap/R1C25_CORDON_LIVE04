@@ -1,0 +1,55 @@
+{
+  "status": "TARGETED_OFFLINE_VALIDATION_PASS",
+  "base_remote_commit": "929f9e009f708cd8d7274ca18724b1d9f7b95020",
+  "base_local_equivalent_commit": "257cfbd4378c297ea4263a461dbccea8d4b49409",
+  "suites": {
+    "TD_READBACK": {
+      "cases": 23,
+      "failed": 0,
+      "skipped": 0,
+      "passed": 23
+    },
+    "REGRESSION": {
+      "cases": 81,
+      "failed": 0,
+      "skipped": 0,
+      "passed": 81
+    }
+  },
+  "distinct_passing_scenarios": 104,
+  "new_test_cases": 23,
+  "before_repro": "Unchanged donor persistence passes a 2.22e-16 roundtrip difference; unchanged donor exact freeze rejects it. No live numeric rounding is claimed as proven.",
+  "scope": "Bounded native-write readback, exact later freeze, synthetic accepted TD trial and verified rollback, utility transactions, row-identity refit, recovery and component-level blended TD with synthetic IDP.",
+  "native_trial_isolation": "New quantization/drift tests use FAMILY grouping, one inner step and disabled IDP; existing component-level TD test uses release 55/45 blend with synthetic IDP.",
+  "acceptance_limits_changed": false,
+  "donor_guard_source_changed": false,
+  "protected_sources_checked": 1606,
+  "live_visum_tested": false,
+  "full_historical_suite_run": false,
+  "test_artifacts": [
+    {
+      "path": "TD_READBACK.xml",
+      "raw_sha256": "1b84c07583032c161c95dbf4fddc7c261a67ba3800682ea401d8b1b621121472",
+      "published_sha256": "5208ea4c523f6101ec68da91de07a898384974767515e82a3d8a5c05e1dd7afa",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "TD_READBACK.log",
+      "raw_sha256": "f005a23ce70c1145583a5cd3b30ac80b0aa433a960545de265330e2ce202afa4",
+      "published_sha256": "f005a23ce70c1145583a5cd3b30ac80b0aa433a960545de265330e2ce202afa4",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "REGRESSION.xml",
+      "raw_sha256": "ad4401ba0aba7691917f1b2c601dac8fce9494c418de5d472333bde0580e94cd",
+      "published_sha256": "0d772a527f1cafc128dcb271aeb5c4840b99422ba59134810ebeb7711e9b477a",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    },
+    {
+      "path": "REGRESSION.log",
+      "raw_sha256": "56de7905192f2ee2d122635ebd6147b6bf6386b845a718077576b838d3e2e659",
+      "published_sha256": "56de7905192f2ee2d122635ebd6147b6bf6386b845a718077576b838d3e2e659",
+      "normalization": "UTF-8 lines, trailing whitespace removed, final newline"
+    }
+  ]
+}
