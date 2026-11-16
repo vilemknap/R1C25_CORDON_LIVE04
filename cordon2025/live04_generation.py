@@ -34,6 +34,7 @@ import numpy as np
 from .common import require, parent_module
 from .io import write_json, write_csv, mkdir
 from . import live02_v24917 as v17
+from . import live04_fit_objective as fit_objective
 
 RELEASE = 'LIVE04_V7_CORDON_GUARDED_GENERATION'
 LS_STATUS = 'SCHOOL_TG_FIXED_AMDY_LONG_TG_DEFERRED'
@@ -48,20 +49,25 @@ def _mods():
         supply=parent_module('r1_15a2_supply_visum'), dp=parent_module('r1_15a2_demand_policy_v1'))
 
 
-def fit_with_boundary(adapter, incidence, bounds, cfg, policy):
+def fit_with_boundary(adapter, incidence, bounds, cfg, policy, terms, model):
     """Exact port of v7 _fit_with_boundary; also returns the bounds of the joint fit."""
     m = _mods()
     fit_cfg = dict(policy.get('fit', {}), nonlinear_pa_repair=True)
     if not m.bdgen.active():
-        rows, summary, problem, solution = m.zf.fit(incidence, adapter.zones, bounds, cfg, fit_cfg)
+        problem = fit_objective.build_problem(incidence, adapter.zones, bounds, cfg, terms, model)
+        solution = m.zf.solve(problem, fit_cfg)
+        rows = m.zf.projection_rows(problem, solution, float(cfg.get('min_add_log_step', 1e-5)))
+        summary = m.zf.summary(problem, solution, rows)
         return rows, summary, problem, solution, None, dict(bounds)
     current = m.bdgen.current_values(adapter.visum, m.bdgen.STATE['zones'])
     env = (policy.get('envelope') or {}).get('boundary_reference_multiplier', [0.5, 2.0])
     all_bounds = dict(bounds)
     all_bounds.update(m.bdgen.bounds(current, adapter.generation_reference_values, cfg, env))
-    problem = m.zf.build_problem(incidence, adapter.zones, all_bounds, cfg)
+    problem = fit_objective.build_problem(incidence, adapter.zones, all_bounds, cfg, terms, model)
+    weighting = problem.objective_weighting
     bd_margins = m.bdpa.margins_from_problem(problem, m.bdgen.STATE['zones'])
     problem = m.bdgen.merge_pa(problem, m.bdgen.STATE['zones'])
+    problem.objective_weighting = weighting
     solution = m.zf.solve(problem, fit_cfg)
     all_rows = m.zf.projection_rows(problem, solution, float(cfg.get('min_add_log_step', 1.0e-5)))
     rows, steps = m.bdgen.split_rows(all_rows)
@@ -195,7 +201,12 @@ def design(adapter, diag, folder, context):
             bounds = m.tg.zone_bounds(m.mb, zone_rows, cfg, adapter.generation_reference_values)
             bounds, mobility_fit_bounds = m.zguard.constrain_fit_bounds(bounds, mz)
             incidence = v17.incidence_contract(inc)
-            rows, summary, _problem, solution, bd, all_bounds = fit_with_boundary(adapter, incidence, bounds, cfg, policy)
+            terms = fit_objective.captured_terms(diag, method)
+            model = np.asarray(diag['methods'][method]['model'], dtype=float)
+            rows, summary, _problem, solution, bd, all_bounds = fit_with_boundary(
+                adapter, incidence, bounds, cfg, policy, terms, model)
+            summary['objective_weighting'] = _problem.objective_weighting
+            write_json(folder / 'FIT_OBJECTIVE_AUTHORITY.json', _problem.objective_weighting)
             if not rows:
                 raise RuntimeError('V24917_FIT_PRODUCED_NO_ROWS')
             context['_genfix2_effect_model'] = {'problems': effect_problems(adapter, diag, all_bounds, cfg), 'bd': bd,
@@ -215,7 +226,7 @@ def design(adapter, diag, folder, context):
     adapter.v24917_status['last_mobility_guard'] = mobility
     if solution is not None:
         converged = bool(solution['converged'])
-        usable = bool(converged or solution['objective_final'] < solution['objective_initial'])
+        usable = fit_objective.usable_solution(solution)
         summaries = [{'family': f, 'method': m.zf.METHOD, 'converged': usable, 'solver_converged': converged,
                       'proposal_usable': usable, 'fit_solver_converged': converged,
                       'iterations': int(solution['iterations'])} for f in m.zf.FAMILIES]
@@ -299,10 +310,7 @@ def refine(adapter, context, scale, preview, before, after, folder):
     method = adapter.evaluator.method
     inc = before['_incidence'][method]
     index = v17.observation_index(inc.rows)
-    mb = np.asarray(before['methods'][method]['model'], dtype=float)
-    ma = np.asarray(after['methods'][method]['model'], dtype=float)
-    require(mb.shape == ma.shape == (len(inc.rows),) and np.isfinite(mb).all() and np.isfinite(ma).all(),
-            'V24917_REFIT_INVALID_MEASUREMENT')
+    mb, ma = fit_objective.measured_vectors(before, after, method)
     delta = []
     for row in problem.profile_rows:
         i = index[int(row['countlocation_no'])]
@@ -312,10 +320,13 @@ def refine(adapter, context, scale, preview, before, after, folder):
         delta.append(float(ma[i] - mb[i]))
     x = implemented_vector(problem.var_keys, preview, scale, bd)
     refined, audit = m.zf.measured_refit_problem(problem, x, np.array(delta), min(0.5, 0.5 * float(scale)))
+    refined = fit_objective.bind_objective(refined, v17.incidence_contract(inc)['profiles'],
+                                          fit_objective.captured_terms(before, method), mb)
     fit_cfg = dict(policy.get('fit', {}), nonlinear_pa_repair=True)
     solution = m.zf.solve(refined, fit_cfg)
     audit['solver_converged'] = bool(solution['converged'])
-    if not solution['converged']:
+    audit['proposal_usable'] = fit_objective.usable_solution(solution)
+    if not audit['proposal_usable']:
         return None, dict(audit, status='REFIT_SOLVER_NOT_CONVERGED')
     rows = m.zf.projection_rows(refined, solution, float(adapter.cfg.get('min_add_log_step', 1.0e-5)))
     rows, steps = m.bdgen.split_rows(rows)
@@ -334,8 +345,7 @@ def refine(adapter, context, scale, preview, before, after, folder):
     problems, operators = {}, {}
     for meth, p in effect['problems'].items():
         xm = implemented_vector(p['var_keys'], preview, scale, bd)
-        b = np.asarray(before['methods'][meth]['model'], dtype=float)
-        a = np.asarray(after['methods'][meth]['model'], dtype=float)
+        b, a = fit_objective.measured_vectors(before, after, meth)
         d = np.zeros(p['G'].shape[0])
         for i, k in enumerate(p['order']):
             if k is not None:
@@ -346,7 +356,8 @@ def refine(adapter, context, scale, preview, before, after, folder):
                            'prediction_error_l2_after': float(np.linalg.norm(d - G @ xm))}
     out = dict(context)
     out['projection'] = m.core.ProjectionResult(rows=rows, weighted_rmse=0.0, family_summaries=[
-        {'family': f, 'method': m.zf.METHOD, 'converged': True} for f in m.zf.FAMILIES])
+        {'family': f, 'method': m.zf.METHOD, 'converged': True,
+         'solver_converged': bool(solution['converged']), 'proposal_usable': True} for f in m.zf.FAMILIES])
     out['v24917_bd'] = new_bd
     out['_genfix2_effect_model'] = {'problems': problems, 'bd': new_bd, 'problem': refined}
     out['v24917_step_model'] = step_model(out, rows, new_bd)
@@ -355,8 +366,10 @@ def refine(adapter, context, scale, preview, before, after, folder):
                               'fit_rows': len(problem.profile_rows), 'unique_observation_ids': len(index),
                               'key_schema': 'LEGACY_LT100_CANTOR_EXTENDED_V1'},
                  cordon_effect_operators=operators, mobilityzone1=zproj, mobility_guard=mobility,
-                 rows=len(rows), boundary_steps=len((new_bd or {}).get('steps') or {}))
-    out['v24917'] = dict(context['v24917'], measured_zonal_refit=audit)
+                 rows=len(rows), boundary_steps=len((new_bd or {}).get('steps') or {}),
+                 objective_weighting=refined.objective_weighting)
+    out['v24917'] = dict(context['v24917'], measured_zonal_refit=audit,
+                         solver_converged=bool(solution['converged']), proposal_usable=True)
     write_json(folder / 'MEASURED_ZONAL_REFIT.json', audit)
     write_csv(folder / 'MEASURED_ZONAL_REFIT_ROWS.csv', rows)
     return out, audit

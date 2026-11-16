@@ -1,0 +1,44 @@
+{
+  "kind": "SYNTHETIC_NOT_NATIVE_PTV_VISUM",
+  "generation_status": "ACCEPTED",
+  "attempts": [
+    {
+      "status": "REJECTED",
+      "mode": "LINEAR_FIT",
+      "scale": 1.0,
+      "reasons": [
+        "TEST_FORCED_REJECTION"
+      ]
+    },
+    {
+      "status": "ELIGIBLE",
+      "mode": "MEASURED_ZONAL_REFIT",
+      "scale": 1.0,
+      "reasons": []
+    }
+  ],
+  "refit_status": "ZONAL_DIRECTION_REFITTED",
+  "refit_solver_converged": true,
+  "refit_objective_weighting": {
+    "schema": "LIVE04_FIT_ACCEPTANCE_OBJECTIVE_V1",
+    "authority": "CAPTURED_CORDON_OBJECTIVE_TERMS",
+    "rows": 136,
+    "zero_observed_rows": 1,
+    "protected_residual_multiplier": 1.0,
+    "row_ids_sha256": "3ffd280a7c2c08cedb82465543c95675d17b704f415a4da5548ca2454e73fc39",
+    "weights_sha256": "5728ce76a2e0aa7055348df23449e88c250e13805bf5072a9a4b91cd424ebd6f",
+    "parent_data_objective": 92527.19118827439,
+    "native_acceptance_required": true
+  },
+  "minimum": 1e-05,
+  "minimum_source": "ACCEPTANCE_MIN_RELATIVE_IMPROVEMENT",
+  "model_state": "LAST_ACCEPTED_STATE_IN_OPEN_VISUM",
+  "accepted_states": 1,
+  "row_mapping": {
+    "method": "FIRST_LAST",
+    "observation_rows": 136,
+    "fit_rows": 136,
+    "unique_observation_ids": 136,
+    "key_schema": "LEGACY_LT100_CANTOR_EXTENDED_V1"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "files": [
+    {
+      "name": "00_PROGRESS.json",
+      "bytes": 1143,
+      "sha256": "99116259034813bab5d421f5d24fb872fc33fb5659d4c7b2c892c2201845a02c"
+    },
+    {
+      "name": "COMBUSY_HOTFIX_ACTIVATION.json",
+      "bytes": 398,
+      "sha256": "df88d861a04834031932545aea01fbb372d3437d22d6ee952caaafedcd7c90b0"
+    },
+    {
+      "name": "BASELINE_OBJECTIVE.json",
+      "bytes": 1275,
+      "sha256": "2722a0b35dea09da1289b6905c97c783dc84fcf7915070e2cced0c4c2f343192"
+    },
+    {
+      "name": "CYCLE_PROGRESS.json",
+      "bytes": 1397081,
+      "sha256": "83771f8a4eade1e4029c02e7ad37bb4b5a8e788103d5b60e410df63f3aab7f53"
+    },
+    {
+      "name": "00_GENERATION_COEFFICIENT_REFERENCE.json",
+      "bytes": 471997,
+      "sha256": "5e3e33d0074a349ce733693633a5aec5cea9b3f234815f53764f799a3c1c8b59"
+    },
+    {
+      "name": "OPMAP1_ROLES.json",
+      "bytes": 1321,
+      "sha256": "cd35876b47be205bb373c5c32ab58234ff9b8770f9ded911dac9db3b6e4e1f36"
+    },
+    {
+      "name": "OBSERVATION_CONTRACT.json",
+      "bytes": 11422,
+      "sha256": "70cc0371a97385c3bcfba08138fbd272a58b7f44cc8885f2fc4e4730717e0ad7"
+    },
+    {
+      "name": "RESTORE_POINT.json",
+      "bytes": 960328,
+      "sha256": "eca91392c813bb40567b1760dd4f32bef71b7becba4dc5a1433ffd784727dbdc"
+    },
+    {
+      "name": "PATH_PREFLIGHT.json",
+      "bytes": 302,
+      "sha256": "0b1f69df66c29fff57e0700efd81834e2734b7f4ebce31551c51f40570a93e72"
+    },
+    {
+      "name": "RUN_ANCHORS.json",
+      "bytes": 868690,
+      "sha256": "8fef965447e8d71e2f6c2e62b29e9a7d2d241833e28ba132f16c3f65774ea194"
+    },
+    {
+      "name": "RUN_CHECKPOINT.json",
+      "bytes": 10491,
+      "sha256": "1ddbc81a1b3d6b1f587aeb1426451f39ed2406413ea66a580b0eeb8af8086910"
+    },
+    {
+      "name": "V7_RUNTIME_STATUS.json",
+      "bytes": 12737,
+      "sha256": "eab783b453d7fa3d50515814c395a770538b8f29558829a836ef78a17b32b0fe"
+    },
+    {
+      "name": "WRITE_AUDIT.jsonl",
+      "bytes": 805587,
+      "sha256": "743516f9c4576021ad100e6db6eeb720f747891e19186b05e77cd1e3616f6e8b"
+    },
+    {
+      "name": "NODE_VDF_BASELINE.json",
+      "bytes": 1217,
+      "sha256": "b6c2e95631deba66c3f741307c80212d68992453aafd4798ca2ecc2e21abf702"
+    },
+    {
+      "name": "ISOLATED_COPY_GUARD.json",
+      "bytes": 175,
+      "sha256": "74e3ea435d88912b4b0d961111f51f7e47da4665bd1e0691725617bea561b804"
+    },
+    {
+      "name": "LONG_SUPPORT_BASELINE.json",
+      "bytes": 3796,
+      "sha256": "d4de30e9f2416c12fa3dce310efb887d28c95733510c536e9a247628a490ef01"
+    },
+    {
+      "name": "LIVE04_SOURCE_PROOF.json",
+      "bytes": 32692,
+      "sha256": "6bd07bdbc95b0f3196665ec26110b3f6be898d09b0871594d973ed5645a92f49"
+    }
+  ],
+  "accepted_states": 0,
+  "source_file": "R1_VARIANTYBase_LIVE04_2025_2_LIVE04_BASE_48fb232a.ver",
+  "run_id": "LIVE04_TGTD_98c4c9cb1092",
+  "last_progress_phase": "LIVE02_PATH_SIGNATURE",
+  "recovery_depth": 1,
+  "completed_recovery_proof_attached": false,
+  "observation_rows": {
+    "ALL_ORDERED_UNIQUE_PAIRS": 120,
+    "EXACT_TWO_HITS": 120,
+    "FIRST_LAST": 298
+  },
+  "pasted_old_generation_rejection": "SECONDARY_METHOD_DEGRADED at +1.930110871100443 percent with old zero limit; new 2 percent setting already covers that gate."
+}
