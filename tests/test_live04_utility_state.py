@@ -433,3 +433,58 @@ def test_dseg_without_allocated_od_matrix_is_skipped(setup):
     raw.Net.DemandSegments.items[-1] = _DsegWithoutOD('BROKEN', 'RPC server unavailable')
     with pytest.raises(RuntimeError, match='RPC server unavailable'):
         UtilityState(a)
+
+
+def _embed(raw, code=None, filename='', internal=1):
+    """Visum 2026 / R1 procedure: script embedded in the .ver (EXECUTESCRIPTPARA, no SCRIPTFILE)."""
+    op = raw.ops[14]
+    op.values.pop('SCRIPTFILE', None)
+    params = Attr(USEINTERNALSCRIPTCODE=internal, FILENAME=filename)
+    if code is not None:
+        params.values['INTERNALSCRIPTCODE'] = code
+    op.ExecuteScriptParameters = params
+    return params
+
+
+def test_embedded_internal_script_code_is_validated(setup):
+    """Live run 2026-11-16: op 15 has FILENAME='' and USEINTERNALSCRIPTCODE=1."""
+    raw, a, u, parent, audit, inv = setup
+    _embed(raw, REPLACEMENT.read_text(encoding='utf-8'))
+    state = UtilityState(a)
+    assert state.update_script_reference == ('INTERNAL', 'ExecuteScriptParameters')
+    assert state.update_script_sha256 == hashlib.sha256(REPLACEMENT.read_text(encoding='utf-8').encode('utf-8')).hexdigest()
+    assert not audit.events
+
+
+def test_embedded_original_script_requires_replacement(setup):
+    raw, a, u, parent, audit, inv = setup
+    payload = json.loads(SOURCE.read_text())
+    _embed(raw, gzip.decompress(base64.b64decode(payload['content'])).decode('utf-8'))
+    with pytest.raises(ContractError, match='REPLACE_OPERATION_SCRIPT'):
+        UtilityState(a)
+    assert not audit.events
+
+
+def test_external_filename_from_execute_script_parameters(setup, tmp_path):
+    raw, a, u, parent, audit, inv = setup
+    copy = tmp_path / 'RUN_R1_TD_UTILITY_TRANSACTIONAL.py'
+    copy.write_bytes(REPLACEMENT.read_bytes())
+    _embed(raw, code='', filename=str(copy), internal=0)
+    state = UtilityState(a)
+    assert state.update_script_reference == ('FILE', 'ExecuteScriptParameters', str(copy))
+
+
+def test_unreadable_script_reports_what_was_tried(setup):
+    raw, a, u, parent, audit, inv = setup
+    _embed(raw, code=None)
+    with pytest.raises(ContractError, match='REFERENCE_UNREADABLE:ExecuteScriptParameters:internal=1'):
+        UtilityState(a)
+
+
+def test_embedded_script_change_during_run_is_detected(setup):
+    raw, a, u, parent, audit, inv = setup
+    params = _embed(raw, REPLACEMENT.read_text(encoding='utf-8'))
+    state = UtilityState(a)
+    params.values['INTERNALSCRIPTCODE'] += '\n# edited\n'
+    with pytest.raises(ContractError, match='SCRIPT_CHANGED_DURING_CALIBRATION'):
+        state.validate_operation()

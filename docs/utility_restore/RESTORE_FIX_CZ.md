@@ -85,6 +85,14 @@ Run script na `RUN_R1_TD_UTILITY_TRANSACTIONAL.py` z tohoto balíku**, nebo jeho
 obsahem nahradit dosavadní soubor. Původní dodaná kopie je bezeztrátově uložena
 v provenienčním JSON a testy ověřují její původní SHA-256.
 
+Doplněk 2026-11-16: procedura R1 má skripty vložené ve verzi
+(`EXECUTESCRIPTPARA FILENAME="" USEINTERNALSCRIPTCODE="1"`). Kalibrátor proto čte kód
+operace 15 z `Operation.ExecuteScriptParameters`: při vloženém kódu `INTERNALSCRIPTCODE`,
+jinak soubor `FILENAME` (relativně ke .ver). Stačí tedy vložit celý obsah
+`RUN_R1_TD_UTILITY_TRANSACTIONAL.py` jako vnitřní kód operace 15. Pokud kód ani soubor
+nejdou přečíst, běh se zastaví s `TD_UTILITY_UPDATE_SCRIPT_REFERENCE_UNREADABLE:` a výpisem
+toho, co se četlo.
+
 Nový skript je samostatný (stdlib + NumPy), zachovává `LAMBDA = 0.5`,
 `RATIO_MAX = 4.0` a dosavadní cold-start smlouvu. Mimo kalibrátor čte živé vstupy
 stejně jako původní verze; testy potvrzují totožné utility a poptávku. Uvnitř

@@ -10,11 +10,12 @@ from contextvars import ContextVar
 import ast
 import hashlib
 import json
+import os
 import re
 import threading
 import numpy as np
 
-from .common import require, parent_module, canonical_hash
+from .common import require, parent_module, canonical_hash, ContractError
 from .io import write_json, mkdir
 
 COMPONENTS = ('WORK_E_C', 'WORK_E_noC', 'WORK_noE_C', 'WORK_noE_noC', 'WORK_stud',
@@ -174,18 +175,62 @@ class UtilityState:
             target = int(match.group(1)) if match else int(token) if token.isdigit() else None
             require(target == no, 'TD_UTILITY_REFERENCE_CHANGED:' + component)
 
+    def _read_opt(self, obj, names, label):
+        """First readable AttValue of names (non-retryable read errors mean 'not available')."""
+        for name in names:
+            try:
+                return name, self.call(lambda: obj.AttValue(name), label)
+            except Exception as exc:
+                if self.com.is_retryable_com_error(exc):
+                    raise
+        return None, None
+
+    def script_source(self, row):
+        """(reference, bytes) of the Run-script code of operation row.
+
+        Visum 2026 keeps the script parameters on Operation.ExecuteScriptParameters
+        (procedure XML: <EXECUTESCRIPTPARA FILENAME=.. USEINTERNALSCRIPTCODE=..>), and the
+        R1 procedure embeds every script (USEINTERNALSCRIPTCODE=1, FILENAME=""). Embedded
+        code is read from INTERNALSCRIPTCODE; otherwise FILENAME (relative to the .ver).
+        The legacy Operation.SCRIPTFILE reference is still accepted.
+        """
+        op = row['object']; tried = []
+        for accessor in ('ExecuteScriptParameters', 'RunScriptParameters', 'ScriptParameters'):
+            try:
+                params = self.call(lambda: getattr(op, accessor), 'SCRIPT_PARAMETERS')
+            except Exception as exc:
+                if self.com.is_retryable_com_error(exc):
+                    raise
+                tried.append(accessor + ':NONE'); continue
+            if params is None:
+                tried.append(accessor + ':NONE'); continue
+            _, internal = self._read_opt(params, ('USEINTERNALSCRIPTCODE', 'UseInternalScriptCode'), 'SCRIPT_INTERNAL_FLAG')
+            code_attr, code = self._read_opt(params, ('INTERNALSCRIPTCODE', 'InternalScriptCode', 'SCRIPTCODE'), 'SCRIPT_CODE')
+            file_attr, filename = self._read_opt(params, ('FILENAME', 'FileName', 'SCRIPTFILE', 'ScriptFile'), 'SCRIPT_FILE')
+            tried.append('%s:internal=%r,code=%s,file=%r' % (accessor, internal, code_attr if code is not None else None, filename))
+            use_internal = internal is not None and str(internal).strip().lower() not in ('0', 'false', '0.0', '')
+            if use_internal and isinstance(code, str) and code.strip():
+                return ('INTERNAL', accessor), code.encode('utf-8')
+            if not use_internal and isinstance(filename, str) and filename.strip():
+                path = Path(os.path.expandvars(filename.strip().strip('"')))
+                if not path.is_absolute():
+                    source = self.call(lambda: self.adapter.visum.IO.CurrentVersionFile, 'MODEL_FILE')
+                    path = Path(source).parent / path
+                require(path.is_file(), 'TD_UTILITY_UPDATE_SCRIPT_FILE_MISSING:' + str(path))
+                return ('FILE', accessor, str(path)), path.read_bytes()
+        from .live01_visum import script_references
+        source = self.call(lambda: self.adapter.visum.IO.CurrentVersionFile, 'MODEL_FILE')
+        refs = script_references([row], source)
+        if len(refs) == 1:
+            return ('FILE', refs[0]['attribute'], refs[0]['path']), Path(refs[0]['path']).read_bytes()
+        raise ContractError('TD_UTILITY_UPDATE_SCRIPT_REFERENCE_UNREADABLE:' + ';'.join(tried))
+
     def validate_script(self, row):
-        if self.update_script_path is None:
-            from .live01_visum import script_references
-            source = self.call(lambda: self.adapter.visum.IO.CurrentVersionFile, 'MODEL_FILE')
-            refs = script_references([row], source)
-            require(len(refs) == 1, 'TD_UTILITY_UPDATE_SCRIPT_REFERENCE_UNREADABLE')
-            self.update_script_path = Path(refs[0]['path'])
-            self.update_script_attribute = refs[0]['attribute']
-            self.update_script_reference = self.call(lambda: row['object'].AttValue(self.update_script_attribute), 'SCRIPT_REFERENCE')
-        require(self.call(lambda: row['object'].AttValue(self.update_script_attribute), 'SCRIPT_REFERENCE') == self.update_script_reference,
+        reference, data = self.script_source(row)
+        require(self.update_script_reference is None or reference == self.update_script_reference,
                 'TD_UTILITY_UPDATE_SCRIPT_REFERENCE_CHANGED')
-        data = self.update_script_path.read_bytes()
+        self.update_script_reference = reference
+        self.update_script_path = reference[-1] if reference[0] == 'FILE' else 'INTERNAL_SCRIPT_CODE'
         tree = ast.parse(data)
         markers = [n.value.value for n in tree.body if isinstance(n, ast.Assign) and isinstance(n.value, ast.Constant)
                    and any(isinstance(t, ast.Name) and t.id == 'R1_TD_INPUT_PROTOCOL' for t in n.targets)]
