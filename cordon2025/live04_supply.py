@@ -35,6 +35,7 @@ What is cordon-specific (this module):
 """
 from __future__ import annotations
 import copy
+import heapq
 import json
 import math
 import sqlite3
@@ -51,6 +52,33 @@ from .io import write_json, mkdir, exception_text
 RELEASE = 'LIVE04_SUPPLYMIX_CORDON_ROWS'
 BLOCK = 'SUPPLY_ADDVAL1'
 POLICY_SOURCE = 'provenance/live01/DONOR_EFFECTIVE_CONFIG_FORENSIC_ONLY.json'
+
+
+def _top_route_pairs(on, off, limit):
+    """Exact best volume-product pairs without materializing the full cross product.
+
+    Both inputs are sorted by (-volume, pk). With nonnegative volumes, the pair
+    key is monotone along either axis, so a heap frontier yields the same first
+    ``limit`` pairs as sorting the entire cross product.
+    """
+    if not on or not off or limit <= 0:
+        return []
+
+    def key(i, j):
+        a, b = on[i], off[j]
+        return (-a['volume'] * b['volume'], a['pk'], b['pk'], i, j)
+
+    heap = [key(0, 0)]
+    seen = {(0, 0)}
+    result = []
+    while heap and len(result) < limit:
+        _, _, _, i, j = heapq.heappop(heap)
+        result.append((on[i], off[j]))
+        for ni, nj in ((i + 1, j), (i, j + 1)):
+            if ni < len(on) and nj < len(off) and (ni, nj) not in seen:
+                seen.add((ni, nj))
+                heapq.heappush(heap, key(ni, nj))
+    return result
 
 
 # ------------------------------------------------------------------ options
@@ -224,21 +252,35 @@ def make_collector(*args, **kwargs):
             self.store = Path(store)
             self.store_sha256 = store_sha256
             self.stats = Counter()
+            self.progress_path = Path(folder) / 'SUPPLY_ROUTE_BUILD_PROGRESS.json'
+            self.last_progress_at = 0.0
             self._consume()
+
+        def _progress(self, phase, force=False):
+            now = time.monotonic()
+            if not force and now - self.last_progress_at < 30.0:
+                return
+            write_json(self.progress_path, {'phase': phase, 'routes_written': self.route_count,
+                                            'markets_processed': self.stats['markets'],
+                                            'updated_utc': time.time()})
+            self.last_progress_at = now
 
         # ----------------------------------------------------------- stream
         def _consume(self):
             core = parent_module('r1_15a2_core')
             require(self.store.is_file(), 'LIVE04_SUPPLY_PATH_STORE_MISSING')
+            self._progress('VERIFY_SOURCE', force=True)
             require(sha256(self.store) == self.store_sha256, 'LIVE04_SUPPLY_PATH_STORE_HASH_CHANGED')
             con = sqlite3.connect('file:' + self.store.as_posix() + '?mode=ro', uri=True)
             try:
+                self._progress('READ_SOURCE_EDGES', force=True)
                 edges = {int(i): (int(ln), int(fr), int(to)) for i, ln, fr, to in
                          con.execute('SELECT eid,link_no,from_no,to_no FROM edges')}
                 codes = {core.norm_code(c) for c in self.sem['selected_dsegs']}
                 query = ('SELECT g.orig,g.dest,v.dseg,g.path_index,g.edge_ids,g.edge_count,v.volume '
                          'FROM geometry g JOIN volumes v ON v.gid=g.gid ORDER BY g.orig,g.dest,v.dseg,g.path_index')
                 market, routes = None, []
+                self._progress('STREAM_ROUTES', force=True)
                 for o, d, dseg, pi, blob, count, vol in con.execute(query):
                     code = core.norm_code(dseg)
                     if code not in codes:
@@ -261,8 +303,11 @@ def make_collector(*args, **kwargs):
                     rid = self._store(key, int(pi), vol, seq, multiplicity, contrib)
                     routes.append({'pk': (*key, int(pi)), 'route_id': rid, 'volume': vol, 'seq': seq,
                                    'multiplicity': multiplicity, 'contrib': contrib})
+                    if self.route_count % 10000 == 0:
+                        self._progress('STREAM_ROUTES')
                 self._market(market, routes)
                 self.db.commit()
+                self._progress('ROUTE_STORE_COMMITTED', force=True)
             finally:
                 con.close()
 
@@ -280,6 +325,7 @@ def make_collector(*args, **kwargs):
         def _market(self, market, routes):
             if market is None or not routes:
                 return
+            self.stats['markets'] += 1
             seq_mod = parent_module('r1_15a2_sequence_v23')
             touched = set()
             for r in routes:
@@ -304,13 +350,12 @@ def make_collector(*args, **kwargs):
                             self._track(i, 'ON_ONLY_PROBE', w, (w[0][1], w[-1][2]), o['volume'], o['volume'], 0.,
                                         market, (o['pk'],), True)
                     continue
-                pairs = [(o, f) for o in on for f in off]
-                pairs.sort(key=lambda p: (-p[0]['volume'] * p[1]['volume'], p[0]['pk'], p[1]['pk']))
-                if len(pairs) > self.max_pairs_per_market:
-                    self.skipped_branches['PAIRS_TRUNCATED_REQUIRE_AUTHORITY_REVIEW'] += len(pairs) - self.max_pairs_per_market
+                pair_count = len(on) * len(off)
+                if pair_count > self.max_pairs_per_market:
+                    self.skipped_branches['PAIRS_TRUNCATED_REQUIRE_AUTHORITY_REVIEW'] += pair_count - self.max_pairs_per_market
                 matched = False
                 on_market = sum(r['volume'] for r in on); off_market = sum(r['volume'] for r in off)
-                for o, f in pairs[:self.max_pairs_per_market]:
+                for o, f in _top_route_pairs(on, off, self.max_pairs_per_market):
                     split = None
                     for profile in anchors(o):
                         if profile in f['multiplicity']:
@@ -338,10 +383,12 @@ def make_collector(*args, **kwargs):
 
         def finish(self):
             if not self._indexed:
+                self._progress('BUILD_INDEXES', force=True)
                 self.db.execute('CREATE INDEX route_edges_lookup ON route_edges(link_no,from_no,to_no)')
                 self.db.execute('CREATE INDEX route_edges_path ON route_edges(route_id)')
                 self.db.commit()
                 self._indexed = True
+                self._progress('INDEXES_COMMITTED', force=True)
             return {'schema': 'LIVE04_CORDON_ROUTE_EVIDENCE_V1', 'parent_hash': self.parent_hash,
                     'assignment_path_hash': self.store_sha256, 'path_store_route_count': self.route_count,
                     'path_store_type': 'SQLITE_ON_DISK', 'drivers': len(self.drivers),
