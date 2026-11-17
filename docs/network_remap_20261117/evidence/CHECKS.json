@@ -1,0 +1,21 @@
+{
+  "status": "CODE_TESTS_PASS_NDS45_LOCATION_PENDING",
+  "tests": {
+    "tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "runtime_configuration_unchanged": true,
+  "td_idp_weight": 0.45,
+  "native_visum_tested_here": false,
+  "actual_csv_failure_reproduced": true,
+  "missing_observations": [
+    "NDS_S45A",
+    "NDS_S45B"
+  ],
+  "observation_rows_removed": 0,
+  "automatic_remap": false,
+  "data_targets_changed": false,
+  "new_start_order": "EXTRA_LINK_CHECK_BEFORE_BASELINE_EVALUATOR_AND_PATH_CAPTURE"
+}

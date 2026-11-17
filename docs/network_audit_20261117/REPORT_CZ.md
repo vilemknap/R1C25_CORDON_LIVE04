@@ -1,5 +1,9 @@
 # Kontrola sítě po úpravách, 17. 11. 2026
 
+Novější export z 11:41 a následný pád popisuje
+[aktuální kontrola](../network_remap_20261117/REPORT_CZ.md).
+Tento dokument se vztahuje pouze k dříve dodaným `nodes.csv` a `links.csv`.
+
 **Mapování kalibrace zůstává použitelné. Nulový dopad na intenzity ale z exportů
 potvrdit nelze: změnila se topologie a před dalším během je nutný nový assignment
 a skimy na upravené síti.** Kód ani nastavení kalibrátoru nebyly tímto auditem

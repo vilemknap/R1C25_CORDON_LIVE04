@@ -1,0 +1,276 @@
+{
+  "schema": "R1C25_CURRENT_NETWORK_AUDIT_V1",
+  "date": "2026-11-17",
+  "source_version": "C:\\Users\\vilem_knap\\Documents\\VISUM\\v45\\2025\\R1_VARIANTYBase_LIVE04_2025_4_LIVE04_BASE_d49e4158.ver",
+  "export_time": "2026-11-17T11:41:04",
+  "inputs": {
+    "nodes": {
+      "name": "01_NODES.csv",
+      "sha256": "2ed4b7c22cf1241d582081d6aeaa4e1746634104974145bc7933ce9a0e93a22a",
+      "bytes": 143796
+    },
+    "links": {
+      "name": "02_LINKS.csv",
+      "sha256": "67bb4eb7751c20efc74e726a3c63834baf58c858eda578a8e2277ac0db964e32",
+      "bytes": 15435804
+    },
+    "connectors": {
+      "name": "03_CONNECTORS.csv",
+      "sha256": "8d96ae6d00129c70b8c361e8aea4a665fbd376f238fef28e0494dbbd1387d6f9",
+      "bytes": 60715
+    },
+    "turns": {
+      "name": "04_TURNS.csv",
+      "sha256": "934866c2c08fced09942f4b1905563f02a8d35fb955250d6fd90cf06d1336fb0",
+      "bytes": 1095966
+    },
+    "zones": {
+      "name": "05_ZONES.csv",
+      "sha256": "6422848de78d10a6b40f5717dd3785252d6e65d261c74ec497266467c442f793",
+      "bytes": 14201702
+    },
+    "C": {
+      "name": "06_DEMAND_C.csv",
+      "sha256": "66aa554cd44eed2c97a59b77e1184fcc25ec3b52a0d09a17354ae43e92e99eb5",
+      "bytes": 7707908
+    },
+    "LNV": {
+      "name": "06_DEMAND_LNV.csv",
+      "sha256": "915de540670ce776da8a0b678c6e84fcfc9ff12aca90caea2b3ccbcb998f988d",
+      "bytes": 2763937
+    },
+    "NV": {
+      "name": "06_DEMAND_NV.csv",
+      "sha256": "db2f0c4dd31b729682ac15e6bb789ab44c6e4aa713520d32a0d37378a68aa3b8",
+      "bytes": 640499
+    }
+  },
+  "counts": {
+    "nodes": 3873,
+    "links": 10832,
+    "connectors": 1424,
+    "turns": 17014,
+    "zones": 681
+  },
+  "unique_nodes_links_zones": true,
+  "all_link_endpoints_exist": true,
+  "all_connector_objects_exist": true,
+  "turns_with_missing_link_endpoints": [],
+  "car_connector_direction_gaps": {},
+  "versus_previous_export": {
+    "previous_nodes": 3803,
+    "nodes_now": 3873,
+    "previous_links": 10614,
+    "links_now": 10832,
+    "added_link_keys": 258,
+    "removed_link_keys": 40,
+    "changed_common_link_attributes": {},
+    "examples": []
+  },
+  "matrix_validation": {
+    "C": {
+      "rows": 437782,
+      "sum_csv": 2239377.068805955,
+      "sum_metadata": 2239377.0689579416,
+      "rounding_difference": -0.0001519867219030857,
+      "invalid_entries": 0
+    },
+    "LNV": {
+      "rows": 177961,
+      "sum_csv": 223394.51380000048,
+      "sum_metadata": 223394.51379999996,
+      "rounding_difference": 5.238689482212067e-10,
+      "invalid_entries": 0
+    },
+    "NV": {
+      "rows": 40887,
+      "sum_csv": 59582.4656999993,
+      "sum_metadata": 59582.46569999995,
+      "rounding_difference": -6.475602276623249e-10,
+      "invalid_entries": 0
+    }
+  },
+  "estimated_nonpositive_minimum_cost": [
+    {
+      "key": [
+        99811844,
+        99800791,
+        99800792
+      ],
+      "length_m": 36.093,
+      "v0_generic_kmh": 90.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 1.44372,
+      "generalized_minimum_estimate_s": -18.55628
+    },
+    {
+      "key": [
+        99810977,
+        99800422,
+        99800402
+      ],
+      "length_m": 91.942,
+      "v0_generic_kmh": 65.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 5.092172307692308,
+      "generalized_minimum_estimate_s": -14.907827692307691
+    },
+    {
+      "key": [
+        99810977,
+        99800402,
+        99800422
+      ],
+      "length_m": 91.942,
+      "v0_generic_kmh": 55.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 6.018021818181818,
+      "generalized_minimum_estimate_s": -13.981978181818182
+    },
+    {
+      "key": [
+        99810976,
+        99800403,
+        99800422
+      ],
+      "length_m": 137.14499999999998,
+      "v0_generic_kmh": 65.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 7.595723076923076,
+      "generalized_minimum_estimate_s": -12.404276923076925
+    },
+    {
+      "key": [
+        99811842,
+        1000082,
+        99800791
+      ],
+      "length_m": 218.345,
+      "v0_generic_kmh": 90.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 8.7338,
+      "generalized_minimum_estimate_s": -11.2662
+    },
+    {
+      "key": [
+        99810996,
+        99800429,
+        99800397
+      ],
+      "length_m": 160.40699999999998,
+      "v0_generic_kmh": 65.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 8.884079999999999,
+      "generalized_minimum_estimate_s": -11.115920000000001
+    },
+    {
+      "key": [
+        99810976,
+        99800422,
+        99800403
+      ],
+      "length_m": 137.14499999999998,
+      "v0_generic_kmh": 55.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 8.976763636363636,
+      "generalized_minimum_estimate_s": -11.023236363636364
+    },
+    {
+      "key": [
+        99811857,
+        99800792,
+        99800795
+      ],
+      "length_m": 260.64799999999997,
+      "v0_generic_kmh": 90.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 10.42592,
+      "generalized_minimum_estimate_s": -9.57408
+    },
+    {
+      "key": [
+        99810996,
+        99800397,
+        99800429
+      ],
+      "length_m": 160.40699999999998,
+      "v0_generic_kmh": 55.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 10.499367272727273,
+      "generalized_minimum_estimate_s": -9.500632727272727
+    },
+    {
+      "key": [
+        99810985,
+        1003088,
+        99800425
+      ],
+      "length_m": 27.346,
+      "v0_generic_kmh": 55.0,
+      "addval1": -1.0,
+      "t0_estimate_s": 1.78992,
+      "generalized_minimum_estimate_s": -8.21008
+    },
+    {
+      "key": [
+        99810985,
+        99800425,
+        1003088
+      ],
+      "length_m": 27.346,
+      "v0_generic_kmh": 55.0,
+      "addval1": -1.0,
+      "t0_estimate_s": 1.78992,
+      "generalized_minimum_estimate_s": -8.21008
+    },
+    {
+      "key": [
+        99811856,
+        99800795,
+        99800794
+      ],
+      "length_m": 313.406,
+      "v0_generic_kmh": 90.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 12.536240000000001,
+      "generalized_minimum_estimate_s": -7.463759999999999
+    },
+    {
+      "key": [
+        99810932,
+        99800402,
+        1002886
+      ],
+      "length_m": 237.073,
+      "v0_generic_kmh": 65.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 13.130196923076923,
+      "generalized_minimum_estimate_s": -6.869803076923077
+    },
+    {
+      "key": [
+        99810932,
+        1002886,
+        99800402
+      ],
+      "length_m": 237.073,
+      "v0_generic_kmh": 55.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 15.517505454545455,
+      "generalized_minimum_estimate_s": -4.482494545454545
+    },
+    {
+      "key": [
+        99810997,
+        1002886,
+        99800429
+      ],
+      "length_m": 307.558,
+      "v0_generic_kmh": 65.0,
+      "addval1": -2.0,
+      "t0_estimate_s": 17.033981538461536,
+      "generalized_minimum_estimate_s": -2.9660184615384644
+    }
+  ],
+  "cost_estimate_limit": "Generic V0PRT used. Native T0_PRTSYS(C) and current C/C_noT impedance must be checked before treating this as an exact live-domain decision. No parameters changed."
+}
