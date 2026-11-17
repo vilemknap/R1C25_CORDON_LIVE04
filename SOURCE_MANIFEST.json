@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_TD_5545_20261117",
+  "release": "R1C25_LIVE05_8_EARLY_EXTRA_PREFLIGHT_20261117",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -1493,8 +1493,8 @@
     },
     {
       "path": "cordon2025/live04_cycle.py",
-      "size": 36320,
-      "sha256": "5118dd9a355d323a3fcb2767b71c180773109082a60156f9af962f9f439fa9b5"
+      "size": 36470,
+      "sha256": "f26fd5342c591a035538ff0e1029f3ec3139f99ea8e0a7424ad32baf38d053cd"
     },
     {
       "path": "cordon2025/live04_epoch.py",
@@ -1578,8 +1578,8 @@
     },
     {
       "path": "cordon2025/live05_extra.py",
-      "size": 2320,
-      "sha256": "d6856ae0ac4a6fbe8ce042e57fee0e956b9af4039d39f5a21c017dbc5072b78f"
+      "size": 4622,
+      "sha256": "19156375005c778ab7483fe2592a0a959ccb5dfe99486c16f74b858b1f8940ff"
     },
     {
       "path": "cordon2025/optimizer.py",
@@ -3328,13 +3328,58 @@
     },
     {
       "path": "docs/network_audit_20261117/REPORT_CZ.md",
-      "size": 4291,
-      "sha256": "1306e7612b13e20c07806b156d0ef8a2cfcab80c2f84b08be1e6327347e8cb16"
+      "size": 4487,
+      "sha256": "e1ef6b77af9002c909b2fa1e34e7e87c7fa9b16748ca5a77f0adecdce7bde453"
     },
     {
       "path": "docs/network_audit_20261117/STATION_CHECKS.csv",
       "size": 2647,
       "sha256": "dfcb9ea0b89ff6882240dd3ec51d84231f460e257cbf54a18fcdd1e8cd934eec"
+    },
+    {
+      "path": "docs/network_remap_20261117/REPORT_CZ.md",
+      "size": 4912,
+      "sha256": "0d814bbfc94ca055cd80500d62c8fc228fc759d7b835b6d7cf3af1a3757bb8e9"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/CHECKS.json",
+      "size": 533,
+      "sha256": "90584f0c21fd8e50df5a56edbe457f527e1656ef21c53165b9c8f27aabac0322"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/CURRENT_NETWORK_AUDIT.json",
+      "size": 6994,
+      "sha256": "1294f18806ab37b8a789c70f64e8cce0434104677d065497482a471a716ee103"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/CURRENT_STATION_CHECKS.json",
+      "size": 3555,
+      "sha256": "ac866a504c061ead9e3daa9e4be0234271e2c667a580dad0fd1753e213c65193"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/EXTRA_OBSERVATION_LINKS.json",
+      "size": 4278,
+      "sha256": "98e662ab2f41df3ebfda0463b664779a485d7d20fa93ca1f459a532ee786718b"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/EXTRA_OBSERVATION_NETWORK_KEYS.csv",
+      "size": 475126,
+      "sha256": "51c23cd5f2a8be5738250b7959b5046ac0b5b6a8e5c48bb2126e263aaa74ce15"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/NDS45_CANDIDATE_LINKS.csv",
+      "size": 1139,
+      "sha256": "bf71c2cb881a5e2ddce90c96cb178678885154dbd1c82545dbf1a91f595d258a"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/PREFLIGHT.log",
+      "size": 110,
+      "sha256": "8fdfd55ef17993b1f1e4a9eed99a0e6f5729f51ad22292c20ec6b0b99d572d6b"
+    },
+    {
+      "path": "docs/network_remap_20261117/evidence/PREFLIGHT.xml",
+      "size": 1927,
+      "sha256": "849c84831f567041035b1061ebf9e065f26497a79c7b74e82b526bd5961a117a"
     },
     {
       "path": "docs/path_pipeline/PERFORMANCE_REVIEW_CZ.md",
@@ -9825,6 +9870,11 @@
       "path": "tests/test_live05_extra.py",
       "size": 8002,
       "sha256": "58ab8adbd2f75dafd2d158b334252d8274e414b45944572f9fc9dbc00df87738"
+    },
+    {
+      "path": "tests/test_live05_extra_preflight.py",
+      "size": 4673,
+      "sha256": "c17a61e42418a7974845925781c5a6b4d092a399832e6286f851ce04b967f3b8"
     },
     {
       "path": "tests/test_live05_speed.py",

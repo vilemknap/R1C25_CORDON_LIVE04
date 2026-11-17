@@ -202,6 +202,10 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 pre, state = model_preflight(visum, view, base_dir, ctl, opt)
                 copy_guard = isolated_copy_guard(cfg, state['source_version'])
                 write_json(folder / 'ISOLATED_COPY_GUARD.json', copy_guard)
+                # Reject stale observation mappings before the expensive baseline path capture.
+                from .live05_extra import check_links as extra_check
+                extra_links = extra_check(visum, contract, folder, native=not synthetic,
+                                          source_version=state['source_version'])
                 if continuation:
                     plan = cont.resolve(state['source_version'], state['source_file_sha256'],
                                         lambda o: planned_blocks(cfg, o), cfg['outer_cycle_start'])
@@ -246,8 +250,6 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     adapter.accept_long_support(long_support0)
                 from . import live04_nodevdf as nodevdf      # LIVE04.12.3: node delays, guard only
                 node_vdf0 = nodevdf.record(visum, folder, 'BASELINE')
-                from .live05_extra import check_links as extra_check     # LIVE05 NDS/ASD/K rows
-                extra_links = extra_check(visum, contract, folder, native=not synthetic)
                 write_json(folder / 'RESTORE_POINT.json', {
                     'schema': 'LIVE04_RESTORE_POINT_V1', 'snapshot': snap0, 'state_hash': snap0['state_hash'],
                     'baseline_diagnostic_hash': baseline['diagnostic_hash'],
