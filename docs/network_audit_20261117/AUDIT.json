@@ -1,0 +1,623 @@
+{
+  "schema": "R1C25_NETWORK_CSV_READONLY_AUDIT_V1",
+  "date": "2026-11-17",
+  "code_base": "d69f2a1cc655d945d9618648757ce22f92955254",
+  "status": "CALIBRATION_BINDINGS_COMPATIBLE_NETWORK_CHANGED_NATIVE_EFFECT_UNVERIFIED",
+  "inputs": {
+    "nodes.csv": {
+      "sha256": "22e06a1b97e11802695f4d6460f8c9514d40f32bbcecc006ce1b149fe1cf6e65",
+      "bytes": 405458
+    },
+    "links.csv": {
+      "sha256": "ab708158c373847c430cad98216b4418077ffdf9381c9849b4211981638ffd56",
+      "bytes": 4162576
+    },
+    "RUN_ANCHORS.json": {
+      "sha256": "a485f638afb1f9ae7c9fe2f43a3a4ef35a2d9d3fd98cad8a47f3c25ea8becc92",
+      "bytes": 868690
+    },
+    "NODE_VDF_BASELINE.json": {
+      "sha256": "b6c2e95631deba66c3f741307c80212d68992453aafd4798ca2ecc2e21abf702",
+      "bytes": 1217
+    },
+    "STATION_MAPPING.csv": {
+      "sha256": "bfa318de7896b4b209cebb20863d334f376fa0db725412e80bf2dc81d0ac4700",
+      "bytes": 19141
+    },
+    "EXTRA_OBSERVATIONS_LIVE05.csv": {
+      "sha256": "07d3aa8468b9eef215f5a26a58a4e40948c24a4a016cbff1fa8b85ccab2681b3",
+      "bytes": 14791
+    },
+    "STATION_PROFILE_SIGN_EDGES.json": {
+      "sha256": "a590d6f8f9a1c690e23de1d35bb8d71176fee52616bb8148663a510ae73909cf",
+      "bytes": 6768
+    }
+  },
+  "baseline_scope": "Old complete directed link key roster and node counts/types from live logs; old per-link supply values available only for 32 mapped station directions, with t0-derived speed for 24 directions.",
+  "counts": {
+    "nodes_before": 3791,
+    "nodes_now": 3803,
+    "directed_links_before": 10576,
+    "directed_links_now": 10614,
+    "directed_links_added": 50,
+    "directed_links_removed": 12,
+    "common_directed_links": 10564,
+    "new_endpoint_nodes": 12,
+    "mapped_station_directions": 32,
+    "extra_observation_rows": 130,
+    "extra_observation_unique_links": 120,
+    "unique_observation_links_total": 148
+  },
+  "station_checks": {
+    "all_pass": true,
+    "directions": 32,
+    "type_and_capacity_unchanged": 32,
+    "length_difference_max_m": 0.0002884033674490638,
+    "historical_speed_comparable_directions": 24,
+    "speed_difference_max_kmh": 2.842170943040401e-14,
+    "plus_minus_edge_keys_unchanged": true,
+    "motorway_mode_contract_pass": true
+  },
+  "extra_checks": {
+    "all_links_present_and_car_usable": true,
+    "counts": {
+      "ASD": 12,
+      "KMOV": 24,
+      "NDS": 94
+    },
+    "ordered_pair_rows": 24,
+    "ordered_pair_semantics": "Two links on one ordered path; adjacency is not required."
+  },
+  "topology_checks": {
+    "unique_keys": true,
+    "all_endpoints_exist": true,
+    "no_self_loops": true,
+    "new_links_positive_length_capacity_speed_lanes": true,
+    "new_links_car_and_freight_modes_usable": true,
+    "removed_link_endpoint_pairs_still_connected_ignoring_turn_restrictions": true
+  },
+  "node_types_before": {
+    "0": 1652,
+    "70": 944,
+    "71": 30,
+    "72": 197,
+    "73": 114,
+    "75": 121,
+    "77": 77,
+    "78": 54,
+    "79": 602
+  },
+  "node_types_now": {
+    "78": 54,
+    "79": 602,
+    "70": 944,
+    "72": 197,
+    "0": 1664,
+    "71": 30,
+    "75": 121,
+    "77": 77,
+    "73": 114
+  },
+  "new_nodes_all_type_0": true,
+  "new_nodes_all_t0_zero": true,
+  "new_node_nearest_stations": [
+    {
+      "node_no": 99800765,
+      "nearest_station": 11,
+      "distance_to_station_point_m": 1482.2600075852959
+    },
+    {
+      "node_no": 99800766,
+      "nearest_station": 13,
+      "distance_to_station_point_m": 1216.151638000488
+    },
+    {
+      "node_no": 99800767,
+      "nearest_station": 13,
+      "distance_to_station_point_m": 1351.0779965018746
+    },
+    {
+      "node_no": 99800768,
+      "nearest_station": 13,
+      "distance_to_station_point_m": 1565.4219492277173
+    },
+    {
+      "node_no": 99800769,
+      "nearest_station": 13,
+      "distance_to_station_point_m": 1333.0427263809343
+    },
+    {
+      "node_no": 99800770,
+      "nearest_station": 13,
+      "distance_to_station_point_m": 1710.6685186541697
+    },
+    {
+      "node_no": 99800771,
+      "nearest_station": 12,
+      "distance_to_station_point_m": 628.0924773781109
+    },
+    {
+      "node_no": 99800772,
+      "nearest_station": 11,
+      "distance_to_station_point_m": 1319.1727220098546
+    },
+    {
+      "node_no": 99800773,
+      "nearest_station": 12,
+      "distance_to_station_point_m": 1172.4087870524786
+    },
+    {
+      "node_no": 99800774,
+      "nearest_station": 12,
+      "distance_to_station_point_m": 1285.7184504833192
+    },
+    {
+      "node_no": 99800775,
+      "nearest_station": 11,
+      "distance_to_station_point_m": 1292.9804651270908
+    },
+    {
+      "node_no": 99800776,
+      "nearest_station": 11,
+      "distance_to_station_point_m": 1363.3028864597447
+    }
+  ],
+  "inactive_direction_context": {
+    "count": 961,
+    "all_have_zero_exported_volume_and_usable_reverse": true,
+    "newly_added_count": 0,
+    "interpretation": "Zero supply on one-way reverse directions is not reported as a new network defect."
+  },
+  "removed_link_replacements": [
+    {
+      "removed_key": [
+        2000197,
+        1000612,
+        1002944
+      ],
+      "added_edges_only_path": {
+        "length_m": 630.408,
+        "keys": [
+          [
+            99811809,
+            1000612,
+            99800771
+          ],
+          [
+            99811810,
+            99800771,
+            1002944
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 630.408,
+        "keys": [
+          [
+            99811809,
+            1000612,
+            99800771
+          ],
+          [
+            99811810,
+            99800771,
+            1002944
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        2000197,
+        1002944,
+        1000612
+      ],
+      "added_edges_only_path": {
+        "length_m": 630.408,
+        "keys": [
+          [
+            99811810,
+            1002944,
+            99800771
+          ],
+          [
+            99811809,
+            99800771,
+            1000612
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 630.408,
+        "keys": [
+          [
+            99811810,
+            1002944,
+            99800771
+          ],
+          [
+            99811809,
+            99800771,
+            1000612
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        2000204,
+        1000451,
+        1001288
+      ],
+      "added_edges_only_path": {
+        "length_m": 780.714,
+        "keys": [
+          [
+            99811813,
+            1000451,
+            99800773
+          ],
+          [
+            99811814,
+            99800773,
+            1001288
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 780.714,
+        "keys": [
+          [
+            99811813,
+            1000451,
+            99800773
+          ],
+          [
+            99811814,
+            99800773,
+            1001288
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        2000204,
+        1001288,
+        1000451
+      ],
+      "added_edges_only_path": {
+        "length_m": 780.714,
+        "keys": [
+          [
+            99811814,
+            1001288,
+            99800773
+          ],
+          [
+            99811813,
+            99800773,
+            1000451
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 780.714,
+        "keys": [
+          [
+            99811814,
+            1001288,
+            99800773
+          ],
+          [
+            99811813,
+            99800773,
+            1000451
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        2001536,
+        1002578,
+        1002652
+      ],
+      "added_edges_only_path": {
+        "length_m": 419.411,
+        "keys": [
+          [
+            99811812,
+            1002578,
+            99800772
+          ],
+          [
+            99811811,
+            99800772,
+            1002652
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 419.411,
+        "keys": [
+          [
+            99811812,
+            1002578,
+            99800772
+          ],
+          [
+            99811811,
+            99800772,
+            1002652
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        2001536,
+        1002652,
+        1002578
+      ],
+      "added_edges_only_path": {
+        "length_m": 419.411,
+        "keys": [
+          [
+            99811811,
+            1002652,
+            99800772
+          ],
+          [
+            99811812,
+            99800772,
+            1002578
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 419.411,
+        "keys": [
+          [
+            99811811,
+            1002652,
+            99800772
+          ],
+          [
+            99811812,
+            99800772,
+            1002578
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        2001564,
+        1000183,
+        1001317
+      ],
+      "added_edges_only_path": {
+        "length_m": 2035.176,
+        "keys": [
+          [
+            99811797,
+            1000183,
+            99800765
+          ],
+          [
+            99811798,
+            99800765,
+            1001317
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 2035.176,
+        "keys": [
+          [
+            99811797,
+            1000183,
+            99800765
+          ],
+          [
+            99811798,
+            99800765,
+            1001317
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        2001564,
+        1001317,
+        1000183
+      ],
+      "added_edges_only_path": {
+        "length_m": 2035.176,
+        "keys": [
+          [
+            99811798,
+            1001317,
+            99800765
+          ],
+          [
+            99811797,
+            99800765,
+            1000183
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 2035.176,
+        "keys": [
+          [
+            99811798,
+            1001317,
+            99800765
+          ],
+          [
+            99811797,
+            99800765,
+            1000183
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        9800527,
+        9900277,
+        9900278
+      ],
+      "added_edges_only_path": {
+        "length_m": 1195.3264286065485,
+        "keys": [
+          [
+            99811800,
+            9900277,
+            99800770
+          ],
+          [
+            99811801,
+            99800770,
+            9900278
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 1195.3264286065485,
+        "keys": [
+          [
+            99811800,
+            9900277,
+            99800770
+          ],
+          [
+            99811801,
+            99800770,
+            9900278
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        9800527,
+        9900278,
+        9900277
+      ],
+      "added_edges_only_path": {
+        "length_m": 1195.3264286065485,
+        "keys": [
+          [
+            99811801,
+            9900278,
+            99800770
+          ],
+          [
+            99811800,
+            99800770,
+            9900277
+          ]
+        ]
+      },
+      "current_car_graph_path": {
+        "length_m": 1195.3264286065485,
+        "keys": [
+          [
+            99811801,
+            9900278,
+            99800770
+          ],
+          [
+            99811800,
+            99800770,
+            9900277
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        9800534,
+        9900277,
+        9900281
+      ],
+      "added_edges_only_path": null,
+      "current_car_graph_path": {
+        "length_m": 812.8443149121222,
+        "keys": [
+          [
+            9800525,
+            9900277,
+            1002493
+          ],
+          [
+            2001669,
+            1002493,
+            1002948
+          ],
+          [
+            9800529,
+            1002948,
+            9900279
+          ],
+          [
+            9800533,
+            9900279,
+            9900281
+          ]
+        ]
+      }
+    },
+    {
+      "removed_key": [
+        9800534,
+        9900281,
+        9900277
+      ],
+      "added_edges_only_path": null,
+      "current_car_graph_path": {
+        "length_m": 812.8443149121221,
+        "keys": [
+          [
+            9800533,
+            9900281,
+            9900279
+          ],
+          [
+            9800529,
+            9900279,
+            1002948
+          ],
+          [
+            2001669,
+            1002948,
+            1002493
+          ],
+          [
+            9800525,
+            1002493,
+            9900277
+          ]
+        ]
+      }
+    }
+  ],
+  "continuation": {
+    "old_anchor_link_count": 10576,
+    "new_link_count": 10614,
+    "same_link_set": false,
+    "ordinary_old_continue_compatible": false,
+    "guard": "LIVE04_CONTINUE_ADDVAL_LINK_SET_CHANGED",
+    "recommended": "Recompute assignment and skims on edited network, retain calibrated parameters, then start a new standard calibration run."
+  },
+  "limitations": [
+    "No old full link attribute export: cannot establish every CAPPRT/V0PRT/TSYSSET or length change on common links.",
+    "ADDVAL1, link TMODELSPECIAL, node CAPPRT, turn restrictions/delays, connectors, matrices and utility/skim epochs are not exported.",
+    "Topology connectivity ignores turn restrictions and is not a Visum assignment proof.",
+    "No live assignment or quantitative change in calibrated intensities has been measured."
+  ]
+}
