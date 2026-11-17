@@ -110,6 +110,9 @@ def validate_sections(cfg):
     require(isinstance(idp.get('blocks'), list) and set(idp['blocks']) <= set(BLOCKS), 'LIVE03_IDP_BLOCKS')
     for key in ('max_fine_cdf_rmse_degradation', 'mean_error_floor', 'max_mean_error_degradation'):
         _num(idp, key, 0.0, 1.0)
+    if idp.get('distance_matrices') is not None:     # 2026-11-17: per-component frozen distances
+        from .distance_authority import validate_mapping
+        validate_mapping(idp['distance_matrices'])
     return cfg
 
 

@@ -137,6 +137,11 @@ class Live04Visum(Live03Visum):
                 replaced.append(Matrix4(self, 9116, m.values, code='FOREIGN'))
             else:
                 replaced.append(m)
+        # 2026-11-17 frozen distance authority: the LIVE04 config reads 9721 (LONG mask) and
+        # 9726/9727/9721 (IDP); here they equal the 9697 synthetic km, so results are unchanged.
+        for no, code in ((9721, 'R1_BASE_DIS_NATIVE_CL_KM'), (9726, 'R1_BASE_DIS_IDP_WORK_KM'),
+                         (9727, 'R1_BASE_DIS_IDP_SERV_KM')):
+            replaced.append(Matrix4(self, no, self.km, code=code))
         for k, no in enumerate(LONG_VEHICLE):
             person = replaced[[x.no for x in replaced].index(9111 + k)].values
             replaced.append(Matrix4(self, no, self._vehicle(person, leak=0.0), code='LONG_VEH_%d' % no))

@@ -164,7 +164,14 @@
   "max_mean_error_degradation": 0.02,
   "blocks": [
    "TD_CORDON"
-  ]
+  ],
+  "distance_matrices": {
+   "WORK": 9726,
+   "SCHOOL": 9726,
+   "SERV": 9727,
+   "LONG_COMPOSITE": 9721
+  },
+  "distance_matrices_note": "2026-11-17: frozen Visum DIS skims (RUN_R1_2025_FREEZE_SKIM_DISTANCES.py); 9726 = CW/CW_noT blend by ratio 9231, 9727 = CS/CS_noT blend by 9233, 9721 = NATIVE_CL. Without this key the donor 9697 (OSRM) is used."
  },
  "generation_search": {
   "backtracking_scales": [
@@ -580,8 +587,8 @@
   "long_post_td_mask": {
    "enabled": true,
    "minimum_km": 80.0,
-   "distance_matrix_no": 9697,
-   "distance_matrix_code": "R1_OSRM_DIST_KM",
+   "distance_matrix_no": 9721,
+   "distance_matrix_code": "R1_BASE_DIS_NATIVE_CL_KM",
    "require_masked_baseline": true,
    "policy": "POST_TD_MULTIPLICATION_ACCEPT_VOLUME_LOSS"
   },

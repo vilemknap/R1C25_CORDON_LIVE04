@@ -545,6 +545,8 @@ def recompute_base(visum, *, output_root=None, config_path=None, config_override
         result['copy_guard'] = isolated_copy_guard(lcfg, target_path)
         m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'])
         result['station_links'] = _station_link_precheck(m)
+        from .distance_authority import preflight as distance_preflight
+        result['distance_authority'] = distance_preflight(visum, lcfg, int(acfg['expected_zones']), folder)
         before = _parameter_snapshot(m)
         write_json(folder / 'PARAMETERS_BEFORE.json', before)
         result['parameters'] = {'zone_attributes': len(before['zone_attributes']),

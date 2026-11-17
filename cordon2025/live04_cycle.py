@@ -206,6 +206,11 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 from .live05_extra import check_links as extra_check
                 extra_links = extra_check(visum, contract, folder, native=not synthetic,
                                           source_version=state['source_version'])
+                from .distance_authority import preflight as distance_preflight, bound_long_distance
+                lm_ = cfg['v7']['long_post_td_mask']
+                require(bound_long_distance() == (int(lm_['distance_matrix_no']), lm_['distance_matrix_code']),
+                        'LIVE04_LONG_DISTANCE_BINDING_MISMATCH')
+                distance_preflight(visum, cfg, len(pre[2]), folder)     # frozen DIS matrices present
                 if continuation:
                     plan = cont.resolve(state['source_version'], state['source_file_sha256'],
                                         lambda o: planned_blocks(cfg, o), cfg['outer_cycle_start'])

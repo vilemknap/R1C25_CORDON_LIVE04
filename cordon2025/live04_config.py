@@ -69,10 +69,11 @@ def validate_v7(cfg, allow_donor_overrides=False):
             'LIVE04_V7_BD_POLICY')
     require(v.get('long_school') == 'SCHOOL_TG_FIXED_AMDY_LONG_TG_DEFERRED', 'LIVE04_V7_LONG_SCHOOL_POLICY')
     lm = v.get('long_post_td_mask') or {}
+    from . import distance_authority as da
     lg = parent_module('r1_15a2_long_distance_guard_v24917')
     require(isinstance(lm.get('enabled'), bool) and isinstance(lm.get('require_masked_baseline'), bool)
-            and lm.get('minimum_km') == lg.MIN_KM and lm.get('distance_matrix_no') == 9697
-            and lm.get('distance_matrix_code') == 'R1_OSRM_DIST_KM'
+            and lm.get('minimum_km') == lg.MIN_KM
+            and (lm.get('distance_matrix_no'), lm.get('distance_matrix_code')) in da.LONG_ALLOWED
             and lm.get('policy') == 'POST_TD_MULTIPLICATION_ACCEPT_VOLUME_LOSS', 'LIVE04_V7_LONG_MASK_POLICY')
     require(cfg['write_policy'].get('long_post_td_mask_matrix_writes') is lm['enabled'],
             'LIVE04_LONG_MASK_WRITE_POLICY_MUST_MATCH')
@@ -184,6 +185,10 @@ def load_config(path=None, overrides=None):
     if overrides:
         cfg = l2.merge(cfg, overrides)
     validate_config(cfg, allow_donor_overrides=bool(overrides and overrides.get('_allow_donor_overrides')))
+    # 2026-11-17: the donor LONG support reader follows the configured (frozen) distance matrix
+    from .distance_authority import bind_long_distance
+    lm = cfg['v7']['long_post_td_mask']
+    bind_long_distance(lm['distance_matrix_no'], lm['distance_matrix_code'])
     return cfg
 
 

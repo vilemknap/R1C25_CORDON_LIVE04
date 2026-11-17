@@ -8,6 +8,8 @@ The IDP objective itself is NOT minimized here; a candidate is rejected when any
 guarded component degrades its fine-CDF RMSE or relative mean error beyond the
 donor soft-reference tolerances (v1.9 ``acceptable(strict=False)`` per component).
 Matrices are read only (Visum.Net.Matrices.ItemByKey(no).GetValues()).
+Distance: donor CONFIG 9697 or, with ``distance_matrices``, one frozen matrix per
+component (cordon2025.distance_authority, 2026-11-17).
 """
 from __future__ import annotations
 import importlib.util
@@ -49,9 +51,18 @@ class IdpGuard:
         self.visum = visum
         self.n = int(n_zones)
         self.distance_no = int(self.ref.CONFIG['distance_matrix'])
-        distance = _read(visum, self.distance_no, self.n)
-        self.metrics = self.ref.Metrics(distance)
         self.keys = list(self.ref.TARGETS)
+        mapping = self.cfg.get('distance_matrices')
+        if mapping:     # 2026-11-17: frozen per-component distances (distance_authority)
+            from .distance_authority import idp_component_map, read_distance
+            self.distance_by_component = idp_component_map(self.keys, mapping)
+            reader = read_distance
+        else:
+            self.distance_by_component = {k: self.distance_no for k in self.keys}
+            reader = _read
+        self.metrics_by_distance = {no: self.ref.Metrics(reader(visum, no, self.n))
+                                    for no in sorted(set(self.distance_by_component.values()))}
+        self.metrics = self.metrics_by_distance.get(self.distance_no) or next(iter(self.metrics_by_distance.values()))
         guarded = self.cfg.get('components') or self.keys
         require(set(guarded) <= set(self.keys), 'LIVE03_IDP_UNKNOWN_COMPONENT')
         self.guarded = list(guarded)
@@ -63,7 +74,10 @@ class IdpGuard:
 
     def evaluate(self, label='CURRENT'):
         mats = {no: _read(self.visum, no, self.n) for no in self.matrix_nos}
-        out = self.metrics.evaluate(mats)
+        out = {}
+        for dno, metrics in self.metrics_by_distance.items():
+            res = metrics.evaluate(mats)
+            out.update({k: res[k] for k in self.keys if self.distance_by_component[k] == dno})
         return {k: {f: float(v[f]) for f in ('objective', 'fine_cdf_rmse', 'fine_cdf_ks', 'mean_model_km',
                                                  'mean_target_km', 'mean_relative_error')} for k, v in out.items()}
 
@@ -84,6 +98,7 @@ class IdpGuard:
                 reasons.append('IDP_MEAN_DISTANCE_DEGRADED:' + k)
         return {'schema': 'LIVE03_IDP_GUARD_V1', 'passes': not reasons, 'reasons': reasons, 'components': rows,
                 'reference_sha256': REFERENCE_SHA256, 'role': 'DEGRADATION_GUARD_ONLY_NOT_OBJECTIVE',
+                'distance_matrices': dict(getattr(self, 'distance_by_component', {}) or {}),
                 'tolerances': {'max_fine_cdf_rmse_degradation': self.rmse_tol, 'mean_error_floor': self.mean_floor,
                                'max_mean_error_degradation': self.mean_tol}}
 
