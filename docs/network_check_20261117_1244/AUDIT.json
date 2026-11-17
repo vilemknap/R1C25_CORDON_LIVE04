@@ -1,0 +1,1743 @@
+{
+  "schema": "R1C25_NETWORK_CALIBRATOR_COMPATIBILITY_V1",
+  "date": "2026-11-17",
+  "code_commit": "3a6dd167a93ac493043236c11dcea9a4065eda77",
+  "source_version": "C:\\Users\\vilem_knap\\Documents\\VISUM\\v45\\2025\\R1_VARIANTYBase_LIVE04_2025_4_LIVE04_BASE_d49e4158.ver",
+  "export_time": "2026-11-17T12:44:43",
+  "status": "EXPORTED_INPUT_CHECKS_PASS_NATIVE_RUNTIME_UNVERIFIED",
+  "inputs": {
+    "nodes": {
+      "name": "01_NODES.csv",
+      "sha256": "daf022207b7f13a2efbab726337576f9ece4ecda5d467fd434d971c2f160d7c1",
+      "bytes": 145150
+    },
+    "links": {
+      "name": "02_LINKS.csv",
+      "sha256": "f0d8331253109954c164aa6214c54f2b913e259b8d3918bebc256247a8cf6384",
+      "bytes": 15459788
+    },
+    "connectors": {
+      "name": "03_CONNECTORS.csv",
+      "sha256": "492bd5cc13d078f8ceb4d30c01919332fa4e0880284edfdab985f44bed57f1b3",
+      "bytes": 61193
+    },
+    "turns": {
+      "name": "04_TURNS.csv",
+      "sha256": "fa467ddf997634ef62ab339193fe53dc37f40c0717c5f6dd1813e1406f9a7062",
+      "bytes": 1097149
+    },
+    "all_turns": {
+      "name": "TURNS_ALL.csv",
+      "sha256": "fa467ddf997634ef62ab339193fe53dc37f40c0717c5f6dd1813e1406f9a7062",
+      "bytes": 1097149
+    },
+    "zones": {
+      "name": "05_ZONES.csv",
+      "sha256": "5ebf57af09f956175cbdb74df2ecf17ab69829902a30d676584b7b02c6805864",
+      "bytes": 14201702
+    },
+    "C": {
+      "name": "06_DEMAND_C.csv",
+      "sha256": "1b42163ce6110374161936f9ef41121a40b7be9eaa795d738a11983dbd08b8fa",
+      "bytes": 7707705
+    },
+    "LNV": {
+      "name": "06_DEMAND_LNV.csv",
+      "sha256": "915de540670ce776da8a0b678c6e84fcfc9ff12aca90caea2b3ccbcb998f988d",
+      "bytes": 2763937
+    },
+    "NV": {
+      "name": "06_DEMAND_NV.csv",
+      "sha256": "db2f0c4dd31b729682ac15e6bb789ab44c6e4aa713520d32a0d37378a68aa3b8",
+      "bytes": 640499
+    },
+    "meta": {
+      "name": "00_META.json",
+      "sha256": "a6f1d7a84148603ac4a7598d23164bc728d14bba12d10dc8bac4193cd94046b6",
+      "bytes": 30565
+    }
+  },
+  "counts": {
+    "nodes": 3908,
+    "links": 10938,
+    "connectors": 1430,
+    "turns": 17042,
+    "zones": 681
+  },
+  "unique_keys_and_valid_references": true,
+  "turns_all_matches_turns": true,
+  "extra_observations": {
+    "schema": "LIVE05_EXTRA_OBSERVATION_LINKS_V1",
+    "links": 120,
+    "missing": [],
+    "closed_for_car": [],
+    "status": "PASS",
+    "read_only": true,
+    "source_version": "C:\\Users\\vilem_knap\\Documents\\VISUM\\v45\\2025\\R1_VARIANTYBase_LIVE04_2025_4_LIVE04_BASE_d49e4158.ver",
+    "network_links": 10938,
+    "network_key_modes_sha256": "57471ebb55fe4a255ecb0afc22c7799a7660ca62ab6a53709aaf13433777b417",
+    "network_fingerprint_scope": "DIRECTED_LINK_KEYS_AND_TSYS_ONLY",
+    "counts": {
+      "NDS": 94,
+      "ASD": 12,
+      "KMOV": 24
+    },
+    "row_weights": {
+      "NDS": 0.618852747755276,
+      "ASD": 1.4142135623730951,
+      "KMOV": 0.7071067811865476
+    },
+    "affected_observations": [],
+    "missing_link_candidates": []
+  },
+  "station_checks": [
+    {
+      "station": 1,
+      "key": [
+        9800209,
+        9900155,
+        9900151
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.00035194823344575354
+    },
+    {
+      "station": 1,
+      "key": [
+        9800210,
+        9900152,
+        9900156
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0002560230343284786
+    },
+    {
+      "station": 2,
+      "key": [
+        99811413,
+        99800605,
+        9900221
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 2,
+      "key": [
+        99811413,
+        9900221,
+        99800605
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 3,
+      "key": [
+        99811569,
+        99800666,
+        99800663
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 3,
+      "key": [
+        99811571,
+        99800661,
+        99800665
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 4,
+      "key": [
+        99811548,
+        1001753,
+        99800659
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 4,
+      "key": [
+        99811548,
+        99800659,
+        1001753
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 5,
+      "key": [
+        2002315,
+        1000321,
+        1002980
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": -4.440892098500626e-13
+    },
+    {
+      "station": 5,
+      "key": [
+        2002315,
+        1002980,
+        1000321
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": -4.440892098500626e-13
+    },
+    {
+      "station": 6,
+      "key": [
+        2002313,
+        1000380,
+        1000921
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 6,
+      "key": [
+        2002313,
+        1000921,
+        1000380
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 7,
+      "key": [
+        2002219,
+        1000358,
+        1002975
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 7,
+      "key": [
+        2002219,
+        1002975,
+        1000358
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 8,
+      "key": [
+        2002178,
+        1000869,
+        1002976
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 8,
+      "key": [
+        2002178,
+        1002976,
+        1000869
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 9,
+      "key": [
+        2001825,
+        1001046,
+        1002950
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 9,
+      "key": [
+        2001825,
+        1002950,
+        1001046
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 10,
+      "key": [
+        8500114,
+        1001535,
+        1002880
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 10,
+      "key": [
+        8500114,
+        1002880,
+        1001535
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 11,
+      "key": [
+        2001653,
+        1000182,
+        1001797
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 11,
+      "key": [
+        2001653,
+        1001797,
+        1000182
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 12,
+      "key": [
+        2001673,
+        1002277,
+        1002944
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 12,
+      "key": [
+        2001673,
+        1002944,
+        1002277
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 13,
+      "key": [
+        2001567,
+        1000180,
+        1001060
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 13,
+      "key": [
+        2001567,
+        1001060,
+        1000180
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 14,
+      "key": [
+        9800107,
+        9200066,
+        9900107
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": -0.0004999997105237242
+    },
+    {
+      "station": 14,
+      "key": [
+        9800107,
+        9900107,
+        9200066
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": -0.0004999997105237242
+    },
+    {
+      "station": 15,
+      "key": [
+        99811293,
+        99800552,
+        99800555
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 15,
+      "key": [
+        99811302,
+        99800557,
+        9000620
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": 0.0
+    },
+    {
+      "station": 16,
+      "key": [
+        2004231,
+        1003319,
+        1003321
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": -0.00022594100868023048
+    },
+    {
+      "station": 16,
+      "key": [
+        2004231,
+        1003321,
+        1003319
+      ],
+      "type_equal_to_reference": true,
+      "capacity_equal_to_reference": true,
+      "length_diff_m": -0.00022594100868023048
+    }
+  ],
+  "motorway_contract": [
+    {
+      "station": 16,
+      "link": [
+        2004231,
+        1003319,
+        1003321
+      ],
+      "C": true,
+      "C_NOT": false
+    },
+    {
+      "station": 16,
+      "link": [
+        2004231,
+        1003321,
+        1003319
+      ],
+      "C": true,
+      "C_NOT": false
+    },
+    {
+      "station": 1,
+      "link": [
+        9800209,
+        9900155,
+        9900151
+      ],
+      "C": true,
+      "C_NOT": false
+    },
+    {
+      "station": 1,
+      "link": [
+        9800210,
+        9900152,
+        9900156
+      ],
+      "C": true,
+      "C_NOT": false
+    },
+    {
+      "station": 15,
+      "link": [
+        99811293,
+        99800552,
+        99800555
+      ],
+      "C": true,
+      "C_NOT": false
+    },
+    {
+      "station": 15,
+      "link": [
+        99811302,
+        99800557,
+        9000620
+      ],
+      "C": true,
+      "C_NOT": false
+    },
+    {
+      "station": 3,
+      "link": [
+        99811569,
+        99800666,
+        99800663
+      ],
+      "C": true,
+      "C_NOT": false
+    },
+    {
+      "station": 3,
+      "link": [
+        99811571,
+        99800661,
+        99800665
+      ],
+      "C": true,
+      "C_NOT": false
+    }
+  ],
+  "segment_codes_and_modes": {
+    "EXOG_EE_CW": {
+      "present": true,
+      "mode_ok": true
+    },
+    "NATIVE_CF": {
+      "present": true,
+      "mode_ok": true
+    },
+    "NATIVE_CL": {
+      "present": true,
+      "mode_ok": true
+    },
+    "NATIVE_CS": {
+      "present": true,
+      "mode_ok": true
+    },
+    "EXOG_EE_CS": {
+      "present": true,
+      "mode_ok": true
+    },
+    "NATIVE_CW": {
+      "present": true,
+      "mode_ok": true
+    },
+    "EXOG_EE_CF": {
+      "present": true,
+      "mode_ok": true
+    },
+    "EXOG_EE_CL": {
+      "present": true,
+      "mode_ok": true
+    },
+    "EXOG_EE_CW_NOT": {
+      "present": true,
+      "mode_ok": true
+    },
+    "NATIVE_CW_NOT": {
+      "present": true,
+      "mode_ok": true
+    },
+    "NATIVE_CS_NOT": {
+      "present": true,
+      "mode_ok": true
+    },
+    "EXOG_EE_CS_NOT": {
+      "present": true,
+      "mode_ok": true
+    }
+  },
+  "matrix_number_bindings_in_export": false,
+  "generation_coefficients": {
+    "ADD_PROD_W": {
+      "min": 0.0,
+      "max": 3.307037,
+      "changed_zones": 0
+    },
+    "ADD_ATT_W": {
+      "min": 0.0,
+      "max": 5.216544,
+      "changed_zones": 0
+    },
+    "ADD_SALARY": {
+      "min": 0.0,
+      "max": 1.399,
+      "changed_zones": 0
+    },
+    "ADD_PROD_S": {
+      "min": 0.0,
+      "max": 3.306848,
+      "changed_zones": 0
+    },
+    "ADD_ATT_S": {
+      "min": 0.0,
+      "max": 5.506235,
+      "changed_zones": 0
+    },
+    "ZAHR_PROD_WORK": {
+      "min": 0.0,
+      "max": 24.991142,
+      "changed_zones": 0
+    },
+    "ZAHR_ATR_WORK": {
+      "min": 0.0,
+      "max": 31.47865,
+      "changed_zones": 0
+    },
+    "ZAHR_PROD_SERV": {
+      "min": 0.0,
+      "max": 48.401813,
+      "changed_zones": 0
+    },
+    "ZAHR_ATR_SERV": {
+      "min": 0.0,
+      "max": 39.560343,
+      "changed_zones": 0
+    },
+    "ADD_PROD_L": {
+      "min": 0.3,
+      "max": 0.3,
+      "changed_zones": 0
+    },
+    "ADD_ATT_L": {
+      "min": 1.0,
+      "max": 1.0,
+      "changed_zones": 0
+    },
+    "ADD_PROD_SCH": {
+      "min": 1.0,
+      "max": 1.0,
+      "changed_zones": 0
+    },
+    "ADD_ATT_SCH": {
+      "min": 1.0,
+      "max": 1.0,
+      "changed_zones": 0
+    }
+  },
+  "zone_field_changes_since_1141": {
+    "NUMCONNECTORS": 3
+  },
+  "zone_change_examples": [
+    {
+      "zone": 83,
+      "attr": "NUMCONNECTORS",
+      "before": "1",
+      "after": "2"
+    },
+    {
+      "zone": 105,
+      "attr": "NUMCONNECTORS",
+      "before": "1",
+      "after": "2"
+    },
+    {
+      "zone": 133,
+      "attr": "NUMCONNECTORS",
+      "before": "1",
+      "after": "2"
+    }
+  ],
+  "since_1141": {
+    "added_nodes": 36,
+    "removed_nodes": 1,
+    "added_links": 132,
+    "removed_links": 26,
+    "added_keys": [
+      [
+        99811986,
+        99800436,
+        99800848
+      ],
+      [
+        99811986,
+        99800848,
+        99800436
+      ],
+      [
+        99811988,
+        1002900,
+        99800849
+      ],
+      [
+        99811988,
+        99800849,
+        1002900
+      ],
+      [
+        99811990,
+        99800848,
+        99800849
+      ],
+      [
+        99811990,
+        99800849,
+        99800848
+      ],
+      [
+        99811991,
+        1000398,
+        99800850
+      ],
+      [
+        99811991,
+        99800850,
+        1000398
+      ],
+      [
+        99811992,
+        1002234,
+        99800850
+      ],
+      [
+        99811992,
+        99800850,
+        1002234
+      ],
+      [
+        99811993,
+        1000083,
+        99800851
+      ],
+      [
+        99811993,
+        99800851,
+        1000083
+      ],
+      [
+        99811994,
+        1000034,
+        99800851
+      ],
+      [
+        99811994,
+        99800851,
+        1000034
+      ],
+      [
+        99811995,
+        1002490,
+        99800852
+      ],
+      [
+        99811995,
+        99800852,
+        1002490
+      ],
+      [
+        99811996,
+        1000083,
+        99800852
+      ],
+      [
+        99811996,
+        99800852,
+        1000083
+      ],
+      [
+        99811997,
+        99800850,
+        99800860
+      ],
+      [
+        99811997,
+        99800860,
+        99800850
+      ],
+      [
+        99811999,
+        99800858,
+        99800859
+      ],
+      [
+        99811999,
+        99800859,
+        99800858
+      ],
+      [
+        99812000,
+        99800856,
+        99800859
+      ],
+      [
+        99812000,
+        99800859,
+        99800856
+      ],
+      [
+        99812001,
+        99800855,
+        99800856
+      ],
+      [
+        99812001,
+        99800856,
+        99800855
+      ],
+      [
+        99812002,
+        99800851,
+        99800855
+      ],
+      [
+        99812002,
+        99800855,
+        99800851
+      ],
+      [
+        99812003,
+        99800854,
+        99800855
+      ],
+      [
+        99812003,
+        99800855,
+        99800854
+      ],
+      [
+        99812004,
+        99800853,
+        99800854
+      ],
+      [
+        99812004,
+        99800854,
+        99800853
+      ],
+      [
+        99812005,
+        99800852,
+        99800853
+      ],
+      [
+        99812005,
+        99800853,
+        99800852
+      ],
+      [
+        99812006,
+        99800856,
+        99800857
+      ],
+      [
+        99812006,
+        99800857,
+        99800856
+      ],
+      [
+        99812007,
+        99800857,
+        99800861
+      ],
+      [
+        99812007,
+        99800861,
+        99800857
+      ],
+      [
+        99812009,
+        1000060,
+        99800862
+      ],
+      [
+        99812009,
+        99800862,
+        1000060
+      ],
+      [
+        99812011,
+        1000398,
+        99800860
+      ],
+      [
+        99812011,
+        99800860,
+        1000398
+      ],
+      [
+        99812012,
+        99800860,
+        99800864
+      ],
+      [
+        99812012,
+        99800864,
+        99800860
+      ],
+      [
+        99812013,
+        99800858,
+        99800864
+      ],
+      [
+        99812013,
+        99800864,
+        99800858
+      ],
+      [
+        99812014,
+        99800863,
+        99800864
+      ],
+      [
+        99812014,
+        99800864,
+        99800863
+      ],
+      [
+        99812015,
+        99800858,
+        99800865
+      ],
+      [
+        99812015,
+        99800865,
+        99800858
+      ],
+      [
+        99812016,
+        99800863,
+        99800865
+      ],
+      [
+        99812016,
+        99800865,
+        99800863
+      ],
+      [
+        99812017,
+        99800857,
+        99800865
+      ],
+      [
+        99812017,
+        99800865,
+        99800857
+      ],
+      [
+        99812018,
+        99800862,
+        99800863
+      ],
+      [
+        99812018,
+        99800863,
+        99800862
+      ],
+      [
+        99812019,
+        99800862,
+        99800866
+      ],
+      [
+        99812019,
+        99800866,
+        99800862
+      ],
+      [
+        99812020,
+        1002855,
+        99800866
+      ],
+      [
+        99812020,
+        99800866,
+        1002855
+      ],
+      [
+        99812021,
+        99800848,
+        99800867
+      ],
+      [
+        99812021,
+        99800867,
+        99800848
+      ],
+      [
+        99812022,
+        1001223,
+        99800867
+      ],
+      [
+        99812022,
+        99800867,
+        1001223
+      ],
+      [
+        99812023,
+        99800866,
+        99800870
+      ],
+      [
+        99812023,
+        99800870,
+        99800866
+      ],
+      [
+        99812024,
+        99800869,
+        99800870
+      ],
+      [
+        99812024,
+        99800870,
+        99800869
+      ],
+      [
+        99812025,
+        99800868,
+        99800869
+      ],
+      [
+        99812025,
+        99800869,
+        99800868
+      ],
+      [
+        99812026,
+        99800867,
+        99800868
+      ],
+      [
+        99812026,
+        99800868,
+        99800867
+      ],
+      [
+        99812027,
+        99800849,
+        99800868
+      ],
+      [
+        99812027,
+        99800868,
+        99800849
+      ],
+      [
+        99812029,
+        99800371,
+        99800871
+      ],
+      [
+        99812029,
+        99800871,
+        99800371
+      ],
+      [
+        99812030,
+        99800379,
+        99800871
+      ],
+      [
+        99812030,
+        99800871,
+        99800379
+      ],
+      [
+        99812031,
+        1000068,
+        99800872
+      ],
+      [
+        99812031,
+        99800872,
+        1000068
+      ],
+      [
+        99812034,
+        99800395,
+        99800873
+      ],
+      [
+        99812034,
+        99800873,
+        99800395
+      ],
+      [
+        99812035,
+        9200048,
+        99800873
+      ],
+      [
+        99812035,
+        99800873,
+        9200048
+      ],
+      [
+        99812036,
+        99800871,
+        99800874
+      ],
+      [
+        99812036,
+        99800874,
+        99800871
+      ],
+      [
+        99812037,
+        99800872,
+        99800874
+      ],
+      [
+        99812037,
+        99800874,
+        99800872
+      ],
+      [
+        99812039,
+        99800874,
+        99800875
+      ],
+      [
+        99812039,
+        99800875,
+        99800874
+      ],
+      [
+        99812040,
+        99800873,
+        99800875
+      ],
+      [
+        99812040,
+        99800875,
+        99800873
+      ],
+      [
+        99812041,
+        9200048,
+        99800876
+      ],
+      [
+        99812041,
+        99800876,
+        9200048
+      ],
+      [
+        99812042,
+        99800872,
+        99800876
+      ],
+      [
+        99812042,
+        99800876,
+        99800872
+      ],
+      [
+        99812043,
+        99800875,
+        99800876
+      ],
+      [
+        99812043,
+        99800876,
+        99800875
+      ],
+      [
+        99812045,
+        99800367,
+        99800877
+      ],
+      [
+        99812045,
+        99800877,
+        99800367
+      ],
+      [
+        99812046,
+        99800368,
+        99800877
+      ],
+      [
+        99812046,
+        99800877,
+        99800368
+      ],
+      [
+        99812047,
+        1000063,
+        99800878
+      ],
+      [
+        99812047,
+        99800878,
+        1000063
+      ],
+      [
+        99812048,
+        1001379,
+        99800878
+      ],
+      [
+        99812048,
+        99800878,
+        1001379
+      ],
+      [
+        99812049,
+        99800377,
+        99800878
+      ],
+      [
+        99812049,
+        99800878,
+        99800377
+      ],
+      [
+        99812050,
+        1000990,
+        99800879
+      ],
+      [
+        99812050,
+        99800879,
+        1000990
+      ],
+      [
+        99812051,
+        1002606,
+        99800879
+      ],
+      [
+        99812051,
+        99800879,
+        1002606
+      ],
+      [
+        99812052,
+        1002606,
+        99800880
+      ],
+      [
+        99812052,
+        99800880,
+        1002606
+      ],
+      [
+        99812053,
+        1000059,
+        99800880
+      ],
+      [
+        99812053,
+        99800880,
+        1000059
+      ],
+      [
+        99812055,
+        1000104,
+        1003089
+      ],
+      [
+        99812055,
+        1003089,
+        1000104
+      ],
+      [
+        99812056,
+        1000059,
+        99800881
+      ],
+      [
+        99812056,
+        99800881,
+        1000059
+      ],
+      [
+        99812057,
+        1002888,
+        99800881
+      ],
+      [
+        99812057,
+        99800881,
+        1002888
+      ],
+      [
+        99812058,
+        1000104,
+        99800882
+      ],
+      [
+        99812058,
+        99800882,
+        1000104
+      ],
+      [
+        99812059,
+        1002888,
+        99800882
+      ],
+      [
+        99812059,
+        99800882,
+        1002888
+      ],
+      [
+        99812060,
+        99800881,
+        99800882
+      ],
+      [
+        99812060,
+        99800882,
+        99800881
+      ],
+      [
+        99812062,
+        99800879,
+        99800883
+      ],
+      [
+        99812062,
+        99800883,
+        99800879
+      ],
+      [
+        99812063,
+        99800880,
+        99800883
+      ],
+      [
+        99812063,
+        99800883,
+        99800880
+      ]
+    ],
+    "removed_keys": [
+      [
+        2000081,
+        1000389,
+        1002900
+      ],
+      [
+        2000081,
+        1002900,
+        1000389
+      ],
+      [
+        2000115,
+        1000398,
+        1002234
+      ],
+      [
+        2000115,
+        1002234,
+        1000398
+      ],
+      [
+        2000507,
+        1000060,
+        1002855
+      ],
+      [
+        2000507,
+        1002855,
+        1000060
+      ],
+      [
+        2000511,
+        1000063,
+        1001379
+      ],
+      [
+        2000511,
+        1001379,
+        1000063
+      ],
+      [
+        2000604,
+        1000083,
+        1002490
+      ],
+      [
+        2000604,
+        1002490,
+        1000083
+      ],
+      [
+        2000654,
+        1000034,
+        1000083
+      ],
+      [
+        2000654,
+        1000083,
+        1000034
+      ],
+      [
+        2004114,
+        1000059,
+        1002606
+      ],
+      [
+        2004114,
+        1002606,
+        1000059
+      ],
+      [
+        2004119,
+        1000990,
+        1002606
+      ],
+      [
+        2004119,
+        1002606,
+        1000990
+      ],
+      [
+        2004140,
+        1000104,
+        1002888
+      ],
+      [
+        2004140,
+        1002888,
+        1000104
+      ],
+      [
+        2004151,
+        1000059,
+        1000104
+      ],
+      [
+        2004151,
+        1000104,
+        1000059
+      ],
+      [
+        99810860,
+        99800371,
+        99800379
+      ],
+      [
+        99810860,
+        99800379,
+        99800371
+      ],
+      [
+        99810917,
+        9200048,
+        99800395
+      ],
+      [
+        99810917,
+        99800395,
+        9200048
+      ],
+      [
+        99811021,
+        1001223,
+        99800436
+      ],
+      [
+        99811021,
+        99800436,
+        1001223
+      ]
+    ],
+    "common_attribute_changes": {},
+    "change_examples": []
+  },
+  "road_graph_reachability_ignoring_turns": {
+    "C": {
+      "strong_components": 73,
+      "largest_strong_component_nodes": 3835,
+      "zones_without_both_connector_directions": [],
+      "unreachable_zone_pairs_ignoring_turns": 0,
+      "unreachable_examples": []
+    },
+    "C_NOT": {
+      "strong_components": 267,
+      "largest_strong_component_nodes": 3638,
+      "zones_without_both_connector_directions": [],
+      "unreachable_zone_pairs_ignoring_turns": 0,
+      "unreachable_examples": []
+    },
+    "LNV": {
+      "strong_components": 73,
+      "largest_strong_component_nodes": 3835,
+      "zones_without_both_connector_directions": [],
+      "unreachable_zone_pairs_ignoring_turns": 0,
+      "unreachable_examples": []
+    },
+    "NV": {
+      "strong_components": 73,
+      "largest_strong_component_nodes": 3835,
+      "zones_without_both_connector_directions": [],
+      "unreachable_zone_pairs_ignoring_turns": 0,
+      "unreachable_examples": []
+    }
+  },
+  "matrix_checks": {
+    "C": {
+      "rows": 437782,
+      "sum_csv": 2241055.0745379515,
+      "sum_metadata": 2241055.0742637636,
+      "invalid_or_duplicate": 0,
+      "positive_unreachable_od_ignoring_turns": 0,
+      "byte_identical_to_1141": false
+    },
+    "LNV": {
+      "rows": 177961,
+      "sum_csv": 223394.51380000048,
+      "sum_metadata": 223394.51379999996,
+      "invalid_or_duplicate": 0,
+      "positive_unreachable_od_ignoring_turns": 0,
+      "byte_identical_to_1141": true
+    },
+    "NV": {
+      "rows": 40887,
+      "sum_csv": 59582.4656999993,
+      "sum_metadata": 59582.46569999995,
+      "invalid_or_duplicate": 0,
+      "positive_unreachable_od_ignoring_turns": 0,
+      "byte_identical_to_1141": true
+    }
+  },
+  "estimated_nonpositive_minimum_cost_directions": [
+    {
+      "key": [
+        99811844,
+        99800791,
+        99800792
+      ],
+      "t0_estimate_s": 1.44372,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -18.55628
+    },
+    {
+      "key": [
+        99810977,
+        99800422,
+        99800402
+      ],
+      "t0_estimate_s": 5.092172307692308,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -14.907827692307691
+    },
+    {
+      "key": [
+        99810977,
+        99800402,
+        99800422
+      ],
+      "t0_estimate_s": 6.018021818181818,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -13.981978181818182
+    },
+    {
+      "key": [
+        99810976,
+        99800403,
+        99800422
+      ],
+      "t0_estimate_s": 7.595723076923076,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -12.404276923076925
+    },
+    {
+      "key": [
+        99811842,
+        1000082,
+        99800791
+      ],
+      "t0_estimate_s": 8.7338,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -11.2662
+    },
+    {
+      "key": [
+        99810996,
+        99800429,
+        99800397
+      ],
+      "t0_estimate_s": 8.884079999999999,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -11.115920000000001
+    },
+    {
+      "key": [
+        99810976,
+        99800422,
+        99800403
+      ],
+      "t0_estimate_s": 8.976763636363636,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -11.023236363636364
+    },
+    {
+      "key": [
+        99811857,
+        99800792,
+        99800795
+      ],
+      "t0_estimate_s": 10.42592,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -9.57408
+    },
+    {
+      "key": [
+        99810996,
+        99800397,
+        99800429
+      ],
+      "t0_estimate_s": 10.499367272727273,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -9.500632727272727
+    },
+    {
+      "key": [
+        99810985,
+        1003088,
+        99800425
+      ],
+      "t0_estimate_s": 1.78992,
+      "addval1": -1.0,
+      "minimum_generalized_cost_estimate_s": -8.21008
+    },
+    {
+      "key": [
+        99810985,
+        99800425,
+        1003088
+      ],
+      "t0_estimate_s": 1.78992,
+      "addval1": -1.0,
+      "minimum_generalized_cost_estimate_s": -8.21008
+    },
+    {
+      "key": [
+        99811856,
+        99800795,
+        99800794
+      ],
+      "t0_estimate_s": 12.536240000000001,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -7.463759999999999
+    },
+    {
+      "key": [
+        99810932,
+        99800402,
+        1002886
+      ],
+      "t0_estimate_s": 13.130196923076923,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -6.869803076923077
+    },
+    {
+      "key": [
+        99810932,
+        1002886,
+        99800402
+      ],
+      "t0_estimate_s": 15.517505454545455,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -4.482494545454545
+    },
+    {
+      "key": [
+        99810997,
+        1002886,
+        99800429
+      ],
+      "t0_estimate_s": 17.033981538461536,
+      "addval1": -2.0,
+      "minimum_generalized_cost_estimate_s": -2.9660184615384644
+    }
+  ],
+  "native_limitations": [
+    "Saved path availability, path epoch and link-volume parity not exported.",
+    "Procedure positions/types, scripts, TG/TD formulas and b/c state not exported.",
+    "Matrix types/numbers/OD bindings, utilities 9700-9715 and TTC/TT0 inputs not exported.",
+    "OSRM 9697 and individual LONG matrices not exported: LONG support mask cannot be rechecked.",
+    "Exact T0_PRTSYS(C) and C/C_noT impedance not exported; minimum-cost values are generic-speed estimates.",
+    "Road graph reachability ignores turn prohibitions and delays."
+  ],
+  "continuation_link_set_matches_previous_export": false,
+  "zone_order_same_as_1141": true,
+  "minimum_cost_estimate_comparison": {
+    "previous_count": 15,
+    "current_count": 15,
+    "same_key_set": true,
+    "added": [],
+    "resolved": []
+  },
+  "estimated_cost_is_native_blocker_proof": false,
+  "geometry_changes": {
+    "added_nodes": [
+      99800848,
+      99800849,
+      99800850,
+      99800851,
+      99800852,
+      99800853,
+      99800854,
+      99800855,
+      99800856,
+      99800857,
+      99800858,
+      99800859,
+      99800860,
+      99800861,
+      99800862,
+      99800863,
+      99800864,
+      99800865,
+      99800866,
+      99800867,
+      99800868,
+      99800869,
+      99800870,
+      99800871,
+      99800872,
+      99800873,
+      99800874,
+      99800875,
+      99800876,
+      99800877,
+      99800878,
+      99800879,
+      99800880,
+      99800881,
+      99800882,
+      99800883
+    ],
+    "removed_nodes": [
+      1000389
+    ],
+    "moved_common_nodes_over_1mm": [],
+    "common_link_wkt_changed": []
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "status": "EXPORTED_INPUT_CHECKS_PASS_NATIVE_RUNTIME_UNVERIFIED",
+  "code_commit": "3a6dd167a93ac493043236c11dcea9a4065eda77",
+  "source_export_time": "2026-11-17T12:44:43",
+  "station_directions": 32,
+  "extra_links": 120,
+  "missing_extra_links": 0,
+  "closed_extra_links": 0,
+  "passenger_segment_codes_and_modes": 12,
+  "zone_count": 681,
+  "matrix_inputs_valid": [
+    "C",
+    "LNV",
+    "NV"
+  ],
+  "all_zone_pairs_road_reachable_modes": [
+    "C",
+    "C_NOT",
+    "LNV",
+    "NV"
+  ],
+  "reachability_ignores_turns": true,
+  "generation_coefficients_unchanged": true,
+  "runtime_code_or_settings_changed": false,
+  "native_visum_executed_here": false,
+  "protected_sources_checked": 1606,
+  "protected_source_status": "PROTECTED_SOURCE_IDENTITY_PASS",
+  "estimated_cost_cases": {
+    "previous_count": 15,
+    "current_count": 15,
+    "same_key_set": true,
+    "added": [],
+    "resolved": []
+  }
+}
