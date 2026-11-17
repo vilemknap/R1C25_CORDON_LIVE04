@@ -612,6 +612,11 @@
       "sha256": "5ab55ebd9885a761639126e7e2c356b87366e901d74d5ea63120af116c789ab7"
     },
     {
+      "path": "RUN_R1_EXPORT_CURRENT_VISUM_DISTANCES.py",
+      "size": 6678,
+      "sha256": "8217972752167643728e2df7bdec4ed5aff422be2c87e9ce728b59fd3e8ed19a"
+    },
+    {
       "path": "RUN_R1_TD_UTILITY_TRANSACTIONAL.py",
       "size": 25048,
       "sha256": "4a04d0d776d77c18d6dfefd7b07c8a33e489c826a3287295cd6e6632a1268b08"
@@ -2440,6 +2445,11 @@
       "path": "docs/diagfast/raw/telemetry_safety.txt",
       "size": 98,
       "sha256": "8edb3baa72c2833acdc16ead5be942f08734a436b2bb94128bfcb52d921b67f3"
+    },
+    {
+      "path": "docs/distance_export_20261117/README_CZ.md",
+      "size": 1302,
+      "sha256": "f75156c08817faac8337d829e8d5f2c4516d3273a8116745f9700a941cae7fd8"
     },
     {
       "path": "docs/evidence/2025_PARENT_PATCH.diff",
@@ -9725,6 +9735,11 @@
       "path": "tests/test_diagfast_telemetry_safety.py",
       "size": 2975,
       "sha256": "5f9eb66706c258830366f13008deda95f890dac28c85b6c485e74afadaeffcf6"
+    },
+    {
+      "path": "tests/test_distance_export.py",
+      "size": 2860,
+      "sha256": "4879eca9a6b370c658eba3063592f20db240ec784d0eabec9ad1c33f5768554e"
     },
     {
       "path": "tests/test_feasibility.py",
