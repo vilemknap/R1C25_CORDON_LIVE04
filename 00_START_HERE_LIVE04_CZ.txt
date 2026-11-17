@@ -122,6 +122,12 @@ F = 0.55 * Q_po/Q_rodic + 0.45 * J_IDP_po/J_IDP_rodic; prijeti F <= 0.999.
 Ostatni limity zustavaji, vcetne 2 % EXACT_TWO_HITS pro GENERATION.
 Podrobnosti: docs/utility_restore/POLICY_5545_TD_20261117_CZ.md.
 
+NDS45 (2026-11-17): novy usek 99811855; A = 99800794 -> 1000030,
+B = 1000030 -> 99800794. Cile 39799 / 42441 zustavaji stejne.
+Aktualni mapa projde kontrolou nad exportem site z 2026-11-17 11:41.
+Chybejici doplnkova pozorovani se kontroluji pred zachycenim cest.
+Podrobnosti: docs/nds45_remap_20261117/REPORT_CZ.md.
+
 POKUSY BEZ POTVRZOVACIHO ZACHYCENI (LIVE04.10.3): pokusy se dokazuji intenzitami na vsech hranach jako plne
 zachyceni, potvrzeni pred prijetim odpada; zaverecne cteni zachyceni pres intenzity misto 12 seznamu cest.
 

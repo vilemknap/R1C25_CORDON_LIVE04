@@ -1,5 +1,5 @@
 {
-  "release": "R1C25_LIVE05_8_EARLY_EXTRA_PREFLIGHT_20261117",
+  "release": "R1C25_LIVE05_8_S45_REMAP_EARLY_PREFLIGHT_20261117",
   "files": [
     {
       "path": "00_START_HERE_LIVE01_CZ.txt",
@@ -18,8 +18,8 @@
     },
     {
       "path": "00_START_HERE_LIVE04_CZ.txt",
-      "size": 12932,
-      "sha256": "70c25e8d8c03a5ffe934d37f7813c63cdb9f5d1e03fd40f544ab74783b166a60"
+      "size": 13249,
+      "sha256": "955fd1595d37cf8b7270ef9da19e2857c66f36d99771c6939f190994c797715d"
     },
     {
       "path": "2025_NETWORK_AND_PATH_CACHE_PREFLIGHT.md",
@@ -1688,13 +1688,13 @@
     },
     {
       "path": "data/audited/EXTRA_OBSERVATIONS_LIVE05.csv",
-      "size": 14791,
-      "sha256": "07d3aa8468b9eef215f5a26a58a4e40948c24a4a016cbff1fa8b85ccab2681b3"
+      "size": 14795,
+      "sha256": "5b9e2206e23ad07866edd8c63dbb0583bfd9a2c48b299ea60d2e6e3ae83c35cb"
     },
     {
       "path": "data/audited/EXTRA_OBSERVATIONS_LIVE05_PROVENANCE.json",
-      "size": 4318,
-      "sha256": "604d013fae4e30e001eec0e9a3836147659d4715798ec2cdbd1e3a30afb0f54d"
+      "size": 4949,
+      "sha256": "17211a4b7ae2f2716f487b0fa2b40bcab8420bb1fe8e5617468d51d889def03a"
     },
     {
       "path": "data/audited/PHYSICAL_TARGETS.csv",
@@ -3287,6 +3287,41 @@
       "sha256": "f806f6937a25626969aa7b9b7a61487dc89f8c5e2849182d135aaf4171878487"
     },
     {
+      "path": "docs/nds45_remap_20261117/REPORT_CZ.md",
+      "size": 3288,
+      "sha256": "5d0155dd0f5444d4260dba4be326cae5898eb01e02c7f459ad58f57d491e9c93"
+    },
+    {
+      "path": "docs/nds45_remap_20261117/evidence/CHECKS.json",
+      "size": 753,
+      "sha256": "38dc6d45406fade7fcf8a15e517e1f7a17eb371170bb46e82a37553519fdbba5"
+    },
+    {
+      "path": "docs/nds45_remap_20261117/evidence/CURRENT_NETWORK_RECHECK.json",
+      "size": 499,
+      "sha256": "7f23d40e671426066770369c89643f4935e65b0790d6abfd1b8294c8e69bae7d"
+    },
+    {
+      "path": "docs/nds45_remap_20261117/evidence/EXTRA_OBSERVATION_LINKS.json",
+      "size": 714,
+      "sha256": "74b06fd4961e7bda0639a5ac8333e32d166990cc9ab45973831cd1265c505a33"
+    },
+    {
+      "path": "docs/nds45_remap_20261117/evidence/PATCH_REVIEW.json",
+      "size": 1019,
+      "sha256": "d81455c2cd628c357934f6a8deb9fc3a977ba6c59f0b27cd1a17bee2e7592514"
+    },
+    {
+      "path": "docs/nds45_remap_20261117/evidence/REMAP.log",
+      "size": 110,
+      "sha256": "ff134c70053d3fbd60842440433ed38dee9deab4b15ec5286290769f4780c4e3"
+    },
+    {
+      "path": "docs/nds45_remap_20261117/evidence/REMAP.xml",
+      "size": 2218,
+      "sha256": "67ac1e5563a93b96cc13af7d062a3707bf3da9c41d0d871323c6b843a33380ec"
+    },
+    {
       "path": "docs/network_20261103/REVIEWED_CHANGES.json",
       "size": 1949,
       "sha256": "68152ec8390ba7c9e1b00d8cf68c63cbdfed1d14066d6df223947551899318fe"
@@ -3338,8 +3373,8 @@
     },
     {
       "path": "docs/network_remap_20261117/REPORT_CZ.md",
-      "size": 4912,
-      "sha256": "0d814bbfc94ca055cd80500d62c8fc228fc759d7b835b6d7cf3af1a3757bb8e9"
+      "size": 5228,
+      "sha256": "34ab905fed364132b69cb1d65be0c73459b28b1418a0752dc56565233402c632"
     },
     {
       "path": "docs/network_remap_20261117/evidence/CHECKS.json",
@@ -9469,7 +9504,7 @@
     {
       "path": "provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json",
       "size": 20854,
-      "sha256": "c2d57c37626ccfdbcba2e74ea50c7c3ebd5c660d6a902edf783687f2e14aca00"
+      "sha256": "d6b61be55719ccad872d91bd175accf962b9da88a482f25b66f78032ed7a7da7"
     },
     {
       "path": "provenance/live04_user_config/TRANSFER_2025_CONFIG.RELEASE_DEFAULT.json",
@@ -9895,6 +9930,11 @@
       "path": "tests/test_practical_limits_fix3.py",
       "size": 13780,
       "sha256": "9396d0cf4170acf7f29764ec372b71dc8452ac166b7f1c3b36539f4545f813b8"
+    },
+    {
+      "path": "tests/test_s45_confirmed_remap.py",
+      "size": 3004,
+      "sha256": "372bf6a4d2a6067faf72bca706c254b1c107d8158499acfc618d50ccba869f1c"
     },
     {
       "path": "tests/test_startup_hardening.py",

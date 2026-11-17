@@ -1,5 +1,10 @@
 # Aktuální síť 17. 11. 2026 11:41: NDS45 a časná kontrola
 
+**Vyřešeno následným potvrzením uživatele:** NDS_S45A/B jsou přemapovány na
+99811855 se zachováním směrů. Aktuální stav a úspěšnou kontrolu popisuje
+[sloučená oprava](../nds45_remap_20261117/REPORT_CZ.md).
+Následující text a přiložené záznamy zachycují stav před tímto přemapováním.
+
 **Nativní pád je reprodukován i na nově dodaném exportu. Chybí oba směry
 hrany 2004381 pro NDS_S45A/B. Technická oprava přesouvá kontrolu před drahé
 zachycení cest, ale nenahrazuje rozhodnutí, kde leží skutečné sčítací místo.**

@@ -1,0 +1,13 @@
+{
+  "status": "S45_REMAP_AND_CURRENT_EXPORTED_NETWORK_PREFLIGHT_PASS",
+  "network_export_sha256": "67bb4eb7751c20efc74e726a3c63834baf58c858eda578a8e2277ac0db964e32",
+  "network_export_time": "2026-11-17T11:41:04",
+  "directed_links": 10832,
+  "observation_links": 120,
+  "missing": [],
+  "closed_for_car": [],
+  "first_last_rows": 298,
+  "exact_two_hits_rows": 120,
+  "new_csv_sha256": "5b9e2206e23ad07866edd8c63dbb0583bfd9a2c48b299ea60d2e6e3ae83c35cb",
+  "native_assignment_executed_here": false
+}

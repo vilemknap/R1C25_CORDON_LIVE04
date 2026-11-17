@@ -194,7 +194,7 @@
   }
  },
  "network_export": "R1_VARIANTYBase 2026-11-15T19:37:27",
- "file_sha256": "07d3aa8468b9eef215f5a26a58a4e40948c24a4a016cbff1fa8b85ccab2681b3",
+ "file_sha256": "5b9e2206e23ad07866edd8c63dbb0583bfd9a2c48b299ea60d2e6e3ae83c35cb",
  "remaps": [
   {
    "date": "2026-11-15",
@@ -206,6 +206,17 @@
    "new_link": "99811745 (99800742-1002858)",
    "reason": "link 2000586 split by the user at new node 99800742 into 99811744 (1001478-99800742, 0.377 km) and 99811745 (99800742-1002858, 1.110 km); ASD3 counter 4.3 m from 99811745, 945 m from 99811744; directions kept (Bratislava = from the 1001478 side towards 1002858)",
    "network_export": "R1_VARIANTYBase_LIVE04_2025_LIVE04_BASE_2b3774f1.ver 2026-11-15 22:01"
+  },
+  {
+   "date": "2026-11-17",
+   "obs_ids": [
+    "NDS_S45A",
+    "NDS_S45B"
+   ],
+   "old_link": "2004381 (1000030-1000082)",
+   "new_link": "99811855 (99800794-1000030)",
+   "reason": "link 2004381 replaced by the user with a new interchange chain 1000082-99800791-99800792-99800795-99800794-1000030 (99811842, 99811844, 99811857, 99811856, 99811855); NDS section 45 geometry re-mapped with the same rules (nds_map): median 0.2 m, overlap 1.00, cos 1.00, no competitor, on 99811855 (0.720 km); directions kept (A = towards 1000030, B = from 1000030)",
+   "network_export": "R1_FREIGHT_ODME_EXPORT_V2 02_LINKS.csv 2026-11-17"
   }
  ]
 }

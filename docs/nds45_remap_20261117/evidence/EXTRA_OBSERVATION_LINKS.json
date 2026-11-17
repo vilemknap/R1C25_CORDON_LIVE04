@@ -1,0 +1,24 @@
+{
+  "affected_observations": [],
+  "closed_for_car": [],
+  "counts": {
+    "ASD": 12,
+    "KMOV": 24,
+    "NDS": 94
+  },
+  "links": 120,
+  "missing": [],
+  "missing_link_candidates": [],
+  "network_fingerprint_scope": "DIRECTED_LINK_KEYS_AND_TSYS_ONLY",
+  "network_key_modes_sha256": "37dc802d838d1752ee7b8022ce90e4d9d5961093ce210778ed8f03f36617a505",
+  "network_links": 10832,
+  "read_only": true,
+  "row_weights": {
+    "ASD": 1.4142135623730951,
+    "KMOV": 0.7071067811865476,
+    "NDS": 0.618852747755276
+  },
+  "schema": "LIVE05_EXTRA_OBSERVATION_LINKS_V1",
+  "source_version": "C:\\Users\\vilem_knap\\Documents\\VISUM\\v45\\2025\\R1_VARIANTYBase_LIVE04_2025_4_LIVE04_BASE_d49e4158.ver",
+  "status": "PASS"
+}
