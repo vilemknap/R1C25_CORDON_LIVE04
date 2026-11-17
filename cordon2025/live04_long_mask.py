@@ -1,4 +1,4 @@
-"""v7 LONG post-TD mask (>= 80 km on R1_OSRM_DIST_KM 9697) inside every cordon execution.
+"""v7 LONG post-TD mask (>= 80 km on frozen baseline NATIVE_CL distance).
 
 v7 (r1_15a2_long_post_td_mask_v24917) pauses every procedure run after the
 unified TD operation, multiplies the LONG person matrices 9111..9115 by the
@@ -54,7 +54,7 @@ def install_scoped(rt):
             rt.execute_procseq = old
     lg = parent_module('r1_15a2_long_distance_guard_v24917')
     status = {'installed': True, 'already': False, 'method': 'POST_TD_MULTIPLICATION_ACCEPT_VOLUME_LOSS',
-              'minimum_km': lg.MIN_KM, 'maximum_km': None, 'distance_matrix': 9697,
+              'minimum_km': lg.MIN_KM, 'maximum_km': None, 'distance_matrix': 9721,
               'person_matrices': list(lg.MATRIX_NOS),
               'vehicle_matrices': list(parent_module('r1_15a2_long_profile_incidence_v24917').COMPONENT_MATRICES),
               'vehicle_aggregate': parent_module('r1_15a2_long_profile_incidence_v24917').FINAL_MATRIX,
@@ -122,7 +122,7 @@ def execute_demand_only(adapter, plan, folder, original_execute):
 
 
 def support_report(adapter, folder=None, label='CURRENT'):
-    """Read-only LONG support audit on the fixed OSRM distance (donor measure)."""
+    """Read-only LONG support audit on the frozen NATIVE_CL baseline distance."""
     mask = _mask_module()
     lg = parent_module('r1_15a2_long_distance_guard_v24917')
     li = parent_module('r1_15a2_long_profile_incidence_v24917')
@@ -130,7 +130,7 @@ def support_report(adapter, folder=None, label='CURRENT'):
     distance, source = parent_module('r1_15a2_long_support_distance_v24917').read_current(adapter)
     support = distance >= lg.MIN_KM
     person = {no: mask._read(adapter, no)[1] for no in lg.MATRIX_NOS}
-    proof = lg.measure(distance, person)
+    proof = lg.measure(distance, person, distance_basis=source['distance_basis'])
     vehicle = {}
     for no in li.COMPONENT_MATRICES + (li.FINAL_MATRIX,):
         values = mask._read(adapter, no)[1]

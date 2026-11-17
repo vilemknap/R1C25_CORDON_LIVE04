@@ -137,6 +137,11 @@ class Live04Visum(Live03Visum):
                 replaced.append(Matrix4(self, 9116, m.values, code='FOREIGN'))
             else:
                 replaced.append(m)
+        for no, dseg in ((9720, 'NATIVE_CF'), (9721, 'NATIVE_CL'), (9722, 'NATIVE_CS'),
+                         (9723, 'NATIVE_CS_NOT'), (9724, 'NATIVE_CW'), (9725, 'NATIVE_CW_NOT')):
+            replaced.append(Matrix4(self, no, self.km.copy(), code='R1_BASE_DIS_' + dseg + '_KM'))
+        replaced.append(Matrix4(self, 9726, self.km.copy(), code='R1_BASE_DIS_WORK_KM'))
+        replaced.append(Matrix4(self, 9727, self.km.copy(), code='R1_BASE_DIS_SERV_KM'))
         for k, no in enumerate(LONG_VEHICLE):
             person = replaced[[x.no for x in replaced].index(9111 + k)].values
             replaced.append(Matrix4(self, no, self._vehicle(person, leak=0.0), code='LONG_VEH_%d' % no))

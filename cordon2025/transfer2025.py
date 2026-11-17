@@ -15,7 +15,7 @@ IMPORT    (open: an ISOLATED COPY of the 2025 model)
           3. recomputes once with the v7 sequence (PERF1 GENERATION plan: TG -> TD ->
              LONG person mask -> 20A/20B -> LONG vehicle mask -> 17-19 + 20), checks
              that no operation overwrote the transferred parameters;
-          4. requires a clean LONG support (>= 80 km on 9697);
+          4. requires a clean LONG support (>= 80 km on frozen 9721);
           5. saves a NEW version <copy>_LIVE04_BASE_<id>.ver (the open file is never
              overwritten, LoadVersion is never called);
           6. runs READINESS on the result.
@@ -23,7 +23,8 @@ IMPORT    (open: an ISOLATED COPY of the 2025 model)
 READINESS (open: any 2025 version, read-only)
           Everything the LIVE04 cordon run requires before its first write: release
           pins, LIVE01 model preflight (681 zones, network, demand segments, paths),
-          isolated-copy name, operations 17-20 / single TD, matrices 9697 / 9111-9115 /
+          isolated-copy name, operations 17-20 / single TD, frozen distances 9720-9727 /
+          matrices 9697 / 9111-9115 /
           9291-9295 (DATA) / 9305 (FORMULA), clean LONG support, MOBILITY2 /
           MOBILITYZONE1 authority, optional parameter identity with an export file and
           optional full cordon baseline capture (objective of every method).
@@ -147,7 +148,7 @@ class TransferAdapter(CordonTrialAdapter):
     """Donor reads/recompute on the open model without the cordon evaluator."""
     runtime_backend = 'TRANSFER2025_DONOR_SUPPLY_VISUM'
 
-    def __init__(self, visum, cfg, *, expected_zones=None):
+    def __init__(self, visum, cfg, *, expected_zones=None, frozen_distance=False):
         com = parent_module('r1_15a2_com_compat')
         rt = parent_module('r1_15a2_runtime_v1')
         supply = parent_module('r1_15a2_supply_visum')
@@ -159,6 +160,11 @@ class TransferAdapter(CordonTrialAdapter):
         self.zones, self.zone_write_index_by_no = com.zone_identity(visum, None, self.com_retry_policy)
         if expected_zones is not None:
             require(len(self.zones) == int(expected_zones), 'TRANSFER_ZONE_COUNT:%d' % len(self.zones))
+        if frozen_distance:
+            from .live04_frozen_distance import verify as verify_frozen_distance
+            self.frozen_distance = verify_frozen_distance(visum, len(self.zones))
+            self.long_distance_source = {'matrix_no': 9721, 'matrix_code': 'R1_BASE_DIS_NATIVE_CL_KM',
+                                         'distance_basis': 'FROZEN_VISUM_DIS_NATIVE_CL_KM_9721'}
         self.zone_readback_tolerance = float(self.com_retry_policy.get('zone_readback_tolerance', 1.0e-7))
         self.baseline_addval = None
         self.supply_path_proof = None
@@ -394,7 +400,7 @@ def import_and_recompute(visum, *, output_root=None, config_path=None, config_ov
                 'TRANSFER_TARGET_IS_THE_2022_SOURCE')
         result['target_version'] = target_path
         result['copy_guard'] = isolated_copy_guard(lcfg, target_path)
-        m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'])
+        m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'], frozen_distance=True)
         plan = build_plan(export, m, tcfg)
         write_json(folder / 'TRANSFER_PLAN.json', plan)
         result['plan'] = {k: plan[k] for k in ('zones', 'attributes', 'td', 'addval1')}
@@ -543,7 +549,7 @@ def recompute_base(visum, *, output_root=None, config_path=None, config_override
         require(target_path and Path(target_path).suffix.lower() == '.ver', 'RECOMPUTE_BASE_OPEN_A_SAVED_VER_FIRST')
         result['target_version'] = target_path
         result['copy_guard'] = isolated_copy_guard(lcfg, target_path)
-        m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'])
+        m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'], frozen_distance=True)
         result['station_links'] = _station_link_precheck(m)
         before = _parameter_snapshot(m)
         write_json(folder / 'PARAMETERS_BEFORE.json', before)
@@ -680,8 +686,8 @@ def readiness(visum, *, output_root=None, options=None, expected_parameters=None
     check('ISOLATED_COPY_NAME', lambda: isolated_copy_guard(lcfg, (ctx.get('state') or {}).get('source_version')
                                                             or _source_version(visum)[0]))
     def adapter():
-        ctx['m'] = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'])
-        return {'zones': len(ctx['m'].zones)}
+        ctx['m'] = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'], frozen_distance=True)
+        return {'zones': len(ctx['m'].zones), 'frozen_distance': ctx['m'].frozen_distance}
     check('DONOR_ADAPTER', adapter)
     m = ctx.get('m')
 

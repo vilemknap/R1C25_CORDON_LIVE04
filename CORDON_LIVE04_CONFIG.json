@@ -164,7 +164,21 @@
   "max_mean_error_degradation": 0.02,
   "blocks": [
    "TD_CORDON"
-  ]
+  ],
+  "distance_matrix_by_component": {
+   "WORK_E_C": 9726,
+   "WORK_E_noC": 9726,
+   "WORK_noE_C": 9726,
+   "WORK_noE_noC": 9726,
+   "WORK_stud": 9726,
+   "SERV_E_C": 9727,
+   "SERV_E_noC": 9727,
+   "SERV_noE_C": 9727,
+   "SERV_noE_noC": 9727,
+   "SERV_stud": 9727,
+   "SCHOOL": 9726,
+   "LONG_COMPOSITE": 9721
+  }
  },
  "generation_search": {
   "backtracking_scales": [
@@ -580,8 +594,8 @@
   "long_post_td_mask": {
    "enabled": true,
    "minimum_km": 80.0,
-   "distance_matrix_no": 9697,
-   "distance_matrix_code": "R1_OSRM_DIST_KM",
+   "distance_matrix_no": 9721,
+   "distance_matrix_code": "R1_BASE_DIS_NATIVE_CL_KM",
    "require_masked_baseline": true,
    "policy": "POST_TD_MULTIPLICATION_ACCEPT_VOLUME_LOSS"
   },

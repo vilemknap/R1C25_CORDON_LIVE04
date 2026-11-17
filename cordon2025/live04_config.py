@@ -23,6 +23,12 @@ STAGE = 'LIVE04_V7_TG_TD_CYCLE'
 CONFIG_FILE = 'CORDON_LIVE04_CONFIG.json'
 # LIVE04.8.2: checkpoints + continuation make long runs safe; LIVE03 keeps its own cap of 10.
 LIVE04_MAX_CYCLES = 200
+FROZEN_IDP_DISTANCE_MAP = {
+    'WORK_E_C': 9726, 'WORK_E_noC': 9726, 'WORK_noE_C': 9726,
+    'WORK_noE_noC': 9726, 'WORK_stud': 9726,
+    'SERV_E_C': 9727, 'SERV_E_noC': 9727, 'SERV_noE_C': 9727,
+    'SERV_noE_noC': 9727, 'SERV_stud': 9727,
+    'SCHOOL': 9726, 'LONG_COMPOSITE': 9721}
 LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard', 'checkpoint')
 
 
@@ -71,11 +77,13 @@ def validate_v7(cfg, allow_donor_overrides=False):
     lm = v.get('long_post_td_mask') or {}
     lg = parent_module('r1_15a2_long_distance_guard_v24917')
     require(isinstance(lm.get('enabled'), bool) and isinstance(lm.get('require_masked_baseline'), bool)
-            and lm.get('minimum_km') == lg.MIN_KM and lm.get('distance_matrix_no') == 9697
-            and lm.get('distance_matrix_code') == 'R1_OSRM_DIST_KM'
+            and lm.get('minimum_km') == lg.MIN_KM and lm.get('distance_matrix_no') == 9721
+            and lm.get('distance_matrix_code') == 'R1_BASE_DIS_NATIVE_CL_KM'
             and lm.get('policy') == 'POST_TD_MULTIPLICATION_ACCEPT_VOLUME_LOSS', 'LIVE04_V7_LONG_MASK_POLICY')
     require(cfg['write_policy'].get('long_post_td_mask_matrix_writes') is lm['enabled'],
             'LIVE04_LONG_MASK_WRITE_POLICY_MUST_MATCH')
+    require(cfg['idp_guard'].get('distance_matrix_by_component') == FROZEN_IDP_DISTANCE_MAP,
+            'LIVE04_IDP_FROZEN_DISTANCE_COMPONENT_MAP')
     env = v.get('coefficient_envelope') or {}
     require(set(env) == {'PROD', 'ATT', 'approval'} and isinstance(env.get('approval'), str) and env['approval'],
             'LIVE04_COEFFICIENT_ENVELOPE_FIELDS')

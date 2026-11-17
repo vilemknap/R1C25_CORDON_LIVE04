@@ -48,6 +48,18 @@ def td(v):
     return {c: dict(s.GravitationParameters.values) for c, s in v.ops[5].TripDistributionParameters.strata.items()}
 
 
+def test_recompute_adapter_uses_frozen_long_distance(tmp_path):
+    from cordon2025.common import parent_module
+    b = Live04Visum(tmp_path / 'm2025')
+    b.component[9721].values[0, 1] += 25.
+    _, acfg = tr._adapter_cfg()
+    adapter = tr.TransferAdapter(b, acfg, expected_zones=681, frozen_distance=True)
+    distance, source = parent_module('r1_15a2_long_support_distance_v24917').read_current(adapter)
+    assert source['matrix_no'] == 9721
+    assert distance[0, 1] == b.component[9721].values[0, 1]
+    assert distance[0, 1] != b.component[9697].values[0, 1]
+
+
 def test_export_import_recompute_save_and_ready(tmp_path):
     a, e = export(tmp_path)
     assert e['zones'] == 681 and e['nonzero_addval1_links'] == 3 and e['model_writes'] == 0

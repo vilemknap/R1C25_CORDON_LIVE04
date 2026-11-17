@@ -3,7 +3,7 @@
 Same flow as LIVE03 (live03_cycle), on the v7 runtime (live04_v7.runtime_scope),
 the LIVE04 adapter (MOBILITY2/MOBILITYZONE1, BDPA1, GENFIX2 STEP1) and the v7
 LONG post-TD mask.  Additional run-level checks: the baseline LONG support must
-already be masked (>= 80 km on 9697) before any write, every accepted state
+already be masked (>= 80 km on frozen NATIVE_CL 9721) before any write, every accepted state
 carries its LONG support audit, and the final state must reproduce it exactly.
 
 Per outer cycle the configured blocks run in order (default GENERATION, then

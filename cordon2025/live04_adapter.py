@@ -12,7 +12,7 @@ Changes against LIVE03 (each mirrors r1_15a2_trial_adapter_v24917 of v7):
   again immediately before the first COM write, the MOBILITYZONE1 parent must be
   unchanged and the plan must be byte-identical to the preview.
 * block_gate (GENERATION): live MOBILITY2/MOBILITYZONE1 readback after the trial.
-  Every block: the LONG support (>= 80 km on 9697) of the trial must be clean
+  Every block: the LONG support (>= 80 km on frozen NATIVE_CL 9721) of the trial must be clean
   and LONGGUARD1 must pass against the last accepted state.
 * assign_for_block runs inside the v7 LONG post-TD mask scope; the native
   predictor's demand-only runs use execute_demand_only (same mask phases).
@@ -67,7 +67,11 @@ class CordonLive04Adapter(CordonLive03Adapter):
 
     def __init__(self, *args, long_mask=True, supply_policy=None, supply_reset_position=None, **kwargs):
         self.td_utility_state = None
+        self.long_distance_source = {'matrix_no': 9721, 'matrix_code': 'R1_BASE_DIS_NATIVE_CL_KM',
+                                     'distance_basis': 'FROZEN_VISUM_DIS_NATIVE_CL_KM_9721'}
         super().__init__(*args, **kwargs)
+        from .live04_frozen_distance import verify as verify_frozen_distance
+        self.frozen_distance = verify_frozen_distance(self.visum, len(self.zones))
         # LIVE04.4 SupplyMix: donor supply policy and the run-start ADDVAL1 anchors.
         self.supply_writes_enabled = supply_policy is not None
         if supply_policy is not None:

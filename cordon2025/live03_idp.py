@@ -10,6 +10,7 @@ donor soft-reference tolerances (v1.9 ``acceptable(strict=False)`` per component
 Matrices are read only (Visum.Net.Matrices.ItemByKey(no).GetValues()).
 """
 from __future__ import annotations
+import hashlib
 import importlib.util
 from pathlib import Path
 import numpy as np
@@ -49,9 +50,20 @@ class IdpGuard:
         self.visum = visum
         self.n = int(n_zones)
         self.distance_no = int(self.ref.CONFIG['distance_matrix'])
-        distance = _read(visum, self.distance_no, self.n)
-        self.metrics = self.ref.Metrics(distance)
         self.keys = list(self.ref.TARGETS)
+        selected = self.cfg.get('distance_matrix_by_component')
+        if selected is None:
+            self.distance_by_component = {k: self.distance_no for k in self.keys}
+        else:
+            require(isinstance(selected, dict) and set(selected) == set(self.keys),
+                    'LIVE03_IDP_DISTANCE_COMPONENT_SCOPE')
+            self.distance_by_component = {k: int(selected[k]) for k in self.keys}
+        distances = {no: _read(visum, no, self.n)
+                     for no in sorted(set(self.distance_by_component.values()))}
+        self.fixed_distance_hashes = ({no: hashlib.sha256(np.ascontiguousarray(arr, dtype='<f8').tobytes()).hexdigest()
+                                       for no, arr in distances.items()} if selected is not None else {})
+        self.metrics_by_no = {no: self.ref.Metrics(arr) for no, arr in distances.items()}
+        self.metrics = self.metrics_by_no[self.distance_no] if self.distance_no in self.metrics_by_no else None
         guarded = self.cfg.get('components') or self.keys
         require(set(guarded) <= set(self.keys), 'LIVE03_IDP_UNKNOWN_COMPONENT')
         self.guarded = list(guarded)
@@ -62,8 +74,13 @@ class IdpGuard:
         self.mean_tol = float(self.cfg.get('max_mean_error_degradation', conf['max_mean_error_degradation']))
 
     def evaluate(self, label='CURRENT'):
+        for no, expected in self.fixed_distance_hashes.items():
+            current = _read(self.visum, no, self.n)
+            actual = hashlib.sha256(np.ascontiguousarray(current, dtype='<f8').tobytes()).hexdigest()
+            require(actual == expected, 'LIVE03_IDP_FROZEN_DISTANCE_CHANGED:%d' % no)
         mats = {no: _read(self.visum, no, self.n) for no in self.matrix_nos}
-        out = self.metrics.evaluate(mats)
+        evaluated = {no: metric.evaluate(mats) for no, metric in self.metrics_by_no.items()}
+        out = {k: evaluated[self.distance_by_component[k]][k] for k in self.keys}
         return {k: {f: float(v[f]) for f in ('objective', 'fine_cdf_rmse', 'fine_cdf_ks', 'mean_model_km',
                                                  'mean_target_km', 'mean_relative_error')} for k, v in out.items()}
 

@@ -1,4 +1,4 @@
-"""Fixed OSRM distance authority for LONG support, independent of IDP skims."""
+"""Fixed LONG support distance authority, selected by the adapter."""
 from __future__ import annotations
 
 import numpy as np
@@ -14,24 +14,28 @@ DISTANCE_BASIS = "FIXED_OSRM_DIST_KM_9697"
 
 
 def read_current(adapter):
-    """Read only the user-selected source and pin its identity within this run.
+    """Read the adapter-selected source and pin its identity within this run.
 
     GetValues uses Visum's zone collection order. Check that order before and
-    after reading; never substitute a native DIS matrix when OSRM is missing.
-    Kilometres are the explicitly selected R1_OSRM_DIST_KM source contract.
+    after reading. Donor runs default to 9697; LIVE04 explicitly selects the
+    frozen NATIVE_CL matrix 9721.
     Only hashes are retained on the adapter, not another full matrix cache.
     """
+    selected = getattr(adapter, "long_distance_source", None) or {}
+    matrix_no = int(selected.get("matrix_no", MATRIX_NO))
+    matrix_code = str(selected.get("matrix_code", MATRIX_CODE)).strip().upper()
+    distance_basis = str(selected.get("distance_basis", DISTANCE_BASIS))
     retry = getattr(adapter, "com_retry_policy", None) or {}
     def call(fn, label):
         return com_call_with_retry(fn, label="LONG_OSRM:" + label, retry_policy=retry)
     zones = list(adapter.zones)
     if zone_numbers(adapter.visum, retry) != zones:
         raise ValueError("LONG_OSRM_ZONE_ORDER_MISMATCH")
-    matrix = call(lambda: adapter.visum.Net.Matrices.ItemByKey(MATRIX_NO), "LOOKUP")
+    matrix = call(lambda: adapter.visum.Net.Matrices.ItemByKey(matrix_no), "LOOKUP")
     def identity():
         no = float(call(lambda: matrix.AttValue("NO"), "NO"))
         code = str(call(lambda: matrix.AttValue("CODE"), "CODE")).strip().upper()
-        if no != MATRIX_NO or code != MATRIX_CODE:
+        if no != matrix_no or code != matrix_code:
             raise ValueError("LONG_OSRM_MATRIX_IDENTITY_MISMATCH")
     identity()
     distance = np.array(call(matrix.GetValues, "VALUES"), dtype=np.float64, copy=True, order="C")
@@ -42,9 +46,9 @@ def read_current(adapter):
     identity()
     if zone_numbers(adapter.visum, retry) != zones:
         raise ValueError("LONG_OSRM_ZONE_ORDER_CHANGED_DURING_READ")
-    source = {"distance_basis": DISTANCE_BASIS, "matrix_no": MATRIX_NO,
-              "matrix_code": MATRIX_CODE, "unit": "km",
-              "unit_authority": "USER_SELECTED_R1_OSRM_DIST_KM_CONTRACT",
+    source = {"distance_basis": distance_basis, "matrix_no": matrix_no,
+              "matrix_code": matrix_code, "unit": "km",
+              "unit_authority": "FROZEN_VISUM_DIS_BASELINE" if selected else "USER_SELECTED_R1_OSRM_DIST_KM_CONTRACT",
               "values_sha256": matrix_values_hash(distance),
               "zone_order_sha256": ordered_zone_hash(zones),
               "assignment_dependent": False}

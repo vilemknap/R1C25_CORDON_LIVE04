@@ -39,7 +39,8 @@ def _finite_array(value: Any, n: int, label: str) -> np.ndarray:
     return np.maximum(data, 0.0)
 
 
-def measure(distance: Any, matrices: Mapping[int, Any], *, epoch: Mapping[str, Any] = None) -> dict:
+def measure(distance: Any, matrices: Mapping[int, Any], *, epoch: Mapping[str, Any] = None,
+            distance_basis: str = "FIXED_OSRM_DIST_KM_9697") -> dict:
     """Pure volume-conservation audit. Total = forbidden + allowed 80..100 + conditional 100..200 + tail."""
     dist = np.asarray(distance, dtype=np.float64)
     if dist.ndim != 2 or dist.shape[0] != dist.shape[1] or not len(dist):
@@ -70,7 +71,7 @@ def measure(distance: Any, matrices: Mapping[int, Any], *, epoch: Mapping[str, A
     tolerance_mass = float(all_long[tolerance_band].sum())
     if not math.isclose(a + tolerance_mass + b + c, total, rel_tol=1.0e-10, abs_tol=MASS_ATOL):
         raise ValueError("LONGGUARD1_NONCONSERVATIVE_VOLUME")
-    return {"status": "MEASURED", "release": RELEASE, "distance_basis": "FIXED_OSRM_DIST_KM_9697",
+    return {"status": "MEASURED", "release": RELEASE, "distance_basis": distance_basis,
             "minimum_km": MIN_KM, "long_above_200_permitted": True,
             "conditional_100_200_is_not_full_long_support": True,
             "total_volume": total, "below_min_km": a,
@@ -130,9 +131,10 @@ def capture(adapter: Any, diag: Mapping[str, Any]) -> dict:
             "skim_epoch": int(epoch.epoch),
             "skim_epoch_hash": epoch.epoch_hash,
             "zone_order_sha256": epoch.zone_order_sha256,
-            "finecdf_native_cl_values_sha256": epoch.matrix_meta_by_dseg["NATIVE_CL"].get("values_sha256")})
+            "finecdf_native_cl_values_sha256": epoch.matrix_meta_by_dseg["NATIVE_CL"].get("values_sha256")},
+            distance_basis=support_source["distance_basis"])
         proof["support_distance_source"] = support_source
-        # The 512-point curve still uses the fresh native skim; support uses OSRM.
+        # The 512-point curve uses the fresh native skim; support uses the adapter's fixed distance.
         value = _fine_rmse(diag)
         reason = 'LONG_COMPOSITE_DIAGNOSTIC_MISSING_OR_UNVERIFIED'
         if value is not None:
