@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "tests": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "current_export_preflight": "PASS",
+  "observation_links": 120,
+  "missing_links": 0,
+  "closed_links": 0,
+  "directions": {
+    "A": [
+      99811855,
+      99800794,
+      1000030
+    ],
+    "B": [
+      99811855,
+      1000030,
+      99800794
+    ]
+  },
+  "targets_unchanged": [
+    39799,
+    42441
+  ],
+  "rows_unchanged": 130,
+  "only_configuration_change": "extra-observation file hash",
+  "td_idp_weight": 0.45,
+  "generation_secondary_limit": 0.02,
+  "early_preflight_preserved": true,
+  "protected_sources_checked": 1606,
+  "protected_sources_status": "PROTECTED_SOURCE_IDENTITY_PASS",
+  "native_assignment_executed_here": false
+}

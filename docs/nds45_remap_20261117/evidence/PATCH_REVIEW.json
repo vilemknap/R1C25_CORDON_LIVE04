@@ -1,0 +1,29 @@
+{
+  "base_remote_commit": "8b55068b28638d30d43506ac11f00295cc77e7da",
+  "patch_sha256": "1dcf7363d728177d8fa8055a52db10d957096efd07fa7ab750186e4eafec8a9d",
+  "incoming_manifest_files": 1987,
+  "base_manifest_files": 2003,
+  "selective_merge": true,
+  "incoming_manifests_not_overlaid": true,
+  "changes": [
+    {
+      "obs_id": "NDS_S45A",
+      "before": "2004381:1000082:1000030",
+      "after": "99811855:99800794:1000030",
+      "target_rpdi": "39799.0"
+    },
+    {
+      "obs_id": "NDS_S45B",
+      "before": "2004381:1000030:1000082",
+      "after": "99811855:1000030:99800794",
+      "target_rpdi": "42441.0"
+    }
+  ],
+  "old_csv_sha256": "07d3aa8468b9eef215f5a26a58a4e40948c24a4a016cbff1fa8b85ccab2681b3",
+  "new_csv_sha256": "5b9e2206e23ad07866edd8c63dbb0583bfd9a2c48b299ea60d2e6e3ae83c35cb",
+  "rows_before": 130,
+  "rows_after": 130,
+  "targets_weights_order_and_other_rows_unchanged": true,
+  "configuration_change": "observations.extra_observations.file_sha256 only",
+  "runtime_code_preserved": true
+}

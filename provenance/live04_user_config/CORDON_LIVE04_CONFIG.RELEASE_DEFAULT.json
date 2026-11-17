@@ -87,7 +87,7 @@
   "extra_observations": {
    "enabled": true,
    "file": "data/audited/EXTRA_OBSERVATIONS_LIVE05.csv",
-   "file_sha256": "07d3aa8468b9eef215f5a26a58a4e40948c24a4a016cbff1fa8b85ccab2681b3",
+   "file_sha256": "5b9e2206e23ad07866edd8c63dbb0583bfd9a2c48b299ea60d2e6e3ae83c35cb",
    "group_shares": {
     "NDS": 0.15,
     "ASD": 0.1,
