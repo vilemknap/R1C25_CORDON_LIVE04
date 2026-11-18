@@ -45,3 +45,13 @@ nedokazuje. Pro další běh použijte postup v `FROZEN_VISUM_DISTANCE_RUNBOOK_C
 Claudeova samostatná větev používá pro 9726/9727 jiné kódy matic
 (`R1_BASE_DIS_IDP_WORK_KM` a `R1_BASE_DIS_IDP_SERV_KM`). Skript pro vytvoření
 matic a kalibrátor proto berte vždy ze stejné větve.
+
+## Změna 18. 11. 2026: univerzální zafixování
+
+Zafixování už není vázané na checkpoint `C02_GENERATION_348fa1d3`. Skript
+najde skimy `DIS` podle segmentu v libovolné uložené verzi 2025. Do výsledku
+zapíše cestu a SHA-256 zdrojové verze a otisky všech matic. Kalibrátor nemá
+napevno zapsané otisky z C02. Autoritou pro běh jsou otisky zaznamenané při
+jeho startu (`FROZEN_DISTANCE_AUTHORITY.json`) a jejich kontrola po každém
+bloku. Typ datového zdroje se porovnává číselně, protože Visum COM vrací
+`DATASOURCETYPE` jako `1.0`.
