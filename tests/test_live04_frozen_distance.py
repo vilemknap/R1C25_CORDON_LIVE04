@@ -77,20 +77,20 @@ def test_frozen_distance_missing_matrix_is_named():
         verify(visum, 2)
 
 
-def test_native_preflight_checks_pinned_zone_osrm_and_component_hashes(monkeypatch):
-    import hashlib
-    from cordon2025 import live04_frozen_distance as authority
+def test_preflight_is_universal_and_run_start_hashes_guard_the_run():
+    """No checkpoint pin: any consistent model verifies; the run-start hashes then hold."""
     visum, matrices = _visum()
     visum.origin = ''
-    monkeypatch.setattr(authority, 'ZONE_ORDER_SHA256', hashlib.sha256(
-        np.array([11, 12], dtype='<i8').tobytes()).hexdigest())
-    monkeypatch.setattr(authority, 'OSRM_VALUES_SHA256', authority._hash(matrices[9697].values))
-    monkeypatch.setattr(authority, 'RAW_VALUES_SHA256', {
-        no: authority._hash(matrices[no].values) for no in range(9720, 9726)})
-    assert verify(visum, 2)['source_hashes_pinned']
-    matrices[9721].values[0, 1] += 1.
-    with pytest.raises(ContractError, match='LIVE04_FROZEN_DISTANCE_RAW_HASH:9721'):
-        verify(visum, 2)
+    baseline = verify(visum, 2)
+    assert baseline['authority'] == 'RUN_START_HASHES_NO_CHECKPOINT_PIN'
+    matrices[9697].values[0, 1] += 1.
+    with pytest.raises(ContractError, match='LIVE04_FROZEN_DISTANCE_CHANGED_DURING_RUN'):
+        assert_unchanged(visum, 2, baseline)
+    matrices[9697].values[0, 1] -= 1.
+    assert_unchanged(visum, 2, baseline)
+    visum.Net.Zones.GetMultiAttValues = lambda attr, active_only: [(1, 12), (2, 11)]
+    with pytest.raises(ContractError, match='LIVE04_FROZEN_DISTANCE_CHANGED_DURING_RUN'):
+        assert_unchanged(visum, 2, baseline)
 
 
 def test_frozen_distance_hashes_do_not_drift_between_blocks():
@@ -166,41 +166,41 @@ def test_one_component_finecdf_matches_pinned_reference_and_ignores_foreign_empt
     assert np.isfinite(_evaluate_component(long_only, one_cell, 'LONG_COMPOSITE', ref)['objective'])
 
 
-def test_freeze_creates_readable_data_matrices_from_pinned_sources(tmp_path, monkeypatch):
-    import hashlib
-    source = tmp_path / 'checkpoint.ver'
-    source.write_bytes(b'synthetic checkpoint')
-    n = 681
+class _WritableMatrix(Matrix):
+    def __init__(self, no, code, arr, dseg='', matrix_type=3):
+        super().__init__(no, code, arr)
+        self.dseg, self.matrix_type, self.name = dseg, matrix_type, ''
+
+    def AttValue(self, key):
+        # floats like native Visum COM
+        return {'NO': float(self.no), 'CODE': self.code, 'DSEGCODE': self.dseg, 'NAME': self.name,
+                'OBJECTTYPEREF': 2.0, 'MATRIXTYPE': float(self.matrix_type),
+                'DATASOURCETYPE': 1.0}[key.upper()]
+
+    def SetAttValue(self, key, value):
+        if key.upper() == 'CODE':
+            self.code = value
+        elif key.upper() == 'NAME':
+            self.name = value
+
+    def SetValues(self, arr, add):
+        assert add is False
+        self.values = np.array(arr, copy=True)
+
+
+def _freeze_model(tmp_path, n=681, name='ANY_2025_VERSION.ver', source_numbers=None):
+    source = tmp_path / name
+    source.write_bytes(b'synthetic saved version')
     original = np.full((n, n), 15., dtype='<f8')
     np.fill_diagonal(original, 2.)
-
-    class WritableMatrix(Matrix):
-        def __init__(self, no, code, arr, dseg='', matrix_type=3):
-            super().__init__(no, code, arr)
-            self.dseg, self.matrix_type = dseg, matrix_type
-
-        def AttValue(self, key):
-            return {'NO': self.no, 'CODE': self.code, 'DSEGCODE': self.dseg,
-                    'OBJECTTYPEREF': 2, 'MATRIXTYPE': self.matrix_type,
-                    'DATASOURCETYPE': 1}[key.upper()]
-
-        def SetAttValue(self, key, value):
-            if key.upper() == 'CODE':
-                self.code = value
-
-        def SetValues(self, arr, add):
-            assert add is False
-            self.values = np.array(arr, copy=True)
-
-    matrices = {9697: WritableMatrix(9697, 'R1_OSRM_DIST_KM', original)}
-    pinned = []
-    for i, (_, source_no, dseg, _) in enumerate(freeze.FROZEN):
+    matrices = {9697: _WritableMatrix(9697, 'R1_OSRM_DIST_KM', original)}
+    numbers = source_numbers or [9844 + 8 * i for i in range(6)]
+    for i, (no, (_, dseg)) in enumerate(zip(numbers, freeze.SEGMENTS)):
         arr = np.full((n, n), 20. + i)
         np.fill_diagonal(arr, 0.)
-        matrices[source_no] = WritableMatrix(source_no, 'DIS', arr, dseg=dseg, matrix_type=4)
-        pinned.append((9720 + i, source_no, dseg, freeze.digest(arr)))
-    matrices[9231] = WritableMatrix(9231, 'RATIO_CW', np.full((n, n), 0.75))
-    matrices[9233] = WritableMatrix(9233, 'RATIO_CS', np.full((n, n), 0.70))
+        matrices[no] = _WritableMatrix(no, 'DIS', arr, dseg=dseg.replace('_NOT', '_noT'), matrix_type=4)
+    matrices[9231] = _WritableMatrix(9231, 'RATIO_CW', np.full((n, n), 0.75))
+    matrices[9233] = _WritableMatrix(9233, 'RATIO_CS', np.full((n, n), 0.70))
     added = []
 
     class Collection:
@@ -215,18 +215,21 @@ def test_freeze_creates_readable_data_matrices_from_pinned_sources(tmp_path, mon
 
         def AddMatrix(self, no, object_type, matrix_type):
             added.append((no, object_type, matrix_type))
-            m = WritableMatrix(no, '', np.zeros((n, n)), matrix_type=matrix_type)
+            m = _WritableMatrix(no, '', np.zeros((n, n)), matrix_type=matrix_type)
             matrices[no] = m
             return m
 
     zones = np.arange(1, n + 1, dtype='<i8')
-    Net.Zones = SimpleNamespace(GetMultiAttValues=lambda key, active_only: list(enumerate(zones, 1)))
+    Net.Zones = SimpleNamespace(GetMultiAttValues=lambda key, active_only: [(i, float(z)) for i, z in enumerate(zones, 1)])
     visum = SimpleNamespace(Net=Net(), IO=SimpleNamespace(CurrentVersionFile=str(source)))
-    monkeypatch.setattr(freeze, 'SOURCE_SHA256', hashlib.sha256(source.read_bytes()).hexdigest())
-    monkeypatch.setattr(freeze, 'ZONE_SHA256', hashlib.sha256(zones.tobytes()).hexdigest())
-    monkeypatch.setattr(freeze, 'OSRM_SHA256', freeze.digest(original))
-    monkeypatch.setattr(freeze, 'FROZEN', tuple(pinned))
+    return visum, matrices, added, original
+
+
+def test_freeze_is_universal_and_creates_readable_data_matrices(tmp_path, monkeypatch):
+    import json
     monkeypatch.setenv('LOCALAPPDATA', str(tmp_path))
+    # arbitrary file and arbitrary DIS matrix numbers: sources are found by CODE + DSEGCODE
+    visum, matrices, added, original = _freeze_model(tmp_path, source_numbers=[7001, 7002, 7003, 7004, 7005, 7006])
     report = freeze.prepare(visum)
     assert report['status'] == 'FROZEN_IN_OPEN_MODEL_RUN_RECOMPUTE_BEFORE_SAVE'
     assert added == [(no, 2, 3) for no in range(9720, 9728)]
@@ -234,3 +237,36 @@ def test_freeze_creates_readable_data_matrices_from_pinned_sources(tmp_path, mon
     assert matrices[9726].GetValues()[0, 1] == 0.75 * 24. + 0.25 * 25.
     assert matrices[9727].GetValues()[0, 1] == pytest.approx(0.70 * 22. + 0.30 * 23.)
     assert np.array_equal(matrices[9697].GetValues(), original)
+    assert {f['source_no'] for f in report['frozen'] if 'source_no' in f} == {7001, 7002, 7003, 7004, 7005, 7006}
+    saved = json.loads((tmp_path / 'R1C25_DISTANCE_PREP' / 'FROZEN_DISTANCE_RESULT.json').read_text())
+    assert saved['source_sha256'] and saved['status'] == report['status']
+    # the calibrator accepts exactly what the script wrote (no checkpoint pins)
+    assert verify(visum, 681)['status'] == 'VERIFIED'
+    # re-freeze on the same model overwrites (same CODE), adds nothing
+    matrices[7002].values[0, 1] = 99.
+    added.clear()
+    assert freeze.prepare(visum)['refreeze'] == list(range(9720, 9728))
+    assert added == [] and matrices[9721].GetValues()[0, 1] == 99.
+
+
+def test_freeze_refuses_foreign_target_no_path_and_ambiguous_source(tmp_path, monkeypatch):
+    import json
+    monkeypatch.setenv('LOCALAPPDATA', str(tmp_path))
+    result = tmp_path / 'R1C25_DISTANCE_PREP' / 'FROZEN_DISTANCE_RESULT.json'
+    visum, matrices, added, _ = _freeze_model(tmp_path)
+    matrices[9723] = _WritableMatrix(9723, 'SOMETHING_ELSE', np.zeros((681, 681)))
+    with pytest.raises(RuntimeError, match='DISTANCE_TARGET_NUMBER_USED_BY_OTHER_MATRIX:9723'):
+        freeze.prepare(visum)
+    assert added == [] and json.loads(result.read_text())['status'] == 'STOPPED_BEFORE_ANY_WRITE'
+    visum, matrices, added, _ = _freeze_model(tmp_path)
+    matrices[9852].values[3, 4] = 999999.
+    with pytest.raises(RuntimeError, match='DISTANCE_SOURCE_NO_PATH_CELLS:NATIVE_CL:1'):
+        freeze.prepare(visum)
+    assert added == []
+    visum, matrices, added, _ = _freeze_model(tmp_path)
+    matrices[8000] = _WritableMatrix(8000, 'DIS', np.ones((681, 681)), dseg='NATIVE_CW', matrix_type=4)
+    with pytest.raises(RuntimeError, match='DISTANCE_SOURCE_DIS_NOT_UNIQUE:NATIVE_CW'):
+        freeze.prepare(visum)
+    visum, _, _, _ = _freeze_model(tmp_path, name='R1_2022_MODEL.ver')
+    with pytest.raises(RuntimeError, match='DISTANCE_ONLY_2025_MODEL'):
+        freeze.prepare(visum)

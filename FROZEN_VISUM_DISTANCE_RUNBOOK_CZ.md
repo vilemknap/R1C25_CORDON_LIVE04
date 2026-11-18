@@ -1,36 +1,39 @@
-# Jednorázové zafixování vzdáleností pro další běh LIVE04
+# Zafixování vzdáleností pro další běh LIVE04
 
-Zdroj: uložený checkpoint `C02_GENERATION_348fa1d3` s SHA-256
-`cddacecbd4ab507469bacad6808d9561b540d6f13f4eef604046a510e11fa034`.
-Tato větev nemění již běžící kalibraci.
+Od 18. 11. 2026 postup funguje na libovolné uložené verzi 2025. Na konkrétní
+checkpoint není vázaný.
 
-1. Otevřete uložený checkpoint ve složce
-   `C:\Users\vilem_knap\Documents\VISUM\v45\2025\`. Můžete pracovat i s jeho
-   byte-identickou kopií; upravená nebo znovu uložená zdrojová verze vstupní
-   kontrolou neprojde.
-2. Spusťte `RUN_R1_2025_FREEZE_VISUM_DISTANCES.py`. Skript zkontroluje verzi,
-   pořadí zón, matici 9697 a šest zdrojových matic `DIS`. V otevřeném modelu
-   vytvoří osm datových matic 9720–9727 a ověří jejich zpětné čtení. Nemění 9697
-   a neukládá `.ver`. Stav zapíše do
-   `%LOCALAPPDATA%\R1C25_DISTANCE_PREP\FROZEN_DISTANCE_RESULT.json`.
+1. Otevřete uloženou verzi `.ver`, ve které jsou přiřazení a skimy `DIS`
+   spočtené po poslední úpravě sítě. Skript neumí ověřit, že `DIS` jsou
+   aktuální, proto vybírejte verzi uloženou po úplném přepočtu.
+2. Spusťte `RUN_R1_2025_FREEZE_VISUM_DISTANCES.py`.
+   - Najde šest skimů `DIS` podle segmentu (CODE `DIS` + DSEGCODE), ne podle čísla.
+   - Zkontroluje 681 zón, matici 9697, poměry 9231/9233 a to, že žádná buňka
+     `DIS` mimo diagonálu nemá hodnotu „bez trasy“.
+   - Do otevřeného modelu zapíše osm datových matic 9720–9727 a ověří jejich
+     zpětné čtení. Matici 9697 nemění a `.ver` neukládá.
+   - Pokud matice 9720–9727 už v modelu jsou se stejnými kódy, přepíše je.
+     Pokud je číslo obsazené jinou maticí, skončí ještě před zápisem.
+   - Výsledek včetně cesty a SHA-256 zdrojové verze a otisků všech matic je v
+     `%LOCALAPPDATA%\R1C25_DISTANCE_PREP\FROZEN_DISTANCE_RESULT.json`.
 3. Ve **stejném otevřeném Visumu** spusťte
-   `RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py`. Znovu spočítá poptávku a přiřazení,
-   aplikuje LONG masku podle pevné matice 9721 a uloží nový `*_LIVE04_BASE_*.ver`
-   vedle otevřeného checkpointu. Zkontrolujte `RECOMPUTE_*/00_RESULT.json`.
-4. Otevřete nový uložený `.ver`, spusťte `RUN_R1_2025_LIVE04_READINESS.py`
-   a po `READY_FOR_LIVE04` spusťte nový kalibrační cyklus.
+   `RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py`. Ten přepočte poptávku a
+   přiřazení s LONG maskou podle 9721 a uloží nový `*_LIVE04_BASE_*.ver`.
+4. Otevřete nový `.ver`, spusťte `RUN_R1_2025_LIVE04_READINESS.py` a po
+   výsledku `READY_FOR_LIVE04` spusťte kalibraci.
 
-Kalibrační běh uloží `FROZEN_DISTANCE_AUTHORITY.json` s SHA všech osmi matic.
-Kontrola při startu porovnává šest zdrojových matic s hodnotami checkpointu a
-u odvozených 9726/9727 ověřuje vztah k maticím 9231/9233. Stejné hodnoty
-kontroluje po každém kalibračním bloku a před závěrečným uložením výsledku.
+| Matice | Obsah |
+| --- | --- |
+| 9720–9725 | `DIS` NATIVE_CF, CL, CS, CS_noT, CW, CW_noT; diagonála z 9697 |
+| 9726 | 9724 × RATIO_CW (9231) + 9725 × (1 − RATIO_CW): IDP WORK a SCHOOL |
+| 9727 | 9722 × RATIO_CS (9233) + 9723 × (1 − RATIO_CS): IDP SERVICE |
+| 9721 | LONG IDP a LONG maska ≥ 80 km |
 
-Matice 9720–9725 ukládají šest nativních délek podle segmentu. Pracovní a školní
-IDP používá 9726, váženou délku CW/CW_NOT podle matice 9231. Služební IDP
-používá 9727, váženou délku CS/CS_NOT podle matice 9233. LONG IDP i maska
-používají 9721 `NATIVE_CL`. Diagonála všech osmi matic přebírá intrazonální
-vzdálenosti z 9697, protože nativní `DIS` má na diagonále nuly.
+Kalibrátor při startu ověří existenci, kódy a typ všech osmi matic, platné
+hodnoty, diagonálu z 9697 a výpočet 9726/9727 z aktuálních poměrů. Otisky
+všech osmi matic, 9697 a pořadí zón uloží do `FROZEN_DISTANCE_AUTHORITY.json`.
+Po každém kalibračním bloku a před uložením výsledku ověří, že se nic z toho
+nezměnilo. Pokud se změnilo, běh zastaví.
 
-Při chybě po vytvoření matic zavřete změněný model **bez uložení** a znovu
-otevřete původní kopii checkpointu. Živý průchod ve Visumu tato větev ještě
-nemá; offline testy ověřují vazby, výpočty a integritu balíku.
+Pokud skript skončí chybou po zápisu (stav `MODEL_MAY_BE_CHANGED_CLOSE_WITHOUT_SAVING`),
+zavřete model **bez uložení**.

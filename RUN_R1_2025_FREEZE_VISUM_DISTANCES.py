@@ -1,10 +1,26 @@
-"""Freeze six verified Visum DIS skims into DATA matrices for the next LIVE04 baseline.
+"""Freeze the current Visum DIS skims into DATA matrices for the next LIVE04 baseline.
 
-Open the C02 GENERATION checkpoint whose SHA-256 is pinned below. Run this script
-once, then run RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py in the same Visum instance.
-The latter reapplies the LONG mask against frozen NATIVE_CL distance and saves a
-new version. This script never saves or overwrites a .ver. On any error after a
-write, close the changed model without saving and reopen the source checkpoint.
+Universal (2026-11-18): works on ANY saved 2025 version whose assignment and skims
+are current; it is not tied to one checkpoint file.
+
+Open the version, run this script, then run RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py
+in the same Visum instance (it reapplies the LONG mask on the frozen NATIVE_CL
+distance and saves a new *_LIVE04_BASE_*.ver). This script never saves a .ver and
+never changes 9697.
+
+Sources (found by CODE = DIS and DSEGCODE, not by fixed numbers), one per segment:
+  9720 NATIVE_CF, 9721 NATIVE_CL, 9722 NATIVE_CS, 9723 NATIVE_CS_noT,
+  9724 NATIVE_CW, 9725 NATIVE_CW_noT        diagonal taken from 9697 (DIS has 0)
+  9726 = RATIO_CW (9231) x 9724 + (1 - RATIO_CW) x 9725   (WORK / SCHOOL IDP)
+  9727 = RATIO_CS (9233) x 9722 + (1 - RATIO_CS) x 9723   (SERVICE IDP)
+Re-running on a version that already holds 9720-9727 overwrites them (same CODE).
+A target number used by another matrix stops the script before any write.
+
+The script cannot prove that DIS was computed after the last network change: run it
+only on a version saved after a full recompute. The result with the source version,
+its file SHA-256 and the hash of every matrix is written to
+%LOCALAPPDATA%\\R1C25_DISTANCE_PREP\\FROZEN_DISTANCE_RESULT.json; the calibrator records
+the same matrix hashes at run start and refuses any change during the run.
 """
 from __future__ import annotations
 import hashlib
@@ -12,19 +28,17 @@ import json
 import os
 from pathlib import Path
 import traceback
+import uuid
 import numpy as np
 
-SOURCE_SHA256 = 'cddacecbd4ab507469bacad6808d9561b540d6f13f4eef604046a510e11fa034'
-ZONE_SHA256 = '665c38f37b106f106539501fce9bc17e8635400aeaf7cef9929f799c438afe34'
-OSRM_SHA256 = 'e0eb31eecc2d2d67da617e3ccd2cf66daeeb82bb4d56da1c933b5e7f70663cf2'
-FROZEN = (
-    (9720, 9844, 'NATIVE_CF', '3ae4374bc3d17213d4df3b17ca71ad73419f080698229e13851c2fa2d98022c1'),
-    (9721, 9852, 'NATIVE_CL', '31c43ebe4b2d792d21dc6ed14e84a1206452b162ee4cee79b78633605447774f'),
-    (9722, 9860, 'NATIVE_CS', '7f5d8dae782d660ff60771ab66e81e49579aeb41cdd964ebf4731bbbdc4d96c3'),
-    (9723, 9868, 'NATIVE_CS_NOT', 'c4d6499d2c785cd797e90db33f6b1e424ebcc15bf8ff89069df8346e43f7d0c1'),
-    (9724, 9876, 'NATIVE_CW', '26f0e900a19d5a4d68733a7abcebb1e70522b7d74dfed6189b3ee66f875d6617'),
-    (9725, 9884, 'NATIVE_CW_NOT', '712633988dbba360651588afae0c34466f126b36e6b159c598fc59b54332c9b9'),
-)
+EXPECTED_ZONES = 681
+SEGMENTS = ((9720, 'NATIVE_CF'), (9721, 'NATIVE_CL'), (9722, 'NATIVE_CS'),
+            (9723, 'NATIVE_CS_NOT'), (9724, 'NATIVE_CW'), (9725, 'NATIVE_CW_NOT'))
+BLENDS = ((9726, 9231, 'RATIO_CW', 9724, 9725), (9727, 9233, 'RATIO_CS', 9722, 9723))
+TARGET_CODES = {no: 'R1_BASE_DIS_' + dseg + '_KM' for no, dseg in SEGMENTS}
+TARGET_CODES.update({9726: 'R1_BASE_DIS_WORK_KM', 9727: 'R1_BASE_DIS_SERV_KM'})
+ORIGINAL = (9697, 'R1_OSRM_DIST_KM')
+NO_PATH_KM = 100000.0        # Visum writes 999999 for OD pairs without a path
 
 
 def sha_file(path):
@@ -62,7 +76,7 @@ def matrix_type_is_source(matrix):
 
 
 def data_source_is_data(matrix):
-    return enum_is(matrix.AttValue('DATASOURCETYPE'), 1, {'DATA', 'DATASOURCETYPEDATA'})
+    return enum_is(matrix.AttValue('DATASOURCETYPE'), 1, {'DATA', 'DATASOURCETYPEDATA', 'MATRIXDATASOURCETYPEDATA'})
 
 
 def blended_distance(eligible, restricted, ratio):
@@ -71,102 +85,155 @@ def blended_distance(eligible, restricted, ratio):
     return np.ascontiguousarray(ratio * eligible + (1.0 - ratio) * restricted, dtype='<f8')
 
 
-def prepare(visum):
-    source = Path(str(visum.IO.CurrentVersionFile))
-    if not source.is_file() or sha_file(source) != SOURCE_SHA256:
-        raise RuntimeError('DISTANCE_SOURCE_CHECKPOINT_SHA_MISMATCH')
-    zones = np.array([int(v) for _, v in visum.Net.Zones.GetMultiAttValues('NO', False)], dtype='<i8')
-    if len(zones) != 681 or hashlib.sha256(zones.tobytes()).hexdigest() != ZONE_SHA256:
-        raise RuntimeError('DISTANCE_SOURCE_ZONE_ORDER_MISMATCH')
-    original = visum.Net.Matrices.ItemByKey(9697)
-    original_values = values(original, 681)
-    if str(original.AttValue('CODE')).strip().upper() != 'R1_OSRM_DIST_KM' or digest(original_values) != OSRM_SHA256:
-        raise RuntimeError('DISTANCE_ORIGINAL_9697_CHANGED')
-    if not matrix_type_is_source(original) or not data_source_is_data(original):
-        raise RuntimeError('DISTANCE_ORIGINAL_9697_TYPE_CHANGED')
-    sources = {}
-    for target_no, source_no, dseg, expected in FROZEN:
-        matrix = visum.Net.Matrices.ItemByKey(source_no)
-        if str(matrix.AttValue('CODE')).strip().upper() != 'DIS' or str(matrix.AttValue('DSEGCODE')).strip().upper() != dseg:
-            raise RuntimeError('DISTANCE_SOURCE_IDENTITY:' + dseg)
-        arr = values(matrix, 681)
-        if digest(arr) != expected:
-            raise RuntimeError('DISTANCE_SOURCE_SKIM_HASH_CHANGED:' + dseg)
-        frozen = arr.copy()
-        np.fill_diagonal(frozen, np.diag(original_values))
-        sources[target_no] = (frozen, digest(frozen))
-    derived = {}
-    for target_no, ratio_no, ratio_code, eligible_no, restricted_no in (
-            (9726, 9231, 'RATIO_CW', 9724, 9725),
-            (9727, 9233, 'RATIO_CS', 9722, 9723)):
-        ratio_matrix = visum.Net.Matrices.ItemByKey(ratio_no)
-        if str(ratio_matrix.AttValue('CODE')).strip().upper() != ratio_code:
-            raise RuntimeError('DISTANCE_SPLIT_RATIO_IDENTITY:' + ratio_code)
-        ratio = values(ratio_matrix, 681)
-        arr = blended_distance(sources[eligible_no][0], sources[restricted_no][0], ratio)
-        derived[target_no] = (arr, digest(arr), ratio_no, digest(ratio))
-    number_rows = visum.Net.Matrices.GetMultiAttValues('NO')
-    code_rows = visum.Net.Matrices.GetMultiAttValues('CODE')
-    if [i for i, _ in number_rows] != [i for i, _ in code_rows]:
-        raise RuntimeError('DISTANCE_MATRIX_INVENTORY_ORDER_CHANGED')
-    used = {int(float(no)) for _, no in number_rows}
-    if any(no in used for no in range(9720, 9728)):
-        raise RuntimeError('DISTANCE_TARGET_NUMBER_ALREADY_USED')
-    target_codes = {'R1_BASE_DIS_' + dseg + '_KM' for _, _, dseg, _ in FROZEN}
-    target_codes.update(('R1_BASE_DIS_WORK_KM', 'R1_BASE_DIS_SERV_KM'))
-    if any(str(code).strip().upper() in target_codes for _, code in code_rows):
-        raise RuntimeError('DISTANCE_TARGET_CODE_ALREADY_USED')
-    report = {'status': 'PREFLIGHT_PASS', 'source_version': str(source), 'source_sha256': SOURCE_SHA256,
-              'frozen': [], 'source_9697_preserved': True, 'save_version_called': False}
+def _code(matrix):
+    return str(matrix.AttValue('CODE')).strip().upper()
+
+
+def _number(value):
+    return int(round(float(value)))
+
+
+def _result_path():
     out = Path(os.environ.get('LOCALAPPDATA') or Path.home()) / 'R1C25_DISTANCE_PREP'
     out.mkdir(parents=True, exist_ok=True)
-    path = out / 'FROZEN_DISTANCE_RESULT.json'
+    return out / 'FROZEN_DISTANCE_RESULT.json'
+
+
+def _write(path, report):
     path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+
+
+def _inventory(visum):
+    """{matrix_no: (code, dsegcode)} of all matrices, read in bulk."""
+    coll = visum.Net.Matrices
+    nos = coll.GetMultiAttValues('NO')
+    codes = coll.GetMultiAttValues('CODE')
+    dsegs = coll.GetMultiAttValues('DSEGCODE')
+    if not ([i for i, _ in nos] == [i for i, _ in codes] == [i for i, _ in dsegs]):
+        raise RuntimeError('DISTANCE_MATRIX_INVENTORY_ORDER_CHANGED')
+    return {_number(no): (str(c).strip().upper(), str(d).strip().upper())
+            for (_, no), (_, c), (_, d) in zip(nos, codes, dsegs)}
+
+
+def prepare(visum):
+    source = Path(str(visum.IO.CurrentVersionFile))
+    report = {'schema': 'R1C25_FROZEN_DISTANCE_PREP_V2_UNIVERSAL', 'run_token': uuid.uuid4().hex,
+              'status': 'STARTED', 'source_version': str(source), 'source_exists': source.is_file(),
+              'save_version_called': False, 'source_9697_preserved': True, 'frozen': [], 'warnings': []}
+    path = _result_path()
+    wrote = False
     try:
-        for target_no, source_no, dseg, expected in FROZEN:
-            matrix = visum.Net.AddMatrix(target_no, 2, 3)
-            if not matrix_type_is_source(matrix) or not data_source_is_data(matrix):
-                raise RuntimeError('DISTANCE_TARGET_TYPE_MISMATCH:' + dseg)
-            matrix.SetAttValue('CODE', 'R1_BASE_DIS_' + dseg + '_KM')
-            matrix.SetAttValue('NAME', 'Frozen baseline Visum DIS km ' + dseg)
-            frozen, frozen_hash = sources[target_no]
+        if not report['source_exists'] or source.suffix.lower() != '.ver':
+            raise RuntimeError('DISTANCE_OPEN_A_SAVED_VER_FIRST')
+        if '2022' in source.name:
+            raise RuntimeError('DISTANCE_ONLY_2025_MODEL')
+        st = source.stat()
+        report.update({'source_bytes': st.st_size, 'source_mtime_epoch': st.st_mtime,
+                       'source_sha256': sha_file(source)})
+        zones = np.array([_number(v) for _, v in visum.Net.Zones.GetMultiAttValues('NO', False)], dtype='<i8')
+        if len(zones) != EXPECTED_ZONES or len(set(zones.tolist())) != len(zones):
+            raise RuntimeError('DISTANCE_ZONE_COUNT_OR_ORDER_INVALID:%d' % len(zones))
+        n = len(zones)
+        report['zone_order_sha256'] = hashlib.sha256(zones.tobytes()).hexdigest()
+
+        inv = _inventory(visum)
+        if inv.get(ORIGINAL[0], ('',))[0] != ORIGINAL[1]:
+            raise RuntimeError('DISTANCE_ORIGINAL_9697_MISSING_OR_RECODED')
+        original = visum.Net.Matrices.ItemByKey(ORIGINAL[0])
+        if not matrix_type_is_source(original) or not data_source_is_data(original):
+            raise RuntimeError('DISTANCE_ORIGINAL_9697_TYPE_CHANGED')
+        original_values = values(original, n)
+        report['m9697_sha256'] = digest(original_values)
+        off = ~np.eye(n, dtype=bool)
+
+        # targets: free, or already ours (re-freeze); never a foreign matrix
+        for no, code in TARGET_CODES.items():
+            if no in inv and inv[no][0] != code:
+                raise RuntimeError('DISTANCE_TARGET_NUMBER_USED_BY_OTHER_MATRIX:%d:%s' % (no, inv[no][0]))
+            others = [m for m, (c, _) in inv.items() if c == code and m != no]
+            if others:
+                raise RuntimeError('DISTANCE_TARGET_CODE_USED_BY_OTHER_NUMBER:%s:%s' % (code, others))
+        report['refreeze'] = sorted(no for no in TARGET_CODES if no in inv)
+
+        sources = {}
+        for target_no, dseg in SEGMENTS:
+            hits = [no for no, (c, d) in inv.items() if c == 'DIS' and d == dseg]
+            if len(hits) != 1:
+                raise RuntimeError('DISTANCE_SOURCE_DIS_NOT_UNIQUE:%s:%s' % (dseg, hits))
+            source_no = hits[0]
+            arr = values(visum.Net.Matrices.ItemByKey(source_no), n)
+            no_path = int((arr[off] >= NO_PATH_KM).sum())
+            if no_path:
+                raise RuntimeError('DISTANCE_SOURCE_NO_PATH_CELLS:%s:%d' % (dseg, no_path))
+            zero = int((arr[off] <= 0).sum())
+            if zero:
+                report['warnings'].append('%s: %d off-diagonal cells with DIS = 0 km' % (dseg, zero))
+            frozen = arr.copy()
+            np.fill_diagonal(frozen, np.diag(original_values))
+            sources[target_no] = (source_no, dseg, digest(arr), frozen, digest(frozen))
+        derived = {}
+        for target_no, ratio_no, ratio_code, eligible_no, restricted_no in BLENDS:
+            if inv.get(ratio_no, ('',))[0] != ratio_code:
+                raise RuntimeError('DISTANCE_SPLIT_RATIO_IDENTITY:%d:%s' % (ratio_no, ratio_code))
+            ratio = values(visum.Net.Matrices.ItemByKey(ratio_no), n)
+            arr = blended_distance(sources[eligible_no][3], sources[restricted_no][3], ratio)
+            derived[target_no] = (arr, digest(arr), ratio_no, digest(ratio))
+        report['status'] = 'PREFLIGHT_PASS'
+        _write(path, report)
+
+        wrote = True
+        stem = source.stem[:120]
+        for target_no, (source_no, dseg, source_hash, frozen, frozen_hash) in sources.items():
+            matrix = _target(visum, target_no, inv)
+            matrix.SetAttValue('CODE', TARGET_CODES[target_no])
+            matrix.SetAttValue('NAME', 'Frozen Visum DIS km %s from %s' % (dseg, stem))
             matrix.SetValues(frozen, False)
-            if int(matrix.AttValue('NO')) != target_no or digest(values(matrix, 681)) != frozen_hash:
+            if _number(matrix.AttValue('NO')) != target_no or digest(values(matrix, n)) != frozen_hash:
                 raise RuntimeError('DISTANCE_TARGET_READBACK_MISMATCH:' + dseg)
-            report['frozen'].append({'matrix_no': target_no, 'source_no': source_no,
-                                     'dseg': dseg, 'source_values_sha256': expected,
-                                     'frozen_values_sha256': frozen_hash,
-                                     'diagonal_source': 'M9697_R1_OSRM_DIST_KM'})
-            path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+            report['frozen'].append({'matrix_no': target_no, 'code': TARGET_CODES[target_no], 'source_no': source_no,
+                                     'dseg': dseg, 'source_values_sha256': source_hash,
+                                     'frozen_values_sha256': frozen_hash, 'diagonal_source': 'M9697',
+                                     'mean_offdiag_km': float(frozen[off].mean())})
+            _write(path, report)
         for target_no, (arr, expected_hash, ratio_no, ratio_hash) in derived.items():
-            matrix = visum.Net.AddMatrix(target_no, 2, 3)
-            if not matrix_type_is_source(matrix) or not data_source_is_data(matrix):
-                raise RuntimeError('DISTANCE_BLEND_TYPE_MISMATCH:' + str(target_no))
-            matrix.SetAttValue('CODE', 'R1_BASE_DIS_WORK_KM' if target_no == 9726 else 'R1_BASE_DIS_SERV_KM')
-            matrix.SetAttValue('NAME', 'Frozen baseline blended Visum DIS km')
+            matrix = _target(visum, target_no, inv)
+            matrix.SetAttValue('CODE', TARGET_CODES[target_no])
+            matrix.SetAttValue('NAME', 'Frozen blended Visum DIS km from %s' % stem)
             matrix.SetValues(arr, False)
-            if int(matrix.AttValue('NO')) != target_no or digest(values(matrix, 681)) != expected_hash:
-                raise RuntimeError('DISTANCE_BLEND_READBACK_MISMATCH:' + str(target_no))
-            report['frozen'].append({'matrix_no': target_no, 'values_sha256': expected_hash,
-                                     'split_ratio_matrix_no': ratio_no, 'split_ratio_sha256': ratio_hash,
-                                     'diagonal_source': 'M9697_R1_OSRM_DIST_KM'})
-            path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-        if digest(values(original, 681)) != OSRM_SHA256 or sha_file(source) != SOURCE_SHA256:
-            raise RuntimeError('DISTANCE_FREEZE_SOURCE_CHANGED')
-        for _, source_no, dseg, expected in FROZEN:
-            if digest(values(visum.Net.Matrices.ItemByKey(source_no), 681)) != expected:
+            if _number(matrix.AttValue('NO')) != target_no or digest(values(matrix, n)) != expected_hash:
+                raise RuntimeError('DISTANCE_BLEND_READBACK_MISMATCH:%d' % target_no)
+            report['frozen'].append({'matrix_no': target_no, 'code': TARGET_CODES[target_no],
+                                     'values_sha256': expected_hash, 'split_ratio_matrix_no': ratio_no,
+                                     'split_ratio_sha256': ratio_hash, 'diagonal_source': 'M9697',
+                                     'mean_offdiag_km': float(arr[off].mean())})
+            _write(path, report)
+        # nothing the script read may have changed while it ran
+        if digest(values(original, n)) != report['m9697_sha256']:
+            raise RuntimeError('DISTANCE_FREEZE_9697_CHANGED')
+        for source_no, dseg, source_hash, _, _ in sources.values():
+            if digest(values(visum.Net.Matrices.ItemByKey(source_no), n)) != source_hash:
                 raise RuntimeError('DISTANCE_FREEZE_SOURCE_SKIM_CHANGED:' + dseg)
-        for _, (_, _, ratio_no, ratio_hash) in derived.items():
-            if digest(values(visum.Net.Matrices.ItemByKey(ratio_no), 681)) != ratio_hash:
-                raise RuntimeError('DISTANCE_FREEZE_SPLIT_RATIO_CHANGED:' + str(ratio_no))
+        for _, _, ratio_no, ratio_hash in derived.values():
+            if digest(values(visum.Net.Matrices.ItemByKey(ratio_no), n)) != ratio_hash:
+                raise RuntimeError('DISTANCE_FREEZE_SPLIT_RATIO_CHANGED:%d' % ratio_no)
         report['status'] = 'FROZEN_IN_OPEN_MODEL_RUN_RECOMPUTE_BEFORE_SAVE'
-        path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+        _write(path, report)
         return report
     except BaseException:
-        report['status'] = 'MODEL_MAY_BE_CHANGED_CLOSE_WITHOUT_SAVING'
+        report['status'] = 'MODEL_MAY_BE_CHANGED_CLOSE_WITHOUT_SAVING' if wrote else 'STOPPED_BEFORE_ANY_WRITE'
         report['error'] = traceback.format_exc()[-2000:]
-        path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+        _write(path, report)
         raise
+
+
+def _target(visum, no, inv):
+    if no in inv:
+        matrix = visum.Net.Matrices.ItemByKey(no)
+    else:
+        matrix = visum.Net.AddMatrix(no, 2, 3)
+    if not matrix_type_is_source(matrix) or not data_source_is_data(matrix):
+        raise RuntimeError('DISTANCE_TARGET_TYPE_MISMATCH:%d' % no)
+    return matrix
 
 
 if __name__ == '__main__':

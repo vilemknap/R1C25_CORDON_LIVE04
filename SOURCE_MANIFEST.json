@@ -398,13 +398,13 @@
     },
     {
       "path": "FROZEN_DISTANCE_CHAIN_AUDIT_CZ.md",
-      "size": 2709,
-      "sha256": "4bd025d059f48ee10ec1f566e36ffec66cad6ab97847a528f16533192e124c32"
+      "size": 3272,
+      "sha256": "5ec756ff92390bacabd0db2b97af0bd0a2c79092cc4044a4b2c5493f0656b724"
     },
     {
       "path": "FROZEN_VISUM_DISTANCE_RUNBOOK_CZ.md",
-      "size": 2275,
-      "sha256": "1b4aebf337d79929602a05174c4b23bcbb554220983dc8fbfbf772a5a292f963"
+      "size": 2305,
+      "sha256": "ac6b8c7de1a05765777637deb9d343665c06a8615b93639b7cb6de6127d8b9c1"
     },
     {
       "path": "IMPLEMENTATION_EVIDENCE.json",
@@ -603,8 +603,8 @@
     },
     {
       "path": "RUN_R1_2025_FREEZE_VISUM_DISTANCES.py",
-      "size": 9648,
-      "sha256": "4e0f5ed1231e19b2957e3f1e66341b93e834c82093973642171fbad0a66ec1b1"
+      "size": 11790,
+      "sha256": "8717d852ceed801c0969dbb3d9cf43f75bf9541f2e386d7fb47d3627c3dca307"
     },
     {
       "path": "RUN_R1_2025_IMPORT_AND_RECOMPUTE.py",
@@ -1538,8 +1538,8 @@
     },
     {
       "path": "cordon2025/live04_frozen_distance.py",
-      "size": 6286,
-      "sha256": "92f9da09bd422e21d8d4e03d2ca5fdb0600bd65e5e302aad305421b4719943b5"
+      "size": 5161,
+      "sha256": "b4e5f77d14499272efed98252c82477d8925ff17fed467a9bc137ea405d4f2d1"
     },
     {
       "path": "cordon2025/live04_generation.py",
@@ -9928,8 +9928,8 @@
     },
     {
       "path": "tests/test_live04_frozen_distance.py",
-      "size": 11089,
-      "sha256": "c40b6ba14c93f3bd0174364e3775efc3681b17e98dac9656ae7497ed659d4177"
+      "size": 13197,
+      "sha256": "eaf6d8f20f171474a727bb86832f28e9f5682b56729e3195f65bb955cbf3d471"
     },
     {
       "path": "tests/test_live04_objective_alignment.py",
