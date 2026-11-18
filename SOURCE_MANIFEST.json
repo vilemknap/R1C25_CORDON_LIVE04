@@ -1538,8 +1538,8 @@
     },
     {
       "path": "cordon2025/live04_frozen_distance.py",
-      "size": 5847,
-      "sha256": "a7fb91cea7f08a8fa04b53aece7bec60e08d955220152f488028d3b86d881917"
+      "size": 5810,
+      "sha256": "67259339a4bbb92c0033193ee7743a137b79d48b033243fe09f19ce98d2d60a8"
     },
     {
       "path": "cordon2025/live04_generation.py",
@@ -9928,8 +9928,8 @@
     },
     {
       "path": "tests/test_live04_frozen_distance.py",
-      "size": 9920,
-      "sha256": "d62ffeb7c452b406c5d7cbcf965b06ddb9a47adf980dcfc694a7e132391af4f6"
+      "size": 10713,
+      "sha256": "d9944c2ebf393effd29c72232231d94cea117c8a075e518935b5c45d2f90e619"
     },
     {
       "path": "tests/test_live04_objective_alignment.py",

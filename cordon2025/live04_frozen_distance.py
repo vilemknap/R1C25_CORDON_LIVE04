@@ -25,10 +25,6 @@ def _hash(values):
     return hashlib.sha256(np.ascontiguousarray(values, dtype='<f8').tobytes()).hexdigest()
 
 
-def _data_source(matrix):
-    return ''.join(c for c in str(matrix.AttValue('DATASOURCETYPE')).upper() if c.isalnum())
-
-
 def _enum_is(value, expected, aliases):
     token = ''.join(c for c in str(value).upper() if c.isalnum())
     if token in aliases:
@@ -45,6 +41,11 @@ def _zone_od_type(matrix):
                          {'MATRIXTYPEOD', 'MATRIXTYPEODMATRIX', 'ODMATRIX'}))
 
 
+def _data_source_is_data(matrix):
+    return _enum_is(matrix.AttValue('DATASOURCETYPE'), 1,
+                    {'DATA', 'DATASOURCETYPEDATA'})
+
+
 def verify(visum, n):
     fixture = str(getattr(visum, 'origin', '')) == 'MOCK_LIVE04_681_ZONES_NOT_NATIVE'
     zones = np.asarray([int(no) for _, no in visum.Net.Zones.GetMultiAttValues('NO', False)], dtype='<i8')
@@ -56,8 +57,8 @@ def verify(visum, n):
     original_matrix = visum.Net.Matrices.ItemByKey(9697)
     require(str(original_matrix.AttValue('CODE')).strip().upper() == 'R1_OSRM_DIST_KM',
             'LIVE04_FROZEN_DISTANCE_ORIGINAL_IDENTITY')
-    require(_zone_od_type(original_matrix) and _data_source(original_matrix)
-            in ('1', 'DATA', 'DATASOURCETYPEDATA'), 'LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE')
+    require(_zone_od_type(original_matrix) and _data_source_is_data(original_matrix),
+            'LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE')
     original = np.asarray(original_matrix.GetValues(), dtype='<f8')
     require(original.shape == (n, n) and np.isfinite(original).all() and (original >= 0).all(),
             'LIVE04_FROZEN_DISTANCE_ORIGINAL_INVALID')
@@ -70,7 +71,7 @@ def verify(visum, n):
         matrix = visum.Net.Matrices.ItemByKey(no)
         require(int(matrix.AttValue('NO')) == no and str(matrix.AttValue('CODE')).strip().upper() == code,
                 'LIVE04_FROZEN_DISTANCE_IDENTITY:%d' % no)
-        require(_zone_od_type(matrix) and _data_source(matrix) in ('1', 'DATA', 'DATASOURCETYPEDATA'),
+        require(_zone_od_type(matrix) and _data_source_is_data(matrix),
                 'LIVE04_FROZEN_DISTANCE_NOT_DATA:%d' % no)
         values = np.ascontiguousarray(matrix.GetValues(), dtype='<f8')
         require(values.shape == (n, n) and np.isfinite(values).all() and (values >= 0).all(),

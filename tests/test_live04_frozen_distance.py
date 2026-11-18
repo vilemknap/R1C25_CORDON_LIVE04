@@ -42,6 +42,26 @@ def test_frozen_distance_preflight_checks_identity_and_intrazonal_values():
         verify(visum, 2)
 
 
+@pytest.mark.parametrize('data_source', [1.0, '1.0'])
+def test_frozen_distance_accepts_com_numeric_data_enum(data_source):
+    visum, matrices = _visum()
+    for no in (9697, 9720):
+        matrix = matrices[no]
+        original = matrix.AttValue
+        matrix.AttValue = lambda key, original=original: (
+            data_source if key.upper() == 'DATASOURCETYPE' else original(key))
+    assert verify(visum, 2)['status'] == 'VERIFIED'
+
+
+def test_frozen_distance_rejects_formula_original():
+    visum, matrices = _visum()
+    original = matrices[9697].AttValue
+    matrices[9697].AttValue = lambda key: (
+        'FORMULA' if key.upper() == 'DATASOURCETYPE' else original(key))
+    with pytest.raises(ContractError, match='LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE'):
+        verify(visum, 2)
+
+
 def test_frozen_distance_preflight_checks_blends_and_data_type():
     visum, matrices = _visum()
     matrices[9726].values[0, 1] += 1.
@@ -159,7 +179,7 @@ def test_freeze_creates_readable_data_matrices_from_pinned_sources(tmp_path, mon
         def AttValue(self, key):
             return {'NO': self.no, 'CODE': self.code, 'DSEGCODE': self.dseg,
                     'OBJECTTYPEREF': 2, 'MATRIXTYPE': self.matrix_type,
-                    'DATASOURCETYPE': 1}[key.upper()]
+                    'DATASOURCETYPE': 1.0}[key.upper()]
 
         def SetAttValue(self, key, value):
             if key.upper() == 'CODE':
