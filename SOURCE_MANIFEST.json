@@ -52,6 +52,11 @@
       "sha256": "86721e46e5b497107aeef64587f2a760c9eed6dc9d9d3b5b6a807b614f6005cb"
     },
     {
+      "path": "CALIBRATION_GATE_AUDIT_CZ.md",
+      "size": 2463,
+      "sha256": "db70acbf85fa054fe7152c427e06dd466aaf80b660fa9833c884bf3ca4bceee3"
+    },
+    {
       "path": "CHECKPOINTS/CP00/RESUME.txt",
       "size": 377,
       "sha256": "16120a1febdaccfe0ca283696efc2d91a38d6cdb7182d5708d7f86674c5f2dac"
@@ -1478,8 +1483,8 @@
     },
     {
       "path": "cordon2025/live03_td.py",
-      "size": 37606,
-      "sha256": "2642ee5640dcb3f3114ec43a9f0526edaf3f5d7575d5340f92be04bdb8e2aac1"
+      "size": 38893,
+      "sha256": "feefe405e07631bb60d5c6dec2d1e08e063d45c37831352298e8a709b2bbbb13"
     },
     {
       "path": "cordon2025/live03_td_parameters.py",
@@ -9863,8 +9868,8 @@
     },
     {
       "path": "tests/test_live04_11.py",
-      "size": 10316,
-      "sha256": "f934f77306d3e5ee3c2ee3e7468286ccea60aa19d60b60ddf409df6414a773dd"
+      "size": 12448,
+      "sha256": "56f955dced43189bdad57942a58bedb407dbe7d1071ed256aab4b4807fd7cca2"
     },
     {
       "path": "tests/test_live04_11_not_audit.py",

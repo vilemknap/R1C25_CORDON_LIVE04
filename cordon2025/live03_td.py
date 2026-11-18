@@ -272,6 +272,22 @@ def blended_gate(dec, blend, q0, q1, idp0, idp1, tdc, q_base=None):
     return dict(dec, accepted=not reasons, reasons=reasons, td_blended_acceptance=audit)
 
 
+def inner_blended_gate(dec, blend, parent_q, center_q, candidate_q,
+                       parent_idp, center_idp, candidate_idp, tdc):
+    """Use the trial's parent reference, then keep only improvements over the current inner step."""
+    out = blended_gate(dec, blend, parent_q, candidate_q, parent_idp, candidate_idp,
+                       tdc, q_base=parent_q)
+    if out['accepted']:
+        center_value = blend.value(center_q, center_idp)
+        candidate_value = blend.value(candidate_q, candidate_idp)
+        out['td_blended_acceptance'].update(inner_center_value=center_value,
+                                            inner_candidate_value=candidate_value)
+        if candidate_value >= center_value - 1e-12:
+            out['accepted'] = False
+            out['reasons'] = list(out['reasons']) + ['TD_INNER_BLEND_NOT_BETTER_THAN_CENTER']
+    return out
+
+
 def _verify_memory_jacobian(J, native, space, tdc, mcfg, m0, method, w, y, eps, methods):
     """LIVE04.1: plan the first trust-region step with the remembered Jacobian, probe it
     natively once and accept the Jacobian only if it predicts that probe."""
@@ -458,7 +474,11 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
         blended_acceptance = blend is not None and str(tdc.get('acceptance', 'CORDON')) == 'BLENDED'
         rec['acceptance_mode'] = 'BLENDED' if blended_acceptance else 'CORDON'
         if str(tdc.get('acceptance', 'CORDON')) == 'BLENDED' and not blended_acceptance:
-            rec['acceptance_mode_note'] = 'BLENDED_REQUESTED_BUT_IDP_MODEL_UNAVAILABLE_CORDON_USED'
+            if bw > 0 and guard is not None:
+                rec['acceptance_mode_note'] = 'BLENDED_REQUESTED_BUT_IDP_MODEL_UNAVAILABLE_NO_TRIAL'
+                return finish_without_trial('BLENDED_IDP_MODEL_UNAVAILABLE')
+            rec['acceptance_mode_note'] = ('BLENDED_REQUESTED_BUT_IDP_WEIGHT_ZERO_CORDON_USED' if bw == 0
+                                           else 'BLENDED_REQUESTED_BUT_IDP_DISABLED_CORDON_USED')
         write_csv(folder / 'TD_JACOBIAN_PRIMARY.csv', [dict(zip(['row'] + space.names(), [i] + list(J[method][i])))
                                                       for i in range(J[method].shape[0])])
         # ---- inner box Gauss-Newton with trust region, native verification
@@ -502,9 +522,10 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
             rel_vs_center = (center_obj - obj) / max(abs(center_obj), 1e-12)
             gd = guard_decision(idp_after)
             if blended_acceptance:
-                # relative to the trust-region centre (inner) - the trial is judged against the block start
-                gate = blended_gate(gate, blend, center_obj, obj,
-                                    center_idp, idp_after, tdc, q_base=float(diag['methods'][method]['objective']))
+                # Apply the same block-parent acceptance as the full trial, while retaining
+                # only successive inner steps that improve on the current best score.
+                gate = inner_blended_gate(gate, blend, float(diag['methods'][method]['objective']),
+                                          center_obj, obj, idp_before, center_idp, idp_after, tdc)
             entry.update(x=x.tolist(), native_frozen_objective=obj, relative_vs_center=rel_vs_center,
                          predicted_secondary_relative_degradation=gate.get('secondary_relative_degradation'),
                          gate_reasons=gate.get('reasons'), idp=gd, unsupported_share=a['unsupported_share'])

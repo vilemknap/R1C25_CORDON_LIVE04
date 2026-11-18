@@ -113,6 +113,19 @@ def test_component_td_moves_components_of_one_family_differently(tmp_path, synth
     assert e['blend_center'] == pytest.approx(1.0) and e['blend_measured'] < 1.0
 
 
+def test_blended_td_does_not_silently_fall_back_to_cordon_only(tmp_path, synthetic_idp, monkeypatch):
+    v = Live04Visum(tmp_path / 'model'); synthetic_idp['v'] = v
+    monkeypatch.setattr(IdpStepModel, 'from_probes', classmethod(lambda cls, *args: None))
+    run(v, output_root=tmp_path / 'runs', options=OPT,
+        config_overrides={'max_cycles': 1, 'blocks_per_cycle': ['TD_CORDON'],
+                          'td_cordon': {'grouping': 'FAMILY'}})
+    f = list((tmp_path / 'runs').glob('LIVE04_TGTD_*'))[0]
+    td = read_json(f / 'C01_TD_CORDON/TD_BLOCK_RESULT.json')
+    assert td['status'] == 'NO_TD_CANDIDATE'
+    assert td['stop_reason'] == 'BLENDED_IDP_MODEL_UNAVAILABLE'
+    assert not (f / 'C01_TD_CORDON/TRIAL').exists()
+
+
 # ------------------------------------------------------- blended acceptance (v7 TDBLEND1)
 def _blend():
     g = SimpleNamespace(guarded=['A'], mean_floor=0.03, mean_tol=0.02, rmse_tol=0.01)
@@ -151,6 +164,29 @@ def test_td_secondary_ceiling_is_shared_by_inner_search_and_final_gate():
     primary_loss = blended_gate({'reasons': [], 'secondary_relative_degradation': 0.046},
                                 blend, 1000.0, 1011.0, before, better, td)
     assert 'TD_CORDON_DEGRADED_TOO_MUCH' in primary_loss['reasons']
+
+
+def test_inner_td_uses_parent_blend_and_keeps_the_best_step():
+    from cordon2025.live03_td import inner_blended_gate
+    td = load_config()['td_cordon']
+    parent = _idp({'A': (1., 0.)})
+    blend = IdpBlend(SimpleNamespace(guarded=['A']), ['A'], parent, 0.45, q_ref=1000.)
+    # The candidate improves relative to the centre, but is worse than the block parent.
+    center = _idp({'A': (math.sqrt(1.36), 0.)})
+    candidate = _idp({'A': (math.sqrt(1.5), 0.)})
+    assert 0.55 * 600 / 700 + 0.45 * 1.5 / 1.36 < 1.
+    result = inner_blended_gate({'reasons': [], 'secondary_relative_degradation': 0.},
+                                blend, 1000., 700., 600., parent, center, candidate, td)
+    assert not result['accepted']
+    assert 'TD_BLENDED_OBJECTIVE_NOT_IMPROVED' in result['reasons']
+    # A later candidate may pass the parent gate yet still lose against the best inner step.
+    center = _idp({'A': (math.sqrt(1.4), 0.)})
+    candidate = _idp({'A': (math.sqrt(1.6), 0.)})
+    result = inner_blended_gate({'reasons': [], 'secondary_relative_degradation': 0.},
+                                blend, 1000., 500., 400., parent, center, candidate, td)
+    assert not result['accepted']
+    assert result['reasons'] == ['TD_INNER_BLEND_NOT_BETTER_THAN_CENTER']
+    assert result['td_blended_acceptance']['inner_center_value'] < result['td_blended_acceptance']['inner_candidate_value']
 
 
 @pytest.mark.parametrize('q1,idp1,sec,reason', [
