@@ -20,6 +20,11 @@ Tato větev nemění již běžící kalibraci.
 4. Otevřete nový uložený `.ver`, spusťte `RUN_R1_2025_LIVE04_READINESS.py`
    a po `READY_FOR_LIVE04` spusťte nový kalibrační cyklus.
 
+Kalibrační běh uloží `FROZEN_DISTANCE_AUTHORITY.json` s SHA všech osmi matic.
+Kontrola při startu porovnává šest zdrojových matic s hodnotami checkpointu a
+u odvozených 9726/9727 ověřuje vztah k maticím 9231/9233. Stejné hodnoty
+kontroluje po každém kalibračním bloku a před závěrečným uložením výsledku.
+
 Matice 9720–9725 ukládají šest nativních délek podle segmentu. Pracovní a školní
 IDP používá 9726, váženou délku CW/CW_NOT podle matice 9231. Služební IDP
 používá 9727, váženou délku CS/CS_NOT podle matice 9233. LONG IDP i maska

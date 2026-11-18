@@ -14,7 +14,7 @@ cordon calibrator must see exactly the same demand, so:
   the donor sequence deliberately rejects) use ``execute_demand_only``: the
   same THROUGH_TD / REALIZATION phases and the same donor ``apply_group``
   writes, then the donor support verification;
-* ``support_report`` is a read-only audit (donor ``measure`` on 9697), used to
+* ``support_report`` is a read-only audit (donor ``measure`` on 9721), used to
   require an already-masked baseline and to verify every accepted state.
 
 No P/A repair, no renormalization, volume loss accepted (v7 user decision).

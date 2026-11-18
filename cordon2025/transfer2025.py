@@ -401,6 +401,8 @@ def import_and_recompute(visum, *, output_root=None, config_path=None, config_ov
         result['target_version'] = target_path
         result['copy_guard'] = isolated_copy_guard(lcfg, target_path)
         m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'], frozen_distance=True)
+        result['frozen_distance'] = m.frozen_distance
+        write_json(folder / 'FROZEN_DISTANCE_AUTHORITY.json', m.frozen_distance)
         plan = build_plan(export, m, tcfg)
         write_json(folder / 'TRANSFER_PLAN.json', plan)
         result['plan'] = {k: plan[k] for k in ('zones', 'attributes', 'td', 'addval1')}
@@ -444,6 +446,8 @@ def import_and_recompute(visum, *, output_root=None, config_path=None, config_ov
             require(all(abs(x['value'] - x['expected']) <= 1e-9 for x in pl), 'TRANSFER_ADDVAL1_OVERWRITTEN')
             support = support_report(m, folder, 'AFTER_RECOMPUTE')
             require(support['support_clean'], 'TRANSFER_LONG_SUPPORT_NOT_CLEAN_AFTER_RECOMPUTE')
+            from .live04_frozen_distance import assert_unchanged as assert_frozen_distance
+            assert_frozen_distance(guarded, len(m.zones), m.frozen_distance)
             result['long_support_clean'] = True
         # ---- new version
         if tcfg['save_new_version']:
@@ -550,6 +554,8 @@ def recompute_base(visum, *, output_root=None, config_path=None, config_override
         result['target_version'] = target_path
         result['copy_guard'] = isolated_copy_guard(lcfg, target_path)
         m = TransferAdapter(guarded, acfg, expected_zones=acfg['expected_zones'], frozen_distance=True)
+        result['frozen_distance'] = m.frozen_distance
+        write_json(folder / 'FROZEN_DISTANCE_AUTHORITY.json', m.frozen_distance)
         result['station_links'] = _station_link_precheck(m)
         before = _parameter_snapshot(m)
         write_json(folder / 'PARAMETERS_BEFORE.json', before)
@@ -573,6 +579,8 @@ def recompute_base(visum, *, output_root=None, config_path=None, config_override
         require(not diffs, 'RECOMPUTE_BASE_PARAMETERS_CHANGED_BY_PROCEDURE:' + repr(diffs)[:800])
         support = support_report(m, folder, 'AFTER_RECOMPUTE')
         require(support['support_clean'], 'RECOMPUTE_BASE_LONG_SUPPORT_NOT_CLEAN_AFTER_RECOMPUTE')
+        from .live04_frozen_distance import assert_unchanged as assert_frozen_distance
+        assert_frozen_distance(guarded, len(m.zones), m.frozen_distance)
         result['long_support_clean'] = True
         src = Path(target_path)
         target = src.with_name(src.stem + '_LIVE04_BASE_' + uuid.uuid4().hex[:8] + src.suffix)

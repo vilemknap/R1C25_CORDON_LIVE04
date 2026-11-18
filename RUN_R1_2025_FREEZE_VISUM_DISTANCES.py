@@ -46,6 +46,25 @@ def digest(arr):
     return hashlib.sha256(np.ascontiguousarray(arr, dtype='<f8').tobytes()).hexdigest()
 
 
+def enum_is(value, expected, aliases):
+    token = ''.join(c for c in str(value).upper() if c.isalnum())
+    if token in aliases:
+        return True
+    try:
+        return not isinstance(value, bool) and float(value) == expected
+    except (TypeError, ValueError, OverflowError):
+        return False
+
+
+def matrix_type_is_source(matrix):
+    return (enum_is(matrix.AttValue('OBJECTTYPEREF'), 2, {'OBJECTTYPEREFZONE', 'ZONE', 'ZONES'})
+            and enum_is(matrix.AttValue('MATRIXTYPE'), 3, {'MATRIXTYPEOD', 'MATRIXTYPEODMATRIX', 'ODMATRIX'}))
+
+
+def data_source_is_data(matrix):
+    return enum_is(matrix.AttValue('DATASOURCETYPE'), 1, {'DATA', 'DATASOURCETYPEDATA'})
+
+
 def blended_distance(eligible, restricted, ratio):
     if not np.isfinite(ratio).all() or np.any((ratio < 0) | (ratio > 1)):
         raise RuntimeError('DISTANCE_SPLIT_RATIO_OUT_OF_RANGE')
@@ -56,13 +75,15 @@ def prepare(visum):
     source = Path(str(visum.IO.CurrentVersionFile))
     if not source.is_file() or sha_file(source) != SOURCE_SHA256:
         raise RuntimeError('DISTANCE_SOURCE_CHECKPOINT_SHA_MISMATCH')
-    zones = np.array([int(v) for _, v in visum.Net.Zones.GetMultiAttValues('NO')], dtype='<i8')
+    zones = np.array([int(v) for _, v in visum.Net.Zones.GetMultiAttValues('NO', False)], dtype='<i8')
     if len(zones) != 681 or hashlib.sha256(zones.tobytes()).hexdigest() != ZONE_SHA256:
         raise RuntimeError('DISTANCE_SOURCE_ZONE_ORDER_MISMATCH')
     original = visum.Net.Matrices.ItemByKey(9697)
     original_values = values(original, 681)
     if str(original.AttValue('CODE')).strip().upper() != 'R1_OSRM_DIST_KM' or digest(original_values) != OSRM_SHA256:
         raise RuntimeError('DISTANCE_ORIGINAL_9697_CHANGED')
+    if not matrix_type_is_source(original) or not data_source_is_data(original):
+        raise RuntimeError('DISTANCE_ORIGINAL_9697_TYPE_CHANGED')
     sources = {}
     for target_no, source_no, dseg, expected in FROZEN:
         matrix = visum.Net.Matrices.ItemByKey(source_no)
@@ -84,9 +105,17 @@ def prepare(visum):
         ratio = values(ratio_matrix, 681)
         arr = blended_distance(sources[eligible_no][0], sources[restricted_no][0], ratio)
         derived[target_no] = (arr, digest(arr), ratio_no, digest(ratio))
-    used = {int(m.AttValue('NO')) for m in visum.Net.Matrices.GetAll()}
+    number_rows = visum.Net.Matrices.GetMultiAttValues('NO')
+    code_rows = visum.Net.Matrices.GetMultiAttValues('CODE')
+    if [i for i, _ in number_rows] != [i for i, _ in code_rows]:
+        raise RuntimeError('DISTANCE_MATRIX_INVENTORY_ORDER_CHANGED')
+    used = {int(float(no)) for _, no in number_rows}
     if any(no in used for no in range(9720, 9728)):
         raise RuntimeError('DISTANCE_TARGET_NUMBER_ALREADY_USED')
+    target_codes = {'R1_BASE_DIS_' + dseg + '_KM' for _, _, dseg, _ in FROZEN}
+    target_codes.update(('R1_BASE_DIS_WORK_KM', 'R1_BASE_DIS_SERV_KM'))
+    if any(str(code).strip().upper() in target_codes for _, code in code_rows):
+        raise RuntimeError('DISTANCE_TARGET_CODE_ALREADY_USED')
     report = {'status': 'PREFLIGHT_PASS', 'source_version': str(source), 'source_sha256': SOURCE_SHA256,
               'frozen': [], 'source_9697_preserved': True, 'save_version_called': False}
     out = Path(os.environ.get('LOCALAPPDATA') or Path.home()) / 'R1C25_DISTANCE_PREP'
@@ -96,10 +125,12 @@ def prepare(visum):
     try:
         for target_no, source_no, dseg, expected in FROZEN:
             matrix = visum.Net.AddMatrix(target_no, 2, 3)
+            if not matrix_type_is_source(matrix) or not data_source_is_data(matrix):
+                raise RuntimeError('DISTANCE_TARGET_TYPE_MISMATCH:' + dseg)
             matrix.SetAttValue('CODE', 'R1_BASE_DIS_' + dseg + '_KM')
             matrix.SetAttValue('NAME', 'Frozen baseline Visum DIS km ' + dseg)
             frozen, frozen_hash = sources[target_no]
-            matrix.SetValues(frozen)
+            matrix.SetValues(frozen, False)
             if int(matrix.AttValue('NO')) != target_no or digest(values(matrix, 681)) != frozen_hash:
                 raise RuntimeError('DISTANCE_TARGET_READBACK_MISMATCH:' + dseg)
             report['frozen'].append({'matrix_no': target_no, 'source_no': source_no,
@@ -109,9 +140,11 @@ def prepare(visum):
             path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         for target_no, (arr, expected_hash, ratio_no, ratio_hash) in derived.items():
             matrix = visum.Net.AddMatrix(target_no, 2, 3)
+            if not matrix_type_is_source(matrix) or not data_source_is_data(matrix):
+                raise RuntimeError('DISTANCE_BLEND_TYPE_MISMATCH:' + str(target_no))
             matrix.SetAttValue('CODE', 'R1_BASE_DIS_WORK_KM' if target_no == 9726 else 'R1_BASE_DIS_SERV_KM')
             matrix.SetAttValue('NAME', 'Frozen baseline blended Visum DIS km')
-            matrix.SetValues(arr)
+            matrix.SetValues(arr, False)
             if int(matrix.AttValue('NO')) != target_no or digest(values(matrix, 681)) != expected_hash:
                 raise RuntimeError('DISTANCE_BLEND_READBACK_MISMATCH:' + str(target_no))
             report['frozen'].append({'matrix_no': target_no, 'values_sha256': expected_hash,
@@ -120,6 +153,12 @@ def prepare(visum):
             path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         if digest(values(original, 681)) != OSRM_SHA256 or sha_file(source) != SOURCE_SHA256:
             raise RuntimeError('DISTANCE_FREEZE_SOURCE_CHANGED')
+        for _, source_no, dseg, expected in FROZEN:
+            if digest(values(visum.Net.Matrices.ItemByKey(source_no), 681)) != expected:
+                raise RuntimeError('DISTANCE_FREEZE_SOURCE_SKIM_CHANGED:' + dseg)
+        for _, (_, _, ratio_no, ratio_hash) in derived.items():
+            if digest(values(visum.Net.Matrices.ItemByKey(ratio_no), 681)) != ratio_hash:
+                raise RuntimeError('DISTANCE_FREEZE_SPLIT_RATIO_CHANGED:' + str(ratio_no))
         report['status'] = 'FROZEN_IN_OPEN_MODEL_RUN_RECOMPUTE_BEFORE_SAVE'
         path.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         return report

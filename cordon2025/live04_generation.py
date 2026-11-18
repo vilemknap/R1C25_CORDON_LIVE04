@@ -8,7 +8,7 @@ the profile-only parts replaced by their cordon equivalents:
   parent FISTA/FlowBundle design, then zonal fit  zonal fit only (LIVE03 rule; no FISTA)
   FlowBundle target mask (factor 1.0 = OFF)       not ported; policy must keep it OFF
   LONG cache incidence + LONGGUARD1 parent        LONG TG deferred (long_generation_enabled
-                                                  = false); support audited on 9697 instead
+                                                  = false); support audited on frozen 9721 instead
   lsgen.design -> guard_ls -> defer_long          SCHOOL fixed per AMDY and LONG deferred:
                                                   v7 yields zero LS steps, LIVE04 writes none
   _final_step_prediction on profile rows          the same operator on BOTH cordon methods

@@ -114,7 +114,7 @@ def capture(adapter: Any, diag: Mapping[str, Any]) -> dict:
         if ordered_zone_hash(adapter.zones) != epoch.zone_order_sha256:
             raise RuntimeError("LONGGUARD1_ZONE_ORDER_MISMATCH")
         # A CDF from a different assignment/skim epoch cannot certify the
-        # live diagnostics. The fixed OSRM support has a separate identity.
+        # live diagnostics. The adapter's fixed support has a separate identity.
         diag_epoch = (diag or {}).get("dynamic_skim_epoch") or (
             ((((diag or {}).get("d11") or {}).get("summary") or {})
              .get("dynamic_distance_authority")) or {})

@@ -1,11 +1,12 @@
-"""IDP trip-length guard for LIVE03 (TD weight = cordon only; IDP = degradation guard).
+"""FineCDF trip-length metrics for the TD objective and IDP degradation guard.
 
 The fine 512-node DIST_KM CDF metrics and the soft acceptance thresholds are the
 UNMODIFIED donor FineCDF v1.9 reference (parent/reference_v19, SHA-256 pinned):
 ``Metrics(distance).evaluate(matrices)`` and CONFIG
 max_fine_cdf_rmse_degradation / mean_error_floor / max_mean_error_degradation.
-The IDP objective itself is NOT minimized here; a candidate is rejected when any
-guarded component degrades its fine-CDF RMSE or relative mean error beyond the
+The TD block can blend these metrics into its search objective. Its acceptance
+guard rejects a candidate when any guarded component degrades its fine-CDF
+RMSE or relative mean error beyond the
 donor soft-reference tolerances (v1.9 ``acceptable(strict=False)`` per component).
 Matrices are read only (Visum.Net.Matrices.ItemByKey(no).GetValues()).
 """
@@ -41,6 +42,41 @@ def _read(visum, no, n):
     arr = np.asarray(m.GetValues(), dtype=float)
     require(arr.shape == (n, n) and np.all(np.isfinite(arr)) and np.all(arr >= 0), 'LIVE03_IDP_MATRIX_INVALID:%s' % no)
     return arr
+
+
+def _evaluate_component(metric, matrices, key, ref):
+    """Evaluate one frozen-distance component with the pinned FineCDF v1.9 algebra.
+
+    The reference ``Metrics.evaluate`` iterates over every target. Calling it
+    for each distance would also evaluate unrelated components on that distance
+    and can fail on their empty conditioning intervals.
+    """
+    target = ref.TARGETS[key]
+    (idx, distance, bins, count, fine_bins, _), fine_x, goal = metric.cache[key]
+    weights = np.zeros(len(idx), dtype=float)
+    for no in target['matrix_nos']:
+        weights += matrices[no].ravel()[idx]
+    mass = float(weights.sum())
+    require(mass > 0, 'LIVE03_IDP_NO_CONDITIONED_DEMAND:' + key)
+    hist = np.bincount(bins, weights=weights, minlength=count)
+    shares = hist / mass
+    mean_exact = float(np.dot(weights, distance) / mass)
+    if target['mean_basis'].startswith('BIN_MIDPOINT'):
+        centres = (np.asarray(target['edges'][:-1]) + np.asarray(target['edges'][1:])) / 2
+        mean = float(np.dot(shares, centres))
+    else:
+        mean = mean_exact
+    rel = (mean - target['mean_km']) / target['mean_km']
+    model_cdf = np.cumsum(np.bincount(fine_bins, weights=weights, minlength=len(fine_x))) / mass
+    cdf_diff = model_cdf - goal
+    require(abs(model_cdf[-1] - 1.0) < 1e-8, 'LIVE03_IDP_CDF_NOT_NORMALIZED:' + key)
+    residual = np.r_[cdf_diff / np.sqrt(len(fine_x)),
+                     np.sqrt(ref.CONFIG['shape_mean_weight']) * rel]
+    return {'objective': float(residual @ residual),
+            'fine_cdf_rmse': float(np.sqrt(np.mean(cdf_diff ** 2))),
+            'fine_cdf_ks': float(np.max(np.abs(cdf_diff))),
+            'mean_model_km': mean, 'mean_target_km': float(target['mean_km']),
+            'mean_relative_error': float(rel)}
 
 
 class IdpGuard:
@@ -79,10 +115,8 @@ class IdpGuard:
             actual = hashlib.sha256(np.ascontiguousarray(current, dtype='<f8').tobytes()).hexdigest()
             require(actual == expected, 'LIVE03_IDP_FROZEN_DISTANCE_CHANGED:%d' % no)
         mats = {no: _read(self.visum, no, self.n) for no in self.matrix_nos}
-        evaluated = {no: metric.evaluate(mats) for no, metric in self.metrics_by_no.items()}
-        out = {k: evaluated[self.distance_by_component[k]][k] for k in self.keys}
-        return {k: {f: float(v[f]) for f in ('objective', 'fine_cdf_rmse', 'fine_cdf_ks', 'mean_model_km',
-                                                 'mean_target_km', 'mean_relative_error')} for k, v in out.items()}
+        return {k: _evaluate_component(self.metrics_by_no[self.distance_by_component[k]], mats, k, self.ref)
+                for k in self.keys}
 
     def decide(self, before, after):
         reasons = []

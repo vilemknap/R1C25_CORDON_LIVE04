@@ -57,7 +57,7 @@ DONOR_FILES = {
     # claude-opmap1-procseq-roles-20261111 (identity on the legacy 43-op layout) + LIVE04.12.1 live scopes (SUE layout)
     'r1_15a2_long_post_td_mask_v24917.py': 'fd59b85ff6c57247a5450ea88a8834f6e1acf65c9cb96fd17d4fc2fa230ce0fd',
     'r1_15a2_long_support_distance_v24917.py': '15a64e5e0016f9bfc598397598cfba3b767788ea7af956338b75900311359874',
-    'r1_15a2_long_distance_guard_v24917.py': 'f7a79ee94a4b9ddf1b8a1054722df261b589e0c82e9fc417efaa903b618cc247',
+    'r1_15a2_long_distance_guard_v24917.py': 'ea561fc68699ec05d750b1a57d7772eabc2dd4a56123093e87fe9e4d65780d14',
     'r1_15a2_long_profile_incidence_v24917.py': 'b86614ab75a8ccae40918a7028b2d7e0455b41a2aa2b9197ea550dc55d9329db',
     'r1_15a2_long_composite_diagnostic_v24917.py': '0378bfd4bbe245f4bc00e5c31f208b57632ce6ef5b26fd2b3fcbae57c1185ecb',
     'r1_15a2_generation_state_v24917.py': '27f3fdafb6f1ce595866455b5841cd78992a923dd59e5fc4e9ec29e56a1b7a93',

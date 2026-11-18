@@ -235,6 +235,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                               supply_reset_position=sopts['reset_position'],
                                               expected_zones=pre[2], actuatable_zones=state['actuatable_zones'],
                                               folder=folder, live02=cfg)
+                write_json(folder / 'FROZEN_DISTANCE_AUTHORITY.json', adapter.frozen_distance)
                 session.checkpoint('LIVE04_CURRENT_MODEL_BOUND')
                 baseline = evaluator.evaluate(visum, folder / '01_BASELINE_CAPTURE', 'BASELINE', full_geometry=True, keep_db=True)
                 snap0 = adapter.snapshot()
@@ -327,6 +328,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             changed, current_state, current_diag, value, rec = blocks[name](
                                 adapter, adapter.cfg, bdir, ctl, current_state, current_diag, {}, reference, None,
                                 outer_cycle=outer)
+                            from .live04_frozen_distance import assert_unchanged as assert_frozen_distance
+                            assert_frozen_distance(guarded, len(adapter.zones), adapter.frozen_distance)
                         except BaseException:
                             progress['failure_readback'] = failure_readback(adapter, progress)
                             if getattr(adapter, 'assignment_invalidated', False) and \
@@ -400,6 +403,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             write_json(folder / 'CYCLE_PROGRESS.json', progress)
                             break
                 ctl.checkpoint('LIVE04_FINAL_VERIFICATION', force=True)
+                from .live04_frozen_distance import assert_unchanged as assert_frozen_distance
+                assert_frozen_distance(guarded, len(adapter.zones), adapter.frozen_distance)
                 final = adapter.snapshot()
                 require(final == current_state, 'LIVE04_FINAL_STATE_NOT_LAST_ACCEPTED_OR_BASELINE')
                 long_final = None

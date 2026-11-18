@@ -67,6 +67,10 @@ class Matrix4(Matrix):
     def AttValue(self, name):
         if name.upper() == 'CODE':
             return self.code
+        if name.upper() == 'OBJECTTYPEREF':
+            return 2
+        if name.upper() == 'MATRIXTYPE':
+            return 3
         if name.upper() == 'DATASOURCETYPE':
             return self.source
         return super().AttValue(name)
@@ -142,6 +146,8 @@ class Live04Visum(Live03Visum):
             replaced.append(Matrix4(self, no, self.km.copy(), code='R1_BASE_DIS_' + dseg + '_KM'))
         replaced.append(Matrix4(self, 9726, self.km.copy(), code='R1_BASE_DIS_WORK_KM'))
         replaced.append(Matrix4(self, 9727, self.km.copy(), code='R1_BASE_DIS_SERV_KM'))
+        replaced.append(Matrix4(self, 9231, np.full(self.km.shape, 0.75), code='RATIO_CW'))
+        replaced.append(Matrix4(self, 9233, np.full(self.km.shape, 0.70), code='RATIO_CS'))
         for k, no in enumerate(LONG_VEHICLE):
             person = replaced[[x.no for x in replaced].index(9111 + k)].values
             replaced.append(Matrix4(self, no, self._vehicle(person, leak=0.0), code='LONG_VEH_%d' % no))
