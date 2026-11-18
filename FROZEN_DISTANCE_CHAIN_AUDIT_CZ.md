@@ -30,6 +30,9 @@ jsou oddělená část procedury; tento patch mění délky pro IDP a LONG podpo
 - IDP vyhodnocuje každou komponentu pouze na jí přiřazené vzdálenosti.
   Výpočet šesti používaných metrik byl porovnán s připnutou FineCDF v1.9
   referencí. Tím odpadá chybné vyhodnocení cizích komponent na jiné matici.
+- Produkční pravidlo po TD bez přijaté změny přeskočí jeden další TD cyklus.
+  Testy ověření a zamítnutí Jacobianu z paměti nastavují přeskočení na nulu,
+  aby skutečně provedly dva TD cykly; provozní nastavení zůstává beze změny.
 
 ## Integrita a hranice ověření
 

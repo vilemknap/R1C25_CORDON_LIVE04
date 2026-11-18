@@ -398,8 +398,8 @@
     },
     {
       "path": "FROZEN_DISTANCE_CHAIN_AUDIT_CZ.md",
-      "size": 2450,
-      "sha256": "c5b2bd8c9f6adb8886d620b4d86c2b07232e7084ff9c23b10d11c6ae82fc5f49"
+      "size": 2709,
+      "sha256": "4bd025d059f48ee10ec1f566e36ffec66cad6ab97847a528f16533192e124c32"
     },
     {
       "path": "FROZEN_VISUM_DISTANCE_RUNBOOK_CZ.md",
@@ -9828,8 +9828,8 @@
     },
     {
       "path": "tests/test_live04.py",
-      "size": 30759,
-      "sha256": "def5f24de316a717d66af8efbef28736c9c774a7e363c49781853b3df3a38f2f"
+      "size": 30892,
+      "sha256": "5a41618f3b100ddbbb27796002364816e22c931e666cc8127e676da3a1862383"
     },
     {
       "path": "tests/test_live04_10.py",

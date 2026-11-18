@@ -441,7 +441,8 @@ def test_memory_td_jacobian_reused_after_verification(tmp_path, monkeypatch):
     _force_reject(monkeypatch, 'TD_CORDON', {1, 2})
     v = Live04Visum(tmp_path / 'model', route_gamma=0.5)
     r = go(tmp_path, v, dict(RELAX, max_cycles=2, stop_after_cycle_without_change=False, blocks_per_cycle=['TD_CORDON'],
-                             td_cordon={'grouping': 'FAMILY', 'idp_objective_weight': 0.0}))
+                             td_cordon={'grouping': 'FAMILY', 'idp_objective_weight': 0.0,
+                                        'skip_cycles_after_unchanged': 0}))
     f = folder_of(tmp_path)
     c1 = read_json(f / 'C01_TD_CORDON/TD_BLOCK_RESULT.json'); c2 = read_json(f / 'C02_TD_CORDON/TD_BLOCK_RESULT.json')
     assert c1['jacobian_source'] == 'NATIVE_PROBES' and c2['jacobian_source'] == 'MEMORY_VERIFIED'
@@ -456,7 +457,8 @@ def test_memory_td_rejected_jacobian_falls_back_to_probes(tmp_path, monkeypatch)
     _force_reject(monkeypatch, 'TD_CORDON', {1, 2})
     v = Live04Visum(tmp_path / 'model')
     go(tmp_path, v, dict(RELAX, max_cycles=2, stop_after_cycle_without_change=False, blocks_per_cycle=['TD_CORDON'],
-                         memory={'td_verify_tolerance': 0.0}, td_cordon={'grouping': 'FAMILY'}))
+                         memory={'td_verify_tolerance': 0.0},
+                         td_cordon={'grouping': 'FAMILY', 'skip_cycles_after_unchanged': 0}))
     f = folder_of(tmp_path)
     c2 = read_json(f / 'C02_TD_CORDON/TD_BLOCK_RESULT.json')
     assert c2['jacobian_source'] == 'NATIVE_PROBES_MEMORY_REJECTED'
