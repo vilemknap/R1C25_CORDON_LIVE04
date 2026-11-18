@@ -54,6 +54,29 @@ def test_frozen_distance_preflight_checks_blends_and_data_type():
         verify(visum, 2)
 
 
+def test_frozen_distance_preflight_accepts_numeric_com_enums():
+    """Native Visum COM returns NO and the matrix enums as floats (2026-11-18 live stop
+    LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE: DATASOURCETYPE 1.0 was read as text '10')."""
+    visum, matrices = _visum()
+    for m in matrices.values():
+        m.AttValue = (lambda m: lambda key: {'NO': float(m.no), 'CODE': m.code, 'OBJECTTYPEREF': 2.0,
+                                             'MATRIXTYPE': 3.0, 'DATASOURCETYPE': 1.0}[key.upper()])(m)
+    visum.Net.Zones.GetMultiAttValues = lambda attr, active_only: [(1, 11.0), (2, 12.0)]
+    assert verify(visum, 2)['status'] == 'VERIFIED'
+    m = matrices[9697]
+    m.AttValue = lambda key: {'NO': 9697.0, 'CODE': m.code, 'OBJECTTYPEREF': 2.0,
+                              'MATRIXTYPE': 3.0, 'DATASOURCETYPE': 2.0}[key.upper()]
+    with pytest.raises(ContractError, match='LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE'):
+        verify(visum, 2)
+
+
+def test_frozen_distance_missing_matrix_is_named():
+    visum, matrices = _visum()
+    del matrices[9724]
+    with pytest.raises(ContractError, match='LIVE04_FROZEN_DISTANCE_MISSING:9724'):
+        verify(visum, 2)
+
+
 def test_native_preflight_checks_pinned_zone_osrm_and_component_hashes(monkeypatch):
     import hashlib
     from cordon2025 import live04_frozen_distance as authority

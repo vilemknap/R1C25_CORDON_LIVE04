@@ -2,7 +2,7 @@
 from __future__ import annotations
 import hashlib
 import numpy as np
-from .common import require
+from .common import require, ContractError
 
 SOURCES = ('NATIVE_CF', 'NATIVE_CL', 'NATIVE_CS', 'NATIVE_CS_NOT', 'NATIVE_CW', 'NATIVE_CW_NOT')
 EXPECTED = {9720 + i: 'R1_BASE_DIS_' + code + '_KM' for i, code in enumerate(SOURCES)}
@@ -25,8 +25,10 @@ def _hash(values):
     return hashlib.sha256(np.ascontiguousarray(values, dtype='<f8').tobytes()).hexdigest()
 
 
-def _data_source(matrix):
-    return ''.join(c for c in str(matrix.AttValue('DATASOURCETYPE')).upper() if c.isalnum())
+def _is_data(matrix):
+    # Visum COM returns enum attributes as numbers (1.0), a fixture may return 'DATA'.
+    return _enum_is(matrix.AttValue('DATASOURCETYPE'), 1,
+                    {'DATA', 'DATASOURCETYPEDATA', 'MATRIXDATASOURCETYPEDATA'})
 
 
 def _enum_is(value, expected, aliases):
@@ -45,6 +47,16 @@ def _zone_od_type(matrix):
                          {'MATRIXTYPEOD', 'MATRIXTYPEODMATRIX', 'ODMATRIX'}))
 
 
+def _matrix(visum, no):
+    try:
+        matrix = visum.Net.Matrices.ItemByKey(no)
+    except Exception as exc:
+        raise ContractError('LIVE04_FROZEN_DISTANCE_MISSING:%d (run RUN_R1_2025_FREEZE_VISUM_DISTANCES.py '
+                            'and RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py first): %s' % (no, str(exc)[:200]))
+    require(matrix is not None, 'LIVE04_FROZEN_DISTANCE_MISSING:%d' % no)
+    return matrix
+
+
 def verify(visum, n):
     fixture = str(getattr(visum, 'origin', '')) == 'MOCK_LIVE04_681_ZONES_NOT_NATIVE'
     zones = np.asarray([int(no) for _, no in visum.Net.Zones.GetMultiAttValues('NO', False)], dtype='<i8')
@@ -53,11 +65,11 @@ def verify(visum, n):
     zone_hash = hashlib.sha256(zones.tobytes()).hexdigest()
     if not fixture:
         require(zone_hash == ZONE_ORDER_SHA256, 'LIVE04_FROZEN_DISTANCE_ZONE_ORDER_CHANGED')
-    original_matrix = visum.Net.Matrices.ItemByKey(9697)
+    original_matrix = _matrix(visum, 9697)
     require(str(original_matrix.AttValue('CODE')).strip().upper() == 'R1_OSRM_DIST_KM',
             'LIVE04_FROZEN_DISTANCE_ORIGINAL_IDENTITY')
-    require(_zone_od_type(original_matrix) and _data_source(original_matrix)
-            in ('1', 'DATA', 'DATASOURCETYPEDATA'), 'LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE')
+    require(_zone_od_type(original_matrix) and _is_data(original_matrix),
+            'LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE')
     original = np.asarray(original_matrix.GetValues(), dtype='<f8')
     require(original.shape == (n, n) and np.isfinite(original).all() and (original >= 0).all(),
             'LIVE04_FROZEN_DISTANCE_ORIGINAL_INVALID')
@@ -67,10 +79,10 @@ def verify(visum, n):
     hashes = {}
     frozen = {}
     for no, code in EXPECTED.items():
-        matrix = visum.Net.Matrices.ItemByKey(no)
+        matrix = _matrix(visum, no)
         require(int(matrix.AttValue('NO')) == no and str(matrix.AttValue('CODE')).strip().upper() == code,
                 'LIVE04_FROZEN_DISTANCE_IDENTITY:%d' % no)
-        require(_zone_od_type(matrix) and _data_source(matrix) in ('1', 'DATA', 'DATASOURCETYPEDATA'),
+        require(_zone_od_type(matrix) and _is_data(matrix),
                 'LIVE04_FROZEN_DISTANCE_NOT_DATA:%d' % no)
         values = np.ascontiguousarray(matrix.GetValues(), dtype='<f8')
         require(values.shape == (n, n) and np.isfinite(values).all() and (values >= 0).all(),
@@ -85,7 +97,7 @@ def verify(visum, n):
     for no, ratio_no, ratio_code, eligible, restricted in (
             (9726, 9231, 'RATIO_CW', 9724, 9725),
             (9727, 9233, 'RATIO_CS', 9722, 9723)):
-        ratio_matrix = visum.Net.Matrices.ItemByKey(ratio_no)
+        ratio_matrix = _matrix(visum, ratio_no)
         require(str(ratio_matrix.AttValue('CODE')).strip().upper() == ratio_code,
                 'LIVE04_FROZEN_DISTANCE_RATIO_IDENTITY:%d' % ratio_no)
         ratio = np.asarray(ratio_matrix.GetValues(), dtype='<f8')
