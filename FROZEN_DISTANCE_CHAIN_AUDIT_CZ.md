@@ -55,3 +55,28 @@ napevno zapsané otisky z C02. Autoritou pro běh jsou otisky zaznamenané při
 jeho startu (`FROZEN_DISTANCE_AUTHORITY.json`) a jejich kontrola po každém
 bloku. Typ datového zdroje se porovnává číselně, protože Visum COM vrací
 `DATASOURCETYPE` jako `1.0`.
+
+## Audit řetězce 18. 11. 2026 odpoledne
+
+Hodnoty z Visum COM jsme porovnali se skutečným modelem (`INVENTORY_2025.json`,
+`COM_API_PREFLIGHT.json`, seznam matic, export `DIS`).
+
+- **Typ matice:** Visum vrací `MATRIXTYPE_DEMAND`, `OBJECTTYPEREF_ZONE` a
+  `DATA`/`FORMULA`. Kontrola znala jen `MATRIXTYPE_OD`, a proto start odmítl
+  9697. Opraveno v kalibrátoru i ve skriptu pro zafixování. Chybová hláška teď
+  vypíše skutečně přečtené hodnoty.
+- **Testy:** simulovaný Visum vracel typy jako čísla (2, 3), proto testy chybu
+  nezachytily. Simulace teď vrací stejné řetězce jako skutečný model.
+- **Poměry 9231/9233:** jsou to vzorcové matice, které krok R1 20D přepisuje
+  při každém přepočtu. Při `DT_MODE = 'LIVE'` by se řídily skimy běhu a
+  kalibrace by spadla až po prvním bloku. Kontrola na začátku teď odmítne
+  vzorec závislý na skimech.
+- **Izolovaná kopie:** skript pro zafixování kontroluje název souboru stejně
+  jako RECOMPUTE, ještě před zápisem.
+- **Číslo matice:** čte se z hodnot `9720.0` i `"9720"`.
+- **Ověřeno na skutečných `DIS`:** žádné buňky bez trasy ani nuly, maximum
+  437 km. Zafixování i kontrola kalibrátoru projdou. IDP má na nových
+  vzdálenostech pro každou složku dost relací (LONG 32 262).
+- **Beze změny:** LONG maska, RECOMPUTE, readiness a IDP čtou stejnou 9721,
+  respektive 9726/9727. Výpočet IDP po složkách je totožný s referencí
+  FineCDF v1.9.

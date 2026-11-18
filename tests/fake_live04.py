@@ -67,10 +67,13 @@ class Matrix4(Matrix):
     def AttValue(self, name):
         if name.upper() == 'CODE':
             return self.code
+        # formats returned by the live 2025 model (INVENTORY_2025.json)
         if name.upper() == 'OBJECTTYPEREF':
-            return 2
+            return 'OBJECTTYPEREF_ZONE'
         if name.upper() == 'MATRIXTYPE':
-            return 3
+            return 'MATRIXTYPE_DEMAND'
+        if name.upper() == 'FORMULA':
+            return '' if self.source == 'DATA' else getattr(self, 'formula', '')
         if name.upper() == 'DATASOURCETYPE':
             return self.source
         return super().AttValue(name)

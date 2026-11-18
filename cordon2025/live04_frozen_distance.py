@@ -1,6 +1,7 @@
 """Preflight for the eight fixed route-distance matrices of a LIVE04 run."""
 from __future__ import annotations
 import hashlib
+import re
 import numpy as np
 from .common import require, ContractError
 
@@ -34,6 +35,41 @@ def _zone_od_type(matrix):
 def _data_source_is_data(matrix):
     return _enum_is(matrix.AttValue('DATASOURCETYPE'), 1,
                     {'DATA', 'DATASOURCETYPEDATA'})
+
+
+def _number(value):
+    try:
+        return int(round(float(value)))
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
+def _is_skim(matrix):
+    return _enum_is(matrix.AttValue('MATRIXTYPE'), 4, {'MATRIXTYPESKIM', 'SKIM'})
+
+
+def skim_dependencies(visum, matrix, depth=0, seen=None):
+    """Matrix numbers of skims a (formula) matrix depends on, recursively.
+
+    The split ratios 9231/9233 are formula matrices rewritten by procedure step
+    R1 20D on every run. With DT_MODE='FROZEN' they read the DATA matrices
+    9235/9236; with 'LIVE' they read the tCur skims of the running assignment and
+    would drift during calibration, so the frozen blends 9726/9727 would no longer
+    match. Detected at run start instead of after the first block.
+    """
+    seen = set() if seen is None else seen
+    if _is_skim(matrix):
+        return [_number(matrix.AttValue('NO'))]
+    if _data_source_is_data(matrix) or depth > 6:
+        return []
+    out = []
+    for ref in re.findall(r'Matrix\(\s*(?:\[NO\]\s*=\s*)?(\d+)\s*\)', str(matrix.AttValue('FORMULA')), re.I):
+        no = int(ref)
+        if no in seen:
+            continue
+        seen.add(no)
+        out += skim_dependencies(visum, _matrix(visum, no), depth + 1, seen)
+    return out
 
 
 def _type_text(matrix):
@@ -74,7 +110,7 @@ def verify(visum, n):
     frozen = {}
     for no, code in EXPECTED.items():
         matrix = _matrix(visum, no)
-        require(int(matrix.AttValue('NO')) == no and str(matrix.AttValue('CODE')).strip().upper() == code,
+        require(_number(matrix.AttValue('NO')) == no and str(matrix.AttValue('CODE')).strip().upper() == code,
                 'LIVE04_FROZEN_DISTANCE_IDENTITY:%d' % no)
         require(_zone_od_type(matrix) and _data_source_is_data(matrix),
                 'LIVE04_FROZEN_DISTANCE_NOT_DATA:%d:%s' % (no, _type_text(matrix)))
@@ -91,6 +127,9 @@ def verify(visum, n):
         ratio_matrix = _matrix(visum, ratio_no)
         require(str(ratio_matrix.AttValue('CODE')).strip().upper() == ratio_code,
                 'LIVE04_FROZEN_DISTANCE_RATIO_IDENTITY:%d' % ratio_no)
+        skims = skim_dependencies(visum, ratio_matrix)
+        require(not skims, 'LIVE04_FROZEN_DISTANCE_RATIO_FOLLOWS_SKIMS:%d:%s (set DT_MODE=FROZEN in step R1 20D)'
+                % (ratio_no, sorted(set(skims))))
         ratio = np.asarray(ratio_matrix.GetValues(), dtype='<f8')
         require(ratio.shape == (n, n) and np.isfinite(ratio).all()
                 and (ratio >= 0).all() and (ratio <= 1).all(),

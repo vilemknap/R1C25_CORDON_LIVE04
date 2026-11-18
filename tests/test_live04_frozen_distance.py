@@ -195,7 +195,7 @@ class _WritableMatrix(Matrix):
 
     def AttValue(self, key):
         # floats like native Visum COM
-        return {'NO': float(self.no), 'CODE': self.code, 'DSEGCODE': self.dseg, 'NAME': self.name,
+        return {'NO': float(self.no), 'CODE': self.code, 'DSEGCODE': self.dseg, 'NAME': self.name, 'FORMULA': '',
                 'OBJECTTYPEREF': 2.0, 'MATRIXTYPE': float(self.matrix_type),
                 'DATASOURCETYPE': 1.0}[key.upper()]
 
@@ -210,7 +210,7 @@ class _WritableMatrix(Matrix):
         self.values = np.array(arr, copy=True)
 
 
-def _freeze_model(tmp_path, n=681, name='ANY_2025_VERSION.ver', source_numbers=None):
+def _freeze_model(tmp_path, n=681, name='ANY_2025_LIVE04_VERSION.ver', source_numbers=None):
     source = tmp_path / name
     source.write_bytes(b'synthetic saved version')
     original = np.full((n, n), 15., dtype='<f8')
@@ -303,3 +303,54 @@ def test_freeze_refuses_foreign_target_no_path_and_ambiguous_source(tmp_path, mo
     visum, _, _, _ = _freeze_model(tmp_path, name='R1_2022_MODEL.ver')
     with pytest.raises(RuntimeError, match='DISTANCE_ONLY_2025_MODEL'):
         freeze.prepare(visum)
+
+
+class _FormulaRatio(Matrix):
+    def __init__(self, no, code, values, formula):
+        super().__init__(no, code, values)
+        self.formula = formula
+
+    def AttValue(self, key):
+        return {'NO': self.no, 'CODE': self.code, 'OBJECTTYPEREF': 'OBJECTTYPEREF_ZONE',
+                'MATRIXTYPE': 'MATRIXTYPE_DEMAND', 'DATASOURCETYPE': 'FORMULA', 'FORMULA': self.formula}[key.upper()]
+
+
+class _Skim(Matrix):
+    def AttValue(self, key):
+        return {'NO': self.no, 'CODE': self.code, 'OBJECTTYPEREF': 'OBJECTTYPEREF_ZONE',
+                'MATRIXTYPE': 'MATRIXTYPE_SKIM', 'DATASOURCETYPE': 'DATA', 'FORMULA': ''}[key.upper()]
+
+
+def test_ratio_following_skims_is_refused_at_run_start():
+    """R1 20D DT_MODE=LIVE makes 9231/9233 follow the tCur skims of the run; the frozen
+    blends would stop matching after the first assignment. Refuse at start."""
+    visum, matrices = _visum()
+    matrices[9235] = Matrix(9235, 'VIG_DT_W', np.full((2, 2), 3.0))
+    frozen = '0.74+(1-0.74)/(1+Exp(-(4.45+0.5*(12.84*Matrix(9235)/60-10))))'
+    matrices[9231] = _FormulaRatio(9231, 'RATIO_CW', np.full((2, 2), 0.75), frozen)
+    assert verify(visum, 2)['status'] == 'VERIFIED'
+    matrices[9872] = _Skim(9872, 'TTC', np.full((2, 2), 9.0))
+    matrices[9880] = _Skim(9880, 'TTC', np.full((2, 2), 11.0))
+    matrices[9231].formula = '0.74+(1-0.74)/(1+Exp(-(4.45+0.5*(12.84*Max(0,Matrix(9880)-Matrix(9872))/60-10))))'
+    with pytest.raises(ContractError, match=r'LIVE04_FROZEN_DISTANCE_RATIO_FOLLOWS_SKIMS:9231:\[9872, 9880\]'):
+        verify(visum, 2)
+
+
+def test_freeze_refuses_non_copy_name_and_ratio_following_skims(tmp_path, monkeypatch):
+    import json
+    monkeypatch.setenv('LOCALAPPDATA', str(tmp_path))
+    result = tmp_path / 'R1C25_DISTANCE_PREP' / 'FROZEN_DISTANCE_RESULT.json'
+    visum, _, added, _ = _freeze_model(tmp_path, name='R1_BASE_2025_ORIGINAL.ver')
+    with pytest.raises(RuntimeError, match='DISTANCE_OPEN_MODEL_IS_NOT_AN_ISOLATED_COPY'):
+        freeze.prepare(visum)
+    assert added == [] and json.loads(result.read_text())['status'] == 'STOPPED_BEFORE_ANY_WRITE'
+    visum, matrices, added, _ = _freeze_model(tmp_path)
+    n = 681
+    matrices[9872] = _WritableMatrix(9872, 'TTC', np.full((n, n), 9.0), dseg='NATIVE_CW', matrix_type=4)
+    ratio = _WritableMatrix(9231, 'RATIO_CW', np.full((n, n), 0.75))
+    ratio.AttValue = lambda key: {'DATASOURCETYPE': 'FORMULA', 'FORMULA': '0.7+0.01*Matrix(9872)'}.get(
+        key.upper(), _WritableMatrix.AttValue(ratio, key))
+    matrices[9231] = ratio
+    with pytest.raises(RuntimeError, match=r'DISTANCE_SPLIT_RATIO_FOLLOWS_SKIMS:9231:\[9872\]'):
+        freeze.prepare(visum)
+    assert added == []

@@ -3,7 +3,7 @@
 LIVE04: the LIVE03 joint TG/TD cordon calibration ported onto the v7 profile
 calibrator (vilemknap/R1_15A2_V24917_v7 @ 977cef4, P2.5/A4).  Use an ISOLATED
 COPY of R1 2025 (the opened .ver file name must contain LIVE04/KOPIE/COPY/TEST/
-TRIAL/CALIB) whose LONG demand is already masked by v7 (>= 80 km on 9697).
+TRIAL/CALIB) whose LONG demand is already masked by v7 (>= 80 km on frozen NATIVE_CL 9721).
 Per cycle: GENERATION (v7 GENFIX2 STEP1: role envelopes P 0.75-2.5 / A 0.75-4.0,
 MOBILITY2 + MOBILITYZONE1, BDPA1, native demand prediction on frozen paths),
 then TD_CORDON (gravity b/c, cordon objective, IDP guard).  Every native

@@ -25,6 +25,7 @@ the same matrix hashes at run start and refuses any change during the run.
 from __future__ import annotations
 import hashlib
 import json
+import re
 import os
 from pathlib import Path
 import traceback
@@ -95,6 +96,43 @@ def blended_distance(eligible, restricted, ratio):
     return np.ascontiguousarray(ratio * eligible + (1.0 - ratio) * restricted, dtype='<f8')
 
 
+def is_skim(matrix):
+    return enum_is(matrix.AttValue('MATRIXTYPE'), 4, {'MATRIXTYPESKIM', 'SKIM'})
+
+
+def skim_dependencies(visum, matrix, depth=0, seen=None):
+    """Skims a (formula) matrix depends on; the split ratios must not follow skims."""
+    seen = set() if seen is None else seen
+    if is_skim(matrix):
+        return [_number(matrix.AttValue('NO'))]
+    if data_source_is_data(matrix) or depth > 6:
+        return []
+    out = []
+    for ref in re.findall(r'Matrix\(\s*(?:\[NO\]\s*=\s*)?(\d+)\s*\)', str(matrix.AttValue('FORMULA')), re.I):
+        no = int(ref)
+        if no not in seen:
+            seen.add(no)
+            out += skim_dependencies(visum, visum.Net.Matrices.ItemByKey(no), depth + 1, seen)
+    return out
+
+
+def copy_guard(source):
+    """Same isolated-copy rule as RECOMPUTE (CORDON_LIVE04_CONFIG.json), checked before any write."""
+    try:
+        cfg = json.loads((Path(__file__).resolve().parent / 'CORDON_LIVE04_CONFIG.json').read_text(encoding='utf-8'))
+        guard = cfg['isolated_copy_guard']
+    except Exception:
+        return None
+    name = source.name.upper()
+    for token in guard['forbidden_version_name_tokens']:
+        if token.upper() in name:
+            raise RuntimeError('DISTANCE_FORBIDDEN_MODEL_VERSION_NAME:' + token)
+    if not any(t.upper() in name for t in guard['required_version_name_tokens_any']):
+        raise RuntimeError('DISTANCE_OPEN_MODEL_IS_NOT_AN_ISOLATED_COPY (name must contain one of %s)'
+                           % guard['required_version_name_tokens_any'])
+    return [t for t in guard['required_version_name_tokens_any'] if t.upper() in name]
+
+
 def _code(matrix):
     return str(matrix.AttValue('CODE')).strip().upper()
 
@@ -137,6 +175,7 @@ def prepare(visum):
             raise RuntimeError('DISTANCE_OPEN_A_SAVED_VER_FIRST')
         if '2022' in source.name:
             raise RuntimeError('DISTANCE_ONLY_2025_MODEL')
+        report['copy_guard'] = copy_guard(source)
         st = source.stat()
         report.update({'source_bytes': st.st_size, 'source_mtime_epoch': st.st_mtime,
                        'source_sha256': sha_file(source)})
@@ -185,7 +224,12 @@ def prepare(visum):
         for target_no, ratio_no, ratio_code, eligible_no, restricted_no in BLENDS:
             if inv.get(ratio_no, ('',))[0] != ratio_code:
                 raise RuntimeError('DISTANCE_SPLIT_RATIO_IDENTITY:%d:%s' % (ratio_no, ratio_code))
-            ratio = values(visum.Net.Matrices.ItemByKey(ratio_no), n)
+            ratio_matrix = visum.Net.Matrices.ItemByKey(ratio_no)
+            skims = skim_dependencies(visum, ratio_matrix)
+            if skims:
+                raise RuntimeError('DISTANCE_SPLIT_RATIO_FOLLOWS_SKIMS:%d:%s (set DT_MODE=FROZEN in step R1 20D)'
+                                   % (ratio_no, sorted(set(skims))))
+            ratio = values(ratio_matrix, n)
             arr = blended_distance(sources[eligible_no][3], sources[restricted_no][3], ratio)
             derived[target_no] = (arr, digest(arr), ratio_no, digest(ratio))
         report['status'] = 'PREFLIGHT_PASS'

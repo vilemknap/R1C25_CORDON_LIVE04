@@ -398,13 +398,13 @@
     },
     {
       "path": "FROZEN_DISTANCE_CHAIN_AUDIT_CZ.md",
-      "size": 3272,
-      "sha256": "5ec756ff92390bacabd0db2b97af0bd0a2c79092cc4044a4b2c5493f0656b724"
+      "size": 4747,
+      "sha256": "6609ebb34edf32ffb9e03831cb7c8f9b77f69e07e1ffee2d75b071a41533d9e8"
     },
     {
       "path": "FROZEN_VISUM_DISTANCE_RUNBOOK_CZ.md",
-      "size": 2305,
-      "sha256": "ac6b8c7de1a05765777637deb9d343665c06a8615b93639b7cb6de6127d8b9c1"
+      "size": 2774,
+      "sha256": "35d9ff49eba364993f50b8560505fa5cc2d8c7867c818f3611eaa902043033fa"
     },
     {
       "path": "IMPLEMENTATION_EVIDENCE.json",
@@ -588,8 +588,8 @@
     },
     {
       "path": "RUN_R1_2025_CORDON_LIVE04_V7_TG_TD_CYCLE.py",
-      "size": 2118,
-      "sha256": "6c945925732cac3182bd7f1f64bd392c1fca2bd72c7ccd378be412c5fc8b604b"
+      "size": 2135,
+      "sha256": "7442df58167bac8ae4dabb28eed46d34ce7153627e7054c10237eee0e3558ff9"
     },
     {
       "path": "RUN_R1_2025_CORDON_LIVE_BASELINE.py",
@@ -603,8 +603,8 @@
     },
     {
       "path": "RUN_R1_2025_FREEZE_VISUM_DISTANCES.py",
-      "size": 12166,
-      "sha256": "f81e8470fa2c8d4e808a3939e151d5d292438b647a49a631ee61677838cb4547"
+      "size": 14161,
+      "sha256": "5a19f7384f93c76cc8502f87abf2478a512326debf7a7552ede1173563d5515b"
     },
     {
       "path": "RUN_R1_2025_IMPORT_AND_RECOMPUTE.py",
@@ -1538,8 +1538,8 @@
     },
     {
       "path": "cordon2025/live04_frozen_distance.py",
-      "size": 5468,
-      "sha256": "f03602464258d8499be10315427ffafe13a916e27c73a69dcef83cba2f999be1"
+      "size": 6966,
+      "sha256": "90b6bd659ced382e8d7604d5c1a08023a05afb200a116fdf0a89440142dbce81"
     },
     {
       "path": "cordon2025/live04_generation.py",
@@ -9683,8 +9683,8 @@
     },
     {
       "path": "tests/fake_live04.py",
-      "size": 15280,
-      "sha256": "ebe443dee7536f8efb496578eb74643c7da312a38ee24cc607ff1b7a158a1dcb"
+      "size": 15508,
+      "sha256": "7cc9e41831f8cf58a3d4880926d20384bcfd50a68625e93ba20e5686884d61ea"
     },
     {
       "path": "tests/fake_visum_startup.py",
@@ -9928,8 +9928,8 @@
     },
     {
       "path": "tests/test_live04_frozen_distance.py",
-      "size": 14689,
-      "sha256": "625437bad7ee52b6947a139937eed5e576177c99960917d306e2f2ce652806dd"
+      "size": 17384,
+      "sha256": "e47805f3d028bfc57d486fc363bae65eaba89f7aacb6e6587057d17d60cb9540"
     },
     {
       "path": "tests/test_live04_objective_alignment.py",

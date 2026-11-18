@@ -10,6 +10,12 @@ checkpoint není vázaný.
    - Najde šest skimů `DIS` podle segmentu (CODE `DIS` + DSEGCODE), ne podle čísla.
    - Zkontroluje 681 zón, matici 9697, poměry 9231/9233 a to, že žádná buňka
      `DIS` mimo diagonálu nemá hodnotu „bez trasy“.
+   - Stejně jako RECOMPUTE ověří, že otevřený soubor je izolovaná kopie (název
+     obsahuje LIVE04/KOPIE/COPY/TEST/TRIAL/CALIB, ne 2022). Udělá to ještě před
+     zápisem.
+   - Odmítne poměry 9231/9233, jejichž vzorec závisí na skimech (krok R1 20D
+     s `DT_MODE = 'LIVE'`). Takové poměry by se během kalibrace měnily a
+     9726/9727 by k nim přestaly sedět. Musí být `DT_MODE = 'FROZEN'`.
    - Do otevřeného modelu zapíše osm datových matic 9720–9727 a ověří jejich
      zpětné čtení. Matici 9697 nemění a `.ver` neukládá.
    - Pokud matice 9720–9727 už v modelu jsou se stejnými kódy, přepíše je.
@@ -30,7 +36,8 @@ checkpoint není vázaný.
 | 9721 | LONG IDP a LONG maska ≥ 80 km |
 
 Kalibrátor při startu ověří existenci, kódy a typ všech osmi matic, platné
-hodnoty, diagonálu z 9697 a výpočet 9726/9727 z aktuálních poměrů. Otisky
+hodnoty, diagonálu z 9697, výpočet 9726/9727 z aktuálních poměrů a to, že
+vzorce poměrů nezávisí na skimech. Otisky
 všech osmi matic, 9697 a pořadí zón uloží do `FROZEN_DISTANCE_AUTHORITY.json`.
 Po každém kalibračním bloku a před uložením výsledku ověří, že se nic z toho
 nezměnilo. Pokud se změnilo, běh zastaví.
