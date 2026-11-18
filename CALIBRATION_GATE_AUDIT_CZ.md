@@ -27,6 +27,20 @@ Jeho nulovou toleranci sekundární metody tento audit nemění. Obdobně přesk
 jednoho TD cyklu po cyklu bez přijatého kroku je současná plánovací politika,
 nikoli důkaz, že všechny následující TD pokusy budou neúspěšné.
 
+## Kontrola SupplyMix (19. 11. 2026)
+
+Tvorba SQLite úložiště tras používala pevné jméno v pracovní složce. Chyba
+uprostřed čtení zanechala částečný soubor, který zablokoval další pokus ve
+stejné složce. Každý pokus nyní dostane vlastní jméno a neúplný soubor se po
+chybě uzavře a odstraní. Průběh tvorby se zapisuje i při přechodu mezi trhy;
+zápis je omezen na nejvýše jednou za 30 sekund.
+
+Návrh SupplyMix dál hodnotí hlavní profilové skupiny podle GEH a dostupných
+sekvencí cest. Závěrečná kontrola navíc zahrnuje doplňková pozorování a
+EXACT_TWO_HITS s nulovou tolerancí zhoršení. Jde o rozdílný rozsah návrhu a
+akceptace, takže přijetí bez plného přiřazení nelze zaručit. Měnit tuto
+toleranci bez rozhodnutí o kvalitě sekundární metody by změnilo cíl kalibrace.
+
 ## Důkaz a hranice
 
 Regresní testy ověřují společnou výchozí referenci TD, nezhoršování nejlepšího

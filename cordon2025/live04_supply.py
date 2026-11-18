@@ -42,6 +42,7 @@ import sqlite3
 import struct
 import time
 import traceback
+import uuid
 from collections import Counter, defaultdict
 from pathlib import Path
 from types import SimpleNamespace
@@ -234,7 +235,8 @@ def make_collector(*args, **kwargs):
             self.protected = {i for i, p in enumerate(self.profiles) if p['observed'] > 0 and
                               core.geh(p['model'], p['observed']) < 5.0}
             self.cal_indices = set(range(len(self.profiles)))
-            self.route_db_path = str(Path(folder) / 'SUPPLY_CORDON_ROUTE_STORE.sqlite')
+            # A retry must never open a partial store left by an interrupted build.
+            self.route_db_path = str(Path(folder) / ('SUPPLY_CORDON_ROUTE_STORE_%s.sqlite' % uuid.uuid4().hex[:12]))
             require(not Path(self.route_db_path).exists(), 'ROUTE_STORE_WOULD_REPLACE_EXISTING_EVIDENCE')
             self.db = sqlite3.connect(self.route_db_path)
             self.db.execute('PRAGMA journal_mode=DELETE')
@@ -254,7 +256,19 @@ def make_collector(*args, **kwargs):
             self.stats = Counter()
             self.progress_path = Path(folder) / 'SUPPLY_ROUTE_BUILD_PROGRESS.json'
             self.last_progress_at = 0.0
-            self._consume()
+            try:
+                self._consume()
+            except BaseException:
+                try:
+                    self.db.close()
+                except Exception:
+                    pass
+                for suffix in ('', '-journal', '-wal', '-shm'):
+                    try:
+                        Path(self.route_db_path + suffix).unlink(missing_ok=True)
+                    except OSError:
+                        pass
+                raise
 
         def _progress(self, phase, force=False):
             now = time.monotonic()
@@ -262,6 +276,7 @@ def make_collector(*args, **kwargs):
                 return
             write_json(self.progress_path, {'phase': phase, 'routes_written': self.route_count,
                                             'markets_processed': self.stats['markets'],
+                                            'route_store': self.route_db_path,
                                             'updated_utc': time.time()})
             self.last_progress_at = now
 
@@ -326,6 +341,7 @@ def make_collector(*args, **kwargs):
             if market is None or not routes:
                 return
             self.stats['markets'] += 1
+            self._progress('STREAM_ROUTES')
             seq_mod = parent_module('r1_15a2_sequence_v23')
             touched = set()
             for r in routes:
