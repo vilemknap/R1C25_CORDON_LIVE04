@@ -28,12 +28,22 @@ def _enum_is(value, expected, aliases):
 def _zone_od_type(matrix):
     return (_enum_is(matrix.AttValue('OBJECTTYPEREF'), 2, {'OBJECTTYPEREFZONE', 'ZONE', 'ZONES'})
             and _enum_is(matrix.AttValue('MATRIXTYPE'), 3,
-                         {'MATRIXTYPEOD', 'MATRIXTYPEODMATRIX', 'ODMATRIX'}))
+                         {'MATRIXTYPEDEMAND', 'DEMAND', 'MATRIXTYPEOD', 'MATRIXTYPEODMATRIX', 'ODMATRIX'}))
 
 
 def _data_source_is_data(matrix):
     return _enum_is(matrix.AttValue('DATASOURCETYPE'), 1,
                     {'DATA', 'DATASOURCETYPEDATA'})
+
+
+def _type_text(matrix):
+    out = []
+    for key in ('MATRIXTYPE', 'OBJECTTYPEREF', 'DATASOURCETYPE'):
+        try:
+            out.append('%s=%r' % (key, matrix.AttValue(key)))
+        except Exception as exc:
+            out.append('%s=<%s>' % (key, type(exc).__name__))
+    return ','.join(out)
 
 
 def _matrix(visum, no):
@@ -55,7 +65,7 @@ def verify(visum, n):
     require(str(original_matrix.AttValue('CODE')).strip().upper() == 'R1_OSRM_DIST_KM',
             'LIVE04_FROZEN_DISTANCE_ORIGINAL_IDENTITY')
     require(_zone_od_type(original_matrix) and _data_source_is_data(original_matrix),
-            'LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE')
+            'LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE:' + _type_text(original_matrix))
     original = np.asarray(original_matrix.GetValues(), dtype='<f8')
     require(original.shape == (n, n) and np.isfinite(original).all() and (original >= 0).all(),
             'LIVE04_FROZEN_DISTANCE_ORIGINAL_INVALID')
@@ -67,7 +77,7 @@ def verify(visum, n):
         require(int(matrix.AttValue('NO')) == no and str(matrix.AttValue('CODE')).strip().upper() == code,
                 'LIVE04_FROZEN_DISTANCE_IDENTITY:%d' % no)
         require(_zone_od_type(matrix) and _data_source_is_data(matrix),
-                'LIVE04_FROZEN_DISTANCE_NOT_DATA:%d' % no)
+                'LIVE04_FROZEN_DISTANCE_NOT_DATA:%d:%s' % (no, _type_text(matrix)))
         values = np.ascontiguousarray(matrix.GetValues(), dtype='<f8')
         require(values.shape == (n, n) and np.isfinite(values).all() and (values >= 0).all(),
                 'LIVE04_FROZEN_DISTANCE_VALUES:%d' % no)

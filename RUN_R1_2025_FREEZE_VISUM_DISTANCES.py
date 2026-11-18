@@ -72,11 +72,21 @@ def enum_is(value, expected, aliases):
 
 def matrix_type_is_source(matrix):
     return (enum_is(matrix.AttValue('OBJECTTYPEREF'), 2, {'OBJECTTYPEREFZONE', 'ZONE', 'ZONES'})
-            and enum_is(matrix.AttValue('MATRIXTYPE'), 3, {'MATRIXTYPEOD', 'MATRIXTYPEODMATRIX', 'ODMATRIX'}))
+            and enum_is(matrix.AttValue('MATRIXTYPE'), 3, {'MATRIXTYPEDEMAND', 'DEMAND', 'MATRIXTYPEOD', 'MATRIXTYPEODMATRIX', 'ODMATRIX'}))
 
 
 def data_source_is_data(matrix):
     return enum_is(matrix.AttValue('DATASOURCETYPE'), 1, {'DATA', 'DATASOURCETYPEDATA', 'MATRIXDATASOURCETYPEDATA'})
+
+
+def type_text(matrix):
+    out = []
+    for key in ('MATRIXTYPE', 'OBJECTTYPEREF', 'DATASOURCETYPE'):
+        try:
+            out.append('%s=%r' % (key, matrix.AttValue(key)))
+        except Exception as exc:
+            out.append('%s=<%s>' % (key, type(exc).__name__))
+    return ','.join(out)
 
 
 def blended_distance(eligible, restricted, ratio):
@@ -141,7 +151,7 @@ def prepare(visum):
             raise RuntimeError('DISTANCE_ORIGINAL_9697_MISSING_OR_RECODED')
         original = visum.Net.Matrices.ItemByKey(ORIGINAL[0])
         if not matrix_type_is_source(original) or not data_source_is_data(original):
-            raise RuntimeError('DISTANCE_ORIGINAL_9697_TYPE_CHANGED')
+            raise RuntimeError('DISTANCE_ORIGINAL_9697_TYPE_CHANGED:' + type_text(original))
         original_values = values(original, n)
         report['m9697_sha256'] = digest(original_values)
         off = ~np.eye(n, dtype=bool)
@@ -232,7 +242,7 @@ def _target(visum, no, inv):
     else:
         matrix = visum.Net.AddMatrix(no, 2, 3)
     if not matrix_type_is_source(matrix) or not data_source_is_data(matrix):
-        raise RuntimeError('DISTANCE_TARGET_TYPE_MISMATCH:%d' % no)
+        raise RuntimeError('DISTANCE_TARGET_TYPE_MISMATCH:%d:%s' % (no, type_text(matrix)))
     return matrix
 
 

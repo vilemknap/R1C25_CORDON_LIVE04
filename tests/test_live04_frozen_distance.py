@@ -74,6 +74,24 @@ def test_frozen_distance_preflight_checks_blends_and_data_type():
         verify(visum, 2)
 
 
+LIVE_COM_ENUMS = {'MATRIXTYPE': 'MATRIXTYPE_DEMAND', 'OBJECTTYPEREF': 'OBJECTTYPEREF_ZONE', 'DATASOURCETYPE': 'DATA'}
+
+
+def test_frozen_distance_accepts_live_visum_enum_strings():
+    """Values exactly as the live 2025 model returns them (INVENTORY_2025.json, M9697):
+    MATRIXTYPE_DEMAND / OBJECTTYPEREF_ZONE / DATA. 2026-11-18 live stop ORIGINAL_TYPE."""
+    visum, matrices = _visum()
+    for m in matrices.values():
+        m.AttValue = (lambda m: lambda key: LIVE_COM_ENUMS.get(key.upper()) or
+                      {'NO': m.no, 'CODE': m.code}[key.upper()])(m)
+    assert verify(visum, 2)['status'] == 'VERIFIED'
+    m = matrices[9697]
+    m.AttValue = lambda key: {'NO': 9697, 'CODE': m.code, 'MATRIXTYPE': 'MATRIXTYPE_SKIM',
+                              'OBJECTTYPEREF': 'OBJECTTYPEREF_ZONE', 'DATASOURCETYPE': 'DATA'}[key.upper()]
+    with pytest.raises(ContractError, match="LIVE04_FROZEN_DISTANCE_ORIGINAL_TYPE:MATRIXTYPE='MATRIXTYPE_SKIM'"):
+        verify(visum, 2)
+
+
 def test_frozen_distance_missing_matrix_is_named():
     visum, matrices = _visum()
     del matrices[9724]
@@ -251,6 +269,17 @@ def test_freeze_is_universal_and_creates_readable_data_matrices(tmp_path, monkey
     added.clear()
     assert freeze.prepare(visum)['refreeze'] == list(range(9720, 9728))
     assert added == [] and matrices[9721].GetValues()[0, 1] == 99.
+
+
+def test_freeze_accepts_live_visum_enum_strings(tmp_path, monkeypatch):
+    monkeypatch.setenv('LOCALAPPDATA', str(tmp_path))
+    visum, matrices, added, _ = _freeze_model(tmp_path)
+    live = {'MATRIXTYPE': 'MATRIXTYPE_DEMAND', 'OBJECTTYPEREF': 'OBJECTTYPEREF_ZONE', 'DATASOURCETYPE': 'DATA'}
+    orig_attvalue = _WritableMatrix.AttValue
+    monkeypatch.setattr(_WritableMatrix, 'AttValue', lambda self, key: (
+        live[key.upper()] if key.upper() in live and self.matrix_type == 3 else orig_attvalue(self, key)))
+    assert freeze.prepare(visum)['status'] == 'FROZEN_IN_OPEN_MODEL_RUN_RECOMPUTE_BEFORE_SAVE'
+    assert verify(visum, 681)['status'] == 'VERIFIED'
 
 
 def test_freeze_refuses_foreign_target_no_path_and_ambiguous_source(tmp_path, monkeypatch):
