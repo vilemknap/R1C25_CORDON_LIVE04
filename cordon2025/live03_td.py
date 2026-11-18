@@ -244,6 +244,7 @@ def blended_gate(dec, blend, q0, q1, idp0, idp1, tdc, q_base=None):
     'cordon must improve' reasons of the shared gate become soft and are replaced by this rule."""
     min_rel = float(tdc.get('blended_min_relative_improvement', 0.001))
     max_deg = float(tdc.get('blended_max_cordon_degradation', 0.01))
+    max_secondary_deg = float(tdc.get('blended_max_secondary_degradation', max_deg))
     hard = [r for r in (dec.get('reasons') or []) if r not in SOFT_CORDON_REASONS]
     if idp1 is None or 'error' in idp1:
         return dict(dec, accepted=False, reasons=hard + ['TD_BLENDED_IDP_UNAVAILABLE'])
@@ -261,11 +262,12 @@ def blended_gate(dec, blend, q0, q1, idp0, idp1, tdc, q_base=None):
         reasons.append('TD_BLENDED_OBJECTIVE_NOT_IMPROVED')
     if cordon_deg > max_deg:
         reasons.append('TD_CORDON_DEGRADED_TOO_MUCH')
-    if sec is not None and float(sec) > max_deg:
+    if sec is not None and float(sec) > max_secondary_deg:
         reasons.append('TD_SECONDARY_DEGRADED_TOO_MUCH')
     audit = {'rule': 'V7_TDBLEND1_OUTER', 'idp_weight': w, 'blended_value': value,
              'blended_relative_improvement': 1.0 - value, 'cordon_relative_degradation': cordon_deg,
              'idp_ratio': j1 / j0, 'min_relative_improvement': min_rel, 'max_cordon_degradation': max_deg,
+             'max_secondary_degradation': max_secondary_deg,
              'soft_reasons_replaced': [r for r in (dec.get('reasons') or []) if r in SOFT_CORDON_REASONS]}
     return dict(dec, accepted=not reasons, reasons=reasons, td_blended_acceptance=audit)
 
@@ -501,9 +503,10 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
             gd = guard_decision(idp_after)
             if blended_acceptance:
                 # relative to the trust-region centre (inner) - the trial is judged against the block start
-                gate = blended_gate(dict(gate, secondary_relative_degradation=None), blend, center_obj, obj,
+                gate = blended_gate(gate, blend, center_obj, obj,
                                     center_idp, idp_after, tdc, q_base=float(diag['methods'][method]['objective']))
             entry.update(x=x.tolist(), native_frozen_objective=obj, relative_vs_center=rel_vs_center,
+                         predicted_secondary_relative_degradation=gate.get('secondary_relative_degradation'),
                          gate_reasons=gate.get('reasons'), idp=gd, unsupported_share=a['unsupported_share'])
             if blend is not None and idp_after is not None and 'error' not in idp_after:
                 entry.update(blend_center=blend.value(center_obj, center_idp), blend_measured=blend.value(obj, idp_after))

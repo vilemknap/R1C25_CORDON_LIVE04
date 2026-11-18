@@ -33,8 +33,9 @@ def test_live_rejected_example_passes_secondary_gate_without_changing_other_bloc
     for block in ['SUPPLY_ADDVAL1', 'TD_CORDON']:
         decision = ev.block_gate(block, before, after, [])
         assert not decision['accepted'] and 'SECONDARY_METHOD_DEGRADED' in decision['reasons']
-    # TD subsequently has its separate blended secondary ceiling, still 1 %.
+    # TD has its separate blended secondary ceiling of 5 %; the shared gate remains unchanged.
     assert load_config()['td_cordon']['blended_max_cordon_degradation'] == 0.01
+    assert load_config()['td_cordon']['blended_max_secondary_degradation'] == 0.05
     assert ev.live02['acceptance']['secondary_max_relative_degradation'] == 0.
 
 

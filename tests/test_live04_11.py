@@ -63,6 +63,7 @@ def test_release_config_is_component_level_with_v7_weights():
     td = load_config()['td_cordon']
     assert td['grouping'] == 'COMPONENT' and td['idp_objective_weight'] == 0.45
     assert td['acceptance'] == 'BLENDED' and td['blended_max_cordon_degradation'] == 0.01
+    assert td['blended_max_secondary_degradation'] == 0.05
     assert sum(len(v) for v in td['groups'].values()) == 11
     assert read_json(ROOT / 'provenance/live04_user_config/CORDON_LIVE04_CONFIG.RELEASE_DEFAULT.json')['td_cordon'] == td
 
@@ -132,6 +133,24 @@ def test_blended_gate_accepts_small_cordon_loss_for_a_large_idp_gain():
     j0 = 0.10 ** 2 + 0.25 * 0.40 ** 2; j1 = 0.08 ** 2 + 0.25 * 0.20 ** 2
     assert a['blended_value'] == pytest.approx(0.5 * 1.005 + 0.5 * j1 / j0)
     assert sorted(a['soft_reasons_replaced']) == ['CORDON_OBJECTIVE_NOT_IMPROVED', 'SECONDARY_METHOD_DEGRADED']
+
+
+def test_td_secondary_ceiling_is_shared_by_inner_search_and_final_gate():
+    from cordon2025.live03_td import blended_gate
+    td = load_config()['td_cordon']
+    blend = _blend()
+    before = _idp({'A': (0.10, -0.40)})
+    better = _idp({'A': (0.08, -0.20)})
+    for degradation, accepted in ((0.046, True), (0.05, True), (0.051, False)):
+        gate = blended_gate({'reasons': ['SECONDARY_METHOD_DEGRADED'],
+                             'secondary_relative_degradation': degradation},
+                            blend, 1000.0, 995.0, before, better, td)
+        assert gate['accepted'] is accepted
+        assert ('TD_SECONDARY_DEGRADED_TOO_MUCH' in gate['reasons']) is not accepted
+        assert gate['td_blended_acceptance']['max_secondary_degradation'] == 0.05
+    primary_loss = blended_gate({'reasons': [], 'secondary_relative_degradation': 0.046},
+                                blend, 1000.0, 1011.0, before, better, td)
+    assert 'TD_CORDON_DEGRADED_TOO_MUCH' in primary_loss['reasons']
 
 
 @pytest.mark.parametrize('q1,idp1,sec,reason', [

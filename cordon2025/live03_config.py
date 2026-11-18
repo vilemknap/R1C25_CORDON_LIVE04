@@ -97,7 +97,8 @@ def validate_sections(cfg):
     require(td.get('acceptance', 'CORDON') in ('CORDON', 'BLENDED'), 'LIVE04_TD_ACCEPTANCE')
     if 'skip_cycles_after_unchanged' in td:
         l2._int(td.get('skip_cycles_after_unchanged'), 'skip_cycles_after_unchanged', 0, 5)
-    for key in ('blended_min_relative_improvement', 'blended_max_cordon_degradation'):
+    for key in ('blended_min_relative_improvement', 'blended_max_cordon_degradation',
+                'blended_max_secondary_degradation'):
         if key in td:
             _num(td, key, 0.0, 0.1)
     scope = cfg['donor_runtime']['matrix_scope_by_block'].get('TD_CORDON')
