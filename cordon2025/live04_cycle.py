@@ -56,9 +56,13 @@ def make_generation_block(tx, cfg):
     tx.ctrl_ns['_rollback_candidate'] = cb._wrap_rollback(tx.ctrl_ns['_rollback_candidate'], com,
                                                           float(opts['cb_max_wait_seconds']))
 
+    # LIVE04.13: FineCDF in the GENERATION acceptance (local guard + cumulative run reference)
+    idp_cfg = dict(cfg['idp_guard'], enabled=cfg['idp_guard']['enabled'] and 'GENERATION' in cfg['idp_guard']['blocks'])
+
     def generation(adapter, cfg_, folder_, control, state, diag, anchors, reference, policy, outer_cycle=None):
         return step1_block(tx, adapter, cfg_, folder_, control, state, diag, anchors, reference, policy,
-                           write_json=write_json)
+                           write_json=write_json, idp_cfg=idp_cfg,
+                           run_reference=getattr(adapter, 'idp_run_reference', None))
     return cb._wrap_block(generation, com, 'GENERATION', 1, int(opts['cb_block_retries']))
 
 
@@ -72,7 +76,8 @@ def make_td_block(tx, cfg):
 
     def block(adapter, cfg_, folder_, control, state, diag, anchors, reference, policy, outer_cycle=None):
         return td_block(tx, adapter, cfg_, folder_, control, state, diag, anchors, reference, policy,
-                        tdc=cfg['td_cordon'], idp_cfg=idp_cfg, memory=getattr(adapter, 'run_memory', None))
+                        tdc=cfg['td_cordon'], idp_cfg=idp_cfg, memory=getattr(adapter, 'run_memory', None),
+                        run_reference=getattr(adapter, 'idp_run_reference', None))
     return cb._wrap_block(block, com, 'TD_CORDON', 1, int(opts['cb_block_retries']))
 
 
@@ -273,6 +278,11 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     write_json(folder / 'CONTINUATION.json', {k: v for k, v in plan.items() if k != 'anchors'})
                 else:
                     anchors = cont.anchors_from_snapshot(snap0, folder, state['source_version'], cfg['outer_cycle_start'])
+                # LIVE04.13: immutable run-start IDP reference (fresh: measured now; continuation: carried + verified)
+                from .live04_idp_run import establish as establish_idp_run
+                establish_idp_run(adapter, cfg['idp_guard'], anchors, continuation=plan is not None,
+                                  state_hash=snap0['state_hash'], folder=folder, write_json=write_json)
+                require(adapter.snapshot() == snap0, 'LIVE04_IDP_RUN_REFERENCE_CHANGED_MODEL')
                 write_json(folder / cont.ANCHORS_FILE, anchors)
                 from .live04_memory import RunMemory
                 adapter.run_memory = RunMemory(cfg['memory'], folder / 'MEMORY') if cfg['memory']['enabled'] else None

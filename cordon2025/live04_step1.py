@@ -193,7 +193,8 @@ def _parent_check(adapter, state, probe_dirty, folder, phase):
     return snap
 
 
-def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference, policy, *, write_json):
+def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference, policy, *, write_json,
+                idp_cfg=None, run_reference=None):
     step = parent_module('r1_15a2_step_search_v24917')
     SupplyContractError = parent_module('r1_15a2_supply').SupplyContractError
     base = SimpleNamespace(**tx.ctrl_ns)
@@ -213,6 +214,41 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
             rec.setdefault('failure_record_write_errors', []).append(repr(io_exc)[:500])
 
     design_phase = 'BEFORE_DESIGN'
+    # LIVE04.13: FineCDF guard of the GENERATION acceptance, measured on the same person
+    # matrices with the same method as TD (local vs block parent + cumulative vs run start).
+    idp = {'guard': None, 'before': None,
+           'cumulative': run_reference if run_reference is not None and run_reference.applies('GENERATION') else None}
+    if (idp_cfg or {}).get('enabled'):
+        from .live03_idp import IdpGuard
+        from .live04_idp_run import component_summary
+        try:
+            idp['guard'] = IdpGuard(adapter.visum, len(adapter.zones), idp_cfg)
+            idp['before'] = idp['guard'].evaluate('BEFORE')
+            if idp['cumulative'] is not None:
+                idp['cumulative'].verify(idp['guard'], idp_cfg)
+        except Exception as exc:    # fail closed before any write: no GENERATION trial without IDP
+            rec.update(status='NO_GENERATION_CANDIDATE', stop_reason='IDP_BASELINE_UNAVAILABLE',
+                       error=type(exc).__name__ + ':' + str(exc)[:1000], search_complete=False,
+                       stationarity_confirmed=False)
+            save_rec()
+            return False, state, diag, baseline_value, rec
+        write_json(folder / 'IDP_BEFORE.json', idp['before'])
+        rec['idp_before'] = component_summary(idp['before'])
+        if idp['cumulative'] is not None:
+            rec['idp_before_vs_run_reference'] = idp['cumulative'].decide(idp['before'])
+    elif idp['cumulative'] is not None:
+        rec.update(status='NO_GENERATION_CANDIDATE', stop_reason='IDP_CUMULATIVE_WITHOUT_LOCAL_GUARD',
+                   search_complete=False, stationarity_confirmed=False)
+        save_rec()
+        return False, state, diag, baseline_value, rec
+
+    def idp_decision(measured):
+        from .live04_idp_run import combine
+        if measured is None or 'error' in measured:
+            return {'passes': False, 'reasons': ['IDP_EVALUATION_FAILED:' + str((measured or {}).get('error'))]}
+        local = idp['guard'].decide(idp['before'], measured)
+        return combine(local, idp['cumulative'].decide(measured)) if idp['cumulative'] is not None else local
+
     try:
         parent_module('r1_15a2_generation_state_v24917').require_parent(
             adapter, state, folder / 'DESIGN_PARENT_CHECK', phase=design_phase)
@@ -422,9 +458,25 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                 after_diag = adapter.diagnostics(trial_folder / 'DIAGNOSTICS', 'STEP1_TRIAL')
                 if adapter.snapshot() != after:
                     raise SupplyContractError('TRIAL_DIAGNOSTICS_CHANGED_MODEL')
-                def decide(d, _after=after, _actual=actual):
+                idp_trial = None
+                if idp['guard'] is not None:
+                    try:
+                        idp_trial = idp['guard'].evaluate('TRIAL')
+                    except Exception as exc:     # fail closed: the trial is rejected below
+                        idp_trial = {'error': type(exc).__name__ + ':' + str(exc)[:500]}
+                    write_json(trial_folder / 'IDP_TRIAL.json', idp_trial)
+                    from .live04_idp_run import component_summary
+                    attempt['idp'] = component_summary(idp_trial)
+
+                def decide(d, _after=after, _actual=actual, _idp=idp_trial):
                     v = base.ledger(d, _after, anchors, policy, reference, gen_cfg)
                     dec = adapter.block_gate('GENERATION', diag, d, _actual)
+                    if idp['guard'] is not None and d.get('valid', True):
+                        gd = idp_decision(_idp)
+                        dec['idp_guard'] = gd
+                        if not gd['passes']:
+                            dec['accepted'] = False
+                            dec.setdefault('reasons', []).extend(gd['reasons'])
                     imp = baseline_value['total'] - v['total']
                     dec.update(shared_ledger_before=baseline_value, shared_ledger_after=v,
                                shared_objective_improvement=imp)

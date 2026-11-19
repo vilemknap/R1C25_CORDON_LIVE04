@@ -164,7 +164,8 @@
   "mean_error_floor": 0.03,
   "max_mean_error_degradation": 0.02,
   "blocks": [
-   "TD_CORDON"
+   "TD_CORDON",
+   "GENERATION"
   ],
   "distance_matrix_by_component": {
    "WORK_E_C": 9726,
@@ -179,6 +180,18 @@
    "SERV_stud": 9727,
    "SCHOOL": 9726,
    "LONG_COMPOSITE": 9721
+  },
+  "cumulative": {
+   "enabled": true,
+   "blocks": [
+    "GENERATION",
+    "TD_CORDON"
+   ],
+   "reference": "RUN_START_MEASURED_IDP_IMMUTABLE_PER_COMPONENT_NO_FLOOR",
+   "fine_cdf_rmse_degradation": 0.01,
+   "mean_relative_error_degradation": 0.02,
+   "mean_error_floor": 0.0,
+   "note": "User decision 2026-11-19: per IDP component RMSE <= RMSE_start + 0.01 and |e| <= |e_start| + 0.02 (e = relative mean-distance error, no floor) against the MEASURED IDP of the run-start model, stored once in RUN_ANCHORS.json and carried unchanged by continuations; applies to GENERATION and TD_CORDON in addition to the unchanged local guard (with its mean_error_floor)."
   }
  },
  "generation_search": {

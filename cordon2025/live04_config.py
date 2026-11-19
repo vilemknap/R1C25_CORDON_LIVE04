@@ -167,6 +167,8 @@ def validate_config(cfg, *, allow_donor_overrides=False):
         l2._num(acc['generation_secondary_max_relative_degradation'],
                 'generation_secondary_max_relative_degradation', 0.0, 1.0)
     require(cfg['generation_mode'] == 'V24917_TARGETED_STEP1', 'LIVE04_REQUIRES_STEP1')
+    from .live04_idp_run import validate as validate_idp_run
+    validate_idp_run(cfg['idp_guard'])           # LIVE04.13 cumulative IDP run reference
     require(set(cfg['write_policy']) == {'tg_zone_parameter_writes', 'td_parameter_writes', 'direct_od_matrix_writes',
                                          'load_version', 'overwrite_source_version', 'save_accepted_version_new_file',
                                          'long_post_td_mask_matrix_writes', 'supply_addval1_writes'},

@@ -320,7 +320,8 @@ def _verify_memory_jacobian(J, native, space, tdc, mcfg, m0, method, w, y, eps, 
     return out
 
 
-def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference, policy, *, tdc, idp_cfg, memory=None):
+def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference, policy, *, tdc, idp_cfg, memory=None,
+             run_reference=None):
     base = SimpleNamespace(**tx.ctrl_ns)
     SupplyContractError = parent_module('r1_15a2_supply').SupplyContractError
     txm = parent_module('r1_15a2_inplace_transaction_v24915p2')
@@ -383,12 +384,19 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
     def predicted_objective(rows_by_method):
         return objective_vector(evaluator, diag, rows_by_method)
 
+    cumulative = run_reference if run_reference is not None and run_reference.applies(BLOCK) else None
+
     def guard_decision(idp_after):
         if guard is None:
             return {'passes': True, 'reasons': [], 'role': 'DISABLED'}
         if idp_after is None or 'error' in idp_after:
             return {'passes': False, 'reasons': ['IDP_EVALUATION_FAILED:' + str((idp_after or {}).get('error'))]}
-        return guard.decide(idp_before, idp_after)
+        local = guard.decide(idp_before, idp_after)
+        if cumulative is None:
+            return local
+        # LIVE04.13: and the immutable run-start reference (no mean-error floor)
+        from .live04_idp_run import combine
+        return combine(local, cumulative.decide(idp_after))
 
     def finish_without_trial(reason):
         if dirty['demand']:
