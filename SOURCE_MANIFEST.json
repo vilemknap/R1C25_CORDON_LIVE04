@@ -1513,13 +1513,13 @@
     },
     {
       "path": "cordon2025/live04_continue.py",
-      "size": 13552,
-      "sha256": "08ea5c18b28c444d10470ac92efe4668a7d45573776c5b2be662cd782d8a2bc9"
+      "size": 14432,
+      "sha256": "086324d24f5a5d020eb3f93c9d937b5f122b8ac6edd58b23533b330994e1a912"
     },
     {
       "path": "cordon2025/live04_cycle.py",
-      "size": 39130,
-      "sha256": "3bc63436268496c1984bc116a2b4a4b744b06e1791070947481533bc6dab0a75"
+      "size": 41431,
+      "sha256": "76ebc445d7b6273d6ff91dc438b16def760388ff9f0cf37acdd290814925c620"
     },
     {
       "path": "cordon2025/live04_epoch.py",
@@ -1578,8 +1578,8 @@
     },
     {
       "path": "cordon2025/live04_memory_snapshots.py",
-      "size": 3510,
-      "sha256": "54704b50a4c5fcbc827fec91e9ca4051645330825d6646af2e4f8b078b3af435"
+      "size": 3777,
+      "sha256": "ee8e8c5cac63f9c42673cd5fbbb8a0fe0c9b07324ccd4733b4fc3a0d5768875f"
     },
     {
       "path": "cordon2025/live04_nodevdf.py",
@@ -9913,13 +9913,13 @@
     },
     {
       "path": "tests/test_live04_13_idp_run.py",
-      "size": 21518,
-      "sha256": "b2fcb0fbdc4528e74b5cd1f41cd9eddc4a97025526177809d8b147c5dcef8113"
+      "size": 23124,
+      "sha256": "84188a92d2f8eb68d259b8634a7c3e38158ee88efe449caf9e6edd55a9e24205"
     },
     {
       "path": "tests/test_live04_14_genstruct.py",
-      "size": 26771,
-      "sha256": "33a2419e7145da9f701af79fb7a0796bd8e5caaf7e0b13a590e57e6af189f5e6"
+      "size": 27700,
+      "sha256": "f8662aceb1fcb2c16ddca3077a271dab72fc36b8d20c593f53264a21b19bbbc7"
     },
     {
       "path": "tests/test_live04_4.py",
@@ -10018,8 +10018,8 @@
     },
     {
       "path": "tests/test_live05_speed.py",
-      "size": 3605,
-      "sha256": "4a01743c41ea74c48d82a09d190efef1673e9e11a7c723a41141d6802839dcc1"
+      "size": 6114,
+      "sha256": "6005be66ef12c0915e16ac4e6e1a74bc648204f2955b1402d54c6556c087b03a"
     },
     {
       "path": "tests/test_optimizer.py",

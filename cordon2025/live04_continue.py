@@ -92,7 +92,9 @@ def position_from_progress(progress, planned, origin_start):
     last = cycles[-1]
     outer = int(last['outer_cycle'])
     done = [b['block'] for b in last.get('blocks') or []]
-    names = planned(outer)
+    # the ACTUAL block list of that cycle (TD_CORDON may have been skipped after an unchanged TD)
+    skipped = {s['block'] for s in last.get('skipped_blocks') or []}
+    names = [n for n in planned(outer) if n not in skipped]
     require(names[:len(done)] == done, 'LIVE04_CONTINUE_BLOCK_ORDER_MISMATCH:%s!=%s' % (done, names))
     if len(done) >= len(names):
         return outer + 1, 0, False
@@ -116,6 +118,7 @@ def resolve(source_version, source_sha256, planned, origin_start_default):
         plan = {'kind': 'CHECKPOINT', 'previous_run_folder': str(prev), 'saved_record': str(side),
                 'outer_cycle': int(nxt['outer_cycle']), 'block_index': int(nxt['block_index']),
                 'changed_so_far': bool(nxt.get('cycle_changed_so_far')),
+                'schedule': nxt.get('schedule'), 'next_block': nxt.get('next_block'),
                 'expected_state_hash': ck['state_hash'], 'expected_component_hashes': ck.get('component_hashes'),
                 'previous_accepted_states': int(ck.get('accepted_states', 0))}
     else:
@@ -135,6 +138,7 @@ def resolve(source_version, source_sha256, planned, origin_start_default):
                                                        anchors.get('origin_outer_cycle_start', origin_start_default))
         plan = {'kind': 'SAVED_ACCEPTED_VERSION', 'previous_run_folder': str(prev), 'saved_record': str(rec_path),
                 'outer_cycle': outer, 'block_index': index, 'changed_so_far': changed,
+                'schedule': progress.get('schedule'), 'next_block': None,
                 'expected_state_hash': progress.get('accepted_state_hash'), 'expected_component_hashes': None,
                 'previous_accepted_states': int(progress.get('accepted_states', 0))}
     plan['anchors'] = load_anchors(prev)
@@ -214,14 +218,20 @@ def prune(ck, keep_last):
 
 
 def verify_opened_state(plan, snap0):
+    """The opened model must be EXACTLY the accepted state (demand matrices, DSeg bindings,
+    operations, fixed links, utility state and all parameters), not only its parameters."""
     out = {'state_hash_expected': plan.get('expected_state_hash'), 'state_hash_opened': snap0['state_hash'],
            'state_hash_match': plan.get('expected_state_hash') == snap0['state_hash']}
     exp = plan.get('expected_component_hashes')
+    differing = []
     if exp:
         out['component_match'] = {k: exp.get(k) == snap0.get(k) for k in exp}
+        differing = sorted(k for k, ok in out['component_match'].items() if not ok)
         # Parameters must be exactly the checkpointed accepted values.
         for k in ('addval_hash', 'generation_hash', 'td_hash'):
             require(exp.get(k) == snap0.get(k), 'LIVE04_CONTINUE_OPENED_PARAMETERS_DIFFER_FROM_CHECKPOINT:' + k)
+    require(out['state_hash_match'], 'LIVE04_CONTINUE_OPENED_STATE_DIFFERS_FROM_ACCEPTED_STATE:'
+            + (','.join(differing) if differing else 'state_hash'))
     return out
 
 
@@ -246,6 +256,7 @@ def resolve_by_state(plan, snap0, output_root, planned, origin_start_default, cu
     outer, index, changed = position_from_progress(progress, planned,
                                                    anchors.get('origin_outer_cycle_start', origin_start_default))
     return dict(plan, kind='ACCEPTED_STATE_MATCH', previous_run_folder=str(prev),
+                schedule=progress.get('schedule'), next_block=None,
                 saved_record=str(prev / 'CYCLE_PROGRESS.json'), outer_cycle=outer, block_index=index,
                 changed_so_far=changed, expected_state_hash=progress['accepted_state_hash'],
                 expected_component_hashes=None, previous_accepted_states=int(progress.get('accepted_states', 0)),

@@ -42,8 +42,8 @@ def record(adapter, folder, state_hash, label):
     data = _load(folder)
     if state_hash in data['snapshots']:
         return False
-    snap = dict(_current(adapter), label=str(label))
-    snap['sha256'] = canonical_hash(snap)
+    snap = dict(_current(adapter), label=str(label), state_hash=str(state_hash))
+    snap['sha256'] = canonical_hash(snap)          # the state hash is part of the hashed content
     data['snapshots'][state_hash] = snap
     write_json(Path(folder) / FILE, data)
     return True
@@ -63,6 +63,9 @@ def restore(adapter, previous_run_folder, state_hash):
     body = {k: v for k, v in snap.items() if k != 'sha256'}
     if snap.get('sha256') != canonical_hash(body):
         out['status'] = 'SNAPSHOT_RECORD_CHANGED_FRESH_MEMORIES'
+        return out
+    if snap.get('state_hash') != state_hash:      # a valid record moved under another key
+        out['status'] = 'SNAPSHOT_DECLARES_ANOTHER_STATE_FRESH_MEMORIES'
         return out
     out['status'] = 'SNAPSHOT_OF_OPENED_STATE'
     out['label'] = snap.get('label')

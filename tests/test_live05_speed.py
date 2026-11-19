@@ -62,3 +62,38 @@ def test_flowbundle_probe_helpers():
     rows = [(1.0, 2.0, 1.0, '', '', '', ''), ('', '', '', 1.0, 5.0, 10.0, 11.0), ('', '', '', 2.0, 6.0, 11.0, 12.0),
             (3.0, 4.0, 2.0, '', '', '', ''), ('', '', '', 1.0, 6.0, 11.0, 12.0)]
     assert m._routes(rows) == {(1, 2, 1): [(5, 10, 11), (6, 11, 12)], (3, 4, 2): [(6, 11, 12)]}
+
+
+def test_continuation_restores_the_td_skip_schedule(tmp_path, monkeypatch):
+    """Review 2026-11-19: td_skip_until survives a restart, and the saved block index is checked
+    against the NAME of the block that was next when the checkpoint was written."""
+    from cordon2025 import live04_continue as cont
+    from cordon2025.common import ContractError
+    import pytest
+    calls = []
+    monkeypatch.setattr(live04_cycle, 'make_generation_block', _fake('GENERATION', calls))
+    monkeypatch.setattr(live04_cycle, 'make_td_block', _fake('TD_CORDON', calls))
+    monkeypatch.setattr(live04_cycle, 'make_supply_block', _fake('SUPPLY_ADDVAL1', calls))
+    v = Live04Visum(tmp_path / 'model')
+    live04_cycle.run(v, output_root=tmp_path / 'runs', options=OPT, config_overrides={'max_cycles': 1})
+    f1 = next((tmp_path / 'runs').glob('LIVE04_TGTD_*'))
+    assert read_json(f1 / 'CYCLE_PROGRESS.json')['schedule'] == {'td_skip_until': 2, 'unchanged_blocks':
+                                                                 ['GENERATION', 'TD_CORDON']}
+    state0 = read_json(f1 / 'RESTORE_POINT.json')['state_hash']
+
+    def plan(next_block):
+        return lambda *a, **k: {'schema': cont.SCHEMA, 'kind': 'CHECKPOINT', 'previous_run_folder': str(f1),
+                                'saved_record': 'x', 'outer_cycle': 2, 'block_index': 0, 'changed_so_far': False,
+                                'schedule': {'td_skip_until': 2, 'unchanged_blocks': []}, 'next_block': next_block,
+                                'expected_state_hash': state0, 'expected_component_hashes': None,
+                                'previous_accepted_states': 1, 'anchors': cont.load_anchors(f1),
+                                'opened_version': 'x', 'opened_version_sha256': 'y'}
+    monkeypatch.setattr(cont, 'resolve', plan('GENERATION'))
+    calls.clear()
+    live04_cycle.run(v, output_root=tmp_path / 'runs', options=OPT, continuation=True,
+                     config_overrides={'max_cycles': 3, 'stop_after_cycle_without_change': False})
+    assert [c for c in calls if c[1] == 'TD_CORDON'] == [(3, 'TD_CORDON')]      # skipped in 2, not re-run
+    monkeypatch.setattr(cont, 'resolve', plan('TD_CORDON'))
+    with pytest.raises(ContractError, match='LIVE04_CONTINUE_NEXT_BLOCK_MISMATCH:expected=TD_CORDON,got=GENERATION'):
+        live04_cycle.run(v, output_root=tmp_path / 'runs', options=OPT, continuation=True,
+                         config_overrides={'max_cycles': 3, 'stop_after_cycle_without_change': False})

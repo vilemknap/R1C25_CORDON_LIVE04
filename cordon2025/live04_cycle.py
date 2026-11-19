@@ -326,15 +326,31 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 # (its native probes + assignment repair cost ~20 min and found nothing twice in a row live)
                 td_skip_n = int(cfg['td_cordon'].get('skip_cycles_after_unchanged', 0))
                 td_skip_until = 0
+                if plan is not None:
+                    # LIVE04.14: the schedule state of the saved position is restored, not reset
+                    sched = plan.get('schedule')
+                    if sched is not None:
+                        td_skip_until = int(sched.get('td_skip_until', 0))
+                        unchanged_blocks = set(sched.get('unchanged_blocks') or [])
+                    plan['schedule_restored'] = {'source': 'SAVED_SCHEDULE' if sched is not None else
+                                                 'LEGACY_RECORD_WITHOUT_SCHEDULE', 'td_skip_until': td_skip_until,
+                                                 'unchanged_blocks': sorted(unchanged_blocks)}
+                    write_json(folder / 'CONTINUATION.json', {k: v for k, v in plan.items() if k != 'anchors'})
+
+                def cycle_names(o):
+                    out = planned_blocks(cfg, o)        # v7: SupplyMix right after Generation
+                    return [n for n in out if n != 'TD_CORDON'] if o <= td_skip_until else out
+
+                def schedule_state():
+                    return {'td_skip_until': td_skip_until, 'unchanged_blocks': sorted(unchanged_blocks)}
                 for outer in range(first_outer, last_outer + 1):
                     adapter.cfg = adapter_config(cfg, outer, state['actuatable_zones'])
                     if adapter.run_memory is not None:
                         adapter.run_memory.begin_cycle(outer)
                     cycle = {'outer_cycle': outer, 'blocks': []}
                     changed_cycle = False
-                    names = planned_blocks(cfg, outer)      # v7: SupplyMix right after Generation
-                    if outer <= td_skip_until and 'TD_CORDON' in names:
-                        names = [n for n in names if n != 'TD_CORDON']
+                    names = cycle_names(outer)
+                    if outer <= td_skip_until and 'TD_CORDON' in planned_blocks(cfg, outer):
                         cycle['skipped_blocks'] = [{'block': 'TD_CORDON', 'reason': 'UNCHANGED_IN_CYCLE_%d' %
                                                     (td_skip_until - td_skip_n)}]
                     require(all(n in blocks for n in names), 'LIVE04_PLANNED_BLOCK_NOT_BUILT')
@@ -342,6 +358,11 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                     if plan and outer == plan['outer_cycle']:
                         skip = plan['block_index']; changed_cycle = plan['changed_so_far']
                         cycle['continued_from_block_index'] = skip
+                        if plan.get('next_block') is not None:
+                            # the index refers to the block list valid when the checkpoint was saved
+                            require(skip < len(names) and names[skip] == plan['next_block'],
+                                    'LIVE04_CONTINUE_NEXT_BLOCK_MISMATCH:expected=%s,got=%s'
+                                    % (plan['next_block'], names[skip] if skip < len(names) else None))
                     for index, name in enumerate(names):
                         if index < skip:
                             continue
@@ -398,6 +419,11 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                             if ckcfg['enabled']:
                                 nxt = dict(cont.next_position(names, index, outer),
                                            cycle_changed_so_far=bool(index + 1 < len(names) and changed_cycle))
+                                nxt_names = names if nxt['outer_cycle'] == outer else cycle_names(nxt['outer_cycle'])
+                                nxt['next_block'] = (nxt_names[nxt['block_index']]
+                                                     if nxt['block_index'] < len(nxt_names) else None)
+                                # this block changed the model: the cycle-level unchanged set resets
+                                nxt['schedule'] = {'td_skip_until': td_skip_until, 'unchanged_blocks': []}
                                 try:
                                     rec_ck = cont.save_checkpoint(visum, adapter, folder, state, current_state, outer,
                                                                   name, nxt, progress['accepted_states'],
@@ -409,8 +435,10 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                     if 'NOT_AT_ACCEPTED_STATE' in str(ck_exc):
                                         raise
                                     entry['checkpoint_error'] = exception_text(ck_exc)[:500]
+                        progress['schedule'] = schedule_state()
                         write_json(folder / 'CYCLE_PROGRESS.json', dict(progress, cycles=progress['cycles'] + [cycle]))
                     progress['cycles'].append(cycle)
+                    progress['schedule'] = schedule_state()
                     write_json(folder / 'CYCLE_PROGRESS.json', progress)
                     # LIVE04.10.6: stop only when every block that can still run (incl. SupplyMix, which is
                     # due only every n-th cycle) has run since the last accepted change without a change.
@@ -418,6 +446,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                         unchanged_blocks = set()
                     else:
                         unchanged_blocks |= {b['block'] for b in cycle['blocks']}
+                    progress['schedule'] = schedule_state()
+                    write_json(folder / 'CYCLE_PROGRESS.json', progress)
                     if not changed_cycle and cfg['stop_after_cycle_without_change']:
                         upcoming = set().union(*[set(planned_blocks(cfg, o))
                                                  for o in range(outer + 1, min(last_outer, outer + 24) + 1)] or [set()])

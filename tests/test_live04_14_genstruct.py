@@ -496,3 +496,21 @@ def test_penalty_is_sparse_and_scales_linearly():
     for _ in range(200):
         Q @ x
     assert (time.time() - t) / 200 < 0.01 and built < 30.0
+
+
+def test_memory_snapshot_is_bound_to_its_declared_state(tmp_path):
+    from cordon2025 import live04_memory_snapshots as ms
+    c = cfg()
+    st = gs.Structure(record(c), c)
+    adapter = type('A', (), {})()
+    adapter.generation_structure = st; adapter.idp_generation_model = None; adapter.idp_run_reference = None
+    st.eta[('WORK', 'PROD')] = 0.7
+    ms.record(adapter, tmp_path, 'S1', 'C01')
+    data = json.loads((tmp_path / ms.FILE).read_text())
+    data['snapshots']['S9'] = data['snapshots'].pop('S1')          # move a valid record to another key
+    (tmp_path / ms.FILE).write_text(json.dumps(data))
+    fresh = gs.Structure(record(c), c)
+    a2 = type('A', (), {})()
+    a2.generation_structure = fresh; a2.idp_generation_model = None; a2.idp_run_reference = None
+    assert ms.restore(a2, tmp_path, 'S9')['status'] == 'SNAPSHOT_DECLARES_ANOTHER_STATE_FRESH_MEMORIES'
+    assert fresh.eta[('WORK', 'PROD')] == 1.0

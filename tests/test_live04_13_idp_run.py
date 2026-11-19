@@ -390,3 +390,26 @@ def test_cap_below_min_scale_is_an_explicit_bypass(tmp_path, monkeypatch):
     gen = read_json(runs(tmp_path)[0] / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
     assert gen['attempts'] and all(a['idp_scale_cap']['bypassed'] is True and a['idp_scale_cap']['applied'] is False
                                    for a in gen['attempts'])
+
+
+# ----------------------------------------------------------------- continuation contract (review 2026-11-19)
+def test_opened_state_must_match_the_accepted_state_exactly():
+    snap = {'state_hash': 'S1', 'addval_hash': 'a', 'generation_hash': 'g', 'td_hash': 't', 'matrix_hash': 'm2'}
+    plan = {'expected_state_hash': 'S0',
+            'expected_component_hashes': {'addval_hash': 'a', 'generation_hash': 'g', 'td_hash': 't', 'matrix_hash': 'm1'}}
+    with pytest.raises(ContractError, match='LIVE04_CONTINUE_OPENED_STATE_DIFFERS_FROM_ACCEPTED_STATE:matrix_hash'):
+        cont.verify_opened_state(plan, snap)
+    with pytest.raises(ContractError, match='DIFFERS_FROM_ACCEPTED_STATE:state_hash'):
+        cont.verify_opened_state({'expected_state_hash': 'S0', 'expected_component_hashes': None}, snap)
+    ok = cont.verify_opened_state({'expected_state_hash': 'S1', 'expected_component_hashes': None}, snap)
+    assert ok['state_hash_match']
+
+
+def test_position_uses_the_actual_block_list_of_the_cycle():
+    planned = lambda o: ['GENERATION', 'TD_CORDON', 'SUPPLY_ADDVAL1']
+    progress = {'cycles': [{'outer_cycle': 3, 'skipped_blocks': [{'block': 'TD_CORDON'}],
+                            'blocks': [{'block': 'GENERATION', 'changed': True}]}]}
+    # TD_CORDON was skipped in cycle 3: after GENERATION comes SUPPLY_ADDVAL1 (index 1 of the actual list)
+    assert cont.position_from_progress(progress, planned, 1) == (3, 1, True)
+    progress['cycles'][0]['blocks'].append({'block': 'SUPPLY_ADDVAL1', 'changed': False})
+    assert cont.position_from_progress(progress, planned, 1) == (4, 0, False)
