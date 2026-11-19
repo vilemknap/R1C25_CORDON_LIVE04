@@ -221,8 +221,8 @@ def test_supply_mix_options_are_the_v7_ones():
     from cordon2025.live04_supply import options, supply_policy, due
     o = options(load_config())
     assert (o['max_groups'], o['max_edges'], o['max_trials'], o['step_units']) == (24, 240, 4, [8, 6, 4, 2])
-    assert (o['every_n'], o['start_cycle']) == (2, 2)
-    assert [due(c, o)[0] for c in (1, 2, 3, 4)] == [False, True, False, True]
+    assert (o['every_n'], o['start_cycle']) == (4, 4)           # user decision 2026-11-19 (v7: 2, 2)
+    assert [due(c, o)[0] for c in range(1, 10)] == [False, False, False, True, False, False, False, True, False]
     policy, seq, steps, repl = supply_policy(o)
     assert (policy.lattice, policy.max_step, policy.max_cumulative) == (0.5, 8.0, 15.0)
     assert steps == [16, 8, 6, 4, 2, 1] and repl == {'min_attribution_coverage': 0.5, 'max_candidates': 144}
