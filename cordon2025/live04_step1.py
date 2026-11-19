@@ -257,7 +257,7 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
 
     def idp_direction():
         from .live04_idp_run import direction
-        return direction(context['projection'].rows)
+        return direction(context['projection'].rows, context.get('v24917_bd'))
 
     def idp_decision(measured):
         from .live04_idp_run import combine
@@ -508,9 +508,12 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                         idp_trial = {'error': type(exc).__name__ + ':' + str(exc)[:500]}
                     write_json(trial_folder / 'IDP_TRIAL.json', idp_trial)
                     if idp_model is not None:
-                        attempt['idp_model_update'] = idp_model.update(idp_direction(), float(scale),
-                                                                       idp['before'], idp_trial)
-                        save_idp_model()
+                        if after_diag.get('valid', True):
+                            attempt['idp_model_update'] = idp_model.update(idp_direction(), float(scale),
+                                                                           idp['before'], idp_trial)
+                            save_idp_model()
+                        else:      # LIVE04.14: never learn from an unverified (invalid) capture
+                            attempt['idp_model_update'] = {'status': 'INVALID_CAPTURE_NOT_LEARNED'}
                     from .live04_idp_run import component_summary
                     attempt['idp'] = component_summary(idp_trial)
 
@@ -608,8 +611,16 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                 # LIVE04.14 efficiency memory: accepted AND rejected measured trials teach it
                 try:
                     from .live04_generation import learn_efficiency
+                    route = None
+                    if model.memory_correction is not None:
+                        # the route-choice memory already explains this part of the response:
+                        # eta must learn only what remains (no double counting of one residual)
+                        route = (np.asarray(model.prior(float(scale), evaluator.method, with_memory=True), dtype=float)
+                                 - np.asarray(model.prior(float(scale), evaluator.method, with_memory=False),
+                                              dtype=float))
                     attempt['genstruct1_efficiency'] = learn_efficiency(adapter, context, float(scale), preview,
-                                                                        diag, after_diag, trial_folder)
+                                                                        diag, after_diag, trial_folder,
+                                                                        route_correction=route)
                 except Exception as exc:       # memory never decides a trial
                     attempt['genstruct1_efficiency'] = {'status': 'UPDATE_FAILED', 'error': str(exc)[:500]}
             if model.memory_correction is not None:

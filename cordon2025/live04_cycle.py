@@ -290,6 +290,12 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                     write_json=write_json,
                                     previous_run_folder=plan.get('previous_run_folder') if plan else None)
                 require(adapter.snapshot() == snap0, 'LIVE04_GENSTRUCT_REFERENCE_CHANGED_MODEL')
+                # LIVE04.14: learned memories of exactly the OPENED state (never later ones)
+                from . import live04_memory_snapshots as memsnap
+                if plan is not None:
+                    write_json(folder / 'GENERATION_MEMORY_RESTORE.json',
+                               memsnap.restore(adapter, plan.get('previous_run_folder'), snap0['state_hash']))
+                memsnap.record(adapter, folder, snap0['state_hash'], 'RUN_START')
                 write_json(folder / cont.ANCHORS_FILE, anchors)
                 from .live04_memory import RunMemory
                 adapter.run_memory = RunMemory(cfg['memory'], folder / 'MEMORY') if cfg['memory']['enabled'] else None
@@ -361,6 +367,7 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                 adapter.run_memory.save()
                         progress['accepted_state_hash'] = current_state['state_hash']
                         if changed:
+                            memsnap.record(adapter, folder, current_state['state_hash'], 'C%02d_%s' % (outer, name))
                             adapter.set_calibration_parent(current_state, bdir / 'TD_UTILITY_ACCEPTED')
                         repair = None
                         if getattr(adapter, 'assignment_invalidated', False):

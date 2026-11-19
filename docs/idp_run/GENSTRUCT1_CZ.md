@@ -18,7 +18,7 @@ V log prostoru koeficientů platí y = l + x, kde l = log(současný / cíl) a x
 
 | Část | Penalizace | Parametr |
 |---|---|---|
-| Kotva produkce | (Σ_f w_zf · y_zf)² pro každou zónu, w = podíl FP WORK/SERVICE na začátku běhu (≈ log poměru produkce k referenci) | `production_anchor_relative` |
+| Kotva produkce | (R_z − 1)², R_z = Σ_f w_zf · c_zf / t_zf = skutečný poměr produkce k referenci (w = podíl FP WORK/SERVICE na začátku běhu), linearizovaný v současném stavu | `production_anchor_relative` |
 | Slabá kotva po rodinách | y_zf² | `production_family_anchor_relative` |
 | Okolí produkce | (y_zf − Σ_u K_zu · y_uf)², kde K = obyvatelé × exp(−d/decay) do `neighbour_radius_km` na zmrazené matici 9697, max. `neighbour_max` sousedů, × podobnost cílových podílů z referenční OD (`neighbour_destination_similarity_weight`) | `neighbour_relative` |
 | Atrakce podle centrality | váha_z · y_z², váha = min + (max − min) · (1 − c_z)^p | `attraction_anchor_min/max_relative`, `attraction_centrality_power` |
@@ -45,8 +45,14 @@ Jejich pracovní atrakce je řízená centralitou (NUM_PM), takže zůstává ka
 - Po **každém platně změřeném** pokusu Generation (přijatém i odmítnutém) se aktualizují
   regularizovanou sekantou: min ‖W(Δ_naměřené − Σ_g η_g c_g)‖² + μ‖η − η_předchozí‖²,
   ořez na [`eta_min`, `eta_max`], vyhlazení `smoothing`.
-- Stav: `GENSTRUCT1_EFFICIENCY.json` ve složce běhu. Pokračování ho načte jen tehdy, když
-  patří ke stejnému referenčnímu záznamu.
+- Z naměřené změny se nejdřív odečte část, kterou už předpověděla paměť tras (route-choice
+  memory), aby obě paměti nemodelovaly stejné reziduum dvakrát.
+- Aktualizace je transakční: když se nový stav nepodaří uložit, faktory v paměti se vrátí.
+- Neplatný záznam pokusu (`valid = false`) se nikdy neučí, ani do η, ani do IDP modelu.
+- Stav paměti (η i IDP model) se ukládá ke stavu modelu: `GENERATION_MEMORY_SNAPSHOTS.json`
+  mapuje `state_hash` → paměti v okamžiku, kdy se stav stal přijatým (první zápis platí).
+  Pokračování načte paměti přesně otevřeného stavu (checkpoint C01 nikdy nedostane paměť z C03).
+  Načtené η se ověří (4 skupiny, konečné hodnoty, stejná reference) a ořízne na aktuální meze.
 - Paměť nikdy nerozhoduje o přijetí. Chyba její aktualizace se jen zapíše.
 
 ## Etapa B – IDP-aware krok (`idp_guard.generation_prediction`)
@@ -91,4 +97,10 @@ Pro každý cyklus sledujte:
 - `STEP1_PLAN_xx.json` → `idp_scale_cap`;
 - `TRY_xx/IDP_TRIAL.json` a rozhodnutí `idp_guard` v `ACCEPTANCE.json`.
 
-Každou část lze vypnout nulovou vahou nebo `enabled: false`.
+Každou část lze vypnout nulovou vahou nebo `enabled: false`. Váhy penalizace lze mezi
+pokračováními měnit. Parametry, ze kterých se reference počítá (cíl kotvy, matice a okruh
+okolí, počet sousedů, podobnost cílů, atributy potenciálu), změnit nelze, protože pokračování
+by se zastavilo. Pro jiné hodnoty je potřeba nový běh.
+
+V auditu řešiče (`genstruct1.objective_parts_*`) je penalizace uvedena včetně konstantního
+členu, takže je to úplná, nezáporná hodnota srovnatelná mezi cykly.

@@ -163,9 +163,10 @@ def test_efficiency_memory_low_dimensional_secant():
     # persisted state is reloaded only for the same reference
     state = json.loads(json.dumps(st.memory_state()))
     st3 = gs.Structure(record(c), c)
-    assert st3.load_memory(state) and st3.eta == st.eta
+    assert st3.load_memory(state) == (True, 'LOADED') and st3.eta == st.eta
+    assert st3.updates_total == st.updates_total and st3.history_digest == st.history_digest
     other = record(c, cent=(0.1, 0.2, 0.3))
-    assert not gs.Structure(other, c).load_memory(state)
+    assert gs.Structure(other, c).load_memory(state) == (False, 'OTHER_REFERENCE')
 
 
 def test_reference_record_is_immutable_and_tied_to_the_parameters(tmp_path):
@@ -203,18 +204,21 @@ def test_reference_record_is_immutable_and_tied_to_the_parameters(tmp_path):
     del rec['record_sha256']; rec['record_sha256'] = canonical_hash(rec)
     with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_REFERENCE_MISSING_IN_CONTINUATION'):
         gs.establish(Adapter(), c, {}, continuation=True, folder=tmp_path, write_json=lambda p, o: None)
+    good = {'generation_structure_reference': rec, 'origin_run_folder': rec['origin_run_folder']}
+    with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_REFERENCE_NOT_OF_THE_ORIGIN_RUN'):
+        gs.establish(Adapter(), c, dict(good, origin_run_folder='/runs/OTHER'), continuation=True,
+                     folder=tmp_path, write_json=lambda p, o: None)
     a = Adapter()
-    st = gs.establish(a, c, {'generation_structure_reference': rec}, continuation=True, folder=tmp_path,
-                      write_json=lambda p, o: None)
+    st = gs.establish(a, c, good, continuation=True, folder=tmp_path, write_json=lambda p, o: None)
     assert a.generation_structure is st and st.record == rec
     # 9697 changed under the carried neighbour structure -> stop (the state hash does not cover it)
     D2 = D.copy(); D2[0, 1] = 2.5
     with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_DISTANCE_MATRIX_CHANGED:9697'):
-        gs.establish(Adapter(D2), c, {'generation_structure_reference': rec}, continuation=True,
+        gs.establish(Adapter(D2), c, good, continuation=True,
                      folder=tmp_path, write_json=lambda p, o: None)
     bad_zones = Adapter(); bad_zones.zones = [1, 3, 2]
     with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_ZONE_ORDER_CHANGED'):
-        gs.establish(bad_zones, c, {'generation_structure_reference': rec}, continuation=True,
+        gs.establish(bad_zones, c, good, continuation=True,
                      folder=tmp_path, write_json=lambda p, o: None)
     a2 = Adapter()
     assert gs.establish(a2, cfg(enabled=False), {}, continuation=False, folder=tmp_path,
@@ -308,9 +312,12 @@ def test_penalty_matrix_equals_the_documented_formula():
             y[(f, r)][z - 1] += v
         tot = 0.0
         for i, z in enumerate(ZONES):
-            comb = sum(rec['production_share'][f][i] * y[(f, 'PROD')][i] for f in gs.FAMILIES)
-            if any((f, 'PROD', z) in xv for f in gs.FAMILIES):
-                tot += 0.5 * g['production_anchor_relative'] * comb ** 2
+            # exact production ratio, linearized at the current state
+            r0 = sum(rec['production_share'][f][i] * np.exp(y0[(f, 'PROD')][i]) for f in gs.FAMILIES)
+            lin = r0 - 1.0 + sum(rec['production_share'][f][i] * np.exp(y0[(f, 'PROD')][i])
+                                 * xv.get((f, 'PROD', z), 0.0) for f in gs.FAMILIES)
+            if any((f, 'PROD', z) in xv and rec['production_share'][f][i] > 0 for f in gs.FAMILIES):
+                tot += 0.5 * g['production_anchor_relative'] * lin ** 2
             for f in gs.FAMILIES:
                 if (f, 'PROD', z) in xv:
                     tot += 0.5 * g['production_family_anchor_relative'] * y[(f, 'PROD')][i] ** 2
@@ -329,3 +336,128 @@ def test_penalty_matrix_equals_the_documented_formula():
         x = rng.normal(scale=0.3, size=len(keys))
         quad = 0.5 * x @ Q @ x + q @ x
         assert quad == pytest.approx(explicit(x) - explicit(x0), rel=1e-9, abs=1e-12)
+    # the audited constant makes the full penalty exact and non-negative (review P3)
+    assert st.last_penalty_constant == pytest.approx(explicit(x0))
+    assert 0.5 * x @ Q @ x + q @ x + st.last_penalty_constant == pytest.approx(explicit(x)) and explicit(x) >= 0
+
+
+def test_production_anchor_uses_the_real_production_ratio():
+    """Review P2: w = (0.5, 0.5), coefficients (3, 1/3): the weighted LOG is 0, but the real
+    production is 1.667 x reference - the anchor must pull it down."""
+    c = cfg(neighbour_relative=0.0, production_family_anchor_relative=0.0)
+    st = gs.Structure(record(c, share_w=(0.5, 0.5, 0.5), neighbours=[[], [], []]), c)
+    keys = [('WORK', 'PROD', 1), ('SERVICE', 'PROD', 1)]
+    p = problem(keys, [[0.0, 0.0]], [0.0])
+    rows = zone_rows({('WORK', 'PROD'): [3.0, 1.0, 1.0], ('SERVICE', 'PROD'): [1 / 3, 1.0, 1.0]})
+    Q, q, audit = st.penalty(p, rows, 1.0)
+    assert audit['constant'] == pytest.approx(0.5 * 0.05 * (0.5 * 3 + 0.5 / 3 - 1) ** 2)
+    x = solve(st, p, rows)
+    assert 0.5 * 3 * math.exp(x[0]) + 0.5 / 3 * math.exp(x[1]) < 1.6        # ratio moves towards 1
+    assert x[0] < 0                                                          # mostly via the big coefficient
+
+
+def test_efficiency_memory_numerics_and_loading():
+    c = cfg(efficiency_memory=dict(load_config()['generation_structure']['efficiency_memory'], prior_weight=0.0))
+    st = gs.Structure(record(c), c)
+    keys = [('WORK', 'PROD', 1), ('SERVICE', 'PROD', 1)]
+    G = np.array([[1.0, 1.0], [2.0, 2.0]])                 # collinear groups, prior_weight 0
+    rec = st.learn(G, keys, np.array([0.1, 0.1]), np.array([0.1, 0.2]), np.ones(2))
+    assert rec['status'] == 'UPDATED' and all(np.isfinite(list(st.eta.values())))
+    good = {'schema': gs.MEMORY_SCHEMA, 'reference_sha256': st.record['record_sha256'],
+            'eta': {'%s|%s' % k: 1.0 for k in gs.GROUPS}, 'updates': 3, 'history_digest': 'h'}
+    for bad, reason in ((dict(good, eta=dict(good['eta'], **{'WORK|PROD': float('nan')})), 'NONFINITE'),
+                        (dict(good, eta={'WORK|PROD': 1.0}), 'GROUPS'),
+                        (dict(good, eta=dict(good['eta'], **{'WORK|PROD': 'x'})), 'NOT_NUMERIC'),
+                        (dict(good, schema='X'), 'SCHEMA')):
+        assert gs.Structure(record(c), c).load_memory(bad) == (False, reason)
+    st2 = gs.Structure(record(c), c)
+    ok, reason = st2.load_memory(dict(good, eta=dict(good['eta'], **{'WORK|PROD': 9.0, 'WORK|ATT': 0.01})))
+    hi, lo = c['generation_structure']['efficiency_memory']['eta_max'], c['generation_structure']['efficiency_memory']['eta_min']
+    assert ok and reason.startswith('CLIPPED_TO_CURRENT_BOUNDS') and st2.eta[('WORK', 'PROD')] == hi \
+        and st2.eta[('WORK', 'ATT')] == lo and st2.updates_total == 3
+
+
+def test_zone_inputs_fail_closed_and_only_missing_attributes_fall_back():
+    class Zones:
+        def __init__(self, data, errors):
+            self.data, self.errors = data, errors
+
+        def GetMultiAttValues(self, attr, active):
+            assert active is False
+            if attr in self.errors:
+                raise self.errors[attr]
+            return [(i + 1, v) for i, v in enumerate(self.data[attr])]
+
+    def visum(data, errors=None):
+        v = type('V', (), {})(); v.Net = type('N', (), {})(); v.Net.Zones = Zones(data, errors or {})
+        return v
+    missing = RuntimeError('ZONE: Could not find attribute with ID NUM_PM.')
+    assert gs._first_readable(visum({'B': [1.0, 2.0]}, {'A': missing}), ['A', 'B'], 2)[0] == 'B'
+    busy = RuntimeError('(-2147418111, Call was rejected by callee.)')
+    with pytest.raises(RuntimeError, match='rejected'):
+        gs._first_readable(visum({'B': [1.0, 2.0]}, {'A': busy}), ['A', 'B'], 2)
+    with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_ZONE_VALUES_INVALID:A'):
+        gs._first_readable(visum({'A': [1.0, float('nan')], 'B': [1.0, 2.0]}), ['A', 'B'], 2)
+    with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_ZONE_VALUES_INVALID:P'):
+        gs._zone_values(visum({'P': [1.0, -5.0]}), 'P', 2)
+
+
+def test_learning_is_transactional_and_removes_the_route_correction(monkeypatch, tmp_path):
+    from cordon2025 import live04_generation as gen
+    c = cfg()
+    st = gs.Structure(record(c), c)
+    keys = [('WORK', 'PROD', 1)]
+    G = np.array([[1.0], [2.0]])
+
+    class Ev:
+        method = 'M'
+    adapter = type('A', (), {})()
+    adapter.generation_structure, adapter.evaluator, adapter.generation_structure_folder = st, Ev(), tmp_path
+    context = {'_genfix2_effect_model': {'problems': {'M': {'G_raw': G, 'var_keys': keys, 'order': [0, 1]}},
+                                         'bd': None}}
+    before = {'valid': True}; after = {'valid': True}
+    monkeypatch.setattr(gen, 'implemented_vector', lambda var_keys, preview, scale, bd: np.array([0.1]))
+    monkeypatch.setattr(gen.fit_objective, 'measured_vectors', lambda b, a, m: (np.zeros(2), np.array([0.1, 0.2])))
+    monkeypatch.setattr(gen.fit_objective, 'captured_terms', lambda b, m: {'w': np.ones(2)})
+    seen = {}
+    real_learn = st.learn
+
+    def spy(G_, k, x, d, w):
+        seen['d'] = np.array(d)
+        return real_learn(G_, k, x, d, w)
+    monkeypatch.setattr(st, 'learn', spy)
+    gen.learn_efficiency(adapter, context, 1.0, {}, before, after, tmp_path, route_correction=np.array([0.05, 0.1]))
+    assert np.allclose(seen['d'], [0.05, 0.1])               # measured minus the route-memory part
+    eta_ok = dict(st.eta)
+    # a failed persist restores the in-memory factors
+    import cordon2025.io as cio
+    monkeypatch.setattr(cio, 'write_json', lambda p, o: (_ for _ in ()).throw(OSError('DISK_FULL')))
+    with pytest.raises(OSError, match='DISK_FULL'):
+        gen.learn_efficiency(adapter, context, 1.0, {}, before, after, tmp_path)
+    assert st.eta == eta_ok
+    # never from an invalid capture
+    with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_LEARN_INVALID_CAPTURE'):
+        gen.learn_efficiency(adapter, context, 1.0, {}, before, {'valid': False}, tmp_path)
+
+
+def test_memory_snapshots_bind_memories_to_the_accepted_state(tmp_path):
+    from cordon2025 import live04_memory_snapshots as ms
+    c = cfg()
+    st = gs.Structure(record(c), c)
+    adapter = type('A', (), {})()
+    adapter.generation_structure = st
+    adapter.idp_generation_model = None; adapter.idp_run_reference = None
+    run1 = tmp_path / 'R1'; run1.mkdir()
+    assert ms.record(adapter, run1, 'S0', 'RUN_START')
+    st.eta[('WORK', 'PROD')] = 0.7
+    assert ms.record(adapter, run1, 'S1', 'C01_GENERATION')         # checkpoint state C01
+    st.eta[('WORK', 'PROD')] = 0.4                                   # learned later (C03)
+    assert ms.record(adapter, run1, 'S3', 'C03_GENERATION')
+    assert not ms.record(adapter, run1, 'S1', 'LATER')                # first write wins
+    fresh = gs.Structure(record(c), c)
+    adapter2 = type('A', (), {})()
+    adapter2.generation_structure = fresh
+    adapter2.idp_generation_model = None; adapter2.idp_run_reference = None
+    out = ms.restore(adapter2, run1, 'S1')
+    assert out['status'] == 'SNAPSHOT_OF_OPENED_STATE' and fresh.eta[('WORK', 'PROD')] == 0.7   # not 0.4
+    assert ms.restore(adapter2, run1, 'UNKNOWN')['status'] == 'NO_SNAPSHOT_FOR_OPENED_STATE_FRESH_MEMORIES'

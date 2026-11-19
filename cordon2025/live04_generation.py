@@ -431,12 +431,18 @@ def validate_mobility_plan(context, design):
     return proof
 
 
-def learn_efficiency(adapter, context, scale, preview, before, after, folder):
-    """LIVE04.14: update the GENSTRUCT1 efficiency factors from one validly measured trial."""
+def learn_efficiency(adapter, context, scale, preview, before, after, folder, route_correction=None):
+    """LIVE04.14: update the GENSTRUCT1 efficiency factors from one validly measured trial.
+
+    route_correction (observation-row order of the main method): the part of this trial's
+    prediction already supplied by the route-choice memory; it is removed from the measured
+    change first, so the two memories never model the same residual twice.
+    Transactional: if the new state cannot be persisted, the in-memory factors are restored."""
     from .io import write_json as _wj
     st = getattr(adapter, 'generation_structure', None)
     if st is None or not st.mem_cfg.get('enabled'):
         return {'status': 'DISABLED'}
+    require(before.get('valid', True) and after.get('valid', True), 'LIVE04_GENSTRUCT_LEARN_INVALID_CAPTURE')
     effect = context.get('_genfix2_effect_model') or {}
     method = adapter.evaluator.method
     p = (effect.get('problems') or {}).get(method)
@@ -448,11 +454,20 @@ def learn_efficiency(adapter, context, scale, preview, before, after, folder):
     rows = [i for i, k in enumerate(p['order']) if k is not None]
     G = p['G_raw'][[p['order'][i] for i in rows], :]
     d = np.array([a[i] - b[i] for i in rows])
+    if route_correction is not None:
+        rc = np.asarray(route_correction, dtype=float)
+        require(rc.shape == (len(p['order']),) and np.isfinite(rc).all(), 'LIVE04_GENSTRUCT_ROUTE_CORRECTION_SHAPE')
+        d = d - rc[rows]
     w = np.asarray(terms['w'], dtype=float)[rows]
+    snap = st.snapshot()
     rec = st.learn(G, p['var_keys'], x, d, w)
-    rec.update(scale=float(scale), method=method)
-    folder_run = getattr(adapter, 'generation_structure_folder', None)
-    if folder_run is not None:
-        _wj(Path(folder_run) / 'GENSTRUCT1_EFFICIENCY.json', st.memory_state())
-    _wj(Path(folder) / 'GENSTRUCT1_EFFICIENCY_UPDATE.json', rec)
+    rec.update(scale=float(scale), method=method, route_correction_removed=route_correction is not None)
+    try:
+        folder_run = getattr(adapter, 'generation_structure_folder', None)
+        if folder_run is not None:
+            _wj(Path(folder_run) / 'GENSTRUCT1_EFFICIENCY.json', st.memory_state())
+        _wj(Path(folder) / 'GENSTRUCT1_EFFICIENCY_UPDATE.json', rec)
+    except BaseException:
+        st.restore(snap)           # RAM and disk never diverge
+        raise
     return rec

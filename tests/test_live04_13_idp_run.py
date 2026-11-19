@@ -72,6 +72,24 @@ def test_invalid_cumulative_policy_is_rejected(over, code):
         load_config(overrides=over)
 
 
+def test_cumulative_floor_must_stay_zero():
+    with pytest.raises(ContractError, match='LIVE04_IDP_CUMULATIVE_FLOOR_MUST_BE_ZERO'):
+        load_config(overrides={'idp_guard': {'cumulative': {'mean_error_floor': 0.03}}})
+
+
+def test_direction_keeps_opposite_spatial_moves_and_boundary_steps():
+    rows = [{'family': 'WORK', 'role': 'PROD', 'log_step': 0.4, 'base_margin_volume': 100.0},
+            {'family': 'WORK', 'role': 'PROD', 'log_step': -0.4, 'base_margin_volume': 100.0}]
+    d = ir.direction(rows)
+    assert d == {'WORK|PROD|+': pytest.approx(0.2), 'WORK|PROD|-': pytest.approx(0.2)}   # not a zero step
+    # margin weighting: the big zone dominates
+    rows[0]['base_margin_volume'] = 300.0
+    assert ir.direction(rows)['WORK|PROD|+'] == pytest.approx(0.3)
+    # a boundary-only candidate is a real direction
+    assert ir.direction([], {'steps': {'WORK|612': 0.1, 'SERVICE|613': -0.2}}) == \
+        {'SERVICE|PA|-': pytest.approx(0.2), 'WORK|PA|+': pytest.approx(0.1)}
+
+
 def test_disabled_idp_guard_disables_the_cumulative_check():
     cfg = load_config(overrides={'idp_guard': {'enabled': False}})['idp_guard']
     assert cfg['cumulative']['enabled'] is True and ir.policy(cfg) is None
@@ -148,7 +166,7 @@ def test_continuation_without_reference_stops(monkeypatch, tmp_path):
     g.evaluate = lambda label: metrics()
     monkeypatch.setattr('cordon2025.live03_idp.IdpGuard', lambda visum, n, cfg: g)
     written = {}
-    anchors = {}
+    anchors = {'origin_state_hash': 'S', 'origin_run_folder': str(tmp_path)}
     a = Adapter()
     ref = ir.establish(a, idp_cfg(), anchors, continuation=False, state_hash='S', folder=tmp_path,
                        write_json=lambda p, o: written.setdefault(Path(p).name, o))
@@ -161,6 +179,10 @@ def test_continuation_without_reference_stops(monkeypatch, tmp_path):
                         write_json=lambda p, o: written.__setitem__(Path(p).name, o))
     assert ref2.record == ref.record
     assert written['IDP_RUN_REFERENCE.json']['verification']['source'] == 'CARRIED_FROM_ORIGIN_RUN'
+    # genealogy: a valid record attached to the anchors of ANOTHER origin run is refused
+    with pytest.raises(ContractError, match='LIVE04_IDP_RUN_REFERENCE_NOT_OF_THE_ORIGIN_RUN'):
+        ir.establish(Adapter(), idp_cfg(), dict(anchors, origin_state_hash='OTHER'), continuation=True,
+                     state_hash='OTHER', folder=tmp_path, write_json=lambda p, o: None)
     # disabled: nothing measured, no reference
     c = Adapter()
     assert ir.establish(c, idp_cfg(enabled=False), {}, continuation=False, state_hash='S', folder=tmp_path,
@@ -217,6 +239,8 @@ def test_generation_trial_is_measured_against_parent_and_run_reference_then_cont
     assert m1['updates'] >= 1 and m1['reference_sha256'] == ref['record_sha256']
     m2 = read_json(f2 / ir.MODEL_FILE)
     assert m2['updates'] >= m1['updates']
+    restored = read_json(f2 / 'GENERATION_MEMORY_RESTORE.json')
+    assert restored['status'] == 'SNAPSHOT_OF_OPENED_STATE' and restored['idp_model'] == 'LOADED'
     first_plan = read_json(sorted(f2.glob('C02_GENERATION/STEP1_PLAN_*.json'))[0])
     assert first_plan['idp_scale_cap']['updates'] >= m1['updates']
     # a previous run without a verifiable reference: the continuation stops, no silent re-capture
@@ -289,7 +313,7 @@ def test_generation_idp_model_learns_and_caps_the_scale(monkeypatch):
     m2.update(d, 1.0, now, metrics(A=(0.04, 0.0), B=(0.05, 0.0)))
     assert m2.max_scale(d, now, now, ref, local)[0] is None
     assert ir.direction([{'family': 'WORK', 'role': 'PROD', 'log_step': 0.2},
-                         {'family': 'WORK', 'role': 'PROD', 'log_step': 0.0}]) == {'WORK|PROD': 0.1}
+                         {'family': 'WORK', 'role': 'PROD', 'log_step': 0.0}]) == {'WORK|PROD|+': 0.1}
 
 
 def test_generation_prediction_config():

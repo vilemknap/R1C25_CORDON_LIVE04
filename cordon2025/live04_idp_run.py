@@ -53,6 +53,8 @@ def validate(idp_cfg):
         v = c[key]
         require(isinstance(v, (int, float)) and not isinstance(v, bool) and 0.0 <= float(v) <= 1.0,
                 'LIVE04_IDP_CUMULATIVE_TOLERANCE:' + key)
+    # the approved policy is NO_FLOOR (user decision 2026-11-19); the reference name says so
+    require(float(c['mean_error_floor']) == 0.0, 'LIVE04_IDP_CUMULATIVE_FLOOR_MUST_BE_ZERO')
     # The cumulative check runs on the IDP evaluation of the local guard of the same block.
     require(not (c['enabled'] and idp_cfg.get('enabled')) or set(c['blocks']) <= set(idp_cfg.get('blocks') or []),
             'LIVE04_IDP_CUMULATIVE_BLOCK_WITHOUT_LOCAL_GUARD')
@@ -202,6 +204,10 @@ def establish(adapter, idp_cfg, anchors, *, continuation, state_hash, folder, wr
         record = anchors.get('idp_run_reference')
         require(record is not None, 'LIVE04_IDP_RUN_REFERENCE_MISSING_IN_CONTINUATION')
         ref = RunReference(record)
+        # genealogy: the record must belong to the ORIGIN run of these anchors
+        require(record.get('state_hash') == anchors.get('origin_state_hash')
+                and str(record.get('origin_run_folder')) == str(anchors.get('origin_run_folder')),
+                'LIVE04_IDP_RUN_REFERENCE_NOT_OF_THE_ORIGIN_RUN')
         audit = ref.verify(guard, idp_cfg)
         audit['source'] = 'CARRIED_FROM_ORIGIN_RUN'
     else:
@@ -218,15 +224,8 @@ def establish(adapter, idp_cfg, anchors, *, continuation, state_hash, folder, wr
     adapter.idp_generation_model_file = Path(folder) / MODEL_FILE
     if pred.get('enabled') and 'GENERATION' in (idp_cfg.get('blocks') or []):
         model = GenerationIdpModel(guard.guarded, pred)
-        loaded = False
-        if continuation and previous_run_folder:
-            prev = Path(previous_run_folder) / MODEL_FILE
-            if prev.is_file():
-                from .common import read_json
-                loaded = model.load(read_json(prev), ref.record['record_sha256'])
-        adapter.idp_generation_model = model
-        write_json(adapter.idp_generation_model_file, dict(model.state(ref.record['record_sha256']),
-                                                           loaded_from_previous_run=loaded))
+        adapter.idp_generation_model = model       # learned state: live04_memory_snapshots
+        write_json(adapter.idp_generation_model_file, model.state(ref.record['record_sha256']))
     return ref
 
 
@@ -245,13 +244,27 @@ def validate_prediction(idp_cfg):
     return p
 
 
-def direction(rows):
-    """Low-dimensional GENERATION direction: mean log step per family x role (scale 1)."""
+def direction(rows, bd=None):
+    """Low-dimensional GENERATION direction at scale 1 (stage B features).
+
+    Per family x role, the margin-weighted mean of the POSITIVE and of the NEGATIVE log steps
+    separately (keys '<fam>|<role>|+' / '|-'), so opposite spatial moves (+0.4 / -0.4) never
+    cancel to a zero direction; boundary P/A steps of the candidate ('<fam>|PA|+/-') included."""
     acc = {}
     for r in rows or []:
         key = '%s|%s' % (r.get('family'), r.get('role'))
-        acc.setdefault(key, []).append(float(r.get('log_step', 0.0) or 0.0))
-    return {k: float(np.mean(v)) for k, v in sorted(acc.items())}
+        w = float(r.get('base_margin_volume') or 0.0)
+        w = w if w > 0 and np.isfinite(w) else 1.0
+        acc.setdefault(key, []).append((w, float(r.get('log_step', 0.0) or 0.0)))
+    for key, step in ((bd or {}).get('steps') or {}).items():
+        fam = str(key).split('|')[0]
+        acc.setdefault('%s|PA' % fam, []).append((1.0, float(step)))
+    out = {}
+    for key, vals in sorted(acc.items()):
+        W = sum(w for w, _ in vals)
+        out[key + '|+'] = float(sum(w * max(x, 0.0) for w, x in vals) / W)
+        out[key + '|-'] = float(sum(w * max(-x, 0.0) for w, x in vals) / W)
+    return {k: v for k, v in out.items() if v != 0.0}
 
 
 class GenerationIdpModel:

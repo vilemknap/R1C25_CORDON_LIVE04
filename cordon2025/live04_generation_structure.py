@@ -89,20 +89,37 @@ def validate(cfg):
 
 # ------------------------------------------------------------------ capture (run start)
 def _zone_values(visum, attr, n):
-    rows = visum.Net.Zones.GetMultiAttValues(attr, False)       # all zones, not only active
-    vals = [float(r[1]) if r[1] not in (None, '') else 0.0 for r in rows]
+    """All zones (not only active), finite and non-negative - otherwise fail closed."""
+    rows = visum.Net.Zones.GetMultiAttValues(attr, False)
+    vals = np.asarray([float(r[1]) if r[1] not in (None, '') else 0.0 for r in rows], dtype=float)
     require(len(vals) == n, 'LIVE04_GENSTRUCT_ZONE_COUNT:' + attr)
-    return np.asarray(vals, dtype=float)
+    require(np.isfinite(vals).all() and (vals >= 0).all(), 'LIVE04_GENSTRUCT_ZONE_VALUES_INVALID:' + attr)
+    return vals
+
+
+MISSING_ATTRIBUTE_TOKENS = ('COULD NOT FIND ATTRIBUTE', 'UNKNOWN ATTRIBUTE', 'ATTRIBUTE NOT FOUND',
+                            'INVALID ATTRIBUTE')
+
+
+def _attribute_missing(exc):
+    """Only a missing attribute may fall back to the next candidate; a COM/read failure of an
+    existing attribute (busy, wrong shape, invalid values) is never mistaken for it."""
+    if isinstance(exc, KeyError):            # synthetic hosts
+        return True
+    text = str(exc).upper()
+    return any(t in text for t in MISSING_ATTRIBUTE_TOKENS)
 
 
 def _first_readable(visum, attrs, n):
-    errors = []
+    missing = []
     for a in attrs:
         try:
             return a, _zone_values(visum, a, n)
-        except Exception as exc:     # attribute not in this model: next candidate
-            errors.append('%s:%s' % (a, str(exc)[:80]))
-    raise ValueError('LIVE04_GENSTRUCT_NO_POTENTIAL_ATTRIBUTE:' + ';'.join(errors))
+        except Exception as exc:
+            if not _attribute_missing(exc):
+                raise
+            missing.append('%s:%s' % (a, str(exc)[:80]))
+    raise ValueError('LIVE04_GENSTRUCT_NO_POTENTIAL_ATTRIBUTE:' + ';'.join(missing))
 
 
 def _fp_sum(visum, prefix, n):
@@ -226,6 +243,9 @@ class Structure:
         self.mem_cfg = dict(g['efficiency_memory'])
         self.eta = {k: 1.0 for k in GROUPS}
         self.history = []
+        self.updates_total = 0
+        self.history_digest = ''
+        self.last_penalty_constant = 0.0
 
     # -------------------------------------------------------------- penalty
     def _logs(self, zone_rows):
@@ -248,17 +268,23 @@ class Structure:
         keys = [tuple(k) for k in problem.var_keys]
         nv = len(keys)
         Q = np.zeros((nv, nv)); q = np.zeros(nv)
+        self.last_penalty_constant = 0.0
         if not self.cfg['enabled'] or nv == 0:
-            return Q, q, {'status': 'DISABLED'}
+            return Q, q, {'status': 'DISABLED', 'constant': 0.0}
         y0 = self._logs(zone_rows)
         pos = {k: j for j, k in enumerate(keys)}
         rel = lambda key: float(self.cfg[key]) * scale
         audit = {'variables': nv, 'scale': scale}
 
-        def add_quadratic(entries, weight):
-            """weight * 0.5 * (sum_c a_c * y_c)^2 for entries [(var_or_None, a, y0)]"""
+        const_total = [0.0]
+
+        def add_quadratic(entries, weight, const=None):
+            """weight * 0.5 * (const + sum_c a_c * x_c)^2; const defaults to sum_c a_c * y0_c
+            for entries [(var_or_None, a, y0)].  The constant term is tracked for the audit."""
             idx = [(pos.get(v), a) for v, a, _ in entries]
-            const = sum(a * y for (_, a, y) in entries)
+            if const is None:
+                const = sum(a * y for (_, a, y) in entries)
+            const_total[0] += 0.5 * weight * const * const
             for j, a in idx:
                 if j is None:
                     continue
@@ -266,17 +292,21 @@ class Structure:
                 for k2, b in idx:
                     if k2 is not None:
                         Q[j, k2] += weight * a * b
-        # 1. production anchor (combined) + weak per-family anchor
+        # 1. production anchor on the EXACT reference-weighted production ratio
+        #    R = sum_f w_f * c_f / t_f = sum_f w_f exp(y_f), linearized at the current state:
+        #    R - 1 ~ (R0 - 1) + sum_f w_f exp(y0_f) x_f      (+ a weak per-family log anchor)
         lp, lpf = rel('production_anchor_relative'), rel('production_family_anchor_relative')
         for i, z in enumerate(self.zones):
-            ent = []
+            ent, r0 = [], 0.0
             for f in FAMILIES:
                 w = float(self.record['production_share'][f][i])
-                ent.append(((f, 'PROD', z), w, float(y0[(f, 'PROD')][i])))
+                e = math.exp(float(y0[(f, 'PROD')][i]))
+                r0 += w * e
+                ent.append(((f, 'PROD', z), w * e, float(y0[(f, 'PROD')][i])))
                 if lpf > 0 and (f, 'PROD', z) in pos:
                     add_quadratic([((f, 'PROD', z), 1.0, float(y0[(f, 'PROD')][i]))], lpf)
-            if lp > 0 and any(v in pos for v, a, _ in ent if a > 0):
-                add_quadratic(ent, lp)
+            if lp > 0 and r0 > 0 and any(v in pos for v, a, _ in ent if a > 0):
+                add_quadratic(ent, lp, const=r0 - 1.0)
         # 2. production neighbourhood
         ln = rel('neighbour_relative')
         if ln > 0:
@@ -300,7 +330,9 @@ class Structure:
                 w = amin + (amax - amin) * (1.0 - float(cent[i])) ** p
                 if w > 0:
                     add_quadratic([((f, 'ATT', z), 1.0, float(y0[(f, 'ATT')][i]))], w)
-        audit.update(status='ACTIVE', q_norm=float(np.linalg.norm(q)), Q_trace=float(np.trace(Q)))
+        audit.update(status='ACTIVE', q_norm=float(np.linalg.norm(q)), Q_trace=float(np.trace(Q)),
+                     constant=const_total[0])
+        self.last_penalty_constant = const_total[0]
         return Q, q, audit
 
     # -------------------------------------------------------------- efficiency
@@ -331,9 +363,13 @@ class Structure:
         C = np.column_stack(contrib) * w[:, None]
         b = d * w
         prior = np.array([self.eta[gk] for gk in groups])
-        mu = float(self.mem_cfg['prior_weight']) * max(1e-12, float(np.median(np.sum(C * C, axis=0))))
+        curv = max(1e-12, float(np.median(np.sum(C * C, axis=0))))
+        # numerical floor: prior_weight = 0 with collinear groups must not make A singular
+        mu = max(float(self.mem_cfg['prior_weight']) * curv, 1e-9 * curv)
         A = C.T @ C + mu * np.eye(len(groups))
-        est = np.linalg.solve(A, C.T @ b + mu * prior)
+        est = np.linalg.lstsq(A, C.T @ b + mu * prior, rcond=None)[0]
+        if not np.isfinite(est).all():
+            return {'status': 'NONFINITE_ESTIMATE_NOT_APPLIED'}
         est = np.clip(est, float(self.mem_cfg['eta_min']), float(self.mem_cfg['eta_max']))
         a = float(self.mem_cfg['smoothing'])
         new = (1.0 - a) * prior + a * est
@@ -348,23 +384,49 @@ class Structure:
                'weighted_error_before': float(np.linalg.norm(b - pred_before)),
                'weighted_error_after': float(np.linalg.norm(b - pred_after))}
         self.history.append(rec)
+        self.updates_total += 1
+        self.history_digest = canonical_hash([self.history_digest, rec])
         return rec
+
+    def snapshot(self):
+        """In-memory copy for a transactional update (restore on a failed persist)."""
+        return (dict(self.eta), len(self.history), self.updates_total, self.history_digest)
+
+    def restore(self, snap):
+        eta, n, total, digest = snap
+        self.eta = dict(eta); del self.history[n:]
+        self.updates_total, self.history_digest = total, digest
 
     def memory_state(self):
         return {'schema': MEMORY_SCHEMA, 'reference_sha256': self.record['record_sha256'],
-                'eta': {'%s|%s' % k: v for k, v in self.eta.items()}, 'updates': len(self.history),
-                'history': self.history[-20:]}
+                'eta': {'%s|%s' % k: v for k, v in self.eta.items()}, 'updates': self.updates_total,
+                'history_digest': self.history_digest, 'history': self.history[-20:]}
 
     def load_memory(self, state):
-        """Previous run's factors: only for the same reference record."""
-        if not state or state.get('schema') != MEMORY_SCHEMA or \
-                state.get('reference_sha256') != self.record['record_sha256']:
-            return False
-        for key, v in state['eta'].items():
+        """Factors of a previous run: same reference, exactly the four groups, finite; values are
+        clipped to the CURRENT eta bounds (recorded).  Returns (loaded, reason)."""
+        if not isinstance(state, dict) or state.get('schema') != MEMORY_SCHEMA:
+            return False, 'SCHEMA'
+        if state.get('reference_sha256') != self.record['record_sha256']:
+            return False, 'OTHER_REFERENCE'
+        eta = state.get('eta')
+        expected = {'%s|%s' % k for k in GROUPS}
+        if not isinstance(eta, dict) or set(eta) != expected:
+            return False, 'GROUPS'
+        try:
+            vals = {k: float(v) for k, v in eta.items()}
+        except (TypeError, ValueError):
+            return False, 'NOT_NUMERIC'
+        if not all(math.isfinite(v) for v in vals.values()):
+            return False, 'NONFINITE'
+        lo, hi = float(self.mem_cfg['eta_min']), float(self.mem_cfg['eta_max'])
+        clipped = sorted(k for k, v in vals.items() if not lo <= v <= hi)
+        for key, v in vals.items():
             f, r = key.split('|')
-            if (f, r) in self.eta:
-                self.eta[(f, r)] = float(v)
-        return True
+            self.eta[(f, r)] = min(hi, max(lo, v))
+        self.updates_total = int(state.get('updates') or 0)
+        self.history_digest = str(state.get('history_digest') or '')
+        return True, ('CLIPPED_TO_CURRENT_BOUNDS:' + ','.join(clipped)) if clipped else 'LOADED'
 
 
 # ------------------------------------------------------------------ regularized solver
@@ -396,9 +458,15 @@ def solve(problem, fit_cfg, structure, zone_rows):
     def grad(x):
         return G.T @ (W2 * (G @ x - problem.target)) + ridge * x + Q @ x + q
 
-    def objective(x):
+    const = float(getattr(structure, 'last_penalty_constant', 0.0))
+
+    def parts(x):
         r = G @ x - problem.target
-        return 0.5 * float(r @ (W2 * r)) + 0.5 * ridge * float(x @ x) + 0.5 * float(x @ Q @ x) + float(q @ x)
+        return (0.5 * float(r @ (W2 * r)), 0.5 * ridge * float(x @ x),
+                0.5 * float(x @ Q @ x) + float(q @ x) + const)
+
+    def objective(x):
+        return sum(parts(x))
 
     rng = np.random.default_rng(17)
     v = rng.random(nv) + 0.1
@@ -442,7 +510,10 @@ def solve(problem, fit_cfg, structure, zone_rows):
              'operator': 'EFFECTIVE_FROM_MEASURED_REFIT' if effective else 'RAW_TIMES_ETA',
              'eta': {'%s|%s' % k: v for k, v in structure.eta.items()},
              'objective_initial': obj0, 'objective_final': sol['objective_final'], 'iterations': it,
-             'converged': converged}
+             'converged': converged,
+             'objective_parts_final': dict(zip(('data', 'step_ridge', 'structure_penalty_full'), parts(x))),
+             'objective_parts_initial': dict(zip(('data', 'step_ridge', 'structure_penalty_full'),
+                                                 parts(np.zeros(nv))))}
     return sol, audit
 
 
@@ -467,17 +538,15 @@ def establish(adapter, cfg, anchors, *, continuation, folder, write_json, previo
                 'LIVE04_GENSTRUCT_DISTANCE_MATRIX_CHANGED:%d' % int(record['distance_matrix']))
         require([int(z) for z in adapter.zones] == [int(z) for z in record['zones']],
                 'LIVE04_GENSTRUCT_ZONE_ORDER_CHANGED')
+        require(str(record.get('origin_run_folder')) == str(anchors.get('origin_run_folder')),
+                'LIVE04_GENSTRUCT_REFERENCE_NOT_OF_THE_ORIGIN_RUN')
         source = 'CARRIED_FROM_ORIGIN_RUN'
     else:
         record = capture(adapter, cfg, folder)
         anchors['generation_structure_reference'] = record
         source = 'MEASURED_AT_RUN_START'
     st = Structure(record, cfg)
-    loaded = False
-    if continuation and previous_run_folder and g['efficiency_memory']['enabled']:
-        p = Path(previous_run_folder) / 'GENSTRUCT1_EFFICIENCY.json'
-        if p.is_file():
-            loaded = st.load_memory(read_json(p))
+    loaded = 'NOT_LOADED_HERE_STATE_SNAPSHOTS_DECIDE'      # LIVE04.14: see live04_memory_snapshots
     write_json(Path(folder) / 'GENSTRUCT1_REFERENCE.json', {
         'source': source, 'record_sha256': record['record_sha256'], 'zones': len(record['zones']),
         'potential_attributes': record['potential_attributes'], 'distance_matrix': record['distance_matrix'],
