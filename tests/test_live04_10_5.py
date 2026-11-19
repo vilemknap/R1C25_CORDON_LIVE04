@@ -280,7 +280,9 @@ def test_td_idp_jacobian_reused_from_memory(tmp_path, synthetic_idp, monkeypatch
         return d
     monkeypatch.setattr(Live03Evaluator, 'block_gate', gate)
     v = Live04Visum(tmp_path / 'model', route_gamma=0.5); synthetic_idp['v'] = v
-    go(tmp_path, v, {'max_cycles': 2, 'stop_after_cycle_without_change': False})
+    # LIVE05.6 would skip TD in cycle 2 after the (forced) unchanged cycle 1; this test needs it to run
+    go(tmp_path, v, {'max_cycles': 2, 'stop_after_cycle_without_change': False,
+                     'td_cordon': dict(TD_ONLY['td_cordon'], skip_cycles_after_unchanged=0)})
     f = folder_of(tmp_path)
     c2 = read_json(f / 'C02_TD_CORDON/TD_BLOCK_RESULT.json')
     assert c2['jacobian_source'] == 'MEMORY_VERIFIED' and c2['idp_step_model']['mode'] == 'MEMORY'
