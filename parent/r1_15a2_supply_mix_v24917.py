@@ -480,6 +480,14 @@ def _wrap_plan(orig):
             except Exception as exc:
                 _event("PLAN_INVENTORY_FAILED", error=str(exc)[:200])
                 raise
+        # OPMAP1: a FULL fallback plan has no approved positions; cold_supply_plan then reads
+        # them from cfg, whose legacy role numbers must be on the live sequence.
+        if isinstance(cfg, Mapping) and not cfg.get("opmap1_roles"):
+            try:
+                import r1_15a2_procseq_roles_v24917 as _roles
+                cfg = _roles.live_cfg(visum, cfg)
+            except ImportError:
+                pass
         out = cold_supply_plan(plan, cfg, opts["reset_position"])
         info = out.get("v24917_supplymix_plan", {})
         if info.get("applied"):

@@ -66,7 +66,7 @@ DONOR_FILES = {
     'r1_15a2_long_composite_diagnostic_v24917.py': '0378bfd4bbe245f4bc00e5c31f208b57632ce6ef5b26fd2b3fcbae57c1185ecb',
     'r1_15a2_generation_state_v24917.py': '27f3fdafb6f1ce595866455b5841cd78992a923dd59e5fc4e9ec29e56a1b7a93',
     'r1_15a2_parent_equivalence_v24917.py': '9714a9390169c6dce91ea4ace6254131fd49871e8331b25f14bc7d4277491332',
-    'r1_15a2_supply_mix_v24917.py': 'c4df1b3d12d3623d7fd96d88342be94ef2690e5a6fa281285da62b6d0baa4f20',  # + OPMAP1 reset 15
+    'r1_15a2_supply_mix_v24917.py': 'c14b59a3c5eec88c01e92c4c511a2abacb7a731e204c2408ec92a3acadaeece5',  # + OPMAP1 reset 15
     'r1_15a2_procseq_roles_v24917.py': '5c4d0db136841e7c4f48148b4457f971eff52b69007917d85204b63fbee1d5ca',  # OPMAP1 (verbatim)
     'r1_15a2_path_incidence_v24917.py': '3c4830a61fe3de9cb1a39a5ca8f203220a008585e1dd3f34d3dbd2dba787fb78',
 }

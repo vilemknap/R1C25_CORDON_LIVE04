@@ -336,3 +336,51 @@ def test_supplymix_cold_chain_keeps_the_run_start_role_map(tmp_path):
     for op in ops:
         op.active = 1 if op.active else 0
     assert om._RUN['cache'] is None
+
+
+def test_supplymix_cold_plan_from_full_fallback_uses_live_role_positions(tmp_path):
+    """Operation-numbering audit 2026-11-19: a FULL_SEQUENCE_FALLBACK base plan has no
+    approved positions; the cold plan then took legacy 20 from the raw configuration and
+    failed with RESET_OPERATION_TYPE:65 on the SUE layout."""
+    sm = parent_module('r1_15a2_supply_mix_v24917')
+    ops = sue_layout()
+    v = Visum(ops)
+    full = {"inventory": _plan_inventory(ops), "mode": "FULL_SEQUENCE_FALLBACK",
+            "selected_operation_positions": [i for i, op in enumerate(ops, 1) if op.active]}
+    assert not sm.cold_supply_plan(full, CFG, 15)["v24917_supplymix_plan"]["applied"]   # raw cfg: legacy 20
+    with om.scope(v, tmp_path):
+        info = sm.cold_supply_plan(full, om.live_cfg(v, CFG), 15)["v24917_supplymix_plan"]
+        assert info["applied"] and info["reset_position"] == 30 and info["joint_assignment"] == 36
+        # the donor wrapper translates a raw configuration itself
+        wrapped = sm._wrap_plan(lambda visum, cfg, block: dict(full))
+        monkey = dict(sm.options(), enabled=True)
+        orig_options = sm.options
+        sm.options = lambda: monkey
+        try:
+            out = wrapped(v, CFG, sm.BLOCK)
+        finally:
+            sm.options = orig_options
+        assert out["v24917_supplymix_plan"]["joint_assignment"] == 36
+
+
+def test_gap_readback_under_cold_chain_flags_reads_the_live_final(tmp_path):
+    """The GAP readback runs inside activate_operation_plan; with TG/TD inactive the role
+    map comes from the run-start cache and legacy 20 is still the live 12-DSeg final 36."""
+    sm = parent_module('r1_15a2_supply_mix_v24917')
+    roles = parent_module('r1_15a2_procseq_roles_v24917')
+    ops = sue_layout()
+    v = Visum(ops)
+    rows = [("LNV", 1, 0.02), ("NV", 1, 0.01), (PASS12, 1, 0.5), (PASS12, 2, 0.004)]
+    v.Workbench = type("W", (), {})()
+    v.Workbench.Lists = type("L", (), {})()
+    v.Workbench.Lists.CreatePrTAssQualityList = _Quality(rows)
+    sv = parent_module('r1_15a2_supply_visum')
+    with om.scope(v, tmp_path):
+        cold = sm.cold_supply_plan({"inventory": _plan_inventory(ops), "approved_assignment_positions": [36],
+                                    "selected_operation_positions": [36]}, {}, 15)
+        selected = set(cold["selected_operation_positions"])
+        for pos, op in enumerate(ops, 1):
+            op.active = 1 if pos in selected else 0
+        assert roles.live_cfg(v, CFG)["supply"]["gap_readback"]["operation_no"] == 36
+        out = sv.assignment_gap_evidence(v, CFG["supply"]["gap_readback"])
+        assert out["operation_no"] == 36 and out["gap"] == 0.004 and out["iteration"] == 2

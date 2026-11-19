@@ -154,7 +154,10 @@ class CordonLive04Adapter(CordonLive03Adapter):
         if not plan.get('inventory'):
             plan = dict(plan, inventory=[{k: v for k, v in r.items() if k != 'object'}
                                          for r in parent_module('r1_15a2_com_compat').operation_rows(self.visum)])
-        cold = sm.cold_supply_plan(plan, self.cfg, int(self.supply_reset_position))
+        # OPMAP1: a FULL_SEQUENCE_FALLBACK base plan carries no approved positions, and the
+        # cold plan then reads them from the configuration -> legacy 20 must be the live one.
+        from .live04_opmap import live_cfg
+        cold = sm.cold_supply_plan(plan, live_cfg(self.visum, self.cfg), int(self.supply_reset_position))
         info = cold.get('v24917_supplymix_plan') or {}
         if not info.get('applied'):
             raise _supply.SupplyContractError('V24917_SUPPLYMIX_COLD_PLAN_UNAVAILABLE:' + ';'.join(info.get('reasons', [])))

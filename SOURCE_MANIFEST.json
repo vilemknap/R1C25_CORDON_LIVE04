@@ -1493,8 +1493,8 @@
     },
     {
       "path": "cordon2025/live04_adapter.py",
-      "size": 20573,
-      "sha256": "169384635b81ac0e38c5cc4486948f4cab0c4e7601da0225f3e3f2b568273d52"
+      "size": 20824,
+      "sha256": "0acd21cad2db46234a704523fb8ff9003ee344281091a78fae8035ef34d55bb5"
     },
     {
       "path": "cordon2025/live04_capture.py",
@@ -1604,7 +1604,7 @@
     {
       "path": "cordon2025/live04_v7.py",
       "size": 15266,
-      "sha256": "233b94cbd39e239a8fe246a165c4298020f353faf962e069ad86e4d270e30ddd"
+      "sha256": "04f506bc21b989c9e1c4a2cd5e7242b5fea407201fa6c2e5e4168b4685ca64af"
     },
     {
       "path": "cordon2025/live05_extra.py",
@@ -8843,8 +8843,8 @@
     },
     {
       "path": "parent/r1_15a2_supply_mix_v24917.py",
-      "size": 52366,
-      "sha256": "c4df1b3d12d3623d7fd96d88342be94ef2690e5a6fa281285da62b6d0baa4f20"
+      "size": 52792,
+      "sha256": "c14b59a3c5eec88c01e92c4c511a2abacb7a731e204c2408ec92a3acadaeece5"
     },
     {
       "path": "parent/r1_15a2_supply_temp_sqlite_hotfix_v24915p2c2.py",
@@ -9883,8 +9883,8 @@
     },
     {
       "path": "tests/test_live04_12_opmap.py",
-      "size": 17088,
-      "sha256": "acc6029b64df4031e5363ef9ac0770925ce8a4939df761ba639779f065e9b241"
+      "size": 19771,
+      "sha256": "d1d73c5975949f27d678b03e6a4c92121ef72cc25acce8cd4cc79aad5b5eee6b"
     },
     {
       "path": "tests/test_live04_4.py",
