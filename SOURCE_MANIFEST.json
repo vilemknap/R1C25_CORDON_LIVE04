@@ -632,6 +632,11 @@
       "sha256": "5ab55ebd9885a761639126e7e2c356b87366e901d74d5ea63120af116c789ab7"
     },
     {
+      "path": "RUN_R1_2025_RESET_WS_COEFFICIENTS_TO_UNIT.py",
+      "size": 8348,
+      "sha256": "28fbc26ae8d47a2b31dbe376dcc65ac23768780698663e8a05584cf3df680203"
+    },
+    {
       "path": "RUN_R1_EXPORT_CURRENT_VISUM_DISTANCES.py",
       "size": 6678,
       "sha256": "8217972752167643728e2df7bdec4ed5aff422be2c87e9ce728b59fd3e8ed19a"
@@ -10050,6 +10055,11 @@
       "path": "tests/test_transfer2025.py",
       "size": 13959,
       "sha256": "9f24f76f8366b72bbe6fef9e15debac46071133821ab6399b6264284c24cdee7"
+    },
+    {
+      "path": "tests/test_unit_ws_reset.py",
+      "size": 4118,
+      "sha256": "98d1be256a6a4adbbd173016a555024b3a4bd1964e364a5703c8b3ad6fd879ff"
     },
     {
       "path": "tests/test_v2_io.py",
