@@ -50,6 +50,18 @@ LEGACY_TG, LEGACY_TD = 5, 6
 SUE_MODE = 'RESOLVED_BY_SIGNATURE_LIVE04_SUE_FREIGHT_SPLIT'
 _MARK = '__live04_opmap1__'
 _PATCH = {'depth': 0, 'saved': None}
+# Run-start resolution (full, originally ACTIVE sequence) + static identity of the
+# sequence. Scoped plans (SupplyMix cold chain, rollback recompute, demand prefixes)
+# switch ACTIVE flags off for TG/TD; the active-only resolver then cannot see the
+# roles although the operation definitions are unchanged. 2026-11-19 live stop:
+# LONGMASK_ASSIGNMENT_AUTHORITY_MISMATCH in the first SUPPLY_ADDVAL1 cold assignment.
+_RUN = {'cache': None}
+
+
+def _static_identity(roles, rows):
+    """Positions, types, comments and names of ALL operations; ACTIVE flags excluded."""
+    return tuple((roles._pos(r), roles._type(r), str(r.get('comment', '') or ''), str(r.get('name', '') or ''))
+                 for r in sorted(rows, key=roles._pos))
 
 
 def roles_module():
@@ -122,12 +134,18 @@ def _resolve_any(orig, source):
     roles = roles_module()
     rows = roles._rows(source)
     try:
-        return orig(rows)
-    except roles.OpmapError as exc:
-        if 'ASG_FREIGHT_FOUND_0' not in str(exc) and 'ASG_FINAL_FOUND_0' not in str(exc) \
-                and 'RESET_PRE_FOUND_0' not in str(exc):
-            raise
-        return _resolve_sue(roles, rows, exc)
+        try:
+            return orig(rows)
+        except roles.OpmapError as exc:
+            if 'ASG_FREIGHT_FOUND_0' not in str(exc) and 'ASG_FINAL_FOUND_0' not in str(exc) \
+                    and 'RESET_PRE_FOUND_0' not in str(exc):
+                raise
+            return _resolve_sue(roles, rows, exc)
+    except roles.OpmapError:
+        cache = _RUN['cache']
+        if cache is not None and len(rows) == len(cache[0]) and _static_identity(roles, rows) == cache[0]:
+            return dict(cache[1], resolved_from='RUN_START_FULL_SEQUENCE_SAME_DEFINITIONS')
+        raise
 
 
 def _expected_by_live(source):
@@ -430,6 +448,8 @@ def install():
 def scope(visum, folder=None):
     """OPMAP1 for ONE cordon run: resolve the roles, install, restore on exit."""
     info = resolve(visum)
+    roles = roles_module()
+    _RUN['cache'] = (_static_identity(roles, roles._rows(visum)), dict(info))
     patched, restore = install()
     status = {'schema': SCHEMA, 'release': roles_module().RELEASE, 'mode': info['mode'],
               'roles': info['roles'], 'legacy_to_live': {str(k): v for k, v in info['legacy_to_live'].items()},
@@ -446,4 +466,5 @@ def scope(visum, folder=None):
     try:
         yield status
     finally:
+        _RUN['cache'] = None
         restore()

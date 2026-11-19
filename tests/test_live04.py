@@ -56,6 +56,8 @@ def test_v7_donors_pinned_and_config_is_the_running_profile_policy():
     assert pin['mg_min_ratio'] == 0.5 and pin['mg_max_ratio'] == 3.0
     assert opts['mg_min_ratio'] == 0.25 and opts['mg_max_ratio'] == 3.5   # LIVE04.11: floor 0.25
     assert set(v7.CORDON_DEVIATIONS) == {'long_generation_enabled', 'long_composite_td_enabled', 'fa_enabled', 'mg_max_ratio', 'mg_min_ratio'}
+    assert v7.CADENCE_DEVIATIONS == {'sp_every_n_cycles': 4, 'sp_start_cycle': 4}
+    assert (opts['sp_every_n_cycles'], opts['sp_start_cycle']) == (4, 4) and (pin['sp_every_n_cycles'], pin['sp_start_cycle']) == (2, 2)
     # LIVE04.4: the v7 Generation/SupplyMix/SEVRELAX3 options are the cordon options
     assert opts['tg_catchup_enabled'] is False and opts['tg_max_trials'] == 6
     assert (opts['sp_max_groups'], opts['sp_max_edges'], opts['sp_max_trials'], opts['sp_step_units']) == (24, 240, 4, [8, 6, 4, 2])

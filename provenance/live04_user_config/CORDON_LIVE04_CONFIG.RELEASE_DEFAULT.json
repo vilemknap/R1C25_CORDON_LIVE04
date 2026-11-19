@@ -524,8 +524,8 @@
    "bd_enabled": true,
    "bd_zones": "650-680",
    "sp_enabled": true,
-   "sp_every_n_cycles": 2,
-   "sp_start_cycle": 2,
+   "sp_every_n_cycles": 4,
+   "sp_start_cycle": 4,
    "sp_max_trials": 4,
    "sp_step_units": [
     8,
@@ -575,6 +575,8 @@
    "long_composite_td_enabled": "LONG TD is calibrated only by the profile/FineCDF runner",
    "fa_enabled": "STEP1 always uses the full assignment (v7 STEP1 too)",
    "mg_max_ratio": "User decision 2026-11-15 (LIVE05): W/S production envelope/mobility band upper bound 3.5 (2026-11-03: 3.15; v7 @ 7b4c681: 3.0)",
+   "sp_every_n_cycles": "User decision 2026-11-19: SupplyMix every 4th outer cycle (v7 @ 7b4c681: every 2nd)",
+   "sp_start_cycle": "User decision 2026-11-19: first SupplyMix in outer cycle 4, i.e. cycles 4, 8, 12 ... (v7 @ 7b4c681: cycle 2)",
    "mg_min_ratio": "User decision 2026-11-06 (LIVE04.11): W/S production envelope/mobility band lower bound 0.25 (v7 @ 7b4c681: 0.5); in the last native run 138 of 536 changed ADD_PROD_S and 89 of 552 ADD_PROD_W sat on 0.5"
   },
   "targeted_generation_policy": "DONOR_DEFAULT_POLICY_V7_ROLE_ENVELOPES",

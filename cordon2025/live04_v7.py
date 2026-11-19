@@ -36,6 +36,10 @@ CORDON_DEVIATIONS = {
     'mg_max_ratio': 3.5,                  # user decision 2026-11-15 (LIVE05): W/S production cap 3.5 (11-03: 3.15; v7: 3.0)
     'mg_min_ratio': 0.25,                 # user decision 2026-11-06 (LIVE04.11): W/S production floor 0.25 (v7: 0.5)
 }
+# User decision 2026-11-19: SupplyMix every 4th outer cycle, first in cycle 4 (4, 8, 12 ...);
+# v7 @ 7b4c681: every 2nd from cycle 2. Enforced like CORDON_DEVIATIONS for the user run;
+# the test-only donor-override switch may still move the start cycle.
+CADENCE_DEVIATIONS = {'sp_every_n_cycles': 4, 'sp_start_cycle': 4}
 # W/S P 0.5-3.0 / A 0.5-5.0 is the v7 default since e264314; LIVE04.5 widens the cordon run to
 # P 0.5-3.15 / A 0.5-5.5 (user decision 2026-11-03); LIVE04.11 lowers the production floor to 0.25;
 # LIVE05 (user decision 2026-11-15) raises the caps to P 3.5 / A 7.0

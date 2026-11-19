@@ -49,7 +49,7 @@ def live02_view(cfg):
 
 
 def validate_v7(cfg, allow_donor_overrides=False):
-    from .live04_v7 import RUN_OPTIONS_PIN, CORDON_DEVIATIONS, SOURCE_COMMIT, SOURCE_REPOSITORY
+    from .live04_v7 import RUN_OPTIONS_PIN, CORDON_DEVIATIONS, CADENCE_DEVIATIONS, SOURCE_COMMIT, SOURCE_REPOSITORY
     v = cfg.get('v7')
     require(isinstance(v, dict), 'LIVE04_V7_SECTION')
     require(v.get('source_repository') == SOURCE_REPOSITORY and v.get('source_commit') == SOURCE_COMMIT,
@@ -63,8 +63,13 @@ def validate_v7(cfg, allow_donor_overrides=False):
     for key, value in CORDON_DEVIATIONS.items():
         require(type(opts.get(key)) is type(value) or isinstance(value, float), 'LIVE04_V7_CORDON_DEVIATION:' + key)
         require(opts.get(key) == value, 'LIVE04_V7_CORDON_DEVIATION:' + key)
-    require(set(v.get('cordon_deviations') or {}) == set(CORDON_DEVIATIONS), 'LIVE04_V7_DEVIATIONS_DOCUMENTED')
-    drift = [k for k, val in opts.items() if k not in CORDON_DEVIATIONS and src.get(k) != val]
+    for key, value in CADENCE_DEVIATIONS.items():
+        require(type(opts.get(key)) is int and (allow_donor_overrides or opts.get(key) == value),
+                'LIVE04_V7_SUPPLYMIX_CADENCE:' + key)
+    require(set(v.get('cordon_deviations') or {}) == set(CORDON_DEVIATIONS) | set(CADENCE_DEVIATIONS),
+            'LIVE04_V7_DEVIATIONS_DOCUMENTED')
+    drift = [k for k, val in opts.items() if k not in CORDON_DEVIATIONS and k not in CADENCE_DEVIATIONS
+             and src.get(k) != val]
     require(allow_donor_overrides or not drift, 'LIVE04_V7_RUN_OPTION_DRIFT:' + ','.join(drift))
     validated = parent_module('r1_15a2_demand_policy_v1').validate(dict(opts))
     require(validated['ts_enabled'] is True, 'LIVE04_STEP1_REQUIRED')

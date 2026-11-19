@@ -301,3 +301,38 @@ def test_sue_gap_tolerates_tied_freight_rows_but_keeps_the_final_scope_checks():
     v.Workbench.Lists.CreatePrTAssQualityList = _Quality(rows)
     with pytest.raises(Exception, match='QUALITY_LIST_AMBIGUOUS_SCOPE_ITERATION:LNV'):
         sv.assignment_gap_evidence(v, dict(spec, operation_no=36))       # donor outside the LIVE04 scope
+
+
+def test_supplymix_cold_chain_keeps_the_run_start_role_map(tmp_path):
+    """2026-11-19 live stop LONGMASK_ASSIGNMENT_AUTHORITY_MISMATCH: the SUPPLY_ADDVAL1 cold
+    chain activates only reset 30 .. joint assignment 36 (+ groups). TG 13 / TD 17 are then
+    inactive and the active-only resolver could not translate legacy 20 -> 36."""
+    roles = parent_module('r1_15a2_procseq_roles_v24917')
+    sm = parent_module('r1_15a2_supply_mix_v24917')
+    com = parent_module('r1_15a2_com_compat')
+    ops = sue_layout()
+    v = Visum(ops)
+    with om.scope(v, tmp_path):
+        inv = _plan_inventory(ops)
+        cold = sm.cold_supply_plan({"inventory": inv, "approved_assignment_positions": [36],
+                                    "selected_operation_positions": [36]}, {}, 15)
+        selected = set(cold["selected_operation_positions"])
+        for pos, op in enumerate(ops, 1):          # what activate_operation_plan does natively
+            op.active = 1 if pos in selected else 0
+        assert 13 not in selected and 17 not in selected
+        rows = com.operation_rows(v)
+        tr = roles.translator(rows)
+        assert tr(20) == 36 and tr(15) == 30
+        active_asg = {int(r['no']) for r in rows if r['active'] and int(r['type']) == com.ASSIGNMENT_PRT}
+        approved = {tr(int(rule['no'])) for rule in CFG['supply']['assignment_operations']}
+        assert approved <= active_asg == {32, 33, 34, 35, 36}           # the LONGMASK authority check
+        assert len(roles.expected_dsegs_by_live(rows)[36]) == 12
+        # a changed definition (not only ACTIVE flags) still fails closed
+        ops[16].comment = 'moved TD'
+        with pytest.raises(roles.OpmapError):
+            roles.translator(com.operation_rows(v))(20)
+        ops[16].comment = ''
+    # outside the run scope the cache is gone
+    for op in ops:
+        op.active = 1 if op.active else 0
+    assert om._RUN['cache'] is None
