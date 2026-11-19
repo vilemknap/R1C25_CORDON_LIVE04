@@ -226,6 +226,47 @@ def capture(adapter, cfg, run_folder):
     return rec
 
 
+class SparseSym:
+    """Symmetric penalty matrix in coordinate form (LIVE04.14 review: no dense nv x nv matrix).
+
+    Every term couples only a zone, its family partner and <= neighbour_max neighbours, so the
+    number of non-zeros grows linearly with the zones; Q @ x is one bincount per call."""
+
+    def __init__(self, n):
+        self.n = int(n)
+        self._acc = {}
+        self.rows = self.cols = self.vals = None
+
+    def add(self, i, j, v):
+        self._acc[(i, j)] = self._acc.get((i, j), 0.0) + v
+
+    def freeze(self):
+        keys = list(self._acc)
+        self.rows = np.array([k[0] for k in keys], dtype=np.int64)
+        self.cols = np.array([k[1] for k in keys], dtype=np.int64)
+        self.vals = np.array([self._acc[k] for k in keys], dtype=float)
+        return self
+
+    @property
+    def nnz(self):
+        return 0 if self.vals is None else int(len(self.vals))
+
+    def __matmul__(self, x):
+        x = np.asarray(x, dtype=float)
+        if not self.nnz:
+            return np.zeros(self.n)
+        return np.bincount(self.rows, weights=self.vals * x[self.cols], minlength=self.n)
+
+    def trace(self):
+        return float(self.vals[self.rows == self.cols].sum()) if self.nnz else 0.0
+
+    def dense(self):
+        D = np.zeros((self.n, self.n))
+        if self.nnz:
+            np.add.at(D, (self.rows, self.cols), self.vals)
+        return D
+
+
 class Structure:
     """Run reference + the quadratic penalty builder + the efficiency memory."""
 
@@ -267,10 +308,10 @@ class Structure:
         """(Q, q) with penalty 0.5 x'Qx + q'x (+ const) on the problem variables."""
         keys = [tuple(k) for k in problem.var_keys]
         nv = len(keys)
-        Q = np.zeros((nv, nv)); q = np.zeros(nv)
+        Q = SparseSym(nv); q = np.zeros(nv)
         self.last_penalty_constant = 0.0
         if not self.cfg['enabled'] or nv == 0:
-            return Q, q, {'status': 'DISABLED', 'constant': 0.0}
+            return Q.freeze(), q, {'status': 'DISABLED', 'constant': 0.0}
         y0 = self._logs(zone_rows)
         pos = {k: j for j, k in enumerate(keys)}
         rel = lambda key: float(self.cfg[key]) * scale
@@ -291,7 +332,7 @@ class Structure:
                 q[j] += weight * a * const
                 for k2, b in idx:
                     if k2 is not None:
-                        Q[j, k2] += weight * a * b
+                        Q.add(j, k2, weight * a * b)
         # 1. production anchor on the EXACT reference-weighted production ratio
         #    R = sum_f w_f * c_f / t_f = sum_f w_f exp(y_f), linearized at the current state:
         #    R - 1 ~ (R0 - 1) + sum_f w_f exp(y0_f) x_f      (+ a weak per-family log anchor)
@@ -330,7 +371,8 @@ class Structure:
                 w = amin + (amax - amin) * (1.0 - float(cent[i])) ** p
                 if w > 0:
                     add_quadratic([((f, 'ATT', z), 1.0, float(y0[(f, 'ATT')][i]))], w)
-        audit.update(status='ACTIVE', q_norm=float(np.linalg.norm(q)), Q_trace=float(np.trace(Q)),
+        Q.freeze()
+        audit.update(status='ACTIVE', q_norm=float(np.linalg.norm(q)), Q_trace=Q.trace(), Q_nnz=Q.nnz,
                      constant=const_total[0])
         self.last_penalty_constant = const_total[0]
         return Q, q, audit
@@ -463,7 +505,7 @@ def solve(problem, fit_cfg, structure, zone_rows):
     def parts(x):
         r = G @ x - problem.target
         return (0.5 * float(r @ (W2 * r)), 0.5 * ridge * float(x @ x),
-                0.5 * float(x @ Q @ x) + float(q @ x) + const)
+                0.5 * float(x @ (Q @ x)) + float(q @ x) + const)
 
     def objective(x):
         return sum(parts(x))

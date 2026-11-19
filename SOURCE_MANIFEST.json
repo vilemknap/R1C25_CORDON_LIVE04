@@ -1553,8 +1553,8 @@
     },
     {
       "path": "cordon2025/live04_generation_structure.py",
-      "size": 30193,
-      "sha256": "fec4f5753870414ebbc570b095e52d86e76f49f6bb20795e197e22ad34053823"
+      "size": 31598,
+      "sha256": "e6c4b4043bacb42f8563d51ed25f8ffdaa536ad5f5ddb228184f84ec1e56ec04"
     },
     {
       "path": "cordon2025/live04_guard.py",
@@ -9918,8 +9918,8 @@
     },
     {
       "path": "tests/test_live04_14_genstruct.py",
-      "size": 24778,
-      "sha256": "b7c51b95f73ddf66f87d3f9e6822f57d9ead573b0d73c3c0e91181a15485ca66"
+      "size": 26771,
+      "sha256": "33a2419e7145da9f701af79fb7a0796bd8e5caaf7e0b13a590e57e6af189f5e6"
     },
     {
       "path": "tests/test_live04_4.py",

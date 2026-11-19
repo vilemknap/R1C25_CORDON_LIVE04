@@ -300,8 +300,10 @@ def test_penalty_matrix_equals_the_documented_formula():
             ('WORK', 'ATT'): [4.0, 1.0, 1.0], ('SERVICE', 'ATT'): [1.0, 0.7, 1.0]}
     rows = zone_rows(coef)
     scale = 1.0
-    Q, q, _ = st.penalty(p, rows, scale)
+    Qs, q, _ = st.penalty(p, rows, scale)
+    Q = Qs.dense()
     assert np.allclose(Q, Q.T)
+    assert np.allclose(Qs @ np.arange(len(keys), dtype=float), Q @ np.arange(len(keys), dtype=float))
     y0 = {k: np.log(np.asarray(coef[k])) for k in coef}
     g = c['generation_structure']
 
@@ -461,3 +463,36 @@ def test_memory_snapshots_bind_memories_to_the_accepted_state(tmp_path):
     out = ms.restore(adapter2, run1, 'S1')
     assert out['status'] == 'SNAPSHOT_OF_OPENED_STATE' and fresh.eta[('WORK', 'PROD')] == 0.7   # not 0.4
     assert ms.restore(adapter2, run1, 'UNKNOWN')['status'] == 'NO_SNAPSHOT_FOR_OPENED_STATE_FRESH_MEMORIES'
+
+
+def test_penalty_is_sparse_and_scales_linearly():
+    """Review: the penalty must not be a dense nv x nv matrix (681 zones x 4 groups)."""
+    import time
+    zones = list(range(1, 682))
+    c = cfg()
+    g = c['generation_structure']
+    nb = [[[zones[(i + k) % 681], 1.0 / 12] for k in range(1, 13)] for i in range(681)]
+    rec = {'schema': gs.SCHEMA, 'zones': zones, 'population': [1000.0] * 681,
+           'production_share': {'WORK': [0.4] * 681, 'SERVICE': [0.6] * 681},
+           'centrality': {'WORK': list(np.linspace(0, 1, 681)), 'SERVICE': list(np.linspace(0, 1, 681))},
+           'neighbours': {'WORK': nb, 'SERVICE': nb}, 'anchor_target': 'UNIT',
+           'target_coefficients': {'%s|%s' % k: [1.0] * 681 for k in gs.GROUPS},
+           'run_start_coefficients': {'%s|%s' % k: [1.0] * 681 for k in gs.GROUPS},
+           'potential_attributes': {}, 'fp_attributes': {}, 'distance_matrix': 9697, 'distance_fingerprint': 'x',
+           'od_matrices': {}, 'parameters': gs.capture_parameters(g), 'origin_run_folder': '/r'}
+    rec['record_sha256'] = canonical_hash(rec)
+    st = gs.Structure(rec, c)
+    keys = [(f, r, z) for f in gs.FAMILIES for r in gs.ROLES for z in zones]
+    zf = parent_module('r1_15a2_zonal_count_fit_v24917')
+    p = zf.FitProblem(zones, [], np.zeros((0, len(keys))), np.zeros(0), np.zeros(0), keys, np.zeros(len(keys)),
+                      -np.ones(len(keys)), np.ones(len(keys)), {})
+    rows = [{'zone_no': z, **{a: 1.5 for a in gs.COEF.values()}} for z in zones]
+    t = time.time()
+    Q, q, audit = st.penalty(p, rows, 1.0)
+    built = time.time() - t
+    assert isinstance(Q, gs.SparseSym) and Q.nnz < 60 * len(keys)       # linear, not 2724^2
+    x = np.random.default_rng(1).normal(size=len(keys))
+    t = time.time()
+    for _ in range(200):
+        Q @ x
+    assert (time.time() - t) / 200 < 0.01 and built < 30.0
