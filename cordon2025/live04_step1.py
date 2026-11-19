@@ -255,8 +255,18 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
         if idp_model is not None and path is not None and idp['cumulative'] is not None:
             write_json(path, idp_model.state(idp['cumulative'].record['record_sha256']))
 
-    def idp_direction():
-        from .live04_idp_run import direction
+    def idp_direction(scale=None, design=None):
+        """Stage-B features of the candidate as it would be / was APPLIED (review N9):
+        the implemented effect rows of the preview at this scale; the projection only if no
+        preview can be built."""
+        from .live04_idp_run import direction, implemented_direction
+        if scale is not None and float(scale) > 0:
+            try:
+                design = design if design is not None else adapter.generation_preview(context, float(scale))
+                if design.get('effect_rows'):
+                    return implemented_direction(design['effect_rows'], context.get('v24917_bd'), float(scale))
+            except Exception:
+                pass
         return direction(context['projection'].rows, context.get('v24917_bd'))
 
     def idp_decision(measured):
@@ -393,7 +403,7 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
             plan_upper, idp_cap = upper, None
             if idp_model is not None:
                 # LIVE04.14 stage B: learned IDP response caps the scale (never the acceptance)
-                cap, idp_cap = idp_model.max_scale(idp_direction(), idp['before'], idp['before'],
+                cap, idp_cap = idp_model.max_scale(idp_direction(upper), idp['before'], idp['before'],
                                                    idp['cumulative'], idp_cfg)
                 if cap is not None and cap >= float(opts['min_scale']):
                     plan_upper = min(upper, cap)
@@ -509,9 +519,14 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                     write_json(trial_folder / 'IDP_TRIAL.json', idp_trial)
                     if idp_model is not None:
                         if after_diag.get('valid', True):
-                            attempt['idp_model_update'] = idp_model.update(idp_direction(), float(scale),
-                                                                           idp['before'], idp_trial)
-                            save_idp_model()
+                            msnap = idp_model.snapshot()
+                            attempt['idp_model_update'] = idp_model.update(idp_direction(float(scale), preview),
+                                                                           float(scale), idp['before'], idp_trial)
+                            try:
+                                save_idp_model()
+                            except BaseException:
+                                idp_model.restore(msnap)      # RAM and the saved model never diverge
+                                raise
                         else:      # LIVE04.14: never learn from an unverified (invalid) capture
                             attempt['idp_model_update'] = {'status': 'INVALID_CAPTURE_NOT_LEARNED'}
                     from .live04_idp_run import component_summary

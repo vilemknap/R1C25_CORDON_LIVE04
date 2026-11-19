@@ -244,6 +244,17 @@ def validate_prediction(idp_cfg):
     return p
 
 
+def implemented_direction(effect_rows, bd, scale):
+    """Stage-B features of the candidate as APPLIED (after masks, envelopes, mobility and the
+    P/A rebalance): implemented log effects per unit scale; boundary steps of the candidate."""
+    s = float(scale)
+    if s <= 0:
+        return {}
+    rows = [{'family': r['family'], 'role': r['role'], 'log_step': float(r['implemented_total_log_effect']) / s,
+             'base_margin_volume': r.get('base_margin_volume')} for r in effect_rows or []]
+    return direction(rows, bd)
+
+
 def direction(rows, bd=None):
     """Low-dimensional GENERATION direction at scale 1 (stage B features).
 
@@ -279,23 +290,45 @@ class GenerationIdpModel:
         self.keys = []          # direction keys
         self.J = None           # features x keys
         self.updates = 0
+        self.last_relative_error = None
 
     STATE_SCHEMA = 'LIVE04_IDP_GENERATION_MODEL_V1'
 
     def state(self, reference_sha256):
         return {'schema': self.STATE_SCHEMA, 'reference_sha256': reference_sha256, 'components': self.components,
-                'keys': list(self.keys), 'J': None if self.J is None else self.J.tolist(), 'updates': self.updates}
+                'keys': list(self.keys), 'J': None if self.J is None else self.J.tolist(), 'updates': self.updates,
+                'last_relative_error': getattr(self, 'last_relative_error', None)}
 
     def load(self, state, reference_sha256):
-        """Learned sensitivities of a previous run: only for the same IDP run reference and components."""
-        if not state or state.get('schema') != self.STATE_SCHEMA or state.get('reference_sha256') != reference_sha256 \
-                or list(state.get('components') or []) != self.components or state.get('J') is None:
-            return False
-        J = np.asarray(state['J'], dtype=float)
+        """Learned sensitivities of a previous run (same IDP run reference and components).
+        Returns (ok, reason); a valid EMPTY model (no measurement yet) is LOADED_EMPTY."""
+        if not isinstance(state, dict) or state.get('schema') != self.STATE_SCHEMA:
+            return False, 'SCHEMA'
+        if state.get('reference_sha256') != reference_sha256:
+            return False, 'OTHER_REFERENCE'
+        if list(state.get('components') or []) != self.components:
+            return False, 'COMPONENTS'
+        if state.get('J') is None:
+            if int(state.get('updates') or 0) != 0 or state.get('keys'):
+                return False, 'EMPTY_JACOBIAN_WITH_HISTORY'
+            self.keys, self.J, self.updates = [], None, 0
+            return True, 'LOADED_EMPTY'
+        try:
+            J = np.asarray(state['J'], dtype=float)
+        except (TypeError, ValueError):
+            return False, 'NOT_NUMERIC'
         if J.shape != (2 * len(self.components), len(state['keys'])) or not np.isfinite(J).all():
-            return False
+            return False, 'SHAPE_OR_NONFINITE'
         self.keys, self.J, self.updates = list(state['keys']), J, int(state['updates'])
-        return True
+        self.last_relative_error = state.get('last_relative_error')
+        return True, 'LOADED'
+
+    def snapshot(self):
+        return (list(self.keys), None if self.J is None else self.J.copy(), self.updates,
+                getattr(self, 'last_relative_error', None))
+
+    def restore(self, snap):
+        self.keys, self.J, self.updates, self.last_relative_error = snap
 
     def features(self, idp):
         return np.array([float(idp[k]['fine_cdf_rmse']) for k in self.components]
@@ -318,16 +351,24 @@ class GenerationIdpModel:
         df = self.features(idp_after) - self.features(idp_before)
         if self.J is None:
             self.J = np.zeros((len(df), len(a)))
-        err_before = float(np.linalg.norm(df - self.J @ a))
+        err_before = float(np.linalg.norm(df - self.J @ a))       # out-of-sample (before learning)
+        rel = err_before / max(float(np.linalg.norm(df)), 1e-15)
+        if self.updates > 0:
+            self.last_relative_error = rel                         # first update has no prediction
         self.J = self.J + np.outer(df - self.J @ a, a) / float(a @ a)
         self.updates += 1
         return {'status': 'UPDATED', 'updates': self.updates, 'error_before': err_before,
+                'relative_error_out_of_sample': rel if self.updates > 1 else None,
                 'error_after': float(np.linalg.norm(df - self.J @ a))}
 
     def max_scale(self, d, idp_now, idp_parent, run_reference, local_cfg):
         """Largest scale with predicted IDP inside slack_use x min(local, cumulative) slack."""
         if self.J is None or not self.updates or idp_now is None or 'error' in idp_now:
             return None, {'status': 'NO_MODEL'}
+        rel = getattr(self, 'last_relative_error', None)
+        if rel is not None and rel > float(self.cfg.get('max_relative_error', 1.0)):
+            # its last out-of-sample prediction was worse than predicting no change
+            return None, {'status': 'MODEL_NOT_RELIABLE', 'last_relative_error': rel, 'updates': self.updates}
         a = self._vector(d)
         if not a.any():
             return None, {'status': 'NO_DIRECTION'}

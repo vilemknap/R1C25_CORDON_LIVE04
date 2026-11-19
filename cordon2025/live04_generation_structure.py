@@ -43,10 +43,11 @@ FIELDS = {'enabled', 'anchor_target', 'production_anchor_relative', 'production_
           'attraction_anchor_min_relative', 'attraction_anchor_max_relative', 'attraction_centrality_power',
           'neighbour_relative', 'neighbour_distance_matrix', 'neighbour_radius_km', 'neighbour_decay_km',
           'neighbour_max', 'neighbour_destination_similarity_weight', 'work_potential_attributes',
-          'service_potential_attributes', 'efficiency_memory'}
+          'service_potential_attributes', 'efficiency_memory', 'reference_start_policy'}
+START_POLICIES = ('REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES', 'ACCEPT_CURRENT_MODEL')
 MEMORY_FIELDS = {'enabled', 'eta_min', 'eta_max', 'prior_weight', 'smoothing', 'min_predicted_norm'}
 # Only these define the captured reference; penalty weights may be tuned between continuations.
-CAPTURE_PARAMS = ('anchor_target', 'neighbour_distance_matrix', 'neighbour_radius_km', 'neighbour_decay_km',
+CAPTURE_PARAMS = ('anchor_target', 'reference_start_policy', 'neighbour_distance_matrix', 'neighbour_radius_km', 'neighbour_decay_km',
                   'neighbour_max', 'neighbour_destination_similarity_weight', 'work_potential_attributes',
                   'service_potential_attributes')
 
@@ -61,6 +62,7 @@ def validate(cfg):
     require(isinstance(g, dict) and set(g) - {'note'} == FIELDS, 'LIVE04_GENSTRUCT_FIELDS')
     require(isinstance(g['enabled'], bool), 'LIVE04_GENSTRUCT_ENABLED')
     require(g['anchor_target'] in ('UNIT', 'RUN_START'), 'LIVE04_GENSTRUCT_ANCHOR_TARGET')
+    require(g['reference_start_policy'] in START_POLICIES, 'LIVE04_GENSTRUCT_REFERENCE_START_POLICY')
     for key in ('production_anchor_relative', 'production_family_anchor_relative', 'attraction_anchor_min_relative',
                 'attraction_anchor_max_relative', 'neighbour_relative', 'neighbour_destination_similarity_weight'):
         v = g[key]
@@ -88,10 +90,20 @@ def validate(cfg):
 
 
 # ------------------------------------------------------------------ capture (run start)
-def _zone_values(visum, attr, n):
-    """All zones (not only active), finite and non-negative - otherwise fail closed."""
-    rows = visum.Net.Zones.GetMultiAttValues(attr, False)
-    vals = np.asarray([float(r[1]) if r[1] not in (None, '') else 0.0 for r in rows], dtype=float)
+def _zone_values(visum, attr, n, zones=None, zone_indices=None, retry_policy=None):
+    """All zones in the order of ``zones``; finite and non-negative - otherwise fail closed.
+
+    With ``zones`` the existing indexed reader is used (review N11): COM row keys are joined
+    with Zone.NO, bounded COM retry, blanks are errors (no silent 0)."""
+    if zones is not None:
+        com = parent_module('r1_15a2_com_compat')
+        vals = np.asarray(com.indexed_zone_values(visum, attr, list(zones), retry_policy=retry_policy,
+                                                  zone_indices=zone_indices), dtype=float)
+    else:
+        rows = visum.Net.Zones.GetMultiAttValues(attr, False)
+        raw = [r[1] for r in rows]
+        require(all(v not in (None, '') for v in raw), 'LIVE04_GENSTRUCT_ZONE_VALUES_BLANK:' + attr)
+        vals = np.asarray([float(v) for v in raw], dtype=float)
     require(len(vals) == n, 'LIVE04_GENSTRUCT_ZONE_COUNT:' + attr)
     require(np.isfinite(vals).all() and (vals >= 0).all(), 'LIVE04_GENSTRUCT_ZONE_VALUES_INVALID:' + attr)
     return vals
@@ -110,11 +122,11 @@ def _attribute_missing(exc):
     return any(t in text for t in MISSING_ATTRIBUTE_TOKENS)
 
 
-def _first_readable(visum, attrs, n):
+def _first_readable(visum, attrs, n, **kw):
     missing = []
     for a in attrs:
         try:
-            return a, _zone_values(visum, a, n)
+            return a, _zone_values(visum, a, n, **kw)
         except Exception as exc:
             if not _attribute_missing(exc):
                 raise
@@ -122,11 +134,11 @@ def _first_readable(visum, attrs, n):
     raise ValueError('LIVE04_GENSTRUCT_NO_POTENTIAL_ATTRIBUTE:' + ';'.join(missing))
 
 
-def _fp_sum(visum, prefix, n):
+def _fp_sum(visum, prefix, n, **kw):
     """Run-start FP production of one family (the MOBILITYZONE1 person groups)."""
     groups = parent_module('r1_15a2_mobility_zone_v24917').GROUPS
     names = [prefix + gname for gname in groups]
-    return sum(_zone_values(visum, a, n) for a in names), names
+    return sum(_zone_values(visum, a, n, **kw) for a in names), names
 
 
 def _pct_rank(v):
@@ -141,15 +153,55 @@ def _pct_rank(v):
     return mean_rank[inv] / (len(v) - 1)
 
 
-def _effective_origins(M):
-    """exp(entropy) of the inbound shares of each destination (diagonal excluded)."""
+def _effective_origins(M, volume_weighted=False):
+    """exp(entropy) of the inbound shares of each destination (diagonal excluded).
+
+    volume_weighted (review N12): the diversity is multiplied by the reliability of the inbound
+    volume, 1 - exp(-V / V50) with V50 = median positive inbound volume, so 0.001 trips from each
+    of 100 zones no longer looks like a centre of 100 origins."""
     M = np.array(M, dtype=float, copy=True)
     np.fill_diagonal(M, 0.0)
     col = M.sum(axis=0)
     with np.errstate(divide='ignore', invalid='ignore'):
         P = np.where(col > 0, M / np.where(col > 0, col, 1.0), 0.0)
         H = -np.nansum(np.where(P > 0, P * np.log(P), 0.0), axis=0)
-    return np.exp(H) * (col > 0)
+    out = np.exp(H) * (col > 0)
+    if volume_weighted:
+        pos = col[col > 0]
+        v50 = float(np.median(pos)) if pos.size else 1.0
+        out = out * (1.0 - np.exp(-col / max(v50, 1e-12)))
+    return out
+
+
+def _domestic_mask(visum, n, kw):
+    try:
+        return _zone_values(visum, 'NOT_ZAHR', n, **kw) >= 0.5
+    except Exception as exc:
+        if not _attribute_missing(exc):
+            raise
+        return np.ones(n, dtype=bool)
+
+
+UNIT_TOL = 1e-9
+
+
+def unit_start_check(zones, coef, actuatable, domestic, policy):
+    """Review N10: with REQUIRE_UNIT_WS... the reference (centrality, OD links, production shares)
+    may only be captured from a model whose W/S coefficients are 1 on every actuatable domestic
+    zone - otherwise a still-calibrated .ver would be frozen as the run reference."""
+    act = set(int(z) for z in (actuatable if actuatable is not None else zones))
+    idx = [i for i, z in enumerate(zones) if int(z) in act and bool(domestic[i])]
+    off = {}
+    for k, vals in coef.items():
+        bad = [int(zones[i]) for i in idx if abs(float(vals[i]) - 1.0) > UNIT_TOL]
+        if bad:
+            off['%s|%s' % k] = {'zones': len(bad), 'examples': bad[:5]}
+    out = {'policy': policy, 'checked_zones': len(idx), 'non_unit': off,
+           'status': 'PROVEN_UNIT_BASE' if not off else 'NOT_UNIT_BASE'}
+    if policy == 'REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES':
+        require(not off, 'LIVE04_GENSTRUCT_REFERENCE_NOT_A_UNIT_BASE:%s' % ';'.join(
+            '%s=%d zones (e.g. %s)' % (k, v['zones'], v['examples']) for k, v in sorted(off.items())))
+    return out
 
 
 def capture(adapter, cfg, run_folder):
@@ -158,13 +210,17 @@ def capture(adapter, cfg, run_folder):
     g = cfg['generation_structure']
     visum, zones = adapter.visum, list(adapter.zones)
     n = len(zones)
-    pop = _zone_values(visum, 'POP_ZP', n)
-    coef = {k: _zone_values(visum, a, n) for k, a in COEF.items()}
+    kw = {'zones': zones, 'zone_indices': getattr(adapter, 'zone_write_index_by_no', None),
+          'retry_policy': getattr(adapter, 'com_retry_policy', None)}
+    pop = _zone_values(visum, 'POP_ZP', n, **kw)
+    coef = {k: _zone_values(visum, a, n, **kw) for k, a in COEF.items()}
+    start = unit_start_check(zones, coef, getattr(adapter, 'actuatable_zones', None),
+                             _domestic_mask(visum, n, kw), g['reference_start_policy'])
     fp, fp_names = {}, {}
     for f in FAMILIES:
-        fp[f], fp_names[f] = _fp_sum(visum, FP_PREFIX[f], n)
-    wattr, wpot = _first_readable(visum, g['work_potential_attributes'], n)
-    sattr, spot = _first_readable(visum, g['service_potential_attributes'], n)
+        fp[f], fp_names[f] = _fp_sum(visum, FP_PREFIX[f], n, **kw)
+    wattr, wpot = _first_readable(visum, g['work_potential_attributes'], n, **kw)
+    sattr, spot = _first_readable(visum, g['service_potential_attributes'], n, **kw)
     # potentials at the anchor target: divide out the run-start attraction coefficient when the
     # attribute is a coefficient-scaled attraction weight (FA_*), never for exogenous NUM_PM
     if wattr.upper().startswith('FA_'):
@@ -181,7 +237,7 @@ def capture(adapter, cfg, run_folder):
     dist_sha = hashlib.sha256(np.ascontiguousarray(D, dtype='<f8').tobytes()).hexdigest()
     centrality = {}
     for f, pot in (('WORK', wpot), ('SERVICE', spot)):
-        inbound = _effective_origins(od[f])
+        inbound = _effective_origins(od[f], volume_weighted=True)
         centrality[f] = (0.5 * _pct_rank(np.log1p(np.maximum(pot, 0))) + 0.5 * _pct_rank(inbound)).tolist()
     # neighbour kernel for production (population x distance [x destination similarity])
     sim_w = float(g['neighbour_destination_similarity_weight'])
@@ -220,7 +276,7 @@ def capture(adapter, cfg, run_folder):
            'od_matrices': {f: sorted({no for k, t in ref.TARGETS.items()
                                       if k.startswith('WORK_' if f == 'WORK' else 'SERV_') for no in t['matrix_nos']})
                            for f in FAMILIES},
-           'parameters': capture_parameters(g),
+           'parameters': capture_parameters(g), 'reference_start': start,
            'origin_run_folder': str(run_folder)}
     rec['record_sha256'] = canonical_hash(rec)
     return rec
@@ -593,6 +649,7 @@ def establish(adapter, cfg, anchors, *, continuation, folder, write_json, previo
         'source': source, 'record_sha256': record['record_sha256'], 'zones': len(record['zones']),
         'potential_attributes': record['potential_attributes'], 'distance_matrix': record['distance_matrix'],
         'anchor_target': record['anchor_target'], 'efficiency_memory_loaded': loaded,
+        'reference_start': record.get('reference_start'),
         'centrality_quartiles': {f: np.percentile(record['centrality'][f], [25, 50, 75]).tolist() for f in FAMILIES},
         'zones_with_neighbours': {f: sum(1 for x in record['neighbours'][f] if x) for f in FAMILIES}})
     adapter.generation_structure = st

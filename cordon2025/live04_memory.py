@@ -161,6 +161,48 @@ class RunMemory:
                                                    'direction_size': len(self.tg['direction']), 'norm': self.tg['norm']},
                 'curvature': self.curvature, 'events': self.events}
 
+    # ------------------------------------------------------------ state (LIVE04.14 continuation)
+    STATE_SCHEMA = 'LIVE04_1_RUN_MEMORY_STATE_V1'
+
+    def state(self):
+        """Complete learned state (JSON) for the state-bound memory snapshots."""
+        def arr(a):
+            return None if a is None else np.asarray(a, dtype=float).tolist()
+        td = None if self.td is None else {
+            'names': list(self.td['names']), 'J': {m: arr(J) for m, J in self.td['J'].items()},
+            'cycle': int(self.td['cycle']), 'source': self.td['source'], 'idp': arr(self.td.get('idp'))}
+        tg = None if self.tg is None else {
+            'direction': dict(self.tg['direction']), 'norm': float(self.tg['norm']),
+            'correction': {m: arr(c) for m, c in self.tg['correction'].items()},
+            'cycle': int(self.tg['cycle']), 'scale': float(self.tg['scale'])}
+        return {'schema': self.STATE_SCHEMA, 'td': td, 'tg': tg,
+                'curvature': None if self.curvature is None else dict(self.curvature)}
+
+    def load_state(self, state):
+        """Restore a saved state; (ok, reason).  Every entry is validated (finite arrays)."""
+        if not isinstance(state, dict) or state.get('schema') != self.STATE_SCHEMA:
+            return False, 'SCHEMA'
+        try:
+            td, tg = state.get('td'), state.get('tg')
+            if td is not None:
+                J = {m: np.asarray(v, dtype=float) for m, v in td['J'].items()}
+                idp = None if td.get('idp') is None else np.asarray(td['idp'], dtype=float)
+                if not all(np.isfinite(a).all() and a.ndim == 2 for a in J.values()) or \
+                        (idp is not None and not np.isfinite(idp).all()):
+                    return False, 'TD_NONFINITE'
+                td = dict(td, J=J, idp=idp)
+            if tg is not None:
+                corr = {m: np.asarray(v, dtype=float) for m, v in tg['correction'].items()}
+                if not all(np.isfinite(a).all() for a in corr.values()):
+                    return False, 'TG_NONFINITE'
+                tg = dict(tg, correction=corr)
+        except (KeyError, TypeError, ValueError):
+            return False, 'MALFORMED'
+        self.td, self.tg = td, tg
+        self.curvature = state.get('curvature')
+        self._event('RUN_MEMORY_RESTORED', td=td is not None, tg=tg is not None)
+        return True, 'LOADED'
+
     def save(self):
         if self.folder is None:
             return

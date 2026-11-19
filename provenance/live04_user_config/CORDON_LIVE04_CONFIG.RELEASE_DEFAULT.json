@@ -668,6 +668,7 @@
  "generation_structure": {
   "enabled": true,
   "anchor_target": "UNIT",
+  "reference_start_policy": "REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES",
   "production_anchor_relative": 0.05,
   "production_family_anchor_relative": 0.01,
   "attraction_anchor_min_relative": 0.005,

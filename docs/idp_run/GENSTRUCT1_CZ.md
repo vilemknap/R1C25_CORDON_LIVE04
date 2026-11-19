@@ -104,3 +104,31 @@ by se zastavilo. Pro jiné hodnoty je potřeba nový běh.
 
 V auditu řešiče (`genstruct1.objective_parts_*`) je penalizace uvedena včetně konstantního
 členu, takže je to úplná, nezáporná hodnota srovnatelná mezi cykly.
+
+## Pokračování a reference (revize 19. 11. 2026)
+
+- **Přesný stav:** pokračování vyžaduje úplnou shodu `state_hash` otevřeného modelu s přijatým
+  stavem. Při rozdílu se běh zastaví a chyba vyjmenuje rozdílné části (pokud je checkpoint zná).
+- **Plán bloků:** `td_skip_until` a nezměněné bloky se ukládají do `CYCLE_PROGRESS.json`
+  i do checkpointu a obnoví se. Index dalšího bloku se ověří podle jeho názvu.
+- **RUN_ANCHORS.json** má obsahový otisk `anchors_sha256` (bez rostoucího `chain`).
+  Změněné nebo nezapečetěné kotvy pokračování odmítne.
+- **Paměti vázané na stav** (`GENERATION_MEMORY_SNAPSHOTS.json`) obsahují η, IDP model
+  i RunMemory z LIVE04.1 (TD Jacobian s IDP rysy, korekci tras, křivost). Záznam nese svůj
+  `state_hash` uvnitř kontrolního součtu.
+  - Chybějící záznam znamená čerstvé paměti a zapíše se to.
+  - Poškozený soubor, změněný, přesunutý nebo odmítnutý záznam běh **zastaví**.
+  - Pro čerstvé paměti je potřeba soubor vědomě smazat.
+- **Start z koeficientů 1** (`reference_start_policy = REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES`):
+  referenci (centralitu, vazby OD, podíly produkce) lze zachytit jen z modelu, kde ADD_PROD_W/S
+  a ADD_ATT_W/S jsou na všech aktuátorových domácích zónách přesně 1. Jinak se běh zastaví
+  s počtem a příklady zón. `ACCEPT_CURRENT_MODEL` to výslovně povolí a stav zapíše.
+- **Čtení zón:** indexovaným čtením (Zone.NO, omezené opakování COM). Prázdné hodnoty
+  i NaN jsou chyba. Na další atribut potenciálu se přejde jen při „attribute not found“.
+- **Centralita:** rozmanitost zdrojů je násobena spolehlivostí objemu příjezdů
+  1 − exp(−V/V50), takže zóna s nepatrnými rozptýlenými příjezdy není centrum.
+- **Etapa B:**
+  - Učí se z rysů skutečně aplikovaného kroku (implementované efekty preview), ne z projekce.
+  - Zapisuje chybu předpovědi mimo vzorek. Model, jehož poslední předpověď byla horší než
+    „beze změny“, krok neomezuje.
+  - Uložení je transakční.

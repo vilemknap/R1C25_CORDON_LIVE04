@@ -247,10 +247,14 @@ def test_generation_trial_is_measured_against_parent_and_run_reference_then_cont
     a = read_json(f2 / cont.ANCHORS_FILE)
     a['idp_run_reference']['components'][ref['guarded'][0]]['fine_cdf_rmse'] = 0.0
     (f2 / cont.ANCHORS_FILE).write_text(json.dumps(a), encoding='utf-8')
+    with pytest.raises(ContractError, match='LIVE04_CONTINUE_ANCHORS_CONTENT_CHANGED_OR_UNSEALED'):
+        go(tmp_path, v, {'max_cycles': 3}, continuation=True)
+    # even a correctly re-sealed file with a changed record is refused by the record hash
+    (f2 / cont.ANCHORS_FILE).write_text(json.dumps(cont.seal_anchors(a)), encoding='utf-8')
     with pytest.raises(ContractError, match='LIVE04_IDP_RUN_REFERENCE_RECORD_CHANGED'):
         go(tmp_path, v, {'max_cycles': 3}, continuation=True)
     del a['idp_run_reference']
-    (f2 / cont.ANCHORS_FILE).write_text(json.dumps(a), encoding='utf-8')
+    (f2 / cont.ANCHORS_FILE).write_text(json.dumps(cont.seal_anchors(a)), encoding='utf-8')
     with pytest.raises(ContractError, match='LIVE04_IDP_RUN_REFERENCE_MISSING_IN_CONTINUATION'):
         go(tmp_path, v, {'max_cycles': 3}, continuation=True)
 
@@ -353,10 +357,33 @@ def test_idp_model_state_round_trip(monkeypatch):
     m.update({'WORK|PROD': 0.1}, 1.0, metrics(), metrics(A=(0.06, 0.0)))
     st = json.loads(json.dumps(m.state(ref.record['record_sha256'])))
     m2 = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
-    assert m2.load(st, ref.record['record_sha256'])
+    assert m2.load(st, ref.record['record_sha256']) == (True, 'LOADED')
     assert m2.keys == m.keys and np.allclose(m2.J, m.J) and m2.updates == 1
-    assert not ir.GenerationIdpModel(COMPS, {}).load(st, 'other-reference')
-    assert not ir.GenerationIdpModel(['A'], {}).load(st, ref.record['record_sha256'])
+    assert ir.GenerationIdpModel(COMPS, {}).load(st, 'other-reference') == (False, 'OTHER_REFERENCE')
+    assert ir.GenerationIdpModel(['A'], {}).load(st, ref.record['record_sha256']) == (False, 'COMPONENTS')
+    # review N14: a valid EMPTY model (no measured trial yet) is not 'rejected'
+    empty = ir.GenerationIdpModel(COMPS, {}).state(ref.record['record_sha256'])
+    assert ir.GenerationIdpModel(COMPS, {}).load(empty, ref.record['record_sha256']) == (True, 'LOADED_EMPTY')
+    assert ir.GenerationIdpModel(COMPS, {}).load(dict(empty, updates=3), ref.record['record_sha256']) == \
+        (False, 'EMPTY_JACOBIAN_WITH_HISTORY')
+    # review N7: snapshot/restore for a failed persist
+    snap = m2.snapshot()
+    m2.update({'WORK|PROD': 0.1}, 1.0, metrics(), metrics(A=(0.09, 0.0)))
+    m2.restore(snap)
+    assert np.allclose(m2.J, m.J) and m2.updates == 1
+
+
+def test_unreliable_model_does_not_cap(monkeypatch):
+    """Review N13: the out-of-sample error of the last prediction is logged and a model whose
+    prediction was worse than 'no change' is not used for the cap."""
+    _, _, ref = reference(metrics(), monkeypatch)
+    local = load_config()['idp_guard']
+    m = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    d = {'WORK|PROD': 0.1}
+    m.update(d, 1.0, metrics(), metrics(A=(0.06, 0.0)))
+    u = m.update(d, 1.0, metrics(), metrics(A=(0.03, 0.0)))     # opposite of what it predicted
+    assert u['relative_error_out_of_sample'] > 1.0
+    assert m.max_scale(d, metrics(), metrics(), ref, local)[1]['status'] == 'MODEL_NOT_RELIABLE'
 
 
 def test_every_planning_branch_respects_the_idp_cap(tmp_path, monkeypatch):
@@ -413,3 +440,16 @@ def test_position_uses_the_actual_block_list_of_the_cycle():
     assert cont.position_from_progress(progress, planned, 1) == (3, 1, True)
     progress['cycles'][0]['blocks'].append({'block': 'SUPPLY_ADDVAL1', 'changed': False})
     assert cont.position_from_progress(progress, planned, 1) == (4, 0, False)
+
+
+
+def test_anchors_are_content_sealed():
+    a = cont.seal_anchors({'schema': cont.ANCHORS_SCHEMA, 'origin_run_folder': 'R', 'generation_values':
+                           {'ADD_PROD_W': {'1': 1.0}}, 'addval1': {'1|2': 0.0}, 'chain': []})
+    assert cont.verify_anchors(json.loads(json.dumps(a)))
+    assert cont.verify_anchors(dict(a, chain=[{'run_folder': 'R2'}]))        # genealogy may grow
+    bad = json.loads(json.dumps(a)); bad['generation_values']['ADD_PROD_W']['1'] = 3.0
+    with pytest.raises(ContractError, match='ANCHORS_CONTENT_CHANGED_OR_UNSEALED'):
+        cont.verify_anchors(bad)
+    with pytest.raises(ContractError, match='ANCHORS_CONTENT_CHANGED_OR_UNSEALED'):
+        cont.verify_anchors({k: v for k, v in a.items() if k != 'anchors_sha256'})

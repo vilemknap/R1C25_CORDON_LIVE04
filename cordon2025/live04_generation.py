@@ -462,12 +462,19 @@ def learn_efficiency(adapter, context, scale, preview, before, after, folder, ro
     snap = st.snapshot()
     rec = st.learn(G, p['var_keys'], x, d, w)
     rec.update(scale=float(scale), method=method, route_correction_removed=route_correction is not None)
+    # review N6: the per-trial record is written FIRST; the authoritative run state LAST (atomic
+    # replace).  Any failure restores RAM, and the authoritative file then still holds the old
+    # state, so the two never diverge.  (Continuations use the state-bound snapshots.)
     try:
+        _wj(Path(folder) / 'GENSTRUCT1_EFFICIENCY_UPDATE.json', dict(rec, committed=True))
         folder_run = getattr(adapter, 'generation_structure_folder', None)
         if folder_run is not None:
             _wj(Path(folder_run) / 'GENSTRUCT1_EFFICIENCY.json', st.memory_state())
-        _wj(Path(folder) / 'GENSTRUCT1_EFFICIENCY_UPDATE.json', rec)
     except BaseException:
-        st.restore(snap)           # RAM and disk never diverge
+        st.restore(snap)
+        try:
+            _wj(Path(folder) / 'GENSTRUCT1_EFFICIENCY_UPDATE.json', dict(rec, committed=False))
+        except BaseException:
+            pass
         raise
     return rec

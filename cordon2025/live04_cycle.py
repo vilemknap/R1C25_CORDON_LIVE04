@@ -290,15 +290,16 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                                     write_json=write_json,
                                     previous_run_folder=plan.get('previous_run_folder') if plan else None)
                 require(adapter.snapshot() == snap0, 'LIVE04_GENSTRUCT_REFERENCE_CHANGED_MODEL')
+                from .live04_memory import RunMemory
+                adapter.run_memory = RunMemory(cfg['memory'], folder / 'MEMORY') if cfg['memory']['enabled'] else None
                 # LIVE04.14: learned memories of exactly the OPENED state (never later ones)
                 from . import live04_memory_snapshots as memsnap
                 if plan is not None:
                     write_json(folder / 'GENERATION_MEMORY_RESTORE.json',
                                memsnap.restore(adapter, plan.get('previous_run_folder'), snap0['state_hash']))
                 memsnap.record(adapter, folder, snap0['state_hash'], 'RUN_START')
+                anchors = cont.seal_anchors(anchors)        # LIVE04.14: content-sealed origin anchors
                 write_json(folder / cont.ANCHORS_FILE, anchors)
-                from .live04_memory import RunMemory
-                adapter.run_memory = RunMemory(cfg['memory'], folder / 'MEMORY') if cfg['memory']['enabled'] else None
                 reference = evaluator.reference(baseline)
                 write_json(folder / 'BASELINE_OBJECTIVE.json', {m: baseline['methods'][m]['metrics'] for m in baseline['methods']})
                 gs = cfg['generation_search']

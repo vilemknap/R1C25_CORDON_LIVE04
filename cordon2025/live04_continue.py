@@ -61,12 +61,30 @@ def anchors_from_snapshot(snap, run_folder, source_version, outer_cycle_start):
             'addval1': dict(snap.get('addval1', {})), 'chain': []}
 
 
+ANCHOR_SEAL_EXCLUDED = ('anchors_sha256', 'chain')     # the genealogy chain grows by design
+
+
+def anchors_body(anchors):
+    return {k: v for k, v in anchors.items() if k not in ANCHOR_SEAL_EXCLUDED}
+
+
+def seal_anchors(anchors):
+    """LIVE04.14: content hash of the ORIGIN anchors (generation reference, ADDVAL1 baseline,
+    IDP and GENSTRUCT1 references); a continuation refuses changed or substituted anchors."""
+    return dict(anchors, anchors_sha256=canonical_hash(anchors_body(anchors)))
+
+
+def verify_anchors(anchors):
+    require(anchors.get('schema') == ANCHORS_SCHEMA, 'LIVE04_CONTINUE_ANCHORS_SCHEMA')
+    require(anchors.get('anchors_sha256') == canonical_hash(anchors_body(anchors)),
+            'LIVE04_CONTINUE_ANCHORS_CONTENT_CHANGED_OR_UNSEALED')
+    return anchors
+
+
 def load_anchors(prev_folder):
     prev = Path(prev_folder)
     if (prev / ANCHORS_FILE).is_file():
-        a = read_json(prev / ANCHORS_FILE)
-        require(a.get('schema') == ANCHORS_SCHEMA, 'LIVE04_CONTINUE_ANCHORS_SCHEMA')
-        return a
+        return verify_anchors(read_json(prev / ANCHORS_FILE))
     rp = prev / 'RESTORE_POINT.json'
     require(rp.is_file(), 'LIVE04_CONTINUE_PREVIOUS_RUN_HAS_NO_RESTORE_POINT:' + str(prev))
     r = read_json(rp)

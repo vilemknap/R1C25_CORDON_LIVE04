@@ -232,6 +232,10 @@ def test_effective_inbound_origins_and_rank():
     e = gs._effective_origins(M)
     assert e[0] == pytest.approx(3.0) and e[2] == pytest.approx(1.0) and e[1] == 0.0
     assert list(gs._pct_rank([5.0, 1.0, 3.0])) == [1.0, 0.0, 0.5]
+    # review N12: 0.001 trips from each of 100 zones is not a centre of 100 origins
+    M = np.zeros((102, 102)); M[2:, 0] = 0.001; M[2:12, 1] = 500.0
+    tiny = gs._effective_origins(M, volume_weighted=True)
+    assert tiny[1] > 5.0 and tiny[0] < 0.1 * tiny[1]
     # ties share the average rank: zero-potential zones are not ordered by zone number
     assert list(gs._pct_rank([0.0, 0.0, 0.0, 9.0])) == pytest.approx([1 / 3, 1 / 3, 1 / 3, 1.0])
 
@@ -448,7 +452,7 @@ def test_memory_snapshots_bind_memories_to_the_accepted_state(tmp_path):
     st = gs.Structure(record(c), c)
     adapter = type('A', (), {})()
     adapter.generation_structure = st
-    adapter.idp_generation_model = None; adapter.idp_run_reference = None
+    adapter.idp_generation_model = None; adapter.idp_run_reference = None; adapter.run_memory = None
     run1 = tmp_path / 'R1'; run1.mkdir()
     assert ms.record(adapter, run1, 'S0', 'RUN_START')
     st.eta[('WORK', 'PROD')] = 0.7
@@ -459,7 +463,7 @@ def test_memory_snapshots_bind_memories_to_the_accepted_state(tmp_path):
     fresh = gs.Structure(record(c), c)
     adapter2 = type('A', (), {})()
     adapter2.generation_structure = fresh
-    adapter2.idp_generation_model = None; adapter2.idp_run_reference = None
+    adapter2.idp_generation_model = None; adapter2.idp_run_reference = None; adapter2.run_memory = None
     out = ms.restore(adapter2, run1, 'S1')
     assert out['status'] == 'SNAPSHOT_OF_OPENED_STATE' and fresh.eta[('WORK', 'PROD')] == 0.7   # not 0.4
     assert ms.restore(adapter2, run1, 'UNKNOWN')['status'] == 'NO_SNAPSHOT_FOR_OPENED_STATE_FRESH_MEMORIES'
@@ -504,6 +508,7 @@ def test_memory_snapshot_is_bound_to_its_declared_state(tmp_path):
     st = gs.Structure(record(c), c)
     adapter = type('A', (), {})()
     adapter.generation_structure = st; adapter.idp_generation_model = None; adapter.idp_run_reference = None
+    adapter.run_memory = None
     st.eta[('WORK', 'PROD')] = 0.7
     ms.record(adapter, tmp_path, 'S1', 'C01')
     data = json.loads((tmp_path / ms.FILE).read_text())
@@ -512,5 +517,47 @@ def test_memory_snapshot_is_bound_to_its_declared_state(tmp_path):
     fresh = gs.Structure(record(c), c)
     a2 = type('A', (), {})()
     a2.generation_structure = fresh; a2.idp_generation_model = None; a2.idp_run_reference = None
-    assert ms.restore(a2, tmp_path, 'S9')['status'] == 'SNAPSHOT_DECLARES_ANOTHER_STATE_FRESH_MEMORIES'
+    a2.run_memory = None
+    with pytest.raises(ContractError, match='LIVE04_MEMORY_SNAPSHOT_DECLARES_ANOTHER_STATE'):
+        ms.restore(a2, tmp_path, 'S9')
     assert fresh.eta[('WORK', 'PROD')] == 1.0
+    # review N5: an existing but corrupted file is never mistaken for a missing one
+    (tmp_path / ms.FILE).write_text('{"schema": "X"}')
+    with pytest.raises(ContractError, match='LIVE04_MEMORY_SNAPSHOT_FILE_CORRUPTED'):
+        ms.restore(a2, tmp_path, 'S9')
+    (tmp_path / ms.FILE).write_text('{broken')
+    with pytest.raises(ContractError, match='LIVE04_MEMORY_SNAPSHOT_FILE_CORRUPTED'):
+        ms.restore(a2, tmp_path, 'S9')
+    (tmp_path / ms.FILE).unlink()                                   # explicit: fresh memories
+    assert ms.restore(a2, tmp_path, 'S9')['status'] == 'NO_SNAPSHOT_FOR_OPENED_STATE_FRESH_MEMORIES'
+
+
+
+def test_reference_requires_a_unit_base():
+    zones = [1, 2, 3]
+    unit = {k: np.ones(3) for k in gs.GROUPS}
+    dom = np.array([True, True, False])
+    ok = gs.unit_start_check(zones, unit, [1, 2, 3], dom, 'REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES')
+    assert ok['status'] == 'PROVEN_UNIT_BASE' and ok['checked_zones'] == 2
+    off = dict(unit); off[('WORK', 'ATT')] = np.array([1.0, 5.29, 7.0])   # zone 3 is foreign: exempt
+    with pytest.raises(ContractError, match=r'NOT_A_UNIT_BASE:WORK\|ATT=1 zones \(e.g. \[2\]\)'):
+        gs.unit_start_check(zones, off, [1, 2, 3], dom, 'REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES')
+    acc = gs.unit_start_check(zones, off, [1, 2, 3], dom, 'ACCEPT_CURRENT_MODEL')
+    assert acc['status'] == 'NOT_UNIT_BASE' and acc['non_unit']['WORK|ATT']['zones'] == 1
+
+
+def test_run_memory_state_round_trip():
+    from cordon2025.live04_memory import RunMemory
+    cfgm = load_config()['memory']
+    m = RunMemory(cfgm)
+    m.begin_cycle(3)
+    m.store_td(['b', 'c'], {'M': np.array([[1.0, 2.0], [3.0, 4.0]])}, 'NATIVE', idp=np.ones((4, 2)))
+    m.record_tg_correction({'WORK|PROD|1': 0.1}, 0.5, {'M': np.array([1.0, 2.0])}, {'M': np.array([0.5, 1.0])})
+    st = json.loads(json.dumps(m.state()))
+    m2 = RunMemory(cfgm)
+    assert m2.load_state(st) == (True, 'LOADED')
+    m2.begin_cycle(4)
+    assert np.allclose(m2.td_jacobian(['b', 'c'], {'M': 2})['M'], [[1.0, 2.0], [3.0, 4.0]])
+    assert m2.tg['scale'] == 0.5 and np.allclose(m2.tg['correction']['M'], [1.0, 2.0])
+    bad = json.loads(json.dumps(st)); bad['td']['J']['M'][0][0] = float('nan')
+    assert RunMemory(cfgm).load_state(json.loads(json.dumps(bad, allow_nan=True))) == (False, 'TD_NONFINITE')
