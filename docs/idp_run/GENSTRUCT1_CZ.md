@@ -125,6 +125,19 @@ V auditu řešiče (`genstruct1.objective_parts_*`) je penalizace uvedena včetn
   referenci (centralitu, vazby OD, podíly produkce) lze zachytit jen z modelu, kde ADD_PROD_W/S
   a ADD_ATT_W/S jsou na všech aktuátorových domácích zónách přesně 1. Jinak se běh zastaví
   s počtem a příklady zón. `ACCEPT_CURRENT_MODEL` to výslovně povolí a stav zapíše.
+  - **Strukturální nuly** (revize cc3c3c4, N3): zóna s POP_ZP = 0, nulovou produkcí
+    FP_1_WORK_* i FP_2_SERVICE_* a všemi čtyřmi W/S koeficienty přesně 0 (v modelu 2025 zóny
+    646–649: NOT_ZAHR = 1, AMDY_EXTERNI_ZONA = 1) se nepřepisuje na 1, kontrolu nezastaví
+    a její cílový koeficient zůstává 0. Nula na zóně s populací nebo produkcí, případně jen
+    u některých koeficientů, je nejednoznačná: resetovací skript se zastaví před zápisem.
+  - **Doklad přepočtu** (revize cc3c3c4, N2): samotné hodnoty 1 nestačí.
+    `RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py` uloží vedle nové `*_LIVE04_BASE_*.ver`
+    zapečetěný `*.LIVE04_BASE_RECEIPT.json`. Ten váže SHA-256 uložené .ver, přesné vstupní
+    W/S koeficienty (beze změny během přepočtu) a otisky osobních OD matic 9101–9117 po
+    nativním přepočtu. Čerstvý start LIVE04 ověří všechny tři shody. Při vynechaném
+    přepočtu, změně koeficientů po přepočtu, upravených maticích nebo jiném souboru se běh
+    zastaví dřív, než se reference zachytí. Přejmenovaná bajtově shodná kopie se najde
+    podle SHA ve stejné složce.
 - **Čtení zón:** indexovaným čtením (Zone.NO, omezené opakování COM). Prázdné hodnoty
   i NaN jsou chyba. Na další atribut potenciálu se přejde jen při „attribute not found“.
 - **Centralita:** rozmanitost zdrojů je násobena spolehlivostí objemu příjezdů

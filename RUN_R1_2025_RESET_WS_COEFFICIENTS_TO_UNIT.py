@@ -8,11 +8,23 @@ Workflow (same Visum instance, never LoadVersion):
   1. Open an ISOLATED COPY of the 2025 version (name rule of CORDON_LIVE04_CONFIG.json
      isolated_copy_guard, the same as RECOMPUTE / FREEZE).
   2. Run this script: it writes ADD_PROD_W, ADD_PROD_S, ADD_ATT_W, ADD_ATT_S = 1 on every
-     domestic zone (NOT_ZAHR >= 0.5) and verifies the readback.  Foreign zones are untouched.
-     ADD_SALARY only when RESET_ADD_SALARY = True below.
+     generating domestic zone (NOT_ZAHR >= 0.5) and verifies the readback.  Foreign zones are
+     untouched.  ADD_SALARY only when RESET_ADD_SALARY = True below.
+     Zone classes (review cc3c3c4 N3, reported separately):
+       GENERATING_DOMESTIC         NOT_ZAHR = 1, AMDY_EXTERNI_ZONA = 0          -> reset to 1
+       EXTERNAL_DISTRICT           NOT_ZAHR = 1, AMDY_EXTERNI_ZONA = 1, with
+                                   population / FP production (608-618)        -> reset to 1
+       STRUCTURAL_ZERO             NOT_ZAHR = 1, POP_ZP = 0, FP_1_WORK_* and
+                                   FP_2_SERVICE_* = 0 and all W/S coefficients
+                                   exactly 0 (646-649)                          -> KEPT at 0
+       a zone with a W/S generation base and a coefficient <= 0 is ambiguous: the script stops
+       before any write and lists it (UNIT_RESET_AMBIGUOUS_NON_POSITIVE_COEFFICIENT).
   3. Run RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py: full recompute (TG, TD, assignment,
-     skims) and a NEW *_LIVE04_BASE_*.ver.  The frozen distances 9720-9727 are DATA and stay.
-  4. Start the calibration from that *_LIVE04_BASE_*.ver.
+     skims) and a NEW *_LIVE04_BASE_*.ver with a sealed *.LIVE04_BASE_RECEIPT.json next to it.
+     The frozen distances 9720-9727 are DATA and stay.
+  4. Start the calibration from that *_LIVE04_BASE_*.ver.  LIVE04 refuses a fresh run whose
+     opened .ver, W/S coefficients or person OD 9101-9117 differ from the receipt (step 3 skipped,
+     coefficients changed again, another file).
 
 This script never saves a .ver.  The previous values of every changed zone are written to
 %LOCALAPPDATA%\\R1C25_UNIT_BASE_PREP\\ (JSON report + CSV for an audit / manual undo).
@@ -33,6 +45,10 @@ RESET_ADD_SALARY = False          # True: ADD_SALARY -> 1 as well (W attraction 
 EXPECTED_ZONES = 681
 WS_ATTRIBUTES = ('ADD_PROD_W', 'ADD_PROD_S', 'ADD_ATT_W', 'ADD_ATT_S')
 DOMESTIC_ATTR = 'NOT_ZAHR'
+AMDY_EXTERNAL_ATTR = 'AMDY_EXTERNI_ZONA'          # optional: reporting only
+POPULATION_ATTR = 'POP_ZP'
+FP_GROUPS = ('E_C', 'E_noC', 'noE_C', 'noE_noC', 'stud')   # = r1_15a2_mobility_zone_v24917.GROUPS
+FP_ATTRIBUTES = tuple(p + g for p in ('FP_1_WORK_', 'FP_2_SERVICE_') for g in FP_GROUPS)
 TOL = 1e-12
 
 
@@ -114,14 +130,34 @@ def reset(visum):
         if not domestic:
             raise RuntimeError('UNIT_RESET_NO_DOMESTIC_ZONE')
         before = {a: dict(_values(zones, a, EXPECTED_ZONES)) for a in attrs}
-        for a in attrs:
-            bad = [no_by_index[i] for i in domestic if before[a][i] <= 0]
-            if bad:
-                raise RuntimeError('UNIT_RESET_NON_POSITIVE_COEFFICIENT:%s:%s' % (a, bad[:5]))
-        report.update(domestic_zones=len(domestic), foreign_zones_untouched=EXPECTED_ZONES - len(domestic))
+        pop = dict(_values(zones, POPULATION_ATTR, EXPECTED_ZONES))
+        fp = {i: 0.0 for i in no_by_index}
+        for a in FP_ATTRIBUTES:
+            for i, v in _values(zones, a, EXPECTED_ZONES):
+                fp[i] += v
+        try:
+            amdy_ext = {i for i, v in _values(zones, AMDY_EXTERNAL_ATTR, EXPECTED_ZONES) if v >= 0.5}
+            report['amdy_external_attribute'] = True
+        except Exception:
+            amdy_ext, report['amdy_external_attribute'] = set(), False
+        # review cc3c3c4 N3: a zone with no W/S generation base whose W/S coefficients are all 0 is a
+        # structural zero (auxiliary zone) - kept, never reset, never an error
+        structural = {i for i in domestic if pop[i] == 0 and fp[i] == 0
+                      and all(before[a][i] == 0 for a in WS_ATTRIBUTES)}
+        bad = sorted((no_by_index[i], a, before[a][i]) for i in domestic - structural for a in attrs if before[a][i] <= 0)
+        if bad:
+            raise RuntimeError('UNIT_RESET_AMBIGUOUS_NON_POSITIVE_COEFFICIENT:%s (zone has population or FP '
+                               'production, or only some W/S coefficients are 0; decide its meaning first)' % bad[:8])
+        targets = domestic - structural
+        report.update(domestic_zones=len(domestic), foreign_zones_untouched=EXPECTED_ZONES - len(domestic),
+                      zone_classes={
+                          'GENERATING_DOMESTIC': len(targets - amdy_ext),
+                          'EXTERNAL_DISTRICT': sorted(no_by_index[i] for i in targets & amdy_ext),
+                          'STRUCTURAL_ZERO_KEPT': sorted(no_by_index[i] for i in structural)},
+                      structural_zero_zones=sorted(no_by_index[i] for i in structural))
         rows_csv = []
         for a in attrs:
-            changed = sorted(i for i in domestic if abs(before[a][i] - 1.0) > TOL)
+            changed = sorted(i for i in targets if abs(before[a][i] - 1.0) > TOL)
             vals = [before[a][i] for i in changed]
             report['changed'][a] = {'zones': len(changed), 'min_before': min(vals) if vals else None,
                                     'max_before': max(vals) if vals else None}
@@ -135,24 +171,25 @@ def reset(visum):
         _write(path, report)
 
         for a in attrs:
-            changed = [i for i in sorted(domestic) if abs(before[a][i] - 1.0) > TOL]
+            changed = [i for i in sorted(targets) if abs(before[a][i] - 1.0) > TOL]
             if not changed:
                 continue
             wrote = True
             zones.SetMultiAttValues(a, tuple((i, 1.0) for i in changed))
-        # readback: every domestic zone exactly 1, every foreign zone unchanged, zone order unchanged
+        # readback: every reset zone exactly 1, foreign + structural zones unchanged, zone order unchanged
         if dict((i, _number(v)) for i, v in _values(zones, 'NO', EXPECTED_ZONES)) != no_by_index:
             raise RuntimeError('UNIT_RESET_ZONE_ORDER_CHANGED')
         for a in attrs:
             after = dict(_values(zones, a, EXPECTED_ZONES))
-            off = [no_by_index[i] for i in domestic if abs(after[i] - 1.0) > TOL]
-            moved = [no_by_index[i] for i in after if i not in domestic and after[i] != before[a][i]]
+            off = [no_by_index[i] for i in targets if abs(after[i] - 1.0) > TOL]
+            moved = [no_by_index[i] for i in after if i not in targets and after[i] != before[a][i]]
             if off or moved:
-                raise RuntimeError('UNIT_RESET_READBACK:%s:not_one=%s:foreign_changed=%s' % (a, off[:5], moved[:5]))
+                raise RuntimeError('UNIT_RESET_READBACK:%s:not_one=%s:untouched_changed=%s' % (a, off[:5], moved[:5]))
         if sha_file(source) != report['source_sha256']:
             raise RuntimeError('UNIT_RESET_SOURCE_VERSION_CHANGED')
         report['status'] = 'RESET_IN_OPEN_MODEL_RUN_RECOMPUTE_BEFORE_SAVE'
-        report['next_step'] = 'RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py (same Visum instance)'
+        report['next_step'] = ('RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py (same Visum instance); LIVE04 accepts only '
+                               'the *_LIVE04_BASE_*.ver with its sealed receipt')
         _write(path, report)
         _write(out / 'UNIT_RESET_RESULT_LAST.json', report)
         return report

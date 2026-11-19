@@ -255,6 +255,9 @@ def test_mock_run_captures_structure_and_learns(tmp_path):
     f = next((tmp_path / 'runs').glob('LIVE04_TGTD_*'))
     ref = read_json(f / 'GENSTRUCT1_REFERENCE.json')
     assert ref['source'] == 'MEASURED_AT_RUN_START' and ref['zones'] == len(v.Net.Zones.rows)
+    assert ref['reference_start']['base_receipt']['status'] == 'VERIFIED_RECOMPUTED_BASE'
+    rs = ref['record']['reference_start'] if 'record' in ref else ref['reference_start']
+    assert rs['base_receipt']['status'] == 'VERIFIED_RECOMPUTED_BASE'
     anchors = read_json(f / cont.ANCHORS_FILE)
     assert anchors['generation_structure_reference']['record_sha256'] == ref['record_sha256']
     fit = read_json(f / 'C01_GENERATION/DESIGN/V7_TARGETED_GENERATION/V24917_FIT_SUMMARY.json')

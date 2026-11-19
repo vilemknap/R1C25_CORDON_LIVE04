@@ -185,18 +185,34 @@ def _domestic_mask(visum, n, kw):
 UNIT_TOL = 1e-9
 
 
-def unit_start_check(zones, coef, actuatable, domestic, policy):
+def structural_zero_mask(pop, fp, coef):
+    """Zones without any W/S generation: no population, no WORK/SERVICE FP production and all four
+    W/S coefficients exactly 0 (e.g. 646-649 in the 2025 model: NOT_ZAHR = 1 but auxiliary
+    AMDY external zones).  Their 0 is structural - kept, never reset to 1, never a failure."""
+    m = (np.asarray(pop, dtype=float) == 0)
+    for f in FAMILIES:
+        m &= (np.asarray(fp[f], dtype=float) == 0)
+    for k in GROUPS:
+        m &= (np.asarray(coef[k], dtype=float) == 0)
+    return m
+
+
+def unit_start_check(zones, coef, actuatable, domestic, policy, structural=None):
     """Review N10: with REQUIRE_UNIT_WS... the reference (centrality, OD links, production shares)
     may only be captured from a model whose W/S coefficients are 1 on every actuatable domestic
-    zone - otherwise a still-calibrated .ver would be frozen as the run reference."""
+    zone - otherwise a still-calibrated .ver would be frozen as the run reference.  Structural
+    zero zones (structural_zero_mask) are reported and exempt."""
     act = set(int(z) for z in (actuatable if actuatable is not None else zones))
-    idx = [i for i, z in enumerate(zones) if int(z) in act and bool(domestic[i])]
+    struct = [False] * len(zones) if structural is None else [bool(x) for x in structural]
+    dom_act = [i for i, z in enumerate(zones) if int(z) in act and bool(domestic[i])]
+    idx = [i for i in dom_act if not struct[i]]
+    structural_zero = [int(zones[i]) for i in dom_act if struct[i]]
     off = {}
     for k, vals in coef.items():
         bad = [int(zones[i]) for i in idx if abs(float(vals[i]) - 1.0) > UNIT_TOL]
         if bad:
             off['%s|%s' % k] = {'zones': len(bad), 'examples': bad[:5]}
-    out = {'policy': policy, 'checked_zones': len(idx), 'non_unit': off,
+    out = {'policy': policy, 'checked_zones': len(idx), 'non_unit': off, 'structural_zero_zones': structural_zero,
            'status': 'PROVEN_UNIT_BASE' if not off else 'NOT_UNIT_BASE'}
     if policy == 'REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES':
         require(not off, 'LIVE04_GENSTRUCT_REFERENCE_NOT_A_UNIT_BASE:%s' % ';'.join(
@@ -214,11 +230,19 @@ def capture(adapter, cfg, run_folder):
           'retry_policy': getattr(adapter, 'com_retry_policy', None)}
     pop = _zone_values(visum, 'POP_ZP', n, **kw)
     coef = {k: _zone_values(visum, a, n, **kw) for k, a in COEF.items()}
-    start = unit_start_check(zones, coef, getattr(adapter, 'actuatable_zones', None),
-                             _domestic_mask(visum, n, kw), g['reference_start_policy'])
     fp, fp_names = {}, {}
     for f in FAMILIES:
         fp[f], fp_names[f] = _fp_sum(visum, FP_PREFIX[f], n, **kw)
+    structural = structural_zero_mask(pop, fp, coef)
+    start = unit_start_check(zones, coef, getattr(adapter, 'actuatable_zones', None),
+                             _domestic_mask(visum, n, kw), g['reference_start_policy'], structural=structural)
+    if g['reference_start_policy'] == 'REQUIRE_UNIT_WS_ON_ACTUATABLE_DOMESTIC_ZONES':
+        # review cc3c3c4 N2: unit VALUES are not enough - the demand must come from a native
+        # recompute after them (sealed receipt of RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py)
+        from . import live04_base_receipt as base_receipt
+        ws_now = {COEF[k]: {str(int(z)): float(coef[k][i]) for i, z in enumerate(zones)} for k in GROUPS}
+        start['base_receipt'] = base_receipt.verify(visum, zones, ws_now, zone_indices=kw['zone_indices'],
+                                                    retry_policy=kw['retry_policy'])
     wattr, wpot = _first_readable(visum, g['work_potential_attributes'], n, **kw)
     sattr, spot = _first_readable(visum, g['service_potential_attributes'], n, **kw)
     # potentials at the anchor target: divide out the run-start attraction coefficient when the
@@ -266,7 +290,8 @@ def capture(adapter, cfg, run_folder):
         neighbours[f] = lists
     tot = fp['WORK'] + fp['SERVICE']
     prod_share = {f: np.where(tot > 0, fp[f] / np.where(tot > 0, tot, 1.0), 0.0).tolist() for f in FAMILIES}
-    target = {('%s|%s' % k): (np.ones(n) if g['anchor_target'] == 'UNIT' else coef[k]).tolist() for k in GROUPS}
+    target = {('%s|%s' % k): (np.where(structural, coef[k], 1.0) if g['anchor_target'] == 'UNIT' else coef[k]).tolist()
+              for k in GROUPS}
     rec = {'schema': SCHEMA, 'zones': [int(z) for z in zones], 'population': pop.tolist(),
            'production_share': prod_share, 'centrality': centrality, 'neighbours': neighbours,
            'anchor_target': g['anchor_target'], 'target_coefficients': target,

@@ -107,7 +107,7 @@ class FormulaMatrix(Matrix4):
 
 class Live04Visum(Live03Visum):
     def __init__(self, folder, *, masked_start=True, long_leak=1.0e-3, route_gamma=0.0, addval_beta=0.0,
-                 bypass_anchor=False, **kwargs):
+                 bypass_anchor=False, base_receipt=True, **kwargs):
         super().__init__(folder, **kwargs)
         self.route_gamma = float(route_gamma)
         self.addval_beta = float(addval_beta)
@@ -164,6 +164,16 @@ class Live04Visum(Live03Visum):
         self._capture_fp_units()
         self._init_routes()
         self.executions = 0; self.writes.clear(); self.allowed_writes.clear()
+        if base_receipt:
+            self.issue_base_receipt()
+
+    def issue_base_receipt(self):
+        """Synthetic stand-in for RUN_R1_2025_RECOMPUTE_FOR_LIVE04_BASE.py: the opened .ver is the
+        recomputed base (sealed receipt of its coefficients and person OD 9101-9117)."""
+        from cordon2025 import live04_base_receipt as br
+        zones = [int(r['NO']) for r in self.Net.Zones.rows]
+        return br.issue(self, saved_version=self.source, ws=br.read_ws(self, zones), matrices=br.person_od(self),
+                        recompute_folder='SYNTHETIC_NOT_NATIVE')
 
     FP = {'ADD_PROD_W': 'FP_1_WORK_', 'ADD_PROD_S': 'FP_2_SERVICE_', 'ADD_PROD_L': 'FP_3_LONG_'}
 

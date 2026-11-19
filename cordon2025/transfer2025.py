@@ -530,6 +530,19 @@ def _station_link_precheck(m):
     return {'directed_station_links': len(stations), 'all_present': True}
 
 
+def _unit_reset_link(source):
+    """Informational link to RUN_R1_2025_RESET_WS_COEFFICIENTS_TO_UNIT.py of this copy (if any)."""
+    import json
+    try:
+        p = Path(os.environ.get('LOCALAPPDATA') or Path.home()) / 'R1C25_UNIT_BASE_PREP' / 'UNIT_RESET_RESULT_LAST.json'
+        rep = json.loads(p.read_text(encoding='utf-8'))
+    except Exception:
+        return None
+    if Path(str(rep.get('source_version') or '')).name != Path(source).name:
+        return None
+    return {k: rep.get(k) for k in ('run_token', 'status', 'source_sha256', 'changed', 'structural_zero_zones')}
+
+
 def recompute_base(visum, *, output_root=None, config_path=None, config_overrides=None, options=None):
     """2025 copy whose calibrated parameters are ALREADY in place: no export, no parameter write.
 
@@ -582,6 +595,13 @@ def recompute_base(visum, *, output_root=None, config_path=None, config_override
         from .live04_frozen_distance import assert_unchanged as assert_frozen_distance
         assert_frozen_distance(guarded, len(m.zones), m.frozen_distance)
         result['long_support_clean'] = True
+        # LIVE04.14 (review cc3c3c4 N2): bind inputs (W/S coefficients, unchanged by the recompute)
+        # and outputs (person OD 9101-9117 after the native recompute) to the saved .ver
+        from . import live04_base_receipt as base_receipt
+        missing_ws = [a for a in base_receipt.WS_ATTRIBUTES if a not in after['zone_attributes']]
+        require(not missing_ws, 'RECOMPUTE_BASE_WS_ATTRIBUTES_MISSING:%s' % missing_ws)
+        receipt_ws = {a: after['zone_attributes'][a] for a in base_receipt.WS_ATTRIBUTES}
+        receipt_od = base_receipt.person_od(guarded)
         src = Path(target_path)
         target = src.with_name(src.stem + '_LIVE04_BASE_' + uuid.uuid4().hex[:8] + src.suffix)
         require(not target.exists() and target.resolve() != src.resolve(), 'RECOMPUTE_BASE_SAVE_TARGET_INVALID')
@@ -591,6 +611,14 @@ def recompute_base(visum, *, output_root=None, config_path=None, config_override
         audit.save_target = None
         require(src_sha is None or sha256(src) == src_sha, 'RECOMPUTE_BASE_SOURCE_VERSION_CHANGED_BY_SAVE')
         result['saved_version'] = {'path': str(target), 'sha256': sha256(target)}
+        receipt, receipt_path = base_receipt.issue(
+            guarded, saved_version=target, ws=receipt_ws, matrices=receipt_od, source_version=src,
+            source_sha256=src_sha, recompute_folder=folder, unit_reset=_unit_reset_link(src))
+        require(receipt['saved_version']['sha256'] == result['saved_version']['sha256'],
+                'RECOMPUTE_BASE_RECEIPT_VERSION_MISMATCH')
+        write_json(folder / 'LIVE04_BASE_RECEIPT.json', receipt)
+        result['base_receipt'] = {'path': str(receipt_path), 'receipt_sha256': receipt['receipt_sha256'],
+                                  'ws_sha256': receipt['ws_sha256'], 'person_od_sha256': receipt['person_od_sha256']}
         result['status'] = 'RECOMPUTED_SAVED'
         summary = audit.summary()
         require(summary['addval1_writes'] == 0 and not summary['forbidden_attempts'], 'RECOMPUTE_BASE_UNEXPECTED_WRITE')
