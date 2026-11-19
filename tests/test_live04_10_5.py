@@ -10,7 +10,7 @@ import numpy as np
 import pytest
 from fake_live04 import Live04Visum
 from cordon2025.common import ROOT, read_json, ContractError
-from cordon2025.live03_td import box_least_squares, constrained_least_squares, IdpStepModel
+from cordon2025.live03_td import box_least_squares, constrained_least_squares, IdpStepModel, IdpCenterOutsideGuard
 from cordon2025.live04_config import load_config
 from cordon2025.live04_cycle import run
 from cordon2025.live04_memory import RunMemory
@@ -120,6 +120,62 @@ def test_idp_model_from_probes_and_broyden_update():
     assert not m.update(before, {'error': 'X'}, s)
 
 
+# ---------------------------------------- centre outside the guard (review 2026-11-19)
+def _real_guard(g):
+    real = live03_idp.IdpGuard.__new__(live03_idp.IdpGuard)
+    real.guarded = g.guarded; real.mean_floor = g.mean_floor; real.mean_tol = g.mean_tol; real.rmse_tol = g.rmse_tol
+    return real
+
+
+def test_zero_step_is_feasible_inside_and_on_the_guard_boundary():
+    g = _guard(('A',)); real = _real_guard(g)
+    before = _idp({'A': 0.04}, {'A': 0.10})            # allowed |mean| = 0.06, rmse <= 0.11
+    m = IdpStepModel(g, before, np.array([[1.0], [0.5]]), 0.7)
+    for center in (_idp({'A': 0.05}, {'A': 0.105}),            # inside
+                   _idp({'A': 0.06}, {'A': 0.11}),             # exactly on both limits
+                   _idp({'A': -0.06}, {'A': 0.11})):           # lower mean limit
+        assert real.decide(before, center)['passes']
+        C, d = m.constraints(center)
+        assert np.all(d >= 0) and np.all(C @ np.zeros(1) <= d)
+    _, slack, _ = m.center_slack(_idp({'A': 0.06}, {'A': 0.11}))
+    assert min(abs(slack)) <= IdpStepModel.BOUNDARY_TOL
+
+
+@pytest.mark.parametrize('center', [_idp({'A': 0.0}, {'A': 0.1101}),      # RMSE above the limit
+                                    _idp({'A': 0.0601}, {'A': 0.1}),      # mean above
+                                    _idp({'A': -0.0601}, {'A': 0.1})])    # mean below
+def test_centre_outside_the_guard_is_refused_not_clipped(center):
+    g = _guard(('A',)); real = _real_guard(g)
+    before = _idp({'A': 0.04}, {'A': 0.10})
+    assert not real.decide(before, center)['passes']
+    m = IdpStepModel(g, before, np.array([[1.0], [0.5]]), 0.7)
+    with pytest.raises(IdpCenterOutsideGuard, match='LIVE04_TD_IDP_CENTER_OUTSIDE_GUARD'):
+        m.constraints(center)
+
+
+def test_solver_refuses_negative_rhs_even_on_a_zero_jacobian_row():
+    """C row 0 = 0 and d < 0: no step can satisfy it; the old code clipped d to 0 and returned
+    a 'feasible' step.  Now the solver itself fails closed."""
+    A, r, lo, hi, scale = _problem(2)
+    C = np.vstack([np.zeros(6), np.eye(6)[0]]); d = np.array([-1e-3, 1.0])
+    with pytest.raises(ContractError, match='LIVE04_TD_IDP_ZERO_STEP_INFEASIBLE'):
+        constrained_least_squares(A, r, lo, hi, scale, 1e-3, C, d)
+    with pytest.raises(ContractError, match='LIVE04_TD_IDP_ZERO_STEP_INFEASIBLE'):
+        constrained_least_squares(A, r, lo, hi, scale, 1e-3, np.eye(6)[:1], np.array([-0.5]))
+
+
+def test_td_block_stops_without_trial_when_the_centre_leaves_the_guard(tmp_path, synthetic_idp, monkeypatch):
+    """Explicit refusal (no recovery solver): the TD block ends with no candidate."""
+    def outside(self, center_idp):
+        raise IdpCenterOutsideGuard('LIVE04_TD_IDP_CENTER_OUTSIDE_GUARD:[synthetic]')
+    monkeypatch.setattr(IdpStepModel, 'constraints', outside)
+    v = Live04Visum(tmp_path / 'model'); synthetic_idp['v'] = v
+    go(tmp_path, v, {'td_cordon': dict(TD_ONLY['td_cordon'], idp_constrained_step=True)})
+    td = read_json(folder_of(tmp_path) / 'C01_TD_CORDON/TD_BLOCK_RESULT.json')
+    assert td['status'] == 'NO_TD_CANDIDATE' and td['stop_reason'] == 'IDP_CENTER_OUTSIDE_GUARD'
+    assert td['idp_center_invariant'] == 'VIOLATED' and td['inner'][-1]['status'] == 'IDP_CENTER_OUTSIDE_GUARD'
+
+
 def test_slack_use_keeps_a_margin():
     g = _guard(('A',))
     before = _idp({'A': 0.0}, {'A': 0.1})
@@ -198,6 +254,11 @@ def test_td_block_with_and_without_idp_aware_step(tmp_path, synthetic_idp, const
     assert F['WORK.dlog_c'] == pytest.approx(-0.6, rel=1e-6) and F['WORK.db'] == pytest.approx(0.0, abs=1e-9)
     # every IDP-aware step passes the native guard and the linear prediction is exact here
     assert not idp_rejections and td['inner'][0]['status'] == 'INNER_ACCEPTED'
+    # invariant (review 2026-11-19): every accepted inner step - the next centre - is inside the
+    # local guard, so the strict constraints() never refused a centre during the normal run
+    assert 'idp_center_invariant' not in td
+    assert all(e['idp']['passes'] for e in td['inner'] if e['status'] == 'INNER_ACCEPTED')
+    assert sum(e['status'] == 'INNER_ACCEPTED' for e in td['inner']) >= 2      # later centres are accepted steps
     for e in td['inner']:
         if 'idp' in e:
             got = next(c['mean_rel_after'] for c in e['idp']['components'] if c['component'] == 'WORK_E_C')

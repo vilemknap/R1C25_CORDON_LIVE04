@@ -111,6 +111,23 @@ def test_supplymix_profiles_preserve_all_130_real_extra_observation_identities()
         assert table[str(v17.pair_key(*pair))]['model']==data['model'][i]
 
 
+def test_supplymix_rejects_row_sequences_of_different_length():
+    """Review 2026-11-19 (BUG-SUPPLY-ZIP-LENGTH): zip() must not drop unmatched rows silently."""
+    from cordon2025.live04_supply import row_semantics
+    contract=Contract(load_config()['observations'])
+    extra=contract.mathcfg_extension()['extra_observation_rows']
+    pairs=sorted(tuple(sorted((r['row_id'],r['group_id']))) for r in extra)
+    index={p:i for i,p in enumerate(pairs)}
+    inc=SimpleNamespace(audit={'directed_to_row':[index[tuple(sorted((r['row_id'],r['group_id'])))] for r in extra],
+                               'selected_dsegs':[]})
+    local=SimpleNamespace(station_rows=lambda m:False,profile_rows=lambda m:False,
+                          mathcfg_extension=lambda:{'extra_observation_rows':extra})
+    evaluator=SimpleNamespace(method='FIRST_LAST',station_map={},contract=local)
+    data={'pairs':pairs,'model':[100.]*(len(pairs)-1),'observed':[200.]*len(pairs)}
+    with pytest.raises(ContractError,match='LIVE04_SUPPLY_ROW_SEQUENCE_LENGTH_MISMATCH'):
+        row_semantics(evaluator,{'_incidence':{'FIRST_LAST':inc},'methods':{'FIRST_LAST':data}})
+
+
 def test_duplicate_observation_rows_are_rejected_before_building_a_fit(measured):
     adapter,context,preview,before,after,changes,bounds,mods=measured
     inc=before['_incidence']['FIRST_LAST']

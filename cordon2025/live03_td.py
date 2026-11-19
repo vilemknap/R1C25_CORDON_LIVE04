@@ -97,11 +97,19 @@ def constrained_least_squares(A, r, lo, hi, scale, damping, C, d, iterations=600
     l <= [I; C] z <= u.  Requires d >= 0 (x = 0 is feasible: the trust-region centre
     already passed the guard).  The ADMM point is clipped to the box and then pulled
     back along the ray towards 0 until every constraint holds exactly, so the returned
-    step is always feasible for the linear model."""
+    step is always feasible for the linear model.
+
+    Review 2026-11-19 (BUG-IDP-NEGATIVE-RHS): the pull-back towards 0 is only valid when 0 is
+    feasible.  A negative right-hand side (centre outside the guard) is never clipped to 0 here
+    - that would declare an infeasible centre feasible; it is refused (fail closed, no
+    feasibility-restoration solver).  The box must contain 0 as well."""
     A = A * scale[None, :]
     los = lo / scale; his = hi / scale
     Cs = np.asarray(C, dtype=float) * scale[None, :]
-    d = np.maximum(np.asarray(d, dtype=float), 0.0)
+    d = np.asarray(d, dtype=float)
+    require(np.all(np.isfinite(d)) and np.all(np.isfinite(Cs)), 'LIVE04_TD_IDP_CONSTRAINTS_NONFINITE')
+    require(np.all(d >= 0.0), 'LIVE04_TD_IDP_ZERO_STEP_INFEASIBLE:min_rhs=%.6g' % (float(np.min(d)) if len(d) else 0.0))
+    require(np.all(los <= 0.0) and np.all(his >= 0.0), 'LIVE04_TD_IDP_ZERO_STEP_OUTSIDE_BOX')
     n = A.shape[1]
     H = A.T @ A
     H = H + float(damping) * max(float(np.mean(np.diag(H))), 1e-300) * np.eye(n)
@@ -131,6 +139,10 @@ def constrained_least_squares(A, r, lo, hi, scale, damping, C, d, iterations=600
         if np.any(over):
             t = float(min(1.0, np.min(dn[over] / cx[over])))
     return x * t * scale
+
+
+class IdpCenterOutsideGuard(ContractError):
+    """The trust-region centre of the IDP-aware step violates the local IDP guard."""
 
 
 class IdpStepModel:
@@ -167,18 +179,34 @@ class IdpStepModel:
             F[:, j] = (cls.vector(guard, idp) - f0) / h
         return cls(guard, before, F, slack_use)
 
-    def constraints(self, center_idp):
+    # Rounding noise only: |rhs| below this at a centre exactly on the guard boundary is 0.
+    BOUNDARY_TOL = 1e-12
+
+    def center_slack(self, center_idp):
+        """Unscaled slack of every guard row at the centre (>= 0 <=> IdpGuard.decide passes)."""
         g = self.guard; K = len(g.guarded)
         fc = self.vector(g, center_idp)
-        rows, rhs = [], []
+        rows, slack, names = [], [], []
         for i, k in enumerate(g.guarded):
             b = self.before[k]
             allowed = max(abs(float(b['mean_relative_error'])), g.mean_floor) + g.mean_tol
-            rows.append(self.F[i]); rhs.append(self.slack_use * (allowed - fc[i]))
-            rows.append(-self.F[i]); rhs.append(self.slack_use * (allowed + fc[i]))
+            rows.append(self.F[i]); slack.append(allowed - fc[i]); names.append(k + ':MEAN_UPPER')
+            rows.append(-self.F[i]); slack.append(allowed + fc[i]); names.append(k + ':MEAN_LOWER')
             rows.append(self.F[K + i])
-            rhs.append(self.slack_use * (float(b['fine_cdf_rmse']) + g.rmse_tol - fc[K + i]))
-        return np.array(rows), np.maximum(np.array(rhs), 0.0)
+            slack.append(float(b['fine_cdf_rmse']) + g.rmse_tol - fc[K + i]); names.append(k + ':RMSE')
+        return np.array(rows), np.array(slack, dtype=float), names
+
+    def constraints(self, center_idp):
+        """C s <= d for the step from a centre INSIDE the local guard.
+
+        Review 2026-11-19 (BUG-IDP-NEGATIVE-RHS): a centre outside the guard (negative slack)
+        is refused with a diagnostic error instead of clipping d to 0, which made x = 0 look
+        feasible.  Only |slack| <= BOUNDARY_TOL (a centre exactly on the boundary) becomes 0."""
+        rows, slack, names = self.center_slack(center_idp)
+        bad = [(n, float(v)) for n, v in zip(names, slack) if not math.isfinite(v) or v < -self.BOUNDARY_TOL]
+        if bad:
+            raise IdpCenterOutsideGuard('LIVE04_TD_IDP_CENTER_OUTSIDE_GUARD:%s' % bad[:6])
+        return rows, self.slack_use * np.maximum(slack, 0.0)
 
     def predict(self, center_idp, step):
         f = self.vector(self.guard, center_idp) + self.F @ step
@@ -508,7 +536,15 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
                 A = np.vstack([blend.a_cordon * A, blend.a_idp * blend.jacobian(idp_model)])
                 r = np.concatenate([blend.a_cordon * r, blend.a_idp * fv])
             if idp_model is not None:
-                Cm, dm = idp_model.constraints(center_idp)
+                # invariant: the centre is the block start or a natively accepted inner step that
+                # passed guard_decision -> inside the local guard (fail closed otherwise)
+                try:
+                    Cm, dm = idp_model.constraints(center_idp)
+                except IdpCenterOutsideGuard as exc:
+                    rec['inner'].append({'iteration': it + 1, 'status': 'IDP_CENTER_OUTSIDE_GUARD',
+                                         'error': str(exc)[:1500]})
+                    rec['idp_center_invariant'] = 'VIOLATED'
+                    return finish_without_trial('IDP_CENTER_OUTSIDE_GUARD')
                 Cm = Cm * active[None, :]
                 step = constrained_least_squares(A, r, lo, hi, space.trust, float(tdc['damping']), Cm, dm)
             else:
@@ -545,9 +581,10 @@ def td_block(tx, adapter, cfg, folder, control, state, diag, anchors, reference,
                 for m in evaluator.methods:
                     J[m] += np.outer(rows_x[m] - center_rows[m] - J[m] @ step, step) / dd
             improved = gate.get('accepted') if blended_acceptance else rel_vs_center > 0
-            if improved and gate.get('accepted') and gd['passes']:
+            idp_ok = idp_after is not None and 'error' not in idp_after
+            if improved and gate.get('accepted') and gd['passes'] and (idp_model is None or idp_ok):
                 center, center_rows, center_obj = x, rows_x, obj
-                if idp_after is not None and 'error' not in idp_after:
+                if idp_ok:
                     center_idp = idp_after
                 best = {'x': x.copy(), 'objective': obj, 'idp': gd,
                         'blend': None if blend is None else blend.value(obj, idp_after)}

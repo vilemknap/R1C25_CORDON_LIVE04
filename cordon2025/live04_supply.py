@@ -155,6 +155,9 @@ def row_semantics(evaluator, diag):
     require(len(directed_to_row) == len(keys), 'LIVE04_SUPPLY_DIRECTED_ROW_MAP_MISMATCH')
     key_row = {k: int(directed_to_row[i]) for i, k in enumerate(keys)}
     m = diag['methods'][method]
+    # review 2026-11-19 (BUG-SUPPLY-ZIP-LENGTH): zip() would silently drop unmatched rows
+    lens = {k: len(m.get(k) or ()) for k in ('pairs', 'model', 'observed')}
+    require(len(set(lens.values())) == 1, 'LIVE04_SUPPLY_ROW_SEQUENCE_LENGTH_MISMATCH:%s' % lens)
     profiles = []
     from .live02_v24917 import pair_key
     for i, (pair, model, observed) in enumerate(zip(m['pairs'], m['model'], m['observed'])):

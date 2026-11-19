@@ -1488,8 +1488,8 @@
     },
     {
       "path": "cordon2025/live03_td.py",
-      "size": 39272,
-      "sha256": "610bc982944181ad8bf1cd402c3514bc16ae675048f5c0ed5f03f456b3db8b8a"
+      "size": 41695,
+      "sha256": "effc3ed4e8dead29efd203ac16cce1f2bacb660db53e47764769fe23e37b50f2"
     },
     {
       "path": "cordon2025/live03_td_parameters.py",
@@ -1618,8 +1618,8 @@
     },
     {
       "path": "cordon2025/live04_supply.py",
-      "size": 38373,
-      "sha256": "285e1e4fd75f0b92a2cc4076051ac89b18a5dc541a6fd4a4318cd7085a27f0d0"
+      "size": 38637,
+      "sha256": "cf8b53300a9dd3932077bec6a4005fb1aa851b0fa8cd2bee5b0ac8297469dd51"
     },
     {
       "path": "cordon2025/live04_utility_state.py",
@@ -3018,8 +3018,8 @@
     },
     {
       "path": "docs/idp_run/IDP_RUN_REFERENCE_CZ.md",
-      "size": 3835,
-      "sha256": "a7a25dba74c85512b5b8ff02a00b2e5f303db4e091cf649f65e6b440c1d4439a"
+      "size": 5373,
+      "sha256": "14651a3b8a454f9a94b582ae061e5f9ca4c8ce736496e40caa6b8b527a6eae9a"
     },
     {
       "path": "docs/live01/ALL_COMPLETED_TESTCASES.json",
@@ -9888,8 +9888,8 @@
     },
     {
       "path": "tests/test_live04_10_5.py",
-      "size": 11121,
-      "sha256": "d03d81b789d1fdcd0c5b96755d786c358fecca498e373b449f2e1963d1ffecb6"
+      "size": 14829,
+      "sha256": "14cabe18805657112edb7dbbf70fb5399f9e2dfca6dee2457f4282e9fe13eb87"
     },
     {
       "path": "tests/test_live04_10_6.py",
@@ -10008,8 +10008,8 @@
     },
     {
       "path": "tests/test_live04_refit_row_identity.py",
-      "size": 7357,
-      "sha256": "605a36d25f80ccb069366f4996ece7960ba72ce88b632b6d2590de9688f30cdb"
+      "size": 8504,
+      "sha256": "5df21df165232bbf57061c403fc09da7b4318882ee6168510343660019d9fc66"
     },
     {
       "path": "tests/test_live04_supply_topk.py",
@@ -10125,6 +10125,11 @@
       "path": "tools/benchmark_geometry_pipeline.py",
       "size": 5139,
       "sha256": "a6a8f85d89fbcf80f96ebc3a4e81d96b8a634241a0d302295eb2171a1a9ba8a7"
+    },
+    {
+      "path": "tools/build_release_package.py",
+      "size": 4951,
+      "sha256": "533670c58fed2fb61529260a9d4f87ef26c6ca793f371e8f8854af7129cbc897"
     },
     {
       "path": "tools/checkpoint.py",

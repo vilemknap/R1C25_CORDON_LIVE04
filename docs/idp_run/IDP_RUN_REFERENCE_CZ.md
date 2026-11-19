@@ -62,3 +62,22 @@ ne nativně v PTV Visum.
 - `cordon2025/live04_cycle.py` – zachycení či převzetí reference na začátku běhu.
 - `tests/test_live04_13_idp_run.py` – pravidlo, kumulace, neměnnost, pokračování,
   odmítnutí s rollbackem, chybějící IDP.
+
+## Revize 19. 11. 2026 – přípustnost středu IDP kroku TD, balík, SupplyMix
+
+- **Záporné RHS se už neořezává.** `IdpStepModel.constraints()` ověří, že střed trust-regionu
+  splňuje lokální IDP guard. Jen šum zaokrouhlení (|rezerva| ≤ 1e-12, střed přesně na hranici)
+  se bere jako 0. Střed mimo guard skončí chybou `LIVE04_TD_IDP_CENTER_OUTSIDE_GUARD`.
+  `constrained_least_squares()` odmítne záporné d (`LIVE04_TD_IDP_ZERO_STEP_INFEASIBLE`)
+  i box bez nulového kroku, protože závěrečné promítání k nule předpokládá přípustnou nulu.
+  Řešič pro obnovu přípustnosti záměrně není: TD blok pak skončí bez kandidáta
+  (`stop_reason = IDP_CENTER_OUTSIDE_GUARD`, `idp_center_invariant = VIOLATED`).
+- **Invariant TD smyčky:** střed se posune jen na nativně přijatý vnitřní krok, který prošel
+  `guard_decision()` a má platné IDP. Test ověřuje, že se ve standardním běhu (4 přijaté
+  vnitřní kroky) nepřípustný střed neobjeví.
+- **Balík:** `tools/build_release_package.py` zabalí přesně soubory ze `SOURCE_MANIFEST.json`
+  (bez filtru přípon a složek). Zip pak rozbalí do čisté složky a v izolovaném interpretu spustí
+  `verify_release`, `load_config()` a kontrolu v7 pinů (včetně
+  `R1_RUN_OPTIONS_V24917_V7_7b4c681.json`). Výsledek zapíše do `*.PACKAGE_CHECK.json`.
+- **SupplyMix:** `row_semantics()` vyžaduje stejnou délku `pairs`, `model` a `observed`
+  (`LIVE04_SUPPLY_ROW_SEQUENCE_LENGTH_MISMATCH`), aby `zip()` nic tiše nezahodil.
