@@ -29,7 +29,7 @@ FROZEN_IDP_DISTANCE_MAP = {
     'SERV_E_C': 9727, 'SERV_E_noC': 9727, 'SERV_noE_C': 9727,
     'SERV_noE_noC': 9727, 'SERV_stud': 9727,
     'SCHOOL': 9726, 'LONG_COMPOSITE': 9721}
-LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard', 'checkpoint')
+LIVE04_KEYS = l3.LIVE03_KEYS + ('v7', 'memory', 'supply_mix', 'row_geh_guard', 'checkpoint', 'generation_structure')
 
 
 def live02_view(cfg):
@@ -169,6 +169,8 @@ def validate_config(cfg, *, allow_donor_overrides=False):
     require(cfg['generation_mode'] == 'V24917_TARGETED_STEP1', 'LIVE04_REQUIRES_STEP1')
     from .live04_idp_run import validate as validate_idp_run
     validate_idp_run(cfg['idp_guard'])           # LIVE04.13 cumulative IDP run reference
+    from .live04_generation_structure import validate as validate_genstruct
+    validate_genstruct(cfg)                      # LIVE04.14 GENSTRUCT1
     require(set(cfg['write_policy']) == {'tg_zone_parameter_writes', 'td_parameter_writes', 'direct_od_matrix_writes',
                                          'load_version', 'overwrite_source_version', 'save_accepted_version_new_file',
                                          'long_post_td_mask_matrix_writes', 'supply_addval1_writes'},

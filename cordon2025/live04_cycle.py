@@ -283,6 +283,12 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 establish_idp_run(adapter, cfg['idp_guard'], anchors, continuation=plan is not None,
                                   state_hash=snap0['state_hash'], folder=folder, write_json=write_json)
                 require(adapter.snapshot() == snap0, 'LIVE04_IDP_RUN_REFERENCE_CHANGED_MODEL')
+                # LIVE04.14 GENSTRUCT1: run-start production/attraction structure (carried by continuations)
+                from .live04_generation_structure import establish as establish_genstruct
+                establish_genstruct(adapter, cfg, anchors, continuation=plan is not None, folder=folder,
+                                    write_json=write_json,
+                                    previous_run_folder=plan.get('previous_run_folder') if plan else None)
+                require(adapter.snapshot() == snap0, 'LIVE04_GENSTRUCT_REFERENCE_CHANGED_MODEL')
                 write_json(folder / cont.ANCHORS_FILE, anchors)
                 from .live04_memory import RunMemory
                 adapter.run_memory = RunMemory(cfg['memory'], folder / 'MEMORY') if cfg['memory']['enabled'] else None

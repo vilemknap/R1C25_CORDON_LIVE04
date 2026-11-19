@@ -192,6 +192,12 @@
    "mean_relative_error_degradation": 0.02,
    "mean_error_floor": 0.0,
    "note": "User decision 2026-11-19: per IDP component RMSE <= RMSE_start + 0.01 and |e| <= |e_start| + 0.02 (e = relative mean-distance error, no floor) against the MEASURED IDP of the run-start model, stored once in RUN_ANCHORS.json and carried unchanged by continuations; applies to GENERATION and TD_CORDON in addition to the unchanged local guard (with its mean_error_floor)."
+  },
+  "generation_prediction": {
+   "enabled": true,
+   "slack_use": 0.7,
+   "min_direction_norm": 1e-09,
+   "note": "LIVE04.14 stage B: IDP features as a linear function of the mean GENERATION log step per family x role, Broyden-updated from measured trials; caps the next trial scale so the predicted IDP uses at most slack_use of the remaining local and cumulative slack. Never accepts a trial - the measured guard decides."
   }
  },
  "generation_search": {
@@ -658,5 +664,38 @@
   "enabled": true,
   "keep_last": 2,
   "note": "LIVE04.8: after every block that accepted a change the open model is saved as a NEW .ver in <run>/CHECKPOINTS (sidecar .CHECKPOINT.json); open it and run RUN_R1_2025_CORDON_LIVE04_CONTINUE.py to continue."
+ },
+ "generation_structure": {
+  "enabled": true,
+  "anchor_target": "UNIT",
+  "production_anchor_relative": 0.05,
+  "production_family_anchor_relative": 0.01,
+  "attraction_anchor_min_relative": 0.005,
+  "attraction_anchor_max_relative": 0.1,
+  "attraction_centrality_power": 2.0,
+  "neighbour_relative": 0.2,
+  "neighbour_distance_matrix": 9697,
+  "neighbour_radius_km": 10.0,
+  "neighbour_decay_km": 5.0,
+  "neighbour_max": 12,
+  "neighbour_destination_similarity_weight": 0.5,
+  "work_potential_attributes": [
+   "NUM_PM",
+   "NUM_PM_SMEAR",
+   "FA_1_WORK"
+  ],
+  "service_potential_attributes": [
+   "FA_2_SERVICE"
+  ],
+  "efficiency_memory": {
+   "enabled": true,
+   "eta_min": 0.2,
+   "eta_max": 1.5,
+   "prior_weight": 1.0,
+   "smoothing": 0.3,
+   "min_predicted_norm": 1e-09,
+   "note": "Low-dimensional effect factors eta per family x role (4), regularized secant fit of measured vs predicted profile change after every validly measured GENERATION trial; never one factor per zone."
+  },
+  "note": "LIVE04.14 GENSTRUCT1 (user decision 2026-11-19): spatially regularized GENERATION proposal. Weights are relative to the median data curvature of the fit (as the donor ridge_relative). Production: combined W+S ratio anchor to anchor_target (UNIT = coefficient 1) + weak per-family anchor + neighbourhood (population x exp(-d/decay) on the frozen distance matrix, x reference destination similarity). Attraction: anchor weight min + (max-min)*(1-centrality)^power, centrality = 0.5 percentile(reference potential) + 0.5 percentile(effective number of inbound origins in the run-start person OD). Captured once at run start, carried by RUN_ANCHORS.json. Native acceptance unchanged. Starting values for tuning in live runs."
  }
 }

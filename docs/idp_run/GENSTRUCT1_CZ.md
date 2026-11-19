@@ -1,0 +1,94 @@
+# LIVE04.14 – Prostorová regularizace Generation, paměť účinnosti a IDP-aware krok
+
+Rozhodnutí uživatele 19. 11. 2026 („implementuj je, pak je budeme ladit a testovat za běhu").
+Ověřeno jen syntetickými testy, ne nativně v PTV Visum. Všechny váhy jsou **výchozí hodnoty
+pro ladění** v `CORDON_LIVE04_CONFIG.json`.
+
+## Proč
+
+Zonální fit Generation penalizoval jen krok jednoho cyklu (`ridge` na x). Kroky se sčítaly
+v zónách, jejichž OD vztahy procházejí profily, až narazily na stropy 3,5 / 7,0 (např. Veľké
+Úľany P_W 3,26, A_W 5,29 při sousedech na 0,33). Fit neznal rozdíl mezi produkcí a atrakcí
+a neučil se z naměřených pokusů.
+
+## Co se mění (jen návrh kroku; nativní přijetí je beze změny)
+
+V log prostoru koeficientů platí y = l + x, kde l = log(současný / cíl) a x je krok. Cíl je
+`anchor_target`: `UNIT` = koeficient 1, nebo `RUN_START`.
+
+| Část | Penalizace | Parametr |
+|---|---|---|
+| Kotva produkce | (Σ_f w_zf · y_zf)² pro každou zónu, w = podíl FP WORK/SERVICE na začátku běhu (≈ log poměru produkce k referenci) | `production_anchor_relative` |
+| Slabá kotva po rodinách | y_zf² | `production_family_anchor_relative` |
+| Okolí produkce | (y_zf − Σ_u K_zu · y_uf)², kde K = obyvatelé × exp(−d/decay) do `neighbour_radius_km` na zmrazené matici 9697, max. `neighbour_max` sousedů, × podobnost cílových podílů z referenční OD (`neighbour_destination_similarity_weight`) | `neighbour_relative` |
+| Atrakce podle centrality | váha_z · y_z², váha = min + (max − min) · (1 − c_z)^p | `attraction_anchor_min/max_relative`, `attraction_centrality_power` |
+
+**Centralita c_z** = 0,5 × percentil referenčního potenciálu + 0,5 × percentil efektivního počtu
+zdrojových zón. Referenční potenciál je u WORK `NUM_PM`, u SERVICE `FA_2_SERVICE` vydělené
+koeficientem atrakce na startu. Efektivní počet zdrojových zón je exp(entropie příjezdů)
+v osobních OD 9101–9110 na startu běhu.
+
+- Centrum s mnoha zdrojovými zónami (Bratislava, Galanta, Senec) má atrakci volnou.
+- Malá obec ji má pevně u cíle.
+- Žádné pevné přiřazení satelitu k jednomu centru.
+
+Všechny váhy jsou relativní k mediánu datové křivosti fitu (jako dárcovský `ridge_relative`).
+Box, P = A nadroviny, MOBILITYZONE1, mobilita, IDP a nativní přijetí zůstávají.
+
+**Zóny bez obyvatel (průmyslové)** nemají kotvu ani okolí produkce (podíl FP 0, bez sousedů).
+Jejich pracovní atrakce je řízená centralitou (NUM_PM), takže zůstává kalibrovatelná.
+
+## Paměť účinnosti (`efficiency_memory`)
+
+- Faktory η_g pro skupiny g = rodina × role (4 čísla, nikdy ne zóna) násobí sloupce lineárního
+  efektového operátoru ve fitu i v predikci pokusu.
+- Po **každém platně změřeném** pokusu Generation (přijatém i odmítnutém) se aktualizují
+  regularizovanou sekantou: min ‖W(Δ_naměřené − Σ_g η_g c_g)‖² + μ‖η − η_předchozí‖²,
+  ořez na [`eta_min`, `eta_max`], vyhlazení `smoothing`.
+- Stav: `GENSTRUCT1_EFFICIENCY.json` ve složce běhu. Pokračování ho načte jen tehdy, když
+  patří ke stejnému referenčnímu záznamu.
+- Paměť nikdy nerozhoduje o přijetí. Chyba její aktualizace se jen zapíše.
+
+## Etapa B – IDP-aware krok (`idp_guard.generation_prediction`)
+
+- IDP metriky (RMSE_k, e_k) jako lineární funkce průměrného log kroku ve 4 skupinách,
+  Broydenova aktualizace z každého změřeného pokusu.
+- Před pokusem se z modelu spočítá největší měřítko kroku, při kterém předpovězené IDP spotřebuje
+  nejvýš `slack_use` (0,7) zbývající lokální i kumulativní rezervy. Tím se omezí horní mez měřítka.
+- Bez naučeného modelu, bez předpovězeného zhoršení nebo s limitem pod `min_scale` se nic
+  neomezuje. O přijetí vždy rozhoduje naměřené IDP.
+
+## Reference běhu
+
+`capture()` na začátku nového běhu přečte (jen čtení COM):
+
+- POP_ZP;
+- ADD_PROD/ATT_W/S;
+- FP_1_WORK_* a FP_2_SERVICE_*;
+- potenciály;
+- osobní OD 9101–9110;
+- matici 9697.
+
+Uloží se odvozené veličiny: podíly, centralita, seznamy sousedů s vahami, cílové koeficienty,
+parametry a `record_sha256`. Záznam jde do `RUN_ANCHORS.json` (`generation_structure_reference`),
+pokračování ho převezme a ověří (hash, parametry). Chybějící nebo změněný záznam zastaví běh.
+
+## Soubory
+
+- `cordon2025/live04_generation_structure.py` – reference, penalizace, řešič, paměť účinnosti.
+- `cordon2025/live04_generation.py` – zapojení do fitu, měřeného refitu a predikce.
+- `cordon2025/live04_step1.py` – učení paměti po pokusu, omezení měřítka podle IDP.
+- `cordon2025/live04_idp_run.py` – `GenerationIdpModel` (etapa B).
+- `tests/test_live04_14_genstruct.py`, `tests/test_live04_13_idp_run.py`.
+
+## Ladění za běhu
+
+Pro každý cyklus sledujte:
+
+- `C0x_GENERATION/DESIGN/V7_TARGETED_GENERATION/V24917_FIT_SUMMARY.json` → `fit_summary.genstruct1`
+  (penalizace, η, konvergence);
+- `GENSTRUCT1_EFFICIENCY.json`;
+- `STEP1_PLAN_xx.json` → `idp_scale_cap`;
+- `TRY_xx/IDP_TRIAL.json` a rozhodnutí `idp_guard` v `ACCEPTANCE.json`.
+
+Každou část lze vypnout nulovou vahou nebo `enabled: false`.

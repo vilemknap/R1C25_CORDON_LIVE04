@@ -53,6 +53,7 @@ def validate(idp_cfg):
     # The cumulative check runs on the IDP evaluation of the local guard of the same block.
     require(not c['enabled'] or set(c['blocks']) <= set(idp_cfg.get('blocks') or []),
             'LIVE04_IDP_CUMULATIVE_BLOCK_WITHOUT_LOCAL_GUARD')
+    validate_prediction(idp_cfg)
     return c
 
 
@@ -209,3 +210,102 @@ def establish(adapter, idp_cfg, anchors, *, continuation, state_hash, folder, wr
     write_json(folder / 'IDP_RUN_REFERENCE.json', dict(ref.record, verification=audit))
     adapter.idp_run_reference = ref
     return ref
+
+
+# ------------------------------------------------------------------ LIVE04.14 stage B
+PRED_FIELDS = {'enabled', 'slack_use', 'min_direction_norm'}
+
+
+def validate_prediction(idp_cfg):
+    p = (idp_cfg or {}).get('generation_prediction')
+    require(isinstance(p, dict) and set(p) - {'note'} == PRED_FIELDS and isinstance(p['enabled'], bool),
+            'LIVE04_IDP_GENERATION_PREDICTION_FIELDS')
+    require(isinstance(p['slack_use'], (int, float)) and 0.0 < float(p['slack_use']) <= 1.0,
+            'LIVE04_IDP_GENERATION_PREDICTION_SLACK')
+    require(isinstance(p['min_direction_norm'], (int, float)) and float(p['min_direction_norm']) >= 0.0,
+            'LIVE04_IDP_GENERATION_PREDICTION_NORM')
+    return p
+
+
+def direction(rows):
+    """Low-dimensional GENERATION direction: mean log step per family x role (scale 1)."""
+    acc = {}
+    for r in rows or []:
+        key = '%s|%s' % (r.get('family'), r.get('role'))
+        acc.setdefault(key, []).append(float(r.get('log_step', 0.0) or 0.0))
+    return {k: float(np.mean(v)) for k, v in sorted(acc.items())}
+
+
+class GenerationIdpModel:
+    """Stage B: IDP features (RMSE_k, e_k) as a linear function of the low-dimensional GENERATION
+    direction, learned by Broyden updates from measured trials; used ONLY to cap the trial scale
+    so that the predicted IDP stays inside slack_use x the remaining local and cumulative slack.
+    Never accepts anything - the measured IDP guard decides."""
+
+    def __init__(self, components, cfg):
+        self.components = list(components)
+        self.cfg = dict(cfg)
+        self.keys = []          # direction keys
+        self.J = None           # features x keys
+        self.updates = 0
+
+    def features(self, idp):
+        return np.array([float(idp[k]['fine_cdf_rmse']) for k in self.components]
+                        + [float(idp[k]['mean_relative_error']) for k in self.components])
+
+    def _vector(self, d):
+        for k in d:
+            if k not in self.keys:
+                self.keys.append(k)
+                if self.J is not None:
+                    self.J = np.hstack([self.J, np.zeros((self.J.shape[0], 1))])
+        return np.array([float(d.get(k, 0.0)) for k in self.keys])
+
+    def update(self, d, scale, idp_before, idp_after):
+        if idp_before is None or idp_after is None or 'error' in idp_before or 'error' in idp_after:
+            return {'status': 'NO_MEASUREMENT'}
+        a = float(scale) * self._vector(d)
+        if float(np.linalg.norm(a)) <= float(self.cfg.get('min_direction_norm', 0.0)) or not a.any():
+            return {'status': 'NO_DIRECTION'}
+        df = self.features(idp_after) - self.features(idp_before)
+        if self.J is None:
+            self.J = np.zeros((len(df), len(a)))
+        err_before = float(np.linalg.norm(df - self.J @ a))
+        self.J = self.J + np.outer(df - self.J @ a, a) / float(a @ a)
+        self.updates += 1
+        return {'status': 'UPDATED', 'updates': self.updates, 'error_before': err_before,
+                'error_after': float(np.linalg.norm(df - self.J @ a))}
+
+    def max_scale(self, d, idp_now, idp_parent, run_reference, local_cfg):
+        """Largest scale with predicted IDP inside slack_use x min(local, cumulative) slack."""
+        if self.J is None or not self.updates or idp_now is None or 'error' in idp_now:
+            return None, {'status': 'NO_MODEL'}
+        a = self._vector(d)
+        if not a.any():
+            return None, {'status': 'NO_DIRECTION'}
+        pred = self.J @ a                                   # change per unit scale
+        n = len(self.components)
+        use = float(self.cfg['slack_use'])
+        rmse_tol = float(local_cfg['max_fine_cdf_rmse_degradation'])
+        floor = float(local_cfg['mean_error_floor']); mean_tol = float(local_cfg['max_mean_error_degradation'])
+        caps, rows = [], []
+        for i, k in enumerate(self.components):
+            now = idp_now[k]; par = idp_parent[k]
+            slack_r = float(par['fine_cdf_rmse']) + rmse_tol - float(now['fine_cdf_rmse'])
+            e = float(now['mean_relative_error'])
+            slack_m = max(abs(float(par['mean_relative_error'])), floor) + mean_tol - abs(e)
+            if run_reference is not None and k in run_reference.components:
+                s = run_reference.components[k]
+                slack_r = min(slack_r, s['fine_cdf_rmse'] + run_reference.tol['fine_cdf_rmse_degradation']
+                              - float(now['fine_cdf_rmse']))
+                slack_m = min(slack_m, max(abs(s['mean_relative_error']), run_reference.tol['mean_error_floor'])
+                              + run_reference.tol['mean_relative_error_degradation'] - abs(e))
+            dr = float(pred[i]); dm = float(pred[n + i]) * (1.0 if e >= 0 else -1.0)   # d|e| ~ sign(e) de
+            for name, slack, rate in (('RMSE', slack_r, dr), ('MEAN', slack_m, dm)):
+                if rate > 1e-12:                         # numerical noise is not a degradation
+                    cap = max(0.0, use * slack) / rate
+                    caps.append(cap)
+                    rows.append({'component': k, 'feature': name, 'slack': slack, 'rate_per_scale': rate, 'cap': cap})
+        cap = min(caps) if caps else None
+        return cap, {'status': 'CAPPED' if cap is not None else 'NO_PREDICTED_DEGRADATION', 'cap': cap,
+                     'binding': min(rows, key=lambda r: r['cap']) if rows else None, 'updates': self.updates}

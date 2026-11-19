@@ -49,15 +49,26 @@ def _mods():
         supply=parent_module('r1_15a2_supply_visum'), dp=parent_module('r1_15a2_demand_policy_v1'))
 
 
-def fit_with_boundary(adapter, incidence, bounds, cfg, policy, terms, model):
+def _solve(adapter, problem, fit_cfg, zone_rows):
+    """Donor solve, or the LIVE04.14 GENSTRUCT1 regularized solve when active."""
+    from .live04_generation_structure import solve as gs_solve
+    st = getattr(adapter, 'generation_structure', None)
+    if st is None or zone_rows is None:
+        return _mods().zf.solve(problem, fit_cfg), None
+    return gs_solve(problem, fit_cfg, st, zone_rows)
+
+
+def fit_with_boundary(adapter, incidence, bounds, cfg, policy, terms, model, zone_rows=None):
     """Exact port of v7 _fit_with_boundary; also returns the bounds of the joint fit."""
     m = _mods()
     fit_cfg = dict(policy.get('fit', {}), nonlinear_pa_repair=True)
     if not m.bdgen.active():
         problem = fit_objective.build_problem(incidence, adapter.zones, bounds, cfg, terms, model)
-        solution = m.zf.solve(problem, fit_cfg)
+        solution, gs_audit = _solve(adapter, problem, fit_cfg, zone_rows)
         rows = m.zf.projection_rows(problem, solution, float(cfg.get('min_add_log_step', 1e-5)))
         summary = m.zf.summary(problem, solution, rows)
+        if gs_audit is not None:
+            summary['genstruct1'] = gs_audit
         return rows, summary, problem, solution, None, dict(bounds)
     current = m.bdgen.current_values(adapter.visum, m.bdgen.STATE['zones'])
     env = (policy.get('envelope') or {}).get('boundary_reference_multiplier', [0.5, 2.0])
@@ -68,10 +79,12 @@ def fit_with_boundary(adapter, incidence, bounds, cfg, policy, terms, model):
     bd_margins = m.bdpa.margins_from_problem(problem, m.bdgen.STATE['zones'])
     problem = m.bdgen.merge_pa(problem, m.bdgen.STATE['zones'])
     problem.objective_weighting = weighting
-    solution = m.zf.solve(problem, fit_cfg)
+    solution, gs_audit = _solve(adapter, problem, fit_cfg, zone_rows)
     all_rows = m.zf.projection_rows(problem, solution, float(cfg.get('min_add_log_step', 1.0e-5)))
     rows, steps = m.bdgen.split_rows(all_rows)
     summary = m.zf.summary(problem, solution, rows)
+    if gs_audit is not None:
+        summary['genstruct1'] = gs_audit
     bd = m.bdgen.design_payload(steps, current)
     bd['margins'] = {k: v for k, v in bd_margins.items() if k in bd['steps']}
     bd['summary']['boundary_variables_in_fit'] = int(getattr(problem, 'boundary_variables', 0))
@@ -97,7 +110,11 @@ def effect_problems(adapter, diag, bounds, cfg):
         index = {int(r['countlocation_no']): i for i, r in enumerate(problem.profile_rows)}
         require(len(index) == len(problem.profile_rows), 'GENFIX2_DUPLICATE_EFFECT_OBSERVATION_ID')
         order = [index.get(v17.pair_key(r['origin_station'], r['destination_station'])) for r in inc.rows]
-        out[method] = {'G': np.asarray(problem.G, dtype=float), 'var_keys': [tuple(k) for k in problem.var_keys],
+        G_raw = np.asarray(problem.G, dtype=float)
+        st = getattr(adapter, 'generation_structure', None)
+        eta = st.column_factors(problem.var_keys) if st is not None else np.ones(G_raw.shape[1])
+        # LIVE04.14: the trial prediction uses the same efficiency-corrected operator as the fit
+        out[method] = {'G': G_raw * eta[None, :], 'G_raw': G_raw, 'var_keys': [tuple(k) for k in problem.var_keys],
                        'order': order}
     return out
 
@@ -204,7 +221,7 @@ def design(adapter, diag, folder, context):
             terms = fit_objective.captured_terms(diag, method)
             model = np.asarray(diag['methods'][method]['model'], dtype=float)
             rows, summary, _problem, solution, bd, all_bounds = fit_with_boundary(
-                adapter, incidence, bounds, cfg, policy, terms, model)
+                adapter, incidence, bounds, cfg, policy, terms, model, zone_rows=zone_rows)
             summary['objective_weighting'] = _problem.objective_weighting
             write_json(folder / 'FIT_OBJECTIVE_AUTHORITY.json', _problem.objective_weighting)
             if not rows:
@@ -322,7 +339,9 @@ def refine(adapter, context, scale, preview, before, after, folder):
     refined = fit_objective.bind_objective(refined, v17.incidence_contract(inc)['profiles'],
                                           fit_objective.captured_terms(before, method), mb)
     fit_cfg = dict(policy.get('fit', {}), nonlinear_pa_repair=True)
-    solution = m.zf.solve(refined, fit_cfg)
+    solution, gs_audit = _solve(adapter, refined, fit_cfg, (context.get('_genfix2_mobility') or {}).get('zone_rows'))
+    if gs_audit is not None:
+        audit['genstruct1'] = gs_audit
     audit['solver_converged'] = bool(solution['converged'])
     audit['proposal_usable'] = fit_objective.usable_solution(solution)
     if not audit['proposal_usable']:
@@ -393,3 +412,30 @@ def validate_mobility_plan(context, design):
             proof['status'] = 'REJECTED_FINAL_CANDIDATE_OUTSIDE_ENVELOPE'
     design['genfix2_mobility'] = proof
     return proof
+
+
+def learn_efficiency(adapter, context, scale, preview, before, after, folder):
+    """LIVE04.14: update the GENSTRUCT1 efficiency factors from one validly measured trial."""
+    from .io import write_json as _wj
+    st = getattr(adapter, 'generation_structure', None)
+    if st is None or not st.mem_cfg.get('enabled'):
+        return {'status': 'DISABLED'}
+    effect = context.get('_genfix2_effect_model') or {}
+    method = adapter.evaluator.method
+    p = (effect.get('problems') or {}).get(method)
+    if p is None or 'G_raw' not in p:
+        return {'status': 'NO_EFFECT_OPERATOR'}
+    x = implemented_vector(p['var_keys'], preview, scale, effect.get('bd'))
+    b, a = fit_objective.measured_vectors(before, after, method)
+    terms = fit_objective.captured_terms(before, method)
+    rows = [i for i, k in enumerate(p['order']) if k is not None]
+    G = p['G_raw'][[p['order'][i] for i in rows], :]
+    d = np.array([a[i] - b[i] for i in rows])
+    w = np.asarray(terms['w'], dtype=float)[rows]
+    rec = st.learn(G, p['var_keys'], x, d, w)
+    rec.update(scale=float(scale), method=method)
+    folder_run = getattr(adapter, 'generation_structure_folder', None)
+    if folder_run is not None:
+        _wj(Path(folder_run) / 'GENSTRUCT1_EFFICIENCY.json', st.memory_state())
+    _wj(Path(folder) / 'GENSTRUCT1_EFFICIENCY_UPDATE.json', rec)
+    return rec

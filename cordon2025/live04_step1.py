@@ -242,6 +242,18 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
         save_rec()
         return False, state, diag, baseline_value, rec
 
+    idp_model = None
+    if idp['guard'] is not None and ((idp_cfg or {}).get('generation_prediction') or {}).get('enabled'):
+        from .live04_idp_run import GenerationIdpModel
+        idp_model = getattr(adapter, 'idp_generation_model', None)
+        if idp_model is None or idp_model.components != list(idp['guard'].guarded):
+            idp_model = GenerationIdpModel(idp['guard'].guarded, idp_cfg['generation_prediction'])
+            adapter.idp_generation_model = idp_model
+
+    def idp_direction():
+        from .live04_idp_run import direction
+        return direction(context['projection'].rows)
+
     def idp_decision(measured):
         from .live04_idp_run import combine
         if measured is None or 'error' in measured:
@@ -373,7 +385,18 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
     adapter.tg_outputs_from_rejected_trial = False
     try:
         for ordinal in range(1, max_trials + 1):
-            plan = choose_scale_with_audit(model, gate, min_rel, opts, upper)
+            plan_upper, idp_cap = upper, None
+            if idp_model is not None:
+                # LIVE04.14 stage B: learned IDP response caps the scale (never the acceptance)
+                cap, idp_cap = idp_model.max_scale(idp_direction(), idp['before'], idp['before'],
+                                                   idp['cumulative'], idp_cfg)
+                if cap is not None and cap >= float(opts['min_scale']):
+                    plan_upper = min(upper, cap)
+                elif cap is not None:
+                    idp_cap['status'] = 'CAP_BELOW_MIN_SCALE_IGNORED_MEASURED_GUARD_DECIDES'
+            plan = choose_scale_with_audit(model, gate, min_rel, opts, plan_upper)
+            if idp_cap is not None:
+                plan['idp_scale_cap'] = idp_cap
             if plan['scale'] is None and model.measured is None and model.memory_correction is not None:
                 # Memory may change WHICH step is tried, never suppress the trial LIVE04 would run.
                 kept = model.memory_correction
@@ -465,6 +488,9 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                     except Exception as exc:     # fail closed: the trial is rejected below
                         idp_trial = {'error': type(exc).__name__ + ':' + str(exc)[:500]}
                     write_json(trial_folder / 'IDP_TRIAL.json', idp_trial)
+                    if idp_model is not None:
+                        attempt['idp_model_update'] = idp_model.update(idp_direction(), float(scale),
+                                                                       idp['before'], idp_trial)
                     from .live04_idp_run import component_summary
                     attempt['idp'] = component_summary(idp_trial)
 
@@ -558,6 +584,14 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                            counts_objective=after_value, predicted_objective=model.objective(float(scale)),
                            measured_objective=float(after_value['total']))
             valid_capture = bool(after_diag.get('valid', True))
+            if valid_capture and getattr(adapter, 'generation_structure', None) is not None:
+                # LIVE04.14 efficiency memory: accepted AND rejected measured trials teach it
+                try:
+                    from .live04_generation import learn_efficiency
+                    attempt['genstruct1_efficiency'] = learn_efficiency(adapter, context, float(scale), preview,
+                                                                        diag, after_diag, trial_folder)
+                except Exception as exc:       # memory never decides a trial
+                    attempt['genstruct1_efficiency'] = {'status': 'UPDATE_FAILED', 'error': str(exc)[:500]}
             if model.memory_correction is not None:
                 attempt['predicted_objective_without_memory'] = model.objective_without_memory(float(scale))
             if memory is not None and direction is not None and valid_capture and model.measured is None:

@@ -254,3 +254,32 @@ def test_generation_without_idp_baseline_writes_nothing(tmp_path, monkeypatch):
     gen = read_json(runs(tmp_path)[0] / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
     assert gen['status'] == 'NO_GENERATION_CANDIDATE' and gen['stop_reason'] == 'IDP_BASELINE_UNAVAILABLE'
     assert not gen['attempts'] and r['accepted_by_block'] == {}
+
+
+# ----------------------------------------------------------------- stage B (LIVE04.14)
+def test_generation_idp_model_learns_and_caps_the_scale(monkeypatch):
+    _, _, ref = reference(metrics(A=(0.05, 0.0), B=(0.05, 0.0)), monkeypatch)
+    local = load_config()['idp_guard']
+    m = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    d = {'WORK|PROD': 0.1, 'WORK|ATT': 0.05}
+    now = metrics(A=(0.05, 0.0), B=(0.05, 0.0))
+    assert m.max_scale(d, now, now, ref, local) == (None, {'status': 'NO_MODEL'})
+    # one measured trial at scale 0.5: RMSE_A +0.004, e_B +0.01
+    after = metrics(A=(0.054, 0.0), B=(0.05, 0.01))
+    assert m.update(d, 0.5, now, after)['status'] == 'UPDATED'
+    cap, audit = m.max_scale(d, now, now, ref, local)
+    # rates per unit scale: RMSE_A 0.008 -> 0.7*0.01/0.008 = 0.875 ; |e_B| 0.02 -> 0.7*0.02/0.02 = 0.7
+    assert cap == pytest.approx(0.7) and audit['binding']['component'] == 'B' and audit['binding']['feature'] == 'MEAN'
+    # the same step predicted exactly afterwards (Broyden secant)
+    assert m.update(d, 0.5, now, after)['error_before'] == pytest.approx(0.0, abs=1e-12)
+    # a direction that improves IDP is not capped
+    m2 = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    m2.update(d, 1.0, now, metrics(A=(0.04, 0.0), B=(0.05, 0.0)))
+    assert m2.max_scale(d, now, now, ref, local)[0] is None
+    assert ir.direction([{'family': 'WORK', 'role': 'PROD', 'log_step': 0.2},
+                         {'family': 'WORK', 'role': 'PROD', 'log_step': 0.0}]) == {'WORK|PROD': 0.1}
+
+
+def test_generation_prediction_config():
+    with pytest.raises(ContractError, match='LIVE04_IDP_GENERATION_PREDICTION_SLACK'):
+        load_config(overrides={'idp_guard': {'generation_prediction': {'slack_use': 0.0}}})
