@@ -236,13 +236,27 @@ def test_mobility_data_error_stops_before_any_write(tmp_path):
     v = Live04Visum(tmp_path / 'model')
     v.Net.Zones.rows[3]['FP_1_WORK_E_C'] = -1.0       # domestic zone with invalid production
     z0 = zones(v)
+    # GENSTRUCT1 off: the MOBILITY2 block guard of the GENERATION block is what stops
     with pytest.raises(Exception, match='MOBILITY2_BLOCKED_DATA_NOT_A_PLATEAU'):
-        go(tmp_path, v, GEN_ONLY)
+        go(tmp_path, v, dict(GEN_ONLY, generation_structure={'enabled': False}))
     f = folder_of(tmp_path)
     gen = read_json(f / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
     assert gen['status'] == 'FAILED' and gen['mobility_block']['status'] == 'BLOCKED_MOBILITY_DATA'
     assert zones(v) == z0 and v.executions == 0 and not v.matrix_writes
     assert read_json(f / '00_RESULT.json')['status'] == 'LIVE04_STOPPED_MODEL_VERIFIED_AT_LAST_ACCEPTED_STATE'
+
+
+def test_genstruct_rejects_invalid_production_at_run_start_before_any_write(tmp_path):
+    """LIVE04.14 default: the run-start structure capture reads FP fail-closed, so the same bad
+    value stops the run even earlier - before the first block and before any write."""
+    v = Live04Visum(tmp_path / 'model')
+    v.Net.Zones.rows[3]['FP_1_WORK_E_C'] = -1.0
+    z0 = zones(v)
+    with pytest.raises(Exception, match='LIVE04_GENSTRUCT_ZONE_VALUES_INVALID:FP_1_WORK_E_C'):
+        go(tmp_path, v, GEN_ONLY)
+    f = folder_of(tmp_path)
+    assert not (f / 'C01_GENERATION').exists() and not (f / 'GENSTRUCT1_REFERENCE.json').exists()
+    assert zones(v) == z0 and v.executions == 0 and not v.matrix_writes
 
 
 def test_mask_write_failure_restores_and_stops_verified(tmp_path):

@@ -9868,8 +9868,8 @@
     },
     {
       "path": "tests/test_live04.py",
-      "size": 31503,
-      "sha256": "dc739cac1aa711b34cbfba0c8546970eeb92d4936e53bc5bc83afe47a501f730"
+      "size": 32341,
+      "sha256": "a03a22448e7f6c58c0bf84b38aff96e932ed9e1be228942871583015c6e59707"
     },
     {
       "path": "tests/test_live04_10.py",
