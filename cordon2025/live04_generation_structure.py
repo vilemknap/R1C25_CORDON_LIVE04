@@ -374,7 +374,10 @@ def solve(problem, fit_cfg, structure, zone_rows):
     zf = parent_module('r1_15a2_zonal_count_fit_v24917')
     if structure is None or not structure.cfg['enabled']:
         return zf.solve(problem, fit_cfg), {'status': 'DONOR_SOLVE'}
-    eta = structure.column_factors(problem.var_keys)
+    # A measured-refit problem already carries the EFFECTIVE (eta-scaled, secant-corrected)
+    # operator; scaling it again would break G_new @ x_trial = measured delta.
+    effective = getattr(problem, 'genstruct_operator', 'RAW') == 'EFFECTIVE'
+    eta = np.ones(len(problem.var_keys)) if effective else structure.column_factors(problem.var_keys)
     G = np.asarray(problem.G, dtype=float) * eta[None, :]
     W2 = np.asarray(problem.weight, dtype=float) ** 2
     nv = G.shape[1]
@@ -436,6 +439,7 @@ def solve(problem, fit_cfg, structure, zone_rows):
            'iterations': it, 'converged': converged, 'ridge': ridge, 'balance_weight': 0.0, 'lipschitz': lip,
            'balance_mode': 'HARD', 'balance': balance, 'nonlinear_pa_repair': nonlinear_pa}
     audit = {'status': 'GENSTRUCT1_SOLVE', 'penalty': paudit,
+             'operator': 'EFFECTIVE_FROM_MEASURED_REFIT' if effective else 'RAW_TIMES_ETA',
              'eta': {'%s|%s' % k: v for k, v in structure.eta.items()},
              'objective_initial': obj0, 'objective_final': sol['objective_final'], 'iterations': it,
              'converged': converged}
@@ -454,6 +458,15 @@ def establish(adapter, cfg, anchors, *, continuation, folder, write_json, previo
     if continuation:
         record = anchors.get('generation_structure_reference')
         require(record is not None, 'LIVE04_GENSTRUCT_REFERENCE_MISSING_IN_CONTINUATION')
+        # the neighbour structure is only valid on the SAME distance matrix (state hashes do not cover it)
+        from .live03_idp import _read
+        import hashlib
+        D = _read(adapter.visum, int(record['distance_matrix']), len(record['zones']))
+        actual = hashlib.sha256(np.ascontiguousarray(D, dtype='<f8').tobytes()).hexdigest()
+        require(actual == record['distance_fingerprint'],
+                'LIVE04_GENSTRUCT_DISTANCE_MATRIX_CHANGED:%d' % int(record['distance_matrix']))
+        require([int(z) for z in adapter.zones] == [int(z) for z in record['zones']],
+                'LIVE04_GENSTRUCT_ZONE_ORDER_CHANGED')
         source = 'CARRIED_FROM_ORIGIN_RUN'
     else:
         record = capture(adapter, cfg, folder)

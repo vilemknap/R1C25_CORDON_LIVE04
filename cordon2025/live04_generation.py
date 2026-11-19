@@ -226,8 +226,12 @@ def design(adapter, diag, folder, context):
             write_json(folder / 'FIT_OBJECTIVE_AUTHORITY.json', _problem.objective_weighting)
             if not rows:
                 raise RuntimeError('V24917_FIT_PRODUCED_NO_ROWS')
-            context['_genfix2_effect_model'] = {'problems': effect_problems(adapter, diag, all_bounds, cfg), 'bd': bd,
-                                                'problem': _problem}
+            st = getattr(adapter, 'generation_structure', None)
+            context['_genfix2_effect_model'] = {
+                'problems': effect_problems(adapter, diag, all_bounds, cfg), 'bd': bd, 'problem': _problem,
+                # LIVE04.14: eta of THIS design (the operator that predicts its trials)
+                'fit_eta': (st.column_factors(_problem.var_keys) if st is not None
+                            else np.ones(len(_problem.var_keys)))}
     except Exception as exc:
         fallback = type(exc).__name__ + ':' + str(exc)
         adapter.v24917_counts['fit_fallbacks'] += 1
@@ -335,7 +339,19 @@ def refine(adapter, context, scale, preview, before, after, folder):
         i = index[int(row['countlocation_no'])]
         delta.append(float(ma[i] - mb[i]))
     x = implemented_vector(problem.var_keys, preview, scale, bd)
-    refined, audit = m.zf.measured_refit_problem(problem, x, np.array(delta), min(0.5, 0.5 * float(scale)))
+    st = getattr(adapter, 'generation_structure', None)
+    base_problem = problem
+    if st is not None and getattr(problem, 'genstruct_operator', 'RAW') != 'EFFECTIVE':
+        # LIVE04.14: the secant corrects the EFFECTIVE operator that predicted the trial
+        # (raw G x eta of the design); the solver then must not apply eta again.
+        eta = np.asarray(effect.get('fit_eta', np.ones(len(problem.var_keys))), dtype=float)
+        require(eta.shape == (len(problem.var_keys),), 'LIVE04_GENSTRUCT_REFIT_ETA_SHAPE')
+        base_problem = copy.copy(problem)
+        base_problem.G = np.asarray(problem.G, dtype=float) * eta[None, :]
+        base_problem.genstruct_operator = 'EFFECTIVE'
+    refined, audit = m.zf.measured_refit_problem(base_problem, x, np.array(delta), min(0.5, 0.5 * float(scale)))
+    if getattr(base_problem, 'genstruct_operator', 'RAW') == 'EFFECTIVE':
+        refined.genstruct_operator = 'EFFECTIVE'
     refined = fit_objective.bind_objective(refined, v17.incidence_contract(inc)['profiles'],
                                           fit_objective.captured_terms(before, method), mb)
     fit_cfg = dict(policy.get('fit', {}), nonlinear_pa_repair=True)
@@ -377,7 +393,8 @@ def refine(adapter, context, scale, preview, before, after, folder):
         {'family': f, 'method': m.zf.METHOD, 'converged': True,
          'solver_converged': bool(solution['converged']), 'proposal_usable': True} for f in m.zf.FAMILIES])
     out['v24917_bd'] = new_bd
-    out['_genfix2_effect_model'] = {'problems': problems, 'bd': new_bd, 'problem': refined}
+    out['_genfix2_effect_model'] = {'problems': problems, 'bd': new_bd, 'problem': refined,
+                                    'fit_eta': np.ones(len(refined.var_keys))}
     out['v24917_step_model'] = step_model(out, rows, new_bd)
     audit.update(status='ZONAL_DIRECTION_REFITTED', fit=m.zf.summary(refined, solution, rows),
                  parent_row_check={k:v for k,v in parent_check.items() if k != 'rows'},

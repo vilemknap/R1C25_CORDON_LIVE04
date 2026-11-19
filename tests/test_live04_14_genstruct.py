@@ -179,14 +179,43 @@ def test_reference_record_is_immutable_and_tied_to_the_parameters(tmp_path):
     # penalty weights are tuning knobs: a continuation with new weights keeps the reference
     assert gs.Structure(rec, cfg(neighbour_relative=0.7, production_anchor_relative=0.2)).record == rec
 
+    D = np.array([[0.5, 2.0, 3.0], [2.0, 0.5, 4.0], [3.0, 4.0, 0.5]])
+
+    class Mat:
+        def __init__(self, arr):
+            self.arr = arr
+
+        def GetValues(self):
+            return self.arr.tolist()
+
+    class Visum:
+        def __init__(self, arr):
+            self.Net = type('N', (), {})()
+            self.Net.Matrices = type('M', (), {'ItemByKey': lambda _s, no: Mat(arr)})()
+
     class Adapter:
-        pass
+        def __init__(self, arr=D):
+            self.visum = Visum(arr)
+            self.zones = list(ZONES)
+    import hashlib
+    rec = json.loads(json.dumps(rec))
+    rec['distance_fingerprint'] = hashlib.sha256(np.ascontiguousarray(D, dtype='<f8').tobytes()).hexdigest()
+    del rec['record_sha256']; rec['record_sha256'] = canonical_hash(rec)
     with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_REFERENCE_MISSING_IN_CONTINUATION'):
         gs.establish(Adapter(), c, {}, continuation=True, folder=tmp_path, write_json=lambda p, o: None)
     a = Adapter()
     st = gs.establish(a, c, {'generation_structure_reference': rec}, continuation=True, folder=tmp_path,
                       write_json=lambda p, o: None)
     assert a.generation_structure is st and st.record == rec
+    # 9697 changed under the carried neighbour structure -> stop (the state hash does not cover it)
+    D2 = D.copy(); D2[0, 1] = 2.5
+    with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_DISTANCE_MATRIX_CHANGED:9697'):
+        gs.establish(Adapter(D2), c, {'generation_structure_reference': rec}, continuation=True,
+                     folder=tmp_path, write_json=lambda p, o: None)
+    bad_zones = Adapter(); bad_zones.zones = [1, 3, 2]
+    with pytest.raises(ContractError, match='LIVE04_GENSTRUCT_ZONE_ORDER_CHANGED'):
+        gs.establish(bad_zones, c, {'generation_structure_reference': rec}, continuation=True,
+                     folder=tmp_path, write_json=lambda p, o: None)
     a2 = Adapter()
     assert gs.establish(a2, cfg(enabled=False), {}, continuation=False, folder=tmp_path,
                         write_json=lambda p, o: None) is None and a2.generation_structure is None
@@ -227,3 +256,76 @@ def test_mock_run_captures_structure_and_learns(tmp_path):
     assert measured and all(a['genstruct1_efficiency']['status'] in ('UPDATED', 'NO_PREDICTED_EFFECT') for a in measured)
     assert read_json(f / 'GENSTRUCT1_EFFICIENCY.json')['schema'] == gs.MEMORY_SCHEMA
     assert r['status'].startswith('MOCK_LIVE04_')
+
+
+def test_measured_refit_uses_the_effective_operator_once():
+    """Review 2026-11-19 (P1): G_raw = 10, eta = 0.5, x = 0.2, measured delta = 1.
+    The secant must correct G_raw*eta (prediction 1.0 at the trial), and the solver must not
+    multiply the corrected operator by eta again (which would predict 0.5)."""
+    zf = parent_module('r1_15a2_zonal_count_fit_v24917')
+    c = cfg(neighbour_relative=0.0, production_anchor_relative=0.0, production_family_anchor_relative=0.0)
+    st = gs.Structure(record(c, neighbours=[[], [], []]), c)
+    st.eta[('WORK', 'PROD')] = 0.5
+    keys = [('WORK', 'PROD', 1)]
+    p = problem(keys, [[10.0]], [1.0])
+    x_trial = np.array([0.2])
+    # what live04_generation.refine does
+    eta = st.column_factors(keys)
+    base = __import__('copy').copy(p); base.G = p.G * eta[None, :]; base.genstruct_operator = 'EFFECTIVE'
+    refined, _ = zf.measured_refit_problem(base, x_trial, np.array([1.0]), 0.5)
+    refined.genstruct_operator = 'EFFECTIVE'
+    assert float((refined.G @ x_trial)[0]) == pytest.approx(1.0)
+    sol, audit = gs.solve(refined, FIT, st, zone_rows({}))
+    assert audit['operator'] == 'EFFECTIVE_FROM_MEASURED_REFIT'
+    assert np.allclose(sol['predicted_change'], refined.G @ sol['x'])       # no second eta
+    # the normal design solve does apply eta to the RAW operator
+    sol2, audit2 = gs.solve(p, FIT, st, zone_rows({}))
+    assert audit2['operator'] == 'RAW_TIMES_ETA'
+    assert np.allclose(sol2['predicted_change'], (p.G * 0.5) @ sol2['x'])
+
+
+def test_penalty_matrix_equals_the_documented_formula():
+    """0.5 x'Qx + q'x must equal the explicit penalty sum up to a constant (finite check)."""
+    c = cfg(production_anchor_relative=0.7, production_family_anchor_relative=0.3, neighbour_relative=1.1,
+            attraction_anchor_min_relative=0.2, attraction_anchor_max_relative=0.9, attraction_centrality_power=2.0)
+    rec = record(c, share_w=(0.6, 0.3, 0.0), cent=(0.9, 0.2, 0.5), neighbours=[[[2, 0.7], [3, 0.3]], [[1, 1.0]], []])
+    st = gs.Structure(rec, c)
+    keys = [(f, r, z) for f in gs.FAMILIES for r in gs.ROLES for z in (1, 2)]
+    p = problem(keys, np.zeros((1, len(keys))), [0.0])
+    coef = {('WORK', 'PROD'): [2.0, 0.5, 1.0], ('SERVICE', 'PROD'): [1.5, 1.0, 3.0],
+            ('WORK', 'ATT'): [4.0, 1.0, 1.0], ('SERVICE', 'ATT'): [1.0, 0.7, 1.0]}
+    rows = zone_rows(coef)
+    scale = 1.0
+    Q, q, _ = st.penalty(p, rows, scale)
+    assert np.allclose(Q, Q.T)
+    y0 = {k: np.log(np.asarray(coef[k])) for k in coef}
+    g = c['generation_structure']
+
+    def explicit(x):
+        xv = dict(zip(keys, x))
+        y = {k: y0[k].copy() for k in y0}
+        for (f, r, z), v in xv.items():
+            y[(f, r)][z - 1] += v
+        tot = 0.0
+        for i, z in enumerate(ZONES):
+            comb = sum(rec['production_share'][f][i] * y[(f, 'PROD')][i] for f in gs.FAMILIES)
+            if any((f, 'PROD', z) in xv for f in gs.FAMILIES):
+                tot += 0.5 * g['production_anchor_relative'] * comb ** 2
+            for f in gs.FAMILIES:
+                if (f, 'PROD', z) in xv:
+                    tot += 0.5 * g['production_family_anchor_relative'] * y[(f, 'PROD')][i] ** 2
+                    nb = rec['neighbours'][f][i]
+                    if nb:
+                        d = y[(f, 'PROD')][i] - sum(w * y[(f, 'PROD')][u - 1] for u, w in nb)
+                        tot += 0.5 * g['neighbour_relative'] * d ** 2
+                if (f, 'ATT', z) in xv:
+                    w = g['attraction_anchor_min_relative'] + (g['attraction_anchor_max_relative']
+                                                               - g['attraction_anchor_min_relative']) * (1 - rec['centrality'][f][i]) ** 2
+                    tot += 0.5 * w * y[(f, 'ATT')][i] ** 2
+        return tot
+    rng = np.random.default_rng(5)
+    x0 = np.zeros(len(keys))
+    for _ in range(5):
+        x = rng.normal(scale=0.3, size=len(keys))
+        quad = 0.5 * x @ Q @ x + q @ x
+        assert quad == pytest.approx(explicit(x) - explicit(x0), rel=1e-9, abs=1e-12)

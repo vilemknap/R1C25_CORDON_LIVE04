@@ -66,11 +66,15 @@ def test_release_policy_is_the_approved_one():
     ({'idp_guard': {'cumulative': {'reference': 'CURRENT_STATE'}}}, 'LIVE04_IDP_CUMULATIVE_REFERENCE_POLICY'),
     ({'idp_guard': {'cumulative': {'extra': 1}}}, 'LIVE04_IDP_CUMULATIVE_FIELDS'),
     ({'idp_guard': {'blocks': ['TD_CORDON']}}, 'LIVE04_IDP_CUMULATIVE_BLOCK_WITHOUT_LOCAL_GUARD'),
-    ({'idp_guard': {'enabled': False}}, 'LIVE04_IDP_CUMULATIVE_NEEDS_IDP_GUARD'),
 ])
 def test_invalid_cumulative_policy_is_rejected(over, code):
     with pytest.raises(ContractError, match=code):
         load_config(overrides=over)
+
+
+def test_disabled_idp_guard_disables_the_cumulative_check():
+    cfg = load_config(overrides={'idp_guard': {'enabled': False}})['idp_guard']
+    assert cfg['cumulative']['enabled'] is True and ir.policy(cfg) is None
 
 
 def test_cumulative_rule_per_component_without_floor(monkeypatch):

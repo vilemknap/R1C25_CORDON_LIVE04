@@ -33,7 +33,9 @@ TOLERANCE_KEYS = ('fine_cdf_rmse_degradation', 'mean_relative_error_degradation'
 def policy(idp_cfg):
     """The validated cumulative section of idp_guard (None when disabled)."""
     c = (idp_cfg or {}).get('cumulative')
-    if not c or not c.get('enabled'):
+    # the cumulative check runs on the IDP evaluation of the local guard: an explicitly
+    # disabled idp_guard disables it as well (documented, not silent: see EFFECTIVE_CONFIG)
+    if not c or not c.get('enabled') or not (idp_cfg or {}).get('enabled'):
         return None
     return c
 
@@ -51,9 +53,8 @@ def validate(idp_cfg):
         v = c[key]
         require(isinstance(v, (int, float)) and not isinstance(v, bool) and 0.0 <= float(v) <= 1.0,
                 'LIVE04_IDP_CUMULATIVE_TOLERANCE:' + key)
-    require(not c['enabled'] or idp_cfg.get('enabled') is True, 'LIVE04_IDP_CUMULATIVE_NEEDS_IDP_GUARD')
     # The cumulative check runs on the IDP evaluation of the local guard of the same block.
-    require(not c['enabled'] or set(c['blocks']) <= set(idp_cfg.get('blocks') or []),
+    require(not (c['enabled'] and idp_cfg.get('enabled')) or set(c['blocks']) <= set(idp_cfg.get('blocks') or []),
             'LIVE04_IDP_CUMULATIVE_BLOCK_WITHOUT_LOCAL_GUARD')
     validate_prediction(idp_cfg)
     return c
