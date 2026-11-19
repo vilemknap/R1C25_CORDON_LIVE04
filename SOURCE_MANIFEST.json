@@ -1558,8 +1558,8 @@
     },
     {
       "path": "cordon2025/live04_generation_structure.py",
-      "size": 34800,
-      "sha256": "2b2ccaa0b9e7c92bcae6cda4e2e8cc579d2c79bf95989b836c9d05a833b4d2f4"
+      "size": 35037,
+      "sha256": "f315b819ff27336387870aa06420f0997918b048df4476f224c708f425e47e53"
     },
     {
       "path": "cordon2025/live04_guard.py",
@@ -3008,8 +3008,8 @@
     },
     {
       "path": "docs/idp_run/GENSTRUCT1_CZ.md",
-      "size": 8495,
-      "sha256": "1f12061b298b32872883729ca2b160abfde83a84544b1040bf61a62db22bd1e7"
+      "size": 8807,
+      "sha256": "3df8d3470ba35b2a7317298728a9eb0aa9a4e1e448287d057286481f8ef0e27b"
     },
     {
       "path": "docs/idp_run/IDP_RUN_REFERENCE_CZ.md",
@@ -9923,8 +9923,8 @@
     },
     {
       "path": "tests/test_live04_14_genstruct.py",
-      "size": 30437,
-      "sha256": "463a5308f58b57dce88ea7b82eaf8d67e94d6673cf74c2315a8e0815ffd4af27"
+      "size": 31466,
+      "sha256": "dfc055e988e0640625e94fe95d2af8743c5c4e318f70c5db5b2ad0c2de5728fc"
     },
     {
       "path": "tests/test_live04_4.py",

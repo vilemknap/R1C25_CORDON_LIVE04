@@ -410,12 +410,15 @@ class Structure:
             for f in FAMILIES:
                 for i, z in enumerate(self.zones):
                     nb = self.record['neighbours'][f][i]
-                    if not nb or (f, 'PROD', z) not in pos:
+                    if not nb:
                         continue
                     ent = [((f, 'PROD', z), 1.0, float(y0[(f, 'PROD')][i]))]
                     for u, w in nb:
                         ent.append(((f, 'PROD', int(u)), -float(w), float(y0[(f, 'PROD')][self.index[int(u)]])))
-                    add_quadratic(ent, ln)
+                    # review cc3c3c4: the term exists whenever ANY of its zones is a variable;
+                    # fixed zones (centre or neighbours) enter as constants, never drop the link
+                    if any(v in pos and a != 0.0 for v, a, _ in ent):
+                        add_quadratic(ent, ln)
         # 3. attraction anchor by centrality
         amin, amax = rel('attraction_anchor_min_relative'), rel('attraction_anchor_max_relative')
         p = float(self.cfg['attraction_centrality_power'])

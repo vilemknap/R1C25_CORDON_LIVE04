@@ -327,10 +327,10 @@ def test_penalty_matrix_equals_the_documented_formula():
             for f in gs.FAMILIES:
                 if (f, 'PROD', z) in xv:
                     tot += 0.5 * g['production_family_anchor_relative'] * y[(f, 'PROD')][i] ** 2
-                    nb = rec['neighbours'][f][i]
-                    if nb:
-                        d = y[(f, 'PROD')][i] - sum(w * y[(f, 'PROD')][u - 1] for u, w in nb)
-                        tot += 0.5 * g['neighbour_relative'] * d ** 2
+                nb = rec['neighbours'][f][i]
+                if nb and ((f, 'PROD', z) in xv or any((f, 'PROD', u) in xv for u, _ in nb)):
+                    d = y[(f, 'PROD')][i] - sum(w * y[(f, 'PROD')][u - 1] for u, w in nb)
+                    tot += 0.5 * g['neighbour_relative'] * d ** 2
                 if (f, 'ATT', z) in xv:
                     w = g['attraction_anchor_min_relative'] + (g['attraction_anchor_max_relative']
                                                                - g['attraction_anchor_min_relative']) * (1 - rec['centrality'][f][i]) ** 2
@@ -561,3 +561,18 @@ def test_run_memory_state_round_trip():
     assert m2.tg['scale'] == 0.5 and np.allclose(m2.tg['correction']['M'], [1.0, 2.0])
     bad = json.loads(json.dumps(st)); bad['td']['J']['M'][0][0] = float('nan')
     assert RunMemory(cfgm).load_state(json.loads(json.dumps(bad, allow_nan=True))) == (False, 'TD_NONFINITE')
+
+
+def test_neighbour_link_kept_when_only_the_neighbour_is_a_variable():
+    """Review cc3c3c4 (P1): zone A is fixed at 1, its neighbour B (coefficient 2) is a variable.
+    A's neighbourhood term must exist and pull B towards A; dropping it lost the link."""
+    c = cfg(production_anchor_relative=0.0, production_family_anchor_relative=0.0, neighbour_relative=1.0)
+    st = gs.Structure(record(c, neighbours=[[[2, 1.0]], [], []]), c)          # only A lists B
+    keys = [('WORK', 'PROD', 2)]                                              # A (zone 1) is fixed
+    p = problem(keys, [[0.0]], [0.0])
+    rows = zone_rows({('WORK', 'PROD'): [1.0, 2.0, 1.0]})
+    Q, q, audit = st.penalty(p, rows, 1.0)
+    assert Q.nnz == 1 and q[0] > 0                    # 0.5 (y_A - y_B)^2 with y_A = 0, y_B = log 2
+    assert audit['constant'] == pytest.approx(0.5 * math.log(2.0) ** 2)
+    x = solve(st, p, rows)
+    assert x[0] < -0.1                                 # B moves towards A

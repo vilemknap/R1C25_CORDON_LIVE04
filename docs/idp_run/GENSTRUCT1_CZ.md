@@ -35,6 +35,8 @@ v osobních OD 9101–9110 na startu běhu.
 Všechny váhy jsou relativní k mediánu datové křivosti fitu (jako dárcovský `ridge_relative`).
 Box, P = A nadroviny, MOBILITYZONE1, mobilita, IDP a nativní přijetí zůstávají.
 
+**Okolí s pevnou zónou:** člen okolí zóny z vznikne vždy, když je proměnnou aspoň jedna zóna s nenulovým koeficientem (střed nebo soused). Neoptimalizovatelné zóny vstupují jako konstanty (např. pevná zóna s koeficientem 1 táhne proměnného souseda k sobě), z výpočtu se nevypouštějí.
+
 **Zóny bez obyvatel (průmyslové)** nemají kotvu ani okolí produkce (podíl FP 0, bez sousedů).
 Jejich pracovní atrakce je řízená centralitou (NUM_PM), takže zůstává kalibrovatelná.
 
