@@ -3,6 +3,7 @@
 Synthetic mock only (tests/fake_live04.py) - not native PTV Visum evidence."""
 import copy
 import json
+import numpy as np
 from pathlib import Path
 import pytest
 from cordon2025.common import ROOT, read_json, ContractError, canonical_hash
@@ -207,6 +208,13 @@ def test_generation_trial_is_measured_against_parent_and_run_reference_then_cont
     assert ref2['verification']['source'] == 'CARRIED_FROM_ORIGIN_RUN'
     assert ref2['record_sha256'] == ref['record_sha256'] and ref2['origin_run_folder'] == str(f1)
     assert read_json(f2 / cont.ANCHORS_FILE)['idp_run_reference'] == anchors['idp_run_reference']
+    # stage B: the learned IDP response of run 1 is reloaded (same reference) instead of re-learned
+    m1 = read_json(f1 / ir.MODEL_FILE)
+    assert m1['updates'] >= 1 and m1['reference_sha256'] == ref['record_sha256']
+    m2 = read_json(f2 / ir.MODEL_FILE)
+    assert m2['updates'] >= m1['updates']
+    first_plan = read_json(sorted(f2.glob('C02_GENERATION/STEP1_PLAN_*.json'))[0])
+    assert first_plan['idp_scale_cap']['updates'] >= m1['updates']
     # a previous run without a verifiable reference: the continuation stops, no silent re-capture
     a = read_json(f2 / cont.ANCHORS_FILE)
     a['idp_run_reference']['components'][ref['guarded'][0]]['fine_cdf_rmse'] = 0.0
@@ -283,3 +291,74 @@ def test_generation_idp_model_learns_and_caps_the_scale(monkeypatch):
 def test_generation_prediction_config():
     with pytest.raises(ContractError, match='LIVE04_IDP_GENERATION_PREDICTION_SLACK'):
         load_config(overrides={'idp_guard': {'generation_prediction': {'slack_use': 0.0}}})
+
+
+def test_mean_cap_is_two_sided_and_crosses_zero(monkeypatch):
+    """Review 2026-11-19: e_now = 0, predicted de = -0.04 per unit scale, cumulative 0.02,
+    slack_use 0.7 -> cap 0.014 / 0.04 = 0.35 (the sign(e) linearization found no cap)."""
+    _, _, ref = reference(metrics(), monkeypatch)
+    local = load_config()['idp_guard']
+    m = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    d = {'WORK|PROD': 0.1}
+    now = metrics()
+    m.update(d, 1.0, now, metrics(A=(0.05, -0.04)))
+    cap, audit = m.max_scale(d, now, now, ref, local)
+    assert cap == pytest.approx(0.35) and audit['binding']['feature'] == 'MEAN'
+    # crossing zero from the positive side: e = +0.01, de = -0.04 -> |0.01 - 0.04 s| <= 0.01 + 0.7*0.01
+    now2 = metrics(A=(0.05, 0.01))
+    m2 = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    m2.update(d, 1.0, now2, metrics(A=(0.05, -0.03)))
+    cap2, _ = m2.max_scale(d, now2, now2, ref, local)
+    bound = 0.01 + 0.7 * (0.02 - 0.01)          # cumulative: |e_start|=0 + 0.02 is binding
+    assert cap2 == pytest.approx((bound + 0.01) / 0.04)
+    # a reduction of |e| that stays on its side is capped only at the far bound
+    m3 = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    now3 = metrics(A=(0.05, 0.015))
+    m3.update(d, 1.0, now3, metrics(A=(0.05, 0.005)))
+    cap3, _ = m3.max_scale(d, now3, now3, ref, local)
+    assert cap3 > 2.0
+
+
+def test_idp_model_state_round_trip(monkeypatch):
+    _, _, ref = reference(metrics(), monkeypatch)
+    m = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    m.update({'WORK|PROD': 0.1}, 1.0, metrics(), metrics(A=(0.06, 0.0)))
+    st = json.loads(json.dumps(m.state(ref.record['record_sha256'])))
+    m2 = ir.GenerationIdpModel(COMPS, {'slack_use': 0.7, 'min_direction_norm': 0.0})
+    assert m2.load(st, ref.record['record_sha256'])
+    assert m2.keys == m.keys and np.allclose(m2.J, m.J) and m2.updates == 1
+    assert not ir.GenerationIdpModel(COMPS, {}).load(st, 'other-reference')
+    assert not ir.GenerationIdpModel(['A'], {}).load(st, ref.record['record_sha256'])
+
+
+def test_every_planning_branch_respects_the_idp_cap(tmp_path, monkeypatch):
+    step = __import__('cordon2025.common', fromlist=['parent_module']).parent_module('r1_15a2_step_search_v24917')
+    min_scale = float(step.options()['min_scale'])
+    caps = {'n': 0}
+
+    def capped(self, d, now, parent, run_reference, local):
+        caps['n'] += 1
+        cap = max(min_scale * 1.5, 0.3)
+        return cap, {'status': 'CAPPED', 'cap': cap, 'updates': 1, 'binding': None}
+    monkeypatch.setattr(ir.GenerationIdpModel, 'max_scale', capped)
+    v = Live04Visum(tmp_path / 'model')
+    go(tmp_path, v)
+    f = runs(tmp_path)[0]
+    gen = read_json(f / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
+    assert caps['n'] >= 1 and gen['attempts']
+    for a in gen['attempts']:
+        cap = a['idp_scale_cap']['cap']
+        assert a['idp_scale_cap']['applied'] is True and a['candidate']['scale'] <= cap * (1 + 1e-12)
+    for p in sorted((f / 'C01_GENERATION').glob('STEP1_PLAN_*.json')):
+        plan = read_json(p)
+        assert plan['planner_policy']['upper_scale'] <= plan['idp_scale_cap']['cap'] + 1e-12
+
+
+def test_cap_below_min_scale_is_an_explicit_bypass(tmp_path, monkeypatch):
+    monkeypatch.setattr(ir.GenerationIdpModel, 'max_scale',
+                        lambda self, *a: (1e-9, {'status': 'CAPPED', 'cap': 1e-9, 'updates': 1, 'binding': None}))
+    v = Live04Visum(tmp_path / 'model')
+    go(tmp_path, v)
+    gen = read_json(runs(tmp_path)[0] / 'C01_GENERATION/GENERATION_BLOCK_RESULT.json')
+    assert gen['attempts'] and all(a['idp_scale_cap']['bypassed'] is True and a['idp_scale_cap']['applied'] is False
+                                   for a in gen['attempts'])

@@ -19,10 +19,12 @@ unchanged; a candidate must pass both.  Read-only: no COM write.
 from __future__ import annotations
 import copy
 import hashlib
+from pathlib import Path
 import numpy as np
 from .common import require, canonical_hash
 
 SCHEMA = 'LIVE04_IDP_RUN_REFERENCE_V1'
+MODEL_FILE = 'IDP_GENERATION_MODEL.json'
 POLICY = 'RUN_START_MEASURED_IDP_IMMUTABLE_PER_COMPONENT_NO_FLOOR'
 BLOCKS = ('GENERATION', 'TD_CORDON')
 TOLERANCE_KEYS = ('fine_cdf_rmse_degradation', 'mean_relative_error_degradation', 'mean_error_floor')
@@ -184,7 +186,8 @@ def component_summary(measured):
             for k, v in measured.items()}
 
 
-def establish(adapter, idp_cfg, anchors, *, continuation, state_hash, folder, write_json):
+def establish(adapter, idp_cfg, anchors, *, continuation, state_hash, folder, write_json,
+              previous_run_folder=None):
     """Fresh run: capture and put into the anchors.  Continuation: carried record, verified.
 
     Returns the RunReference (also set as adapter.idp_run_reference) or None when disabled."""
@@ -209,6 +212,20 @@ def establish(adapter, idp_cfg, anchors, *, continuation, state_hash, folder, wr
         anchors['idp_run_reference'] = record
     write_json(folder / 'IDP_RUN_REFERENCE.json', dict(ref.record, verification=audit))
     adapter.idp_run_reference = ref
+    pred = (idp_cfg or {}).get('generation_prediction') or {}
+    adapter.idp_generation_model = None
+    adapter.idp_generation_model_file = Path(folder) / MODEL_FILE
+    if pred.get('enabled') and 'GENERATION' in (idp_cfg.get('blocks') or []):
+        model = GenerationIdpModel(guard.guarded, pred)
+        loaded = False
+        if continuation and previous_run_folder:
+            prev = Path(previous_run_folder) / MODEL_FILE
+            if prev.is_file():
+                from .common import read_json
+                loaded = model.load(read_json(prev), ref.record['record_sha256'])
+        adapter.idp_generation_model = model
+        write_json(adapter.idp_generation_model_file, dict(model.state(ref.record['record_sha256']),
+                                                           loaded_from_previous_run=loaded))
     return ref
 
 
@@ -248,6 +265,23 @@ class GenerationIdpModel:
         self.keys = []          # direction keys
         self.J = None           # features x keys
         self.updates = 0
+
+    STATE_SCHEMA = 'LIVE04_IDP_GENERATION_MODEL_V1'
+
+    def state(self, reference_sha256):
+        return {'schema': self.STATE_SCHEMA, 'reference_sha256': reference_sha256, 'components': self.components,
+                'keys': list(self.keys), 'J': None if self.J is None else self.J.tolist(), 'updates': self.updates}
+
+    def load(self, state, reference_sha256):
+        """Learned sensitivities of a previous run: only for the same IDP run reference and components."""
+        if not state or state.get('schema') != self.STATE_SCHEMA or state.get('reference_sha256') != reference_sha256 \
+                or list(state.get('components') or []) != self.components or state.get('J') is None:
+            return False
+        J = np.asarray(state['J'], dtype=float)
+        if J.shape != (2 * len(self.components), len(state['keys'])) or not np.isfinite(J).all():
+            return False
+        self.keys, self.J, self.updates = list(state['keys']), J, int(state['updates'])
+        return True
 
     def features(self, idp):
         return np.array([float(idp[k]['fine_cdf_rmse']) for k in self.components]
@@ -291,21 +325,32 @@ class GenerationIdpModel:
         caps, rows = [], []
         for i, k in enumerate(self.components):
             now = idp_now[k]; par = idp_parent[k]
-            slack_r = float(par['fine_cdf_rmse']) + rmse_tol - float(now['fine_cdf_rmse'])
+            r_now = float(now['fine_cdf_rmse'])
             e = float(now['mean_relative_error'])
-            slack_m = max(abs(float(par['mean_relative_error'])), floor) + mean_tol - abs(e)
+            # allowed values (local guard and, when active, the cumulative run reference)
+            r_allowed = float(par['fine_cdf_rmse']) + rmse_tol
+            e_allowed = max(abs(float(par['mean_relative_error'])), floor) + mean_tol
             if run_reference is not None and k in run_reference.components:
                 s = run_reference.components[k]
-                slack_r = min(slack_r, s['fine_cdf_rmse'] + run_reference.tol['fine_cdf_rmse_degradation']
-                              - float(now['fine_cdf_rmse']))
-                slack_m = min(slack_m, max(abs(s['mean_relative_error']), run_reference.tol['mean_error_floor'])
-                              + run_reference.tol['mean_relative_error_degradation'] - abs(e))
-            dr = float(pred[i]); dm = float(pred[n + i]) * (1.0 if e >= 0 else -1.0)   # d|e| ~ sign(e) de
-            for name, slack, rate in (('RMSE', slack_r, dr), ('MEAN', slack_m, dm)):
-                if rate > 1e-12:                         # numerical noise is not a degradation
-                    cap = max(0.0, use * slack) / rate
-                    caps.append(cap)
-                    rows.append({'component': k, 'feature': name, 'slack': slack, 'rate_per_scale': rate, 'cap': cap})
+                r_allowed = min(r_allowed, s['fine_cdf_rmse'] + run_reference.tol['fine_cdf_rmse_degradation'])
+                e_allowed = min(e_allowed, max(abs(s['mean_relative_error']), run_reference.tol['mean_error_floor'])
+                                + run_reference.tol['mean_relative_error_degradation'])
+            # only slack_use of the remaining slack may be consumed
+            r_bound = r_now + use * max(0.0, r_allowed - r_now)
+            e_bound = abs(e) + use * max(0.0, e_allowed - abs(e))
+            dr = float(pred[i]); de = float(pred[n + i])
+            if dr > 1e-12:                                   # numerical noise is not a degradation
+                cap = max(0.0, r_bound - r_now) / dr
+                caps.append(cap)
+                rows.append({'component': k, 'feature': 'RMSE', 'bound': r_bound, 'now': r_now,
+                             'rate_per_scale': dr, 'cap': cap})
+            if abs(de) > 1e-12:
+                # two-sided |e + s*de| <= e_bound (also when the error crosses zero)
+                cap = (e_bound - e) / de if de > 0 else (e_bound + e) / (-de)
+                cap = max(0.0, cap)
+                caps.append(cap)
+                rows.append({'component': k, 'feature': 'MEAN', 'bound': e_bound, 'now': e,
+                             'rate_per_scale': de, 'cap': cap})
         cap = min(caps) if caps else None
         return cap, {'status': 'CAPPED' if cap is not None else 'NO_PREDICTED_DEGRADATION', 'cap': cap,
                      'binding': min(rows, key=lambda r: r['cap']) if rows else None, 'updates': self.updates}

@@ -45,6 +45,14 @@ FIELDS = {'enabled', 'anchor_target', 'production_anchor_relative', 'production_
           'neighbour_max', 'neighbour_destination_similarity_weight', 'work_potential_attributes',
           'service_potential_attributes', 'efficiency_memory'}
 MEMORY_FIELDS = {'enabled', 'eta_min', 'eta_max', 'prior_weight', 'smoothing', 'min_predicted_norm'}
+# Only these define the captured reference; penalty weights may be tuned between continuations.
+CAPTURE_PARAMS = ('anchor_target', 'neighbour_distance_matrix', 'neighbour_radius_km', 'neighbour_decay_km',
+                  'neighbour_max', 'neighbour_destination_similarity_weight', 'work_potential_attributes',
+                  'service_potential_attributes')
+
+
+def capture_parameters(g):
+    return {k: copy.deepcopy(g[k]) for k in CAPTURE_PARAMS}
 
 
 # ------------------------------------------------------------------ config
@@ -105,9 +113,15 @@ def _fp_sum(visum, prefix, n):
 
 
 def _pct_rank(v):
+    """Percentile rank in [0, 1]; ties share their average rank (no zone-number bias)."""
     v = np.asarray(v, dtype=float)
-    order = np.argsort(np.argsort(v, kind='mergesort'), kind='mergesort')
-    return order / max(1, len(v) - 1)
+    if len(v) <= 1:
+        return np.zeros(len(v))
+    uniq, inv = np.unique(v, return_inverse=True)
+    order = np.argsort(v, kind='mergesort')
+    ranks = np.empty(len(v)); ranks[order] = np.arange(len(v), dtype=float)
+    mean_rank = np.bincount(inv, weights=ranks) / np.bincount(inv)
+    return mean_rank[inv] / (len(v) - 1)
 
 
 def _effective_origins(M):
@@ -189,7 +203,7 @@ def capture(adapter, cfg, run_folder):
            'od_matrices': {f: sorted({no for k, t in ref.TARGETS.items()
                                       if k.startswith('WORK_' if f == 'WORK' else 'SERV_') for no in t['matrix_nos']})
                            for f in FAMILIES},
-           'parameters': {k: copy.deepcopy(v) for k, v in g.items() if k not in ('note', 'efficiency_memory')},
+           'parameters': capture_parameters(g),
            'origin_run_folder': str(run_folder)}
     rec['record_sha256'] = canonical_hash(rec)
     return rec
@@ -203,8 +217,8 @@ class Structure:
         body = {k: v for k, v in record.items() if k != 'record_sha256'}
         require(record.get('record_sha256') == canonical_hash(body), 'LIVE04_GENSTRUCT_REFERENCE_RECORD_CHANGED')
         g = cfg['generation_structure']
-        params = {k: v for k, v in g.items() if k not in ('note', 'efficiency_memory')}
-        require(record['parameters'] == params, 'LIVE04_GENSTRUCT_REFERENCE_PARAMETERS_CHANGED')
+        changed = sorted(k for k, v in capture_parameters(g).items() if record['parameters'].get(k) != v)
+        require(not changed, 'LIVE04_GENSTRUCT_REFERENCE_PARAMETERS_CHANGED:' + ','.join(changed))
         self.record = record
         self.cfg = g
         self.zones = list(record['zones'])

@@ -250,6 +250,11 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
             idp_model = GenerationIdpModel(idp['guard'].guarded, idp_cfg['generation_prediction'])
             adapter.idp_generation_model = idp_model
 
+    def save_idp_model():
+        path = getattr(adapter, 'idp_generation_model_file', None)
+        if idp_model is not None and path is not None and idp['cumulative'] is not None:
+            write_json(path, idp_model.state(idp['cumulative'].record['record_sha256']))
+
     def idp_direction():
         from .live04_idp_run import direction
         return direction(context['projection'].rows)
@@ -392,8 +397,12 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                                                    idp['cumulative'], idp_cfg)
                 if cap is not None and cap >= float(opts['min_scale']):
                     plan_upper = min(upper, cap)
+                    idp_cap['applied'] = plan_upper < upper
                 elif cap is not None:
-                    idp_cap['status'] = 'CAP_BELOW_MIN_SCALE_IGNORED_MEASURED_GUARD_DECIDES'
+                    # explicit, recorded bypass: a cap below min_scale would stop every GENERATION
+                    # trial on a model that only learns from trials; the measured guard decides.
+                    idp_cap.update(status='CAP_BELOW_MIN_SCALE_BYPASSED_MEASURED_GUARD_DECIDES',
+                                   applied=False, bypassed=True)
             plan = choose_scale_with_audit(model, gate, min_rel, opts, plan_upper)
             if idp_cap is not None:
                 plan['idp_scale_cap'] = idp_cap
@@ -402,7 +411,9 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                 kept = model.memory_correction
                 model.memory_correction = None
                 try:
-                    plan = choose_scale_with_audit(model, gate, min_rel, opts, upper)
+                    plan = choose_scale_with_audit(model, gate, min_rel, opts, plan_upper)
+                    if idp_cap is not None:
+                        plan['idp_scale_cap'] = idp_cap
                 finally:
                     model.memory_correction = kept
                 plan['memory_fallback'] = 'NO_STEP_WITH_MEMORY_PLAN_WITHOUT_MEMORY'
@@ -413,7 +424,7 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                 rec['stop_reason'] = 'NATIVE_PREDICTION_NO_ROBUST_IMPROVING_SCALE'
                 break
             if scale is None and model.measured is None:
-                scale = upper
+                scale = plan_upper        # LIVE04.14: the active IDP cap also bounds this fallback
                 plan['fallback'] = 'LINEAR_MODEL_NO_ROBUST_STEP_MEASURE_FULL'
             plan['prediction'] = 'NATIVE_FROZEN_PATHS' if model.nodes else 'GENFIX2_FINAL_EFFECT_LINEAR'
             write_json(folder / ('STEP1_PLAN_%02d.json' % ordinal), plan)
@@ -423,8 +434,16 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
             candidate = {'scale': float(scale)}
             trial_folder = folder / ('TRY_%02d' % ordinal); trial_folder.mkdir(parents=True, exist_ok=True)
             control.checkpoint('COUPLED_DEMAND_GENERATION_TRIAL', force=True, trial=ordinal)
+            if plan.get('idp_scale_cap') is not None:
+                cap_info = plan['idp_scale_cap']
+                require_cap = cap_info.get('applied') and cap_info.get('cap') is not None
+                if require_cap and float(scale) > float(cap_info['cap']) * (1.0 + 1e-12):
+                    raise ContractError('LIVE04_IDP_SCALE_CAP_NOT_RESPECTED:%r>%r' % (scale, cap_info['cap']))
             attempt = {'trial': ordinal, 'candidate': candidate, 'plan_mode': plan['mode'],
                        'predicted_rel_improvement': plan.get('predicted_rel_improvement'), 'rho': plan.get('rho')}
+            if plan.get('idp_scale_cap') is not None:
+                attempt['idp_scale_cap'] = {k: plan['idp_scale_cap'].get(k)
+                                            for k in ('status', 'cap', 'applied', 'bypassed', 'updates')}
             try:
                 if own['applied'] is not None:
                     parent_module('r1_15a2_inplace_transaction_v24915p2').restore_generation_parameters(
@@ -491,6 +510,7 @@ def step1_block(tx, adapter, cfg, folder, control, state, diag, anchors, referen
                     if idp_model is not None:
                         attempt['idp_model_update'] = idp_model.update(idp_direction(), float(scale),
                                                                        idp['before'], idp_trial)
+                        save_idp_model()
                     from .live04_idp_run import component_summary
                     attempt['idp'] = component_summary(idp_trial)
 

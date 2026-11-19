@@ -281,7 +281,8 @@ def run(visum, *, output_root=None, options=None, config_path=None, config_overr
                 # LIVE04.13: immutable run-start IDP reference (fresh: measured now; continuation: carried + verified)
                 from .live04_idp_run import establish as establish_idp_run
                 establish_idp_run(adapter, cfg['idp_guard'], anchors, continuation=plan is not None,
-                                  state_hash=snap0['state_hash'], folder=folder, write_json=write_json)
+                                  state_hash=snap0['state_hash'], folder=folder, write_json=write_json,
+                                  previous_run_folder=plan.get('previous_run_folder') if plan else None)
                 require(adapter.snapshot() == snap0, 'LIVE04_IDP_RUN_REFERENCE_CHANGED_MODEL')
                 # LIVE04.14 GENSTRUCT1: run-start production/attraction structure (carried by continuations)
                 from .live04_generation_structure import establish as establish_genstruct

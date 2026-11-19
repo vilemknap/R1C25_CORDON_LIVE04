@@ -31,7 +31,7 @@ def record(c, *, share_w=(0.5, 0.5, 0.5), cent=(0.9, 0.1, 0.5), neighbours=None,
            'run_start_coefficients': {'%s|%s' % k: [1.0] * 3 for k in gs.GROUPS},
            'potential_attributes': {'WORK': 'NUM_PM', 'SERVICE': 'FA_2_SERVICE'},
            'fp_attributes': {}, 'distance_matrix': 9697, 'distance_fingerprint': 'x', 'od_matrices': {},
-           'parameters': {k: copy.deepcopy(v) for k, v in g.items() if k not in ('note', 'efficiency_memory')},
+           'parameters': gs.capture_parameters(g),
            'origin_run_folder': '/runs/R'}
     rec['record_sha256'] = canonical_hash(rec)
     return rec
@@ -174,8 +174,10 @@ def test_reference_record_is_immutable_and_tied_to_the_parameters(tmp_path):
     bad = json.loads(json.dumps(rec)); bad['centrality']['WORK'][0] = 0.0
     with pytest.raises(ContractError, match='RECORD_CHANGED'):
         gs.Structure(bad, c)
-    with pytest.raises(ContractError, match='PARAMETERS_CHANGED'):
-        gs.Structure(rec, cfg(neighbour_relative=0.7))
+    with pytest.raises(ContractError, match='PARAMETERS_CHANGED:neighbour_radius_km'):
+        gs.Structure(rec, cfg(neighbour_radius_km=15.0))
+    # penalty weights are tuning knobs: a continuation with new weights keeps the reference
+    assert gs.Structure(rec, cfg(neighbour_relative=0.7, production_anchor_relative=0.2)).record == rec
 
     class Adapter:
         pass
@@ -197,6 +199,8 @@ def test_effective_inbound_origins_and_rank():
     e = gs._effective_origins(M)
     assert e[0] == pytest.approx(3.0) and e[2] == pytest.approx(1.0) and e[1] == 0.0
     assert list(gs._pct_rank([5.0, 1.0, 3.0])) == [1.0, 0.0, 0.5]
+    # ties share the average rank: zero-potential zones are not ordered by zone number
+    assert list(gs._pct_rank([0.0, 0.0, 0.0, 9.0])) == pytest.approx([1 / 3, 1 / 3, 1 / 3, 1.0])
 
 
 # ----------------------------------------------------------------- mock run
