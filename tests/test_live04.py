@@ -362,13 +362,18 @@ def test_rejected_generation_trial_then_second_trial_runs(tmp_path, monkeypatch,
 
 def test_two_cycles_keep_mobility_anchor_and_long_support(tmp_path):
     v = Live04Visum(tmp_path / 'model')
-    r = go(tmp_path, v, dict(GEN_ONLY, max_cycles=2, stop_after_cycle_without_change=False))
+    # 2026-11-19 the release cadence is every 4th cycle; this test keeps the cycle-2 SupplyMix
+    # check through an explicit donor override (cadence 2/2 = the v7 schedule).
+    over = dict(GEN_ONLY, max_cycles=2, stop_after_cycle_without_change=False, _allow_donor_overrides=True)
+    over['v7'] = dict(GEN_ONLY.get('v7') or {})
+    over['v7']['run_options'] = dict((over['v7'].get('run_options') or {}), sp_every_n_cycles=2, sp_start_cycle=2)
+    r = go(tmp_path, v, over)
     f = folder_of(tmp_path)
     assert len(r['cycles']) == 2 and r['accepted_states'] >= 1
     assert (f / 'C02_GENERATION/GENERATION_BLOCK_RESULT.json').exists()
     gen2 = read_json(f / 'C02_GENERATION/GENERATION_BLOCK_RESULT.json')
     assert gen2['status'] in ('ACCEPTED', 'CONFIGURED_GENERATION_SEARCH_EXHAUSTED'), gen2.get('error')
-    # LIVE04.4: SupplyMix is due in cycle 2 (v7 schedule) and leaves a verified state
+    # LIVE04.4: SupplyMix is due in cycle 2 (cadence override 2/2) and leaves a verified state
     blocks2 = [b['block'] for b in r['cycles'][1]['blocks']]
     assert blocks2 == ['GENERATION', 'SUPPLY_ADDVAL1']
     sup = read_json(f / 'C02_SUPPLY_ADDVAL1/SUPPLYMIX_BLOCK_RESULT.json')
